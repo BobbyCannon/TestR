@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="app">
+	<head>
+		<title>Index</title>
+		<style type="text/css">
+			.ng-invalid,
+			.ng-invalid-email,
+			.ng-invalid-required {
+				border-color: red;
+				color: red;
+			}
+		</style>
+	</head>
+	<body>
+		<div>
+			<a href="/Index.html">Index</a> ::
+			<a href="/Inputs.html">Inputs</a> ::
+			<a href="/JQuery.html">JQuery</a> ::
+			<a href="/Moment.html">Moment</a> ::
+			<a href="/Bootstrap2.html">Bootstrap 2</a> ::
+			<a href="/Bootstrap3.html">Bootstrap 3</a> ::
+			<a href="/Relationships.html">Relationships</a> ::
+			<a href="/TextContent.html">Text Content</a>
+		</div>
+		<br />
+		<div class="ng-view ng-cloak"></div>
+		<script src="./Scripts/jquery-2.1.1.js"></script>
+		<script src="./Scripts/angular.js"></script>
+		<script src="./Scripts/angular-route.js"></script>
+		<script type="text/javascript" language="javascript">
+
+			console.log(typeof angular);
+
+			var app = angular.module('app', ['ngRoute'])
+				.config([
+					'$httpProvider', '$routeProvider',
+					function ($httpProvider, $routeProvider) {
+						$routeProvider
+							.when('/', { templateUrl: 'Views/Page.html', controller: 'testController' })
+							.when('/anotherPage', { templateUrl: 'Views/AnotherPage.html', controller: 'anotherPageController' })
+							.otherwise('/', { templateUrl: 'Views/Page.html', controller: 'testController' });
+					}
+				]);
+
+			app.controller('testController', [
+				'$scope',
+				function ($scope) {
+					$scope.message = 'Hello World';
+					$scope.items = [];
+					$scope.user = {
+						email: ''
+					};
+
+					$scope.addItem = function () {
+						var id = $scope.items.length + 1;
+						$scope.items.push({ id: id, text: id.toString() });
+					};
+				}
+			]);
+
+			app.controller('anotherPageController', [
+				'$scope',
+				function ($scope) {
+					$scope.message = 'Hello World';
+					$scope.items = [];
+					$scope.user = {
+						email: ''
+					};
+
+					$scope.addItem = function () {
+						var id = $scope.items.length + 1;
+						$scope.items.push({ id: id, text: id.toString() });
+					};
+				}
+			]);
+
+			$(document).ready(function () {
+				document.addEventListener('keydown', function (e) {
+					document.getElementById('log').innerHTML += 'keydown: ' + e.keyCode + '(' + String.fromCharCode(e.keyCode) + ')<br />';
+				});
+
+				document.addEventListener('keypress', function (e) {
+					document.getElementById('log').innerHTML += 'keypress: ' + e.keyCode + '(' + String.fromCharCode(e.keyCode) + ')<br />';
+				});
+
+				document.addEventListener('keyup', function (e) {
+					document.getElementById('log').innerHTML += 'keyup: ' + e.keyCode + '(' + String.fromCharCode(e.keyCode) + ')<br />';
+				});
+			});
+
+		</script>
+	</body>
+</html>

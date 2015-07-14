@@ -1,0 +1,299 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DEC269ED-D43E-4D3A-BA25-238A9DD7CF04}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TestR</RootNamespace>
+    <AssemblyName>TestR</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\TestR.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Accessibility" />
+    <Reference Include="Interop.UIAutomationClient, Version=12.0.21213.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Desktop\Application.cs" />
+    <Compile Include="Desktop\Automation\Automation.cs" />
+    <Compile Include="Desktop\Automation\AutomationElement.cs" />
+    <Compile Include="Desktop\Automation\AutomationElementCollection.cs" />
+    <Compile Include="Desktop\Automation\AutomationTypes.cs" />
+    <Compile Include="Desktop\Automation\Patterns\BasePattern.cs" />
+    <Compile Include="Desktop\Automation\CacheRequest.cs" />
+    <Compile Include="Desktop\Automation\Conditions.cs" />
+    <Compile Include="Desktop\Automation\Patterns\DockPattern.cs" />
+    <Compile Include="Desktop\Automation\Patterns\ExpandCollapsePattern.cs" />
+    <Compile Include="Desktop\Automation\Patterns\GridPattern.cs" />
+    <Compile Include="Desktop\Automation\InternalSchema.cs" />
+    <Compile Include="Desktop\Automation\InternalTypes.cs" />
+    <Compile Include="Desktop\Automation\Patterns\InvokePattern.cs" />
+    <Compile Include="Desktop\Automation\Patterns\LegacyIAccessiblePattern.cs" />
+    <Compile Include="Desktop\Automation\Patterns\MultipleViewPattern.cs" />
+    <Compile Include="Desktop\Automation\Patterns\ScrollPattern.cs" />
+    <Compile Include="Desktop\Automation\Patterns\SelectionPattern.cs" />
+    <Compile Include="Desktop\Automation\Patterns\SynchronizedInputPattern.cs" />
+    <Compile Include="Desktop\Automation\Patterns\TablePattern.cs" />
+    <Compile Include="Desktop\Automation\Patterns\TextPattern.cs" />
+    <Compile Include="Desktop\Automation\TextRange.cs" />
+    <Compile Include="Desktop\Automation\Patterns\TogglePattern.cs" />
+    <Compile Include="Desktop\Automation\Patterns\TransformPattern.cs" />
+    <Compile Include="Desktop\Automation\TextTypes.cs" />
+    <Compile Include="Desktop\Automation\TreeWalker.cs" />
+    <Compile Include="Desktop\Automation\Utility.cs" />
+    <Compile Include="Desktop\Automation\Patterns\ValuePattern.cs" />
+    <Compile Include="Desktop\Automation\Patterns\VirtualizedPatterns.cs" />
+    <Compile Include="Desktop\Automation\Patterns\WindowPattern.cs" />
+    <Compile Include="Desktop\Elements\ComboBox.cs" />
+    <Compile Include="Desktop\Elements\Custom.cs" />
+    <Compile Include="Desktop\Elements\Group.cs" />
+    <Compile Include="Desktop\Elements\Hyperlink.cs" />
+    <Compile Include="Desktop\Elements\List.cs" />
+    <Compile Include="Desktop\Elements\ListItem.cs" />
+    <Compile Include="Desktop\Elements\MenuBar.cs" />
+    <Compile Include="Desktop\Elements\MenuItem.cs" />
+    <Compile Include="Desktop\Elements\ScrollBar.cs" />
+    <Compile Include="Desktop\Elements\SplitButton.cs" />
+    <Compile Include="Desktop\Elements\Table.cs" />
+    <Compile Include="Desktop\Elements\Text.cs" />
+    <Compile Include="Desktop\Elements\Thumb.cs" />
+    <Compile Include="Desktop\Elements\ToolBar.cs" />
+    <Compile Include="Desktop\Elements\Tree.cs" />
+    <Compile Include="Desktop\ElementWalker.cs" />
+    <Compile Include="Desktop\Element.cs" />
+    <Compile Include="Desktop\ElementCollection.cs" />
+    <Compile Include="Desktop\Elements\CheckBox.cs" />
+    <Compile Include="Desktop\Elements\Document.cs" />
+    <Compile Include="Desktop\Elements\Button.cs" />
+    <Compile Include="Desktop\Elements\Pane.cs" />
+    <Compile Include="Desktop\Elements\Edit.cs" />
+    <Compile Include="Desktop\Elements\StatusBar.cs" />
+    <Compile Include="Desktop\Elements\TitleBar.cs" />
+    <Compile Include="Desktop\FilteredElementCollection.cs" />
+    <Compile Include="Desktop\IElementParent.cs" />
+    <Compile Include="Exceptions\NotKeyboardFocusableException.cs" />
+    <Compile Include="Extensions\Assembly.cs" />
+    <Compile Include="Extensions\Rect.cs" />
+    <Compile Include="Logging\FileLogger.cs" />
+    <Compile Include="Native\Mouse.cs" />
+    <Compile Include="Native\MouseCursor.cs" />
+    <Compile Include="Web\Browsers\Firefox.cs" />
+    <Compile Include="Web\Elements\Abbreviation.cs" />
+    <Compile Include="Web\Elements\Acronym.cs" />
+    <Compile Include="Web\Elements\Address.cs" />
+    <Compile Include="Web\Elements\Applet.cs" />
+    <Compile Include="Web\Elements\Area.cs" />
+    <Compile Include="Web\Elements\Article.cs" />
+    <Compile Include="Web\Elements\Aside.cs" />
+    <Compile Include="Web\Elements\Audio.cs" />
+    <Compile Include="Web\Elements\Base.cs" />
+    <Compile Include="Web\Elements\BaseFont.cs" />
+    <Compile Include="Web\Elements\BiDirectionalIsolation.cs" />
+    <Compile Include="Web\Elements\BiDirectionalOverride.cs" />
+    <Compile Include="Web\Elements\Big.cs" />
+    <Compile Include="Web\Elements\BlockQuote.cs" />
+    <Compile Include="Web\Elements\Body.cs" />
+    <Compile Include="Web\Elements\Bold.cs" />
+    <Compile Include="Web\Elements\Canvas.cs" />
+    <Compile Include="Web\Elements\Caption.cs" />
+    <Compile Include="Web\Elements\Center.cs" />
+    <Compile Include="Web\Elements\Cite.cs" />
+    <Compile Include="Web\Elements\Column.cs" />
+    <Compile Include="Web\Elements\ColumnGroup.cs" />
+    <Compile Include="Web\Elements\DataList.cs" />
+    <Compile Include="Web\Elements\Definition.cs" />
+    <Compile Include="Web\Elements\Deleted.cs" />
+    <Compile Include="Web\Elements\DescriptionList.cs" />
+    <Compile Include="Web\Elements\DescriptionListDefinition.cs" />
+    <Compile Include="Web\Elements\DescriptionListTerm.cs" />
+    <Compile Include="Web\Elements\Details.cs" />
+    <Compile Include="Web\Elements\Dialog.cs" />
+    <Compile Include="Web\Elements\Directory.cs" />
+    <Compile Include="Web\Elements\Embed.cs" />
+    <Compile Include="Web\Elements\Emphasis.cs" />
+    <Compile Include="Web\Elements\Figure.cs" />
+    <Compile Include="Web\Elements\FigureCaption.cs" />
+    <Compile Include="Web\Elements\Font.cs" />
+    <Compile Include="Web\Elements\Footer.cs" />
+    <Compile Include="Web\Elements\Frame.cs" />
+    <Compile Include="Web\Elements\FrameSet.cs" />
+    <Compile Include="Web\Elements\Head.cs" />
+    <Compile Include="Web\Elements\HeadingGroup.cs" />
+    <Compile Include="Web\Elements\Html.cs" />
+    <Compile Include="Web\Elements\InlineFrame.cs" />
+    <Compile Include="Web\Elements\Insert.cs" />
+    <Compile Include="Web\Elements\Italic.cs" />
+    <Compile Include="Web\Elements\Keyboard.cs" />
+    <Compile Include="Web\Elements\KeyGenerator.cs" />
+    <Compile Include="Web\Elements\Main.cs" />
+    <Compile Include="Web\Elements\Map.cs" />
+    <Compile Include="Web\Elements\Mark.cs" />
+    <Compile Include="Web\Elements\Menu.cs" />
+    <Compile Include="Web\Elements\MenuItem.cs" />
+    <Compile Include="Web\Elements\Metadata.cs" />
+    <Compile Include="Web\Elements\Meter.cs" />
+    <Compile Include="Web\Elements\Navigation.cs" />
+    <Compile Include="Web\Elements\NoFrames.cs" />
+    <Compile Include="Web\Elements\NoScript.cs" />
+    <Compile Include="Web\Elements\Object.cs" />
+    <Compile Include="Web\Elements\OptionGroup.cs" />
+    <Compile Include="Web\Elements\Output.cs" />
+    <Compile Include="Web\Elements\Parameter.cs" />
+    <Compile Include="Web\Elements\PreformattedText.cs" />
+    <Compile Include="Web\Elements\Progress.cs" />
+    <Compile Include="Web\Elements\Quotation.cs" />
+    <Compile Include="Web\Elements\RadioButton.cs" />
+    <Compile Include="Web\Elements\CheckBox.cs" />
+    <Compile Include="Web\Elements\Code.cs" />
+    <Compile Include="Web\Elements\FieldSet.cs" />
+    <Compile Include="Web\Elements\HorizontalRule.cs" />
+    <Compile Include="Web\Elements\Label.cs" />
+    <Compile Include="Web\Elements\Legend.cs" />
+    <Compile Include="Web\Elements\LineBreak.cs" />
+    <Compile Include="Web\Elements\Ruby.cs" />
+    <Compile Include="Web\Elements\RubyExplanation.cs" />
+    <Compile Include="Web\Elements\RubyTag.cs" />
+    <Compile Include="Web\Elements\Sample.cs" />
+    <Compile Include="Web\Elements\Script.cs" />
+    <Compile Include="Web\Elements\Section.cs" />
+    <Compile Include="Web\Elements\Small.cs" />
+    <Compile Include="Web\Elements\Source.cs" />
+    <Compile Include="Web\Elements\Strike.cs" />
+    <Compile Include="Web\Elements\StrikeThrough.cs" />
+    <Compile Include="Web\Elements\Strong.cs" />
+    <Compile Include="Web\Elements\Style.cs" />
+    <Compile Include="Web\Elements\StyleSheetLink.cs" />
+    <Compile Include="Web\Elements\SubScript.cs" />
+    <Compile Include="Web\Elements\Summary.cs" />
+    <Compile Include="Web\Elements\SuperScriptText.cs" />
+    <Compile Include="Web\Elements\TableBody.cs" />
+    <Compile Include="Web\Elements\TableColumn.cs" />
+    <Compile Include="Web\Elements\TableFooter.cs" />
+    <Compile Include="Web\Elements\TableHead.cs" />
+    <Compile Include="Web\Elements\TableHeaderColumn.cs" />
+    <Compile Include="Web\Elements\TableRow.cs" />
+    <Compile Include="Web\Elements\Table.cs" />
+    <Compile Include="Web\Elements\Paragraph.cs" />
+    <Compile Include="Web\Elements\ListItem.cs" />
+    <Compile Include="Web\Elements\OrderedList.cs" />
+    <Compile Include="Web\Elements\Option.cs" />
+    <Compile Include="Web\Elements\TeletypeText.cs" />
+    <Compile Include="Web\Elements\Time.cs" />
+    <Compile Include="Web\Elements\Title.cs" />
+    <Compile Include="Web\Elements\Track.cs" />
+    <Compile Include="Web\Elements\Underline.cs" />
+    <Compile Include="Web\Elements\UnorderedList.cs" />
+    <Compile Include="Extensions\DateTime.cs" />
+    <Compile Include="Logging\ConsoleLogger.cs" />
+    <Compile Include="Logging\ILogger.cs" />
+    <Compile Include="Logging\LogLevel.cs" />
+    <Compile Include="Logging\LogManager.cs" />
+    <Compile Include="Web\Elements\Form.cs" />
+    <Compile Include="Web\Elements\Division.cs" />
+    <Compile Include="Web\Elements\Image.cs" />
+    <Compile Include="Web\Elements\Header.cs" />
+    <Compile Include="Web\Elements\Select.cs" />
+    <Compile Include="Web\Elements\TextArea.cs" />
+    <Compile Include="Models\Entity.cs" />
+    <Compile Include="Models\LogEntry.cs" />
+    <Compile Include="Models\User.cs" />
+    <Compile Include="Helpers\Validate.cs" />
+    <Compile Include="Web\Browser.cs" />
+    <Compile Include="Web\Browsers\Chrome.cs" />
+    <Compile Include="Web\Browsers\InternetExplorer.cs" />
+    <Compile Include="Web\BrowserType.cs" />
+    <Compile Include="Web\ElementCollection.cs" />
+    <Compile Include="Web\Elements\Button.cs" />
+    <Compile Include="Web\Elements\Link.cs" />
+    <Compile Include="Web\Elements\Span.cs" />
+    <Compile Include="Web\Elements\TextInput.cs" />
+    <Compile Include="Extensions\Enumerable.cs" />
+    <Compile Include="Extensions\String.cs" />
+    <Compile Include="Helpers\Utility.cs" />
+    <Compile Include="Web\Element.cs" />
+    <Compile Include="Web\Elements\Variable.cs" />
+    <Compile Include="Web\Elements\Video.cs" />
+    <Compile Include="Web\Elements\WordBreakOpportunity.cs" />
+    <Compile Include="Web\JavascriptLibrary.cs" />
+    <Compile Include="Native\NativeMethods.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Desktop\Elements\Window.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="SHDocVw">
+      <Guid>{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>1</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Private>True</Private>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestR.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestR.min.js">
+      <DependentUpon>TestR.js</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata>
+		<id>TestR.PowerShell</id>
+		<version>1.0</version>
+		<authors>Bobby Cannon</authors>
+		<description>Integration testing framework for developers. TestR allows automating testing of web applications. Adds PowerShell features that are not part of the regular deployment.</description>
+		<projectUrl>http://bobbycannon.github.io/TestR/</projectUrl>
+		<tags>TestR Test UnitTest IntegrationTest Automation Testing Web InternetExplorer FireFox Chrome PowerShell</tags>
+		<dependencies>
+			<dependency id="Newtonsoft.Json" version="6.0.8" />
+		</dependencies>
+		<references>
+			<reference file="TestR.dll" />
+			<reference file="TestR.PowerShell.dll" />
+            <reference file="Interop.UIAutomationClient.dll" />
+		</references>
+	</metadata>
+	<files>
+		<file src="C:\Binaries\TestR\bin\TestR.dll" target="lib\net40" />
+		<file src="C:\Binaries\TestR\bin\TestR.PowerShell.dll" target="lib\net40" />
+		<file src="C:\Binaries\TestR\bin\Interop.SHDocVw.dll" target="lib\net40" />
+		<file src="C:\Binaries\TestR\bin\Interop.UIAutomationClient.dll" target="lib\net40" />
+	</files>
+</package>

@@ -1,0 +1,9 @@
+﻿<div>{{ message }}</div>
+<input id="email" type="email" ng-model="user.email" required /><br />
+<span id="emailValidation" ng-bind="user.email"></span>
+<div id="log"></div>
+<br />
+<button id="addItem" ng-click="addItem()">Add Item</button><br />
+Total: <span>{{ items.length }}</span><br />
+<div ng-repeat="item in items">{{ item.text }}</div>
+<a id="anotherPageLink" href="#/anotherPage">Another Page</a>
