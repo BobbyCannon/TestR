@@ -14,9 +14,17 @@ namespace TestR.Native
 	/// </summary>
 	public static class Mouse
 	{
+		#region Constants
+
+		private const int MouseLowLevel = 14;
+
+		#endregion
+
 		#region Fields
 
+		private static IntPtr _hookId;
 		private static readonly TimeSpan _timeout;
+		private static readonly NativeMethods.LowLevelKeyboardProc _hook;
 
 		#endregion
 
@@ -25,6 +33,8 @@ namespace TestR.Native
 		static Mouse()
 		{
 			_timeout = new TimeSpan(0, 0, 5);
+			_hookId = IntPtr.Zero;
+			_hook = HookCallback;
 		}
 
 		#endregion
@@ -44,6 +54,16 @@ namespace TestR.Native
 		#region Methods
 
 		/// <summary>
+		/// Gets the current position of the mouse.
+		/// </summary>
+		/// <returns> The point location of the mouse cursor. </returns>
+		public static Point GetCursorPosition()
+		{
+			Point currentMousePoint;
+			return NativeMethods.GetCursorPosition(out currentMousePoint) ? currentMousePoint : new Point();
+		}
+
+		/// <summary>
 		/// Left click at the provided point.
 		/// </summary>
 		/// <param name="point"> The point in which to click. </param>
@@ -54,7 +74,7 @@ namespace TestR.Native
 
 			while (currentPosition.X != point.X || currentPosition.Y != point.Y)
 			{
-				SetCursorPosition(point.X, point.Y);
+				NativeMethods.SetCursorPosition(point.X, point.Y);
 				currentPosition = GetCursorPosition();
 
 				if (watch.Elapsed >= _timeout)
@@ -63,19 +83,8 @@ namespace TestR.Native
 				}
 			}
 
-			MouseEvent(MouseEventFlags.LeftDown);
-			MouseEvent(MouseEventFlags.LeftUp);
-		}
-
-		/// <summary>
-		/// Right click at the provided point.
-		/// </summary>
-		/// <param name="point"> The point in which to click. </param>
-		public static void RightClick(Point point)
-		{
-			SetCursorPosition(point.X, point.Y);
-			MouseEvent(MouseEventFlags.RightDown);
-			MouseEvent(MouseEventFlags.RightUp);
+			ExecuteMouseEvent(MouseEventFlags.LeftDown);
+			ExecuteMouseEvent(MouseEventFlags.LeftUp);
 		}
 
 		/// <summary>
@@ -84,37 +93,116 @@ namespace TestR.Native
 		/// <param name="point"> The point in which to move to. </param>
 		public static void MoveTo(Point point)
 		{
-			SetCursorPosition(point.X, point.Y);
+			NativeMethods.SetCursorPosition(point.X, point.Y);
 		}
 
-		private static Point GetCursorPosition()
+		/// <summary>
+		/// Right click at the provided point.
+		/// </summary>
+		/// <param name="point"> The point in which to click. </param>
+		public static void RightClick(Point point)
 		{
-			Point currentMousePoint;
-			return GetCursorPosition(out currentMousePoint)
-				? currentMousePoint
-				: new Point();
+			NativeMethods.SetCursorPosition(point.X, point.Y);
+			ExecuteMouseEvent(MouseEventFlags.RightDown);
+			ExecuteMouseEvent(MouseEventFlags.RightUp);
 		}
 
-		[DllImport("user32.dll", EntryPoint = "GetCursorPos")]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		private static extern bool GetCursorPosition(out Point lpMousePoint);
+		public static void StartMonitoring()
+		{
+			using (var curProcess = Process.GetCurrentProcess())
+			{
+				using (var curModule = curProcess.MainModule)
+				{
+					_hookId = NativeMethods.SetWindowsHookEx(MouseLowLevel, _hook, NativeMethods.GetModuleHandle(curModule.ModuleName), 0);
+				}
+			}
+		}
 
-		private static void MouseEvent(MouseEventFlags value)
+		public static void StopMonitoring()
+		{
+			NativeMethods.UnhookWindowsHookEx(_hookId);
+		}
+
+		private static void ExecuteMouseEvent(MouseEventFlags value)
 		{
 			var position = GetCursorPosition();
-			MouseEvent((int) value, position.X, position.Y, 0, 0);
+			NativeMethods.MouseEvent((int) value, position.X, position.Y, 0, 0);
 		}
 
-		[DllImport("user32.dll", EntryPoint = "mouse_event")]
-		private static extern void MouseEvent(int dwFlags, int dx, int dy, int dwData, int dwExtraInfo);
+		private static MouseEvent GetEvent(NativeMethods.MouseMessages message)
+		{
+			switch (message)
+			{
+				case NativeMethods.MouseMessages.WM_LBUTTONDOWN:
+					return MouseEvent.LeftButtonDown;
 
-		[DllImport("user32.dll", EntryPoint = "SetCursorPos")]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		private static extern bool SetCursorPosition(int x, int y);
+				case NativeMethods.MouseMessages.WM_LBUTTONUP:
+					return MouseEvent.LeftButtonUp;
+
+				case NativeMethods.MouseMessages.WM_MOUSEMOVE:
+					return MouseEvent.MouseMove;
+
+				case NativeMethods.MouseMessages.WM_MOUSEWHEEL:
+					return MouseEvent.MouseWheel;
+
+				case NativeMethods.MouseMessages.WM_RBUTTONDOWN:
+					return MouseEvent.RightButtonDown;
+
+				case NativeMethods.MouseMessages.WM_RBUTTONUP:
+					return MouseEvent.RightButtonUp;
+
+				default:
+					return MouseEvent.Unknown;
+			}
+		}
+
+		private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+		{
+			if (nCode < 0)
+			{
+				return NativeMethods.CallNextHookEx(_hookId, nCode, wParam, lParam);
+			}
+
+			var message = (NativeMethods.MouseMessages) wParam;
+			var hook = (NativeMethods.MouseHook) Marshal.PtrToStructure(lParam, typeof (NativeMethods.MouseHook));
+
+			if (message != NativeMethods.MouseMessages.WM_MOUSEMOVE)
+			{
+				OnMouseChanged(GetEvent(message), new Point(hook.pt.x, hook.pt.y));
+			}
+
+			return NativeMethods.CallNextHookEx(_hookId, nCode, wParam, lParam);
+		}
+
+		private static void OnMouseChanged(MouseEvent mouseEvent, Point point)
+		{
+			var handler = MouseChanged;
+			if (handler != null)
+			{
+				handler(mouseEvent, point);
+			}
+		}
+
+		#endregion
+
+		#region Events
+
+		public static event Action<MouseEvent, Point> MouseChanged;
 
 		#endregion
 
 		#region Enumerations
+
+		public enum MouseEvent
+		{
+			Unknown,
+			LeftButtonDown,
+			LeftButtonUp,
+			MouseMove,
+			MouseWheel,
+			RightButtonDown,
+			RightButtonUp
+		}
 
 		[Flags]
 		private enum MouseEventFlags

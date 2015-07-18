@@ -1,10 +1,10 @@
 ﻿#region References
 
 using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
 using mshtml;
-using SHDocVw;
 
 #endregion
 
@@ -22,66 +22,40 @@ namespace TestR.Native
 
 		#region Methods
 
-		public static IWebBrowser2 GetWebBrowserFromHtmlWindow(IHTMLWindow2 htmlWindow)
+		internal enum MouseMessages
 		{
-			var guidIServiceProvider = typeof (IServiceProvider).GUID;
-			var serviceProvider = htmlWindow as IServiceProvider;
-			if (serviceProvider == null)
-			{
-				return null;
-			}
-
-			object objIServiceProvider;
-			serviceProvider.QueryService(ref _sidSTopLevelBrowser, ref guidIServiceProvider, out objIServiceProvider);
-			serviceProvider = objIServiceProvider as IServiceProvider;
-
-			if (serviceProvider == null)
-			{
-				return null;
-			}
-
-			object objIWebBrowser;
-			var guidIWebBrowser = typeof (IWebBrowser2).GUID;
-			serviceProvider.QueryService(ref _sidSWebBrowserApp, ref guidIWebBrowser, out objIWebBrowser);
-			var webBrowser = objIWebBrowser as IWebBrowser2;
-
-			return webBrowser;
+			WM_LBUTTONDOWN = 0x0201,
+			WM_LBUTTONUP = 0x0202,
+			WM_MOUSEMOVE = 0x0200,
+			WM_MOUSEWHEEL = 0x020A,
+			WM_RBUTTONDOWN = 0x0204,
+			WM_RBUTTONUP = 0x0205
 		}
 
-		public static IntPtr GetWindowHandle(int processId)
+		[StructLayout(LayoutKind.Sequential)]
+		internal struct Point
 		{
-			var response = IntPtr.Zero;
+			public int x;
+			public int y;
+		}
 
-			EnumWindows((handle, lParam) =>
-			{
-				uint windowsProcessId;
-				GetWindowThreadProcessId(handle, out windowsProcessId);
 
-				if (windowsProcessId != processId)
-				{
-					return true;
-				}
-
-				if (GetWindow(handle, _gwOwner) != IntPtr.Zero || !IsWindowVisible(handle))
-				{
-					return true;
-				}
-
-				response = handle;
-				return false;
-			}, IntPtr.Zero);
-
-			if (response == IntPtr.Zero)
-			{
-				throw new Exception("Failed to find the window handle for the process ID.");
-			}
-
-			return response;
+		[StructLayout(LayoutKind.Sequential)]
+		internal struct MouseHook
+		{
+			public Point pt;
+			public uint mouseData;
+			public uint flags;
+			public uint time;
+			public IntPtr dwExtraInfo;
 		}
 
 		[DllImport("user32.dll", SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		internal static extern bool BringWindowToTop(IntPtr hWnd);
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		internal static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
 
 		[DllImport("user32", SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
@@ -90,12 +64,22 @@ namespace TestR.Native
 		[DllImport("user32", SetLastError = true)]
 		internal static extern int GetClassName(IntPtr handleToWindow, StringBuilder className, int maxClassNameLength);
 
+		[DllImport("user32.dll", EntryPoint = "GetCursorPos")]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		internal static extern bool GetCursorPosition(out System.Drawing.Point lpMousePoint);
+
 		[DllImport("user32.dll", SetLastError = true)]
 		internal static extern IntPtr GetForegroundWindow();
+
+		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		internal static extern IntPtr GetModuleHandle(string lpModuleName);
 
 		[DllImport("user32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		internal static extern bool IsWindowVisible(IntPtr hWnd);
+
+		[DllImport("user32.dll", EntryPoint = "mouse_event")]
+		internal static extern void MouseEvent(int dwFlags, int dx, int dy, int dwData, int dwExtraInfo);
 
 		[DllImport("user32.dll", SetLastError = true)]
 		internal static extern bool MoveWindow(IntPtr hWnd, int x, int y, int nWidth, int nHeight, bool bRepaint);
@@ -109,12 +93,23 @@ namespace TestR.Native
 		[DllImport("user32", SetLastError = true)]
 		internal static extern int SendMessageTimeout(IntPtr hWnd, int msg, int wParam, int lParam, int fuFlags, int uTimeout, ref int lpdwResult);
 
+		[DllImport("user32.dll", EntryPoint = "SetCursorPos")]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		internal static extern bool SetCursorPosition(int x, int y);
+
 		[DllImport("user32.dll", SetLastError = true)]
 		internal static extern IntPtr SetFocus(IntPtr hWnd);
 
 		[DllImport("user32.dll", SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		internal static extern bool SetForegroundWindow(IntPtr hWnd);
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		internal static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		internal static extern bool UnhookWindowsHookEx(IntPtr hhk);
 
 		[DllImport("user32", SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
@@ -131,6 +126,8 @@ namespace TestR.Native
 		#region Delegates
 
 		internal delegate bool EnumChildWindowProc(IntPtr hWnd, IntPtr lParam);
+
+		internal delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
 		private delegate bool EnumWindowProc(IntPtr hwnd, IntPtr lParam);
 

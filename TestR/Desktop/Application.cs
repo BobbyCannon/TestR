@@ -28,11 +28,10 @@ namespace TestR.Desktop
 		/// Creates an instance of the application.
 		/// </summary>
 		/// <param name="process"> The process for the application. </param>
-		public Application(Process process)
+		internal Application(Process process)
 		{
-			Process = process;
-
 			Children = new ElementCollection<Element>(this);
+			Process = process;
 			Timeout = TimeSpan.FromSeconds(5);
 		}
 
@@ -361,17 +360,11 @@ namespace TestR.Desktop
 		/// </summary>
 		/// <typeparam name="T"> The type of the child. </typeparam>
 		/// <param name="key"> The key of the child. </param>
+		/// <param name="includeDescendance"> Flag to determine to include descendance or not. </param>
 		/// <returns> The child if found or null if otherwise. </returns>
 		public T GetChild<T>(string key, bool includeDescendance) where T : Element, IElementParent
 		{
-			T child = null;
-
-			if (Children.ContainsKey(key))
-			{
-				child = Children[key] as T;
-			}
-
-			return child ?? Children.Select(x => x.GetChild<T>(key)).FirstOrDefault(x => x != null);
+			return (T) Children.GetChild(key, includeDescendance);
 		}
 
 		/// <summary>

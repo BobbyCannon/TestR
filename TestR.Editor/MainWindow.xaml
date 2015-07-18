@@ -1,0 +1,69 @@
+﻿<Window x:Class="TestR.Editor.MainWindow"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:valueConverters="clr-namespace:TestR.Editor.ValueConverters"
+		xmlns:te="clr-namespace:TestR.Editor"
+		Title="MainWindow" Height="350" Width="800" 
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+		mc:Ignorable="d" 
+		d:DataContext="{d:DesignInstance te:Project, IsDesignTimeCreatable=True}"
+		WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
+	<Window.Resources>
+		<valueConverters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+		<ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type te:ElementActionType}" x:Key="ExampleEnumValues">
+			<ObjectDataProvider.MethodParameters>
+				<x:Type TypeName="te:ElementActionType" />
+			</ObjectDataProvider.MethodParameters>
+		</ObjectDataProvider>
+	</Window.Resources>
+    <Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition />
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Margin="8">
+			<Button Width="110" Height="28" Click="SelectApplication" Margin="0,0,10,0">Select Application</Button>
+			<Label Content="{Binding Path=ApplicationFilePath}"></Label>
+			<Button Width="85" Height="28" Click="Refresh" Margin="0,0,10,0" Content="Refresh" Background="Transparent" Foreground="Blue" BorderBrush="Transparent" />
+		</StackPanel>
+		<Button Grid.Row="0" Grid.Column="1" Width="45" Height="28" HorizontalAlignment="Right" Click="RunTest" Margin="0,0,10,0">Run</Button>
+		<TreeView x:Name="Elements" Grid.Row="1" Grid.Column="0" Width="280" ItemsSource="{Binding Path=Elements}" SelectedItemChanged="ElementListOnSelectedItemChanged" LostFocus="ElementsOnLostFocus">
+			<TreeView.ItemTemplate>
+				<HierarchicalDataTemplate ItemsSource="{Binding Children}">
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="{Binding Id}" />
+						<TextBlock Text="{Binding Name}" />
+					</StackPanel>
+				</HierarchicalDataTemplate>
+			</TreeView.ItemTemplate>
+		</TreeView>
+		<TabControl Grid.Row="1" Grid.Column="1">
+			<TabItem Header="Actions">
+				<ListView x:Name="Actions" AllowDrop="True" ItemsSource="{Binding ElementActions}" SelectionChanged="Actions_OnSelectionChanged" LostFocus="Actions_OnLostFocus" >
+					<ListView.ItemTemplate>
+						<DataTemplate>
+							<Grid HorizontalAlignment="Stretch">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="auto" />
+									<ColumnDefinition Width="auto" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+								<TextBlock Grid.Column="0" Width="160" Text="{Binding ElementId}" Margin="0,0,10,0"></TextBlock>
+								<ComboBox Grid.Column="1" Width="150" Text="{Binding Type, Mode=TwoWay}" SelectedItem="{Binding Type}" Margin="0,0,10,0" ItemsSource="{Binding Source={StaticResource ExampleEnumValues}}" ></ComboBox>
+								<TextBox Grid.Column="2" Width="150" Text="{Binding Input, Mode=TwoWay}"></TextBox>
+							</Grid>
+						</DataTemplate>
+					</ListView.ItemTemplate>
+				</ListView>
+			</TabItem>
+			<TabItem Header="Log">
+				<TextBox x:Name="Log" TextWrapping="Wrap" Text="" />
+			</TabItem>
+		</TabControl>
+	</Grid>
+</Window>

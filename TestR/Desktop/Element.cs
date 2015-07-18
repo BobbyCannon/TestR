@@ -87,6 +87,14 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
+		/// Gets the location of the element.
+		/// </summary>
+		public Rectangle Location
+		{
+			get { return new Rectangle(Automation.Current.BoundingRectangle.Location.ToPoint(), Automation.Current.BoundingRectangle.Size.ToSize()); }
+		}
+
+		/// <summary>
 		/// Gets the name of this element.
 		/// </summary>
 		public string Name
@@ -154,11 +162,6 @@ namespace TestR.Desktop
 		/// <param name="y"> Optional Y offset when clicking. </param>
 		public virtual void Click(int x = 0, int y = 0)
 		{
-			if (!Visible)
-			{
-				throw new Exception("Could not click item because it's not visible.");
-			}
-
 			var point = GetClickablePoint(x, y);
 			Mouse.LeftClick(point);
 		}
@@ -186,6 +189,26 @@ namespace TestR.Desktop
 			return string.Join(" : ", items.Where(x => !string.IsNullOrWhiteSpace(x.Value)).Select(x => x.Key + " - " + x.Value));
 		}
 
+		public static Element FromCursor()
+		{
+			var point = Mouse.GetCursorPosition();
+			var element = new Element(AutomationElement.FromPoint(new System.Windows.Point(point.X, point.Y)), null);
+
+			if (!string.IsNullOrWhiteSpace(element.Id) || !string.IsNullOrWhiteSpace(element.Name))
+			{
+				return element;
+			}
+
+			// if element has invalid id then try and go up until we get an id?
+			var parent = new Element(TreeWalker.RawViewWalker.GetParent(element.Automation), null);
+			while (parent.Automation != null && string.IsNullOrWhiteSpace(parent.Id) && string.IsNullOrWhiteSpace(parent.Name))
+			{
+				parent = new Element(TreeWalker.RawViewWalker.GetParent(parent.Automation), null);
+			}
+
+			return parent.Automation != null ? parent : element;
+		}
+
 		/// <summary>
 		/// Get a child of a certain type and key.
 		/// </summary>
@@ -196,19 +219,12 @@ namespace TestR.Desktop
 		public T GetChild<T>(string key, bool includeDescendance = true)
 			where T : Element, IElementParent
 		{
-			T child = null;
+			return (T) Children.GetChild(key, includeDescendance);
+		}
 
-			if (Children.ContainsKey(key))
-			{
-				child = Children[key] as T;
-			}
-
-			if (!includeDescendance)
-			{
-				return child;
-			}
-
-			return child ?? Children.Select(x => x.GetChild<T>(key, true)).FirstOrDefault(x => x != null);
+		public static Element GetFocusedElement()
+		{
+			return new Element(AutomationElement.FocusedElement, null);
 		}
 
 		public string GetText()
@@ -228,12 +244,7 @@ namespace TestR.Desktop
 		/// </summary>
 		public void MoveMouseTo()
 		{
-			if (!Visible)
-			{
-				throw new Exception("Could not click item because it's not visible.");
-			}
-
-			var point = GetClickablePoint(0, 0);
+			var point = GetClickablePoint();
 			Mouse.MoveTo(point);
 		}
 
@@ -286,6 +297,24 @@ namespace TestR.Desktop
 			value = value.Replace("+", "{add}");
 
 			SendKeys.SendWait(value);
+		}
+
+		public string ToDetailString()
+		{
+			var items = new Dictionary<string, string>
+			{
+				{ "Id", Id },
+				{ "Name", Name },
+				{ "TypeId", TypeId.ToString() },
+				{ "TypeName", TypeName },
+				{ "Type", GetType().Name },
+				{ "X", Automation.Current.BoundingRectangle.X.ToString() },
+				{ "Y", Automation.Current.BoundingRectangle.Y.ToString() },
+				{ "Height", Automation.Current.BoundingRectangle.Height.ToString() },
+				{ "Weight", Automation.Current.BoundingRectangle.Width.ToString() }
+			};
+
+			return string.Join(", ", items.Select(x => x.Key + " - " + x.Value));
 		}
 
 		/// <summary>

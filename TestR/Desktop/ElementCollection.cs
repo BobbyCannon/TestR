@@ -15,7 +15,7 @@ namespace TestR.Desktop
 	/// <summary>
 	/// Represents a collection of elements.
 	/// </summary>
-	public class ElementCollection<T> : Collection<T>
+	public class ElementCollection<T> : ObservableCollection<T>
 		where T : Element, IElementParent
 	{
 		#region Constructors
@@ -287,6 +287,30 @@ namespace TestR.Desktop
 		public bool ContainsKey(string key)
 		{
 			return this[key] != null;
+		}
+
+		/// <summary>
+		/// Get a child of a certain type and key.
+		/// </summary>
+		/// <typeparam name="T"> The type of the child. </typeparam>
+		/// <param name="key"> The key of the child. </param>
+		/// <param name="includeDescendance"> Flag to determine to include descendance or not. </param>
+		/// <returns> The child if found or null if otherwise. </returns>
+		public T GetChild(string key, bool includeDescendance = true)
+		{
+			T child = null;
+
+			if (ContainsKey(key))
+			{
+				child = this[key];
+			}
+
+			if (!includeDescendance)
+			{
+				return child;
+			}
+
+			return child ?? this.Select(x => x.GetChild<T>(key)).FirstOrDefault(x => x != null);
 		}
 
 		/// <summary>

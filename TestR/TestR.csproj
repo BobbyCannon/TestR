@@ -51,6 +51,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="WindowsBase" />
@@ -115,8 +116,11 @@
     <Compile Include="Desktop\IElementParent.cs" />
     <Compile Include="Exceptions\NotKeyboardFocusableException.cs" />
     <Compile Include="Extensions\Assembly.cs" />
+    <Compile Include="Extensions\PointExtensions.cs" />
     <Compile Include="Extensions\Rect.cs" />
+    <Compile Include="Extensions\Size.cs" />
     <Compile Include="Logging\FileLogger.cs" />
+    <Compile Include="Native\Keyboard.cs" />
     <Compile Include="Native\Mouse.cs" />
     <Compile Include="Native\MouseCursor.cs" />
     <Compile Include="Web\Browsers\Firefox.cs" />
