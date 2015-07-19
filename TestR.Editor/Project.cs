@@ -3,8 +3,10 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Threading;
 using TestR.Desktop;
 using TestR.Extensions;
+using TestR.Native;
 
 #endregion
 
@@ -15,7 +17,6 @@ namespace TestR.Editor
 		#region Fields
 
 		private ObservableCollection<ElementAction> _actions;
-		private Application _application;
 		private string _applicationFilePath;
 
 		#endregion
@@ -25,8 +26,7 @@ namespace TestR.Editor
 		public Project(string applicationFilePath)
 		{
 			_actions = new ObservableCollection<ElementAction>();
-			_application = Application.AttachOrCreate(applicationFilePath);
-
+			Application = Application.AttachOrCreate(applicationFilePath);
 			ApplicationFilePath = applicationFilePath;
 		}
 
@@ -56,8 +56,10 @@ namespace TestR.Editor
 
 		public ElementCollection<Element> Elements
 		{
-			get { return _application.Children; }
+			get { return Application.Children; }
 		}
+
+		public Application Application { get; set; }
 
 		#endregion
 
@@ -71,12 +73,39 @@ namespace TestR.Editor
 
 		public void RefreshElements()
 		{
-			_application.UpdateChildren();
-			_application.BringToFront();
+			Application.UpdateChildren();
+			Application.BringToFront();
 		}
 
 		public void RunTests()
 		{
+			foreach (var action in ElementActions)
+			{
+				var element = Application.Children.GetChild(action.ElementId);
+				
+				switch (action.Type)
+				{
+					case ElementActionType.MoveMouseTo:
+						element.MoveMouseTo();
+						break;
+
+					case ElementActionType.LeftMouseClick:
+						element.Click();
+						break;
+
+					case ElementActionType.RightMouseClick:
+						element.RightClick();
+						break;
+
+					case ElementActionType.TypeText:
+						element.Focus();
+						Keyboard.TypeText(action.Input);
+						//element.SetText(action.Input);
+						break;
+				}
+
+				Thread.Sleep(500);
+			}
 		}
 
 		private void Dispose(bool disposing)
@@ -86,10 +115,10 @@ namespace TestR.Editor
 				return;
 			}
 
-			if (_application != null)
+			if (Application != null)
 			{
-				_application.Dispose();
-				_application = null;
+				Application.Dispose();
+				Application = null;
 			}
 		}
 

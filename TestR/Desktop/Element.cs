@@ -4,8 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Threading;
-using System.Windows.Forms;
 using TestR.Desktop.Automation;
 using TestR.Desktop.Automation.Patterns;
 using TestR.Exceptions;
@@ -75,7 +75,25 @@ namespace TestR.Desktop
 		/// </summary>
 		public string Id
 		{
-			get { return Automation.Current.AutomationId; }
+			get { return new[] { Automation.Current.AutomationId }.FirstValue(); }
+		}
+		
+		/// <summary>
+		/// Gets the ID of this element in the application. Includes full application namespace. 
+		/// </summary>
+		public string ApplicationId
+		{
+			get
+			{
+				var builder = new StringBuilder();
+				var element = this;
+				do
+				{
+					builder.Insert(0, element.Id);
+					element = element.Parent as Element;
+				} while (element != null);
+				return builder.ToString();
+			}
 		}
 
 		/// <summary>
@@ -189,6 +207,14 @@ namespace TestR.Desktop
 			return string.Join(" : ", items.Where(x => !string.IsNullOrWhiteSpace(x.Value)).Select(x => x.Key + " - " + x.Value));
 		}
 
+		/// <summary>
+		/// Set focus on the element.
+		/// </summary>
+		public void Focus()
+		{
+			Automation.SetFocus();
+		}
+
 		public static Element FromCursor()
 		{
 			var point = Mouse.GetCursorPosition();
@@ -249,6 +275,17 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
+		/// Performs mouse right click at the center of the element.
+		/// </summary>
+		/// <param name="x"> Optional X offset when clicking. </param>
+		/// <param name="y"> Optional Y offset when clicking. </param>
+		public virtual void RightClick(int x = 0, int y = 0)
+		{
+			var point = GetClickablePoint(x, y);
+			Mouse.RightClick(point);
+		}
+
+		/// <summary>
 		/// Sets the text value of the element.
 		/// </summary>
 		/// <param name="value"> The text to set the element to. </param>
@@ -282,21 +319,7 @@ namespace TestR.Desktop
 
 			// Pause before sending keyboard input.
 			Thread.Sleep(100);
-
-			// Control does not support the ValuePattern pattern so use keyboard input to insert content. 
-			// 
-			// NOTE: Elements that support TextPattern do not support ValuePattern and TextPattern 
-			// does not support setting the text of multi-line edit or document controls. For this reason, 
-			// text input must be simulated using one of the following methods. 
-
-			// Delete existing content in the control and insert new content.
-			SendKeys.SendWait("^{HOME}"); // Move to start of control
-			SendKeys.SendWait("^+{END}"); // Select everything
-			SendKeys.SendWait("{DEL}"); // Delete selection
-
-			value = value.Replace("+", "{add}");
-
-			SendKeys.SendWait(value);
+			Keyboard.TypeText(value);
 		}
 
 		public string ToDetailString()
@@ -315,6 +338,14 @@ namespace TestR.Desktop
 			};
 
 			return string.Join(", ", items.Select(x => x.Key + " - " + x.Value));
+		}
+
+		/// <summary>
+		/// Update the parents for this element.
+		/// </summary>
+		public void UpdateParents()
+		{
+			UpdateParent(this);
 		}
 
 		/// <summary>
@@ -417,12 +448,33 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Updates the children for the provided element.
 		/// </summary>
-		/// <param name="element"> </param>
+		/// <param name="element"> The element to update. </param>
 		private static void UpdateChildren(Element element)
 		{
 			element.Children.Clear();
 			ElementWalker.GetChildren(element.Automation).ForEach(x => element.Children.Add(x));
 			element.Children.ForEach(x => x.UpdateChildren());
+		}
+		
+		/// <summary>
+		/// Update the parent for the provided element.
+		/// </summary>
+		/// <param name="element"> The element to update. </param>
+		private static void UpdateParent(Element element)
+		{
+			if (element == null)
+			{
+				return;
+			}
+
+			var parent = TreeWalker.RawViewWalker.GetParent(element.Automation);
+			if (parent == null || parent.Current.ProcessId != element.Automation.Current.ProcessId)
+			{
+				return;
+			}
+
+			element.Parent = new Element(parent, null);
+			UpdateParent((Element) element.Parent);
 		}
 
 		#endregion
@@ -449,5 +501,10 @@ namespace TestR.Desktop
 		public event Action ChildrenUpdated;
 
 		#endregion
+
+		public static Element GetFirstParentWithId(Element element)
+		{
+			return !string.IsNullOrEmpty(element.Id) ? element : GetFirstParentWithId(element.Parent as Element);
+		}
 	}
 }

@@ -75,17 +75,7 @@ namespace TestR.Editor
 		public bool Visible
 		{
 			get { return _window.Visible; }
-			set
-			{
-				if (value)
-				{
-					_window.Show();
-				}
-				else
-				{
-					_window.Hide();
-				}
-			}
+			set { _window.Visible = value; }
 		}
 
 		#endregion

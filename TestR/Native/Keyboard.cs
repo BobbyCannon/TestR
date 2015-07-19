@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 #endregion
@@ -85,5 +86,18 @@ namespace TestR.Native
 		public static event Action<Key> KeyPressed;
 
 		#endregion
+
+
+		public static void TypeText(string value)
+		{
+			// Delete existing content in the control and insert new content.
+			SendKeys.SendWait("^{HOME}"); // Move to start of control
+			SendKeys.SendWait("^+{END}"); // Select everything
+			SendKeys.SendWait("{DEL}"); // Delete selection
+
+			value = value.Replace("+", "{add}");
+
+			SendKeys.SendWait(value);
+		}
 	}
 }

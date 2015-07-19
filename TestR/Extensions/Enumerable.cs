@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 #endregion
 
@@ -26,6 +27,15 @@ namespace TestR.Extensions
 			{
 				collection.Add(item);
 			}
+		}
+
+		/// <summary>
+		/// Return the first string that is not null or empty.
+		/// </summary>
+		/// <param name="collection"> The collection of string to parse. </param>
+		public static string FirstValue(this IEnumerable<string> collection)
+		{
+			return collection.FirstOrDefault(item => !string.IsNullOrEmpty(item));
 		}
 
 		/// <summary>

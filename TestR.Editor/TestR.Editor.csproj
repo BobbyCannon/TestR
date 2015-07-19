@@ -61,6 +61,7 @@
     <Compile Include="Extensions\VisualExtensions.cs" />
     <Compile Include="DragDropManagers\TreeViewDragDropManager.cs" />
     <Compile Include="DragDropManagers\ListViewDragDropManager.cs" />
+    <Compile Include="ValueConverters\BoolToBrushConverter.cs" />
     <Compile Include="ValueConverters\BoolToVisibilityConverter.cs" />
     <Compile Include="ValueConverters\StringToVisibilityConverter.cs" />
     <Page Include="MainWindow.xaml">
@@ -110,6 +111,9 @@
       <Project>{dec269ed-d43e-4d3a-ba25-238a9dd7cf04}</Project>
       <Name>TestR</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="TestR.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

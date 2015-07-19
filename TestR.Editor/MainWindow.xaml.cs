@@ -1,7 +1,9 @@
 ﻿#region References
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -41,14 +43,14 @@ namespace TestR.Editor
 		{
 			InitializeComponent();
 
-			_dispatcherTimer = new DispatcherTimer(TimeSpan.FromSeconds(1), DispatcherPriority.Normal, TimerControlDetectionTick, Dispatcher);
+			_dispatcherTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(250), DispatcherPriority.Normal, TimerControlDetectionTick, Dispatcher);
 			_highlighter = new ScreenBoundingRectangle();
 		}
 
 		#endregion
 
 		#region Methods
-
+		
 		/// <summary>
 		/// Raises the <see cref="E:System.Windows.Window.Closed" /> event.
 		/// </summary>
@@ -73,16 +75,7 @@ namespace TestR.Editor
 			_dispatcherTimer.Stop();
 			_dispatcherTimer.Tick -= TimerControlDetectionTick;
 			_highlighter.Dispose();
-			Keyboard.StopMonitoring();
-			Keyboard.KeyPressed -= KeyPressed;
-			Mouse.StopMonitoring();
-			Mouse.MouseChanged -= MouseChanged;
 			base.OnClosing(e);
-		}
-
-		private void Actions_OnLostFocus(object sender, RoutedEventArgs e)
-		{
-			((ListView) sender).SelectedIndex = -1;
 		}
 
 		private void Actions_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -99,10 +92,6 @@ namespace TestR.Editor
 				_highlighter.Location = element.Location;
 				_highlighter.Visible = true;
 			}
-			else
-			{
-				_highlighter.Visible = false;
-			}
 		}
 
 		private void ActionsOnDrop(object sender, DragEventArgs dragEventArgs)
@@ -116,43 +105,17 @@ namespace TestR.Editor
 
 		private void ElementListOnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
 		{
-			var element = e.NewValue as Element;
-			if (element != null)
+			// Issue with trigger more than once.
+			Dispatcher.BeginInvoke(DispatcherPriority.Normal, (NoArgDelegate) delegate
 			{
-				_highlighter.Location = element.Location;
-				_highlighter.Visible = true;
-			}
-			else
-			{
-				_highlighter.Visible = false;
-			}
-		}
-
-		private void ElementsOnLostFocus(object sender, RoutedEventArgs e)
-		{
-			//((TreeView) sender).ClearTreeViewSelection();
-		}
-
-		private void KeyPressed(Key key)
-		{
-			WriteLine(Log.Text = "Key Pressed: " + key);
-		}
-
-		private void MouseChanged(Mouse.MouseEvent mouseEvent, Point point)
-		{
-			Mouse.StopMonitoring();
-
-			Task.Factory.StartNew(() =>
-			{
-				var element = Element.FromCursor();
-				if (_focusedElement != element)
+				var element = e.NewValue as Element;
+				if (element != null)
 				{
-					WriteLine("Click on " + element.Id + ":" + element.Name);
-					_focusedElement = element;
+					_highlighter.Location = element.Location;
+					_highlighter.Visible = true;
+					Elements.Focus();
 				}
 			});
-
-			WriteLine("Mouse Changed: " + mouseEvent + " at " + point.X + ":" + point.Y);
 		}
 
 		private void Refresh(object sender, RoutedEventArgs e)
@@ -162,6 +125,7 @@ namespace TestR.Editor
 
 		private void RunTest(object sender, RoutedEventArgs e)
 		{
+			_highlighter.Visible = false;
 			_project.RunTests();
 		}
 
@@ -185,19 +149,69 @@ namespace TestR.Editor
 				_project = new Project(dlg.FileName);
 				_project.RefreshElements();
 				DataContext = _project;
+
+				Elements.ForEach(x => x.IsExpanded = true);
+				Elements.ForEach(x => x.IsExpanded = false);
 			}
 		}
 
 		private void TimerControlDetectionTick(object sender, EventArgs e)
 		{
-			if (!System.Windows.Input.Keyboard.IsKeyDown(Key.LeftCtrl) && !System.Windows.Input.Keyboard.IsKeyDown(Key.RightCtrl))
+			if (_project == null || (!System.Windows.Input.Keyboard.IsKeyDown(Key.LeftCtrl) && !System.Windows.Input.Keyboard.IsKeyDown(Key.RightCtrl)))
 			{
 				return;
 			}
+			
+			var foundElement = Element.FromCursor();
+			foundElement.UpdateParents();
 
-			var element = Element.FromCursor();
-			_highlighter.Location = element.Location;
-			_highlighter.Visible = true;
+			// Find parent with ID?
+			foundElement = Element.GetFirstParentWithId(foundElement);
+
+			// See if our element is already the focused element.
+			if (_focusedElement != null && foundElement.ApplicationId == _focusedElement.ApplicationId)
+			{
+				return;
+			}
+			
+			Debug.WriteLine("Found: " + foundElement.ApplicationId);
+			if (_focusedElement != null)
+			{
+				Debug.WriteLine("Current: " + _focusedElement.ApplicationId);
+			}
+
+			// Find the element in our collection.
+			var applicationElement = _project.Elements.GetChild(foundElement.ApplicationId);
+			if (applicationElement == null)
+			{
+				var applicationElementParent = _project.Elements.GetChild(((Element) foundElement.Parent).ApplicationId);
+				if (applicationElementParent != null)
+				{
+					applicationElementParent.UpdateChildren();
+					applicationElement = _project.Elements.GetChild(foundElement.ApplicationId);
+				}
+			}
+			if (applicationElement == null || applicationElement.Automation.Current.ProcessId != _project.Application.Process.Id)
+			{
+				Debug.WriteLine("Could not find the application element...");
+				return;
+			}
+
+			var currentElement = applicationElement;
+			var elements = new List<Element>();
+
+			while (currentElement != null)
+			{
+				elements.Add(currentElement);
+				currentElement = currentElement.Parent as Element;
+			}
+
+			elements.Reverse();
+			elements.ForEach(x => Elements.SelectItem(x));
+
+			_focusedElement = applicationElement;
+			Debug.WriteLine("Selected new focused element [" + _focusedElement.ApplicationId + "]...");
+
 		}
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -212,6 +226,12 @@ namespace TestR.Editor
 		{
 			Dispatcher.Invoke(() => { Log.Text = message + Environment.NewLine + Log.Text; }, DispatcherPriority.Background);
 		}
+
+		#endregion
+
+		#region Delegates
+
+		private delegate void NoArgDelegate();
 
 		#endregion
 	}

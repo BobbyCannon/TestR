@@ -1,6 +1,9 @@
 ﻿#region References
 
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -15,20 +18,6 @@ namespace TestR.Editor.Extensions
 		#region Methods
 
 		/// <summary>
-		/// Clears all selections from the treeview.
-		/// </summary>
-		/// <param name="treeView"> The treeview to clear selections from. </param>
-		public static void ClearTreeViewSelection(this TreeView treeView)
-		{
-			if (treeView == null)
-			{
-				return;
-			}
-
-			ClearTreeViewItemsControlSelection(treeView.Items, treeView.ItemContainerGenerator);
-		}
-
-		/// <summary>
 		/// Returns the mouse cursor location.  This method is necessary during
 		/// a drag-drop operation because the WPF mechanisms for retrieving the
 		/// cursor coordinates are unreliable.
@@ -40,7 +29,58 @@ namespace TestR.Editor.Extensions
 			return relativeTo.PointFromScreen(new Point(mouse.X, mouse.Y));
 		}
 
-		private static void ClearTreeViewItemsControlSelection(ICollection collection, ItemContainerGenerator itemContainerGenerator)
+		/// <summary>
+		/// Run an action on each item in the tree view.
+		/// </summary>
+		/// <param name="treeView"> The treeview to expand all nodes. </param>
+		/// <param name="action"> The action to process the tree view item. </param>
+		public static void ForEach(this TreeView treeView, Action<TreeViewItem> action)
+		{
+			if (treeView == null)
+			{
+				return;
+			}
+
+			ProcessTreeViewItemsControlSelection(treeView.Items, treeView.ItemContainerGenerator, action);
+		}
+
+		public static void SelectItem(this TreeView treeView, object item)
+		{
+			var items = GetDescendants<TreeViewItem>(treeView).ToList();
+			var treeViewItem = items.FirstOrDefault(tvi => tvi.DataContext == item);
+			if (treeViewItem == null)
+			{
+				return;
+			}
+
+			treeViewItem.IsSelected = true;
+			treeViewItem.IsExpanded = true;
+			treeView.UpdateLayout();
+			treeViewItem.Focus();
+		}
+
+		private static IEnumerable<T> GetDescendants<T>(DependencyObject parent)
+			where T : DependencyObject
+		{
+			var count = VisualTreeHelper.GetChildrenCount(parent);
+			for (var i = 0; i < count; ++i)
+			{
+				// Obtain the child
+				var child = VisualTreeHelper.GetChild(parent, i);
+				if (child is T)
+				{
+					yield return (T) child;
+				}
+
+				// Return all the descendant children
+				foreach (var subItem in GetDescendants<T>(child))
+				{
+					yield return subItem;
+				}
+			}
+		}
+
+		private static void ProcessTreeViewItemsControlSelection(ICollection collection, ItemContainerGenerator itemContainerGenerator, Action<TreeViewItem> action)
 		{
 			if ((collection == null) || (itemContainerGenerator == null))
 			{
@@ -55,8 +95,8 @@ namespace TestR.Editor.Extensions
 					continue;
 				}
 
-				ClearTreeViewItemsControlSelection(treeViewItem.Items, treeViewItem.ItemContainerGenerator);
-				treeViewItem.IsSelected = false;
+				action(treeViewItem);
+				ProcessTreeViewItemsControlSelection(treeViewItem.Items, treeViewItem.ItemContainerGenerator, action);
 			}
 		}
 

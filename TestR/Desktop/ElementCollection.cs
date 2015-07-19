@@ -358,7 +358,11 @@ namespace TestR.Desktop
 		/// <returns> The element if found or null if not found. </returns>
 		public T this[string id]
 		{
-			get { return this.FirstOrDefault(x => x.Id == id) ?? this.FirstOrDefault(x => x.Name == id); }
+			get
+			{
+				// Try to use the full application ID first.
+				return this.FirstOrDefault(x => x.ApplicationId == id) ?? this.FirstOrDefault(x => x.Id == id);
+			}
 		}
 
 		#endregion

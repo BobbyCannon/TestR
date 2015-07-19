@@ -38,8 +38,7 @@ namespace TestR.Native
 			public int x;
 			public int y;
 		}
-
-
+		
 		[StructLayout(LayoutKind.Sequential)]
 		internal struct MouseHook
 		{
