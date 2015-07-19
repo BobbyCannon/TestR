@@ -41,6 +41,24 @@ namespace TestR.Desktop
 		#region Properties
 
 		/// <summary>
+		/// Gets the ID of this element in the application. Includes full application namespace.
+		/// </summary>
+		public string ApplicationId
+		{
+			get
+			{
+				var builder = new StringBuilder();
+				var element = this;
+				do
+				{
+					builder.Insert(0, element.Id);
+					element = element.Parent as Element;
+				} while (element != null);
+				return builder.ToString();
+			}
+		}
+
+		/// <summary>
 		/// Gets or sets the automation element for this element.
 		/// </summary>
 		public AutomationElement Automation { get; private set; }
@@ -76,24 +94,6 @@ namespace TestR.Desktop
 		public string Id
 		{
 			get { return new[] { Automation.Current.AutomationId }.FirstValue(); }
-		}
-		
-		/// <summary>
-		/// Gets the ID of this element in the application. Includes full application namespace. 
-		/// </summary>
-		public string ApplicationId
-		{
-			get
-			{
-				var builder = new StringBuilder();
-				var element = this;
-				do
-				{
-					builder.Insert(0, element.Id);
-					element = element.Parent as Element;
-				} while (element != null);
-				return builder.ToString();
-			}
 		}
 
 		/// <summary>
@@ -248,6 +248,11 @@ namespace TestR.Desktop
 			return (T) Children.GetChild(key, includeDescendance);
 		}
 
+		public static Element GetFirstParentWithId(Element element)
+		{
+			return !string.IsNullOrEmpty(element.Id) ? element : GetFirstParentWithId(element.Parent as Element);
+		}
+
 		public static Element GetFocusedElement()
 		{
 			return new Element(AutomationElement.FocusedElement, null);
@@ -341,11 +346,13 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
-		/// Update the parents for this element.
+		/// Focus the element then type the text via the keyboard.
 		/// </summary>
-		public void UpdateParents()
+		/// <param name="value"> The value to type. </param>
+		public void TypeText(string value)
 		{
-			UpdateParent(this);
+			Focus();
+			Keyboard.TypeText(value);
 		}
 
 		/// <summary>
@@ -355,6 +362,14 @@ namespace TestR.Desktop
 		{
 			UpdateChildren(this);
 			OnChildrenUpdated();
+		}
+
+		/// <summary>
+		/// Update the parents for this element.
+		/// </summary>
+		public void UpdateParents()
+		{
+			UpdateParent(this);
 		}
 
 		/// <summary>
@@ -455,7 +470,7 @@ namespace TestR.Desktop
 			ElementWalker.GetChildren(element.Automation).ForEach(x => element.Children.Add(x));
 			element.Children.ForEach(x => x.UpdateChildren());
 		}
-		
+
 		/// <summary>
 		/// Update the parent for the provided element.
 		/// </summary>
@@ -501,10 +516,5 @@ namespace TestR.Desktop
 		public event Action ChildrenUpdated;
 
 		#endregion
-
-		public static Element GetFirstParentWithId(Element element)
-		{
-			return !string.IsNullOrEmpty(element.Id) ? element : GetFirstParentWithId(element.Parent as Element);
-		}
 	}
 }

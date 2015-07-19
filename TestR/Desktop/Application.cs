@@ -362,7 +362,7 @@ namespace TestR.Desktop
 		/// <param name="key"> The key of the child. </param>
 		/// <param name="includeDescendance"> Flag to determine to include descendance or not. </param>
 		/// <returns> The child if found or null if otherwise. </returns>
-		public T GetChild<T>(string key, bool includeDescendance) where T : Element, IElementParent
+		public T GetChild<T>(string key, bool includeDescendance = true) where T : Element, IElementParent
 		{
 			return (T) Children.GetChild(key, includeDescendance);
 		}

@@ -44,7 +44,7 @@ namespace TestR.Desktop
 		/// <param name="key"> The key of the child. </param>
 		/// <param name="includeDescendance"> Flag to determine to include descendance or not. </param>
 		/// <returns> The child if found or null if otherwise. </returns>
-		T GetChild<T>(string key, bool includeDescendance) where T : Element, IElementParent;
+		T GetChild<T>(string key, bool includeDescendance = true) where T : Element, IElementParent;
 
 		/// <summary>
 		/// Update the children for this element.
@@ -57,7 +57,7 @@ namespace TestR.Desktop
 		/// <param name="id"> The ID of the child to wait for. </param>
 		/// <param name="includeDescendance"> Flag to determine to include descendance or not. </param>
 		/// <returns> The child element for the ID. </returns>
-		Element WaitForChild(string id, bool includeDescendance);
+		Element WaitForChild(string id, bool includeDescendance = true);
 
 		/// <summary>
 		/// Wait for the child to be available then return it.
@@ -65,7 +65,7 @@ namespace TestR.Desktop
 		/// <param name="id"> The ID of the child to wait for. </param>
 		/// <param name="includeDescendance"> Flag to determine to include descendance or not. </param>
 		/// <returns> The child element for the ID. </returns>
-		T WaitForChild<T>(string id, bool includeDescendance) where T : Element;
+		T WaitForChild<T>(string id, bool includeDescendance = true) where T : Element;
 
 		#endregion
 

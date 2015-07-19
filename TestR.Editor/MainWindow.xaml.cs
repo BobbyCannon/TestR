@@ -128,7 +128,7 @@ namespace TestR.Editor
 			_highlighter.Visible = false;
 			_project.RunTests();
 		}
-
+		
 		private void SelectApplication(object sender, RoutedEventArgs e)
 		{
 			var dlg = new OpenFileDialog();
@@ -211,7 +211,6 @@ namespace TestR.Editor
 
 			_focusedElement = applicationElement;
 			Debug.WriteLine("Selected new focused element [" + _focusedElement.ApplicationId + "]...");
-
 		}
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -234,5 +233,10 @@ namespace TestR.Editor
 		private delegate void NoArgDelegate();
 
 		#endregion
+
+		private void BuildTest(object sender, RoutedEventArgs e)
+		{
+			Code.Text = _project.Build();
+		}
 	}
 }

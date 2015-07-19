@@ -3,9 +3,9 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Text;
 using System.Threading;
 using TestR.Desktop;
-using TestR.Extensions;
 using TestR.Native;
 
 #endregion
@@ -34,6 +34,8 @@ namespace TestR.Editor
 
 		#region Properties
 
+		public Application Application { get; set; }
+
 		public string ApplicationFilePath
 		{
 			get { return _applicationFilePath; }
@@ -59,11 +61,39 @@ namespace TestR.Editor
 			get { return Application.Children; }
 		}
 
-		public Application Application { get; set; }
-
 		#endregion
 
 		#region Methods
+
+		public string Build()
+		{
+			var builder = new StringBuilder();
+
+			builder.AppendLine("using (var application = Application.AttachOrCreate(@\"" + ApplicationFilePath + "\"))");
+			builder.AppendLine("{");
+
+			foreach (var action in ElementActions)
+			{
+				switch (action.Type)
+				{
+					case ElementActionType.TypeText:
+						builder.AppendLine("    application.GetChild<Element>(\"" + action.ElementId + "\").TypeText(\"" + action.Input + "\");");
+						break;
+					
+					case ElementActionType.LeftMouseClick:
+						builder.AppendLine("    application.GetChild<Element>(\"" + action.ElementId + "\").Click();");
+						break;
+					
+					case ElementActionType.RightMouseClick:
+						builder.AppendLine("    application.GetChild<Element>(\"" + action.ElementId + "\").RightClick();");
+						break;
+				}
+			}
+
+			builder.AppendLine("}");
+
+			return builder.ToString();
+		}
 
 		public void Dispose()
 		{
@@ -82,7 +112,7 @@ namespace TestR.Editor
 			foreach (var action in ElementActions)
 			{
 				var element = Application.Children.GetChild(action.ElementId);
-				
+
 				switch (action.Type)
 				{
 					case ElementActionType.MoveMouseTo:
@@ -98,9 +128,7 @@ namespace TestR.Editor
 						break;
 
 					case ElementActionType.TypeText:
-						element.Focus();
-						Keyboard.TypeText(action.Input);
-						//element.SetText(action.Input);
+						element.TypeText(action.Input);
 						break;
 				}
 

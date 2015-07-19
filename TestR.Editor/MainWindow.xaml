@@ -21,7 +21,7 @@
 	</Window.Resources>
     <Grid>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="360" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
@@ -33,7 +33,11 @@
 			<Label Content="{Binding Path=ApplicationFilePath}"></Label>
 			<Button Width="85" Height="28" Click="Refresh" Margin="0,0,10,0" Content="Refresh" Background="Transparent" Foreground="Blue" BorderBrush="Transparent" />
 		</StackPanel>
-		<Button Grid.Row="0" Grid.Column="1" Width="45" Height="28" HorizontalAlignment="Right" Click="RunTest" Margin="0,0,10,0" BorderBrush="Transparent">Run</Button>
+		<StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+			<Button Width="45" Height="28" Click="BuildTest" Margin="0,0,10,0" BorderBrush="Transparent">Build</Button>
+			<Button Width="45" Height="28" Click="RunTest" Margin="0,0,10,0" BorderBrush="Transparent">Run</Button>
+		</StackPanel>
+		
 		<TreeView x:Name="Elements" Grid.Row="1" Grid.Column="0" Margin="0,0,10,0" ItemsSource="{Binding Path=Elements}" SelectedItemChanged="ElementListOnSelectedItemChanged">
 			<TreeView.ItemTemplate>
 				<HierarchicalDataTemplate ItemsSource="{Binding Children}">
@@ -64,8 +68,15 @@
 					</ListView.ItemTemplate>
 				</ListView>
 			</TabItem>
+			<TabItem Header="Code">
+				<ScrollViewer>
+					<TextBox x:Name="Code" TextWrapping="NoWrap" Text="" AcceptsReturn="True" HorizontalScrollBarVisibility="Auto" />
+				</ScrollViewer>
+			</TabItem>
 			<TabItem Header="Log">
-				<TextBox x:Name="Log" TextWrapping="Wrap" Text="" />
+				<ScrollViewer>
+					<TextBox x:Name="Log" TextWrapping="Wrap" Text="" AcceptsReturn="True" HorizontalScrollBarVisibility="Auto" />
+				</ScrollViewer>
 			</TabItem>
 		</TabControl>
 	</Grid>
