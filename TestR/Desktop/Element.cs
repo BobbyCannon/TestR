@@ -208,6 +208,24 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
+		/// Gets a list of structure elements into a single collection.
+		/// </summary>
+		/// <returns> A collection of the items. </returns>
+		public IEnumerable<Element> Descendants()
+		{
+			var nodes = new Stack<Element>(new[] { this });
+			while (nodes.Any())
+			{
+				var node = nodes.Pop();
+				yield return node;
+				foreach (var n in node.Children)
+				{
+					nodes.Push(n);
+				}
+			}
+		}
+
+		/// <summary>
 		/// Set focus on the element.
 		/// </summary>
 		public void Focus()

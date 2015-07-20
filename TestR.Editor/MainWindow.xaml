@@ -19,37 +19,46 @@
 			</ObjectDataProvider.MethodParameters>
 		</ObjectDataProvider>
 	</Window.Resources>
-    <Grid>
+	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="360" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="auto" />
+			<RowDefinition Height="auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
-		<StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Margin="8">
-			<Button Width="110" Height="28" Click="SelectApplication" Margin="0,0,10,0" BorderBrush="#FF3B6DF3" Background="#FF3B6DF3" Foreground="White">Select Application</Button>
-			<Label Content="{Binding Path=ApplicationFilePath}"></Label>
+		<Grid Grid.Row="0" ColumnSpan="2" Background="#852B99">
+			<StackPanel Orientation="Horizontal">
+				<Label FontFamily="Segoe UI Light" FontSize="26" Margin="20,8,0,10" Foreground="White">TestR Editor</Label>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+				<Button Width="48" Height="42" Click="Load" Margin="0,0,10,0" Background="Transparent" Foreground="White" BorderBrush="LightGray" FontFamily="Segoe UI Symbol" FontSize="28" ToolTip="Load"></Button>
+				<Button Width="48" Height="42" Click="Save" Margin="0,0,10,0" Background="Transparent" Foreground="White" BorderBrush="LightGray" FontFamily="Segoe UI Symbol" FontSize="28" ToolTip="Save"></Button>
+			</StackPanel>
+		</Grid>
+		<StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Background="#EEE">
+			<Button  Height="30" Click="SelectApplication" Margin="10" Padding="10,0,10,2">Select Application</Button>
+			<Label Content="{Binding Path=ApplicationFilePath}" VerticalContentAlignment="Center"></Label>
 			<Button Width="85" Height="28" Click="Refresh" Margin="0,0,10,0" Content="Refresh" Background="Transparent" Foreground="Blue" BorderBrush="Transparent" />
 		</StackPanel>
-		<StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-			<Button Width="45" Height="28" Click="BuildTest" Margin="0,0,10,0" BorderBrush="Transparent">Build</Button>
-			<Button Width="45" Height="28" Click="RunTest" Margin="0,0,10,0" BorderBrush="Transparent">Run</Button>
+		<ProgressBar x:Name="Progress" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Height="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" IsIndeterminate="True" Foreground="White" Background="#852B99" BorderBrush="Transparent" Visibility="Hidden" />
+		<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+			<Button Width="45" Height="28" Click="BuildTest" Margin="0,0,10,0">Build</Button>
+			<Button Width="45" Height="28" Click="RunTest" Margin="0,0,10,0">Run</Button>
 		</StackPanel>
-		
-		<TreeView x:Name="Elements" Grid.Row="1" Grid.Column="0" Margin="0,0,10,0" ItemsSource="{Binding Path=Elements}" SelectedItemChanged="ElementListOnSelectedItemChanged">
+		<TreeView x:Name="Elements" Grid.Row="2" Grid.Column="0" Margin="0,0,10,0" ItemsSource="{Binding Path=Elements}" SelectedItemChanged="ElementListOnSelectedItemChanged">
 			<TreeView.ItemTemplate>
 				<HierarchicalDataTemplate ItemsSource="{Binding Children}">
 					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="{Binding Id}" />
-						<TextBlock Text="{Binding Name}" />
+						<TextBlock Text="{Binding Display}" />
 					</StackPanel>
 				</HierarchicalDataTemplate>
 			</TreeView.ItemTemplate>
 		</TreeView>
-		<GridSplitter Grid.Row="1" Grid.Column="0" ResizeBehavior="CurrentAndNext" ResizeDirection="Columns" Width="10"></GridSplitter>
-		<TabControl Grid.Row="1" Grid.Column="1">
+		<GridSplitter Grid.Row="2" Grid.Column="0" ResizeBehavior="CurrentAndNext" ResizeDirection="Columns" Width="10"></GridSplitter>
+		<TabControl Grid.Row="2" Grid.Column="1">
 			<TabItem Header="Actions">
 				<ListView x:Name="Actions" AllowDrop="True" ItemsSource="{Binding ElementActions}" SelectionChanged="Actions_OnSelectionChanged" >
 					<ListView.ItemTemplate>
@@ -60,7 +69,7 @@
 									<ColumnDefinition Width="auto" />
 									<ColumnDefinition Width="*" />
 								</Grid.ColumnDefinitions>
-								<TextBlock Grid.Column="0" Width="130" Text="{Binding ElementId}" Margin="0,0,10,0"></TextBlock>
+								<TextBlock Grid.Column="0" Width="130" Text="{Binding DisplayText}" Margin="0,0,10,0"></TextBlock>
 								<ComboBox Grid.Column="1" Width="130" Text="{Binding Type, Mode=TwoWay}" SelectedItem="{Binding Type}" Margin="0,0,10,0" ItemsSource="{Binding Source={StaticResource ExampleEnumValues}}" ></ComboBox>
 								<TextBox Grid.Column="2" Width="100" Text="{Binding Input, Mode=TwoWay}"></TextBox>
 							</Grid>

@@ -289,6 +289,7 @@ namespace TestR.Desktop
 			return this[key] != null;
 		}
 
+		
 		/// <summary>
 		/// Get a child of a certain type and key.
 		/// </summary>

@@ -10,9 +10,18 @@ namespace TestR.Editor
 	{
 		#region Constructors
 
-		public ElementAction(IElementParent element, ElementActionType actionType)
+		public ElementAction()
 		{
-			ElementId = SelectId(element);
+			ApplicationId = string.Empty;
+			DisplayText = string.Empty;
+			Input = string.Empty;
+			Type = ElementActionType.TypeText;
+		}
+
+		public ElementAction(Element element, ElementActionType actionType)
+		{
+			ApplicationId = element.ApplicationId;
+			DisplayText = element.Id + " : " + element.Name;
 			Input = string.Empty;
 			Type = actionType;
 		}
@@ -21,28 +30,10 @@ namespace TestR.Editor
 
 		#region Properties
 
-		public string ElementId { get; set; }
+		public string ApplicationId { get; set; }
+		public string DisplayText { get; set; }
 		public string Input { get; set; }
 		public ElementActionType Type { get; set; }
-
-		#endregion
-
-		#region Methods
-
-		private static string SelectId(IElementParent element)
-		{
-			if (!string.IsNullOrWhiteSpace(element.Id))
-			{
-				return element.Id;
-			}
-
-			if (!string.IsNullOrWhiteSpace(element.Name))
-			{
-				return element.Name;
-			}
-
-			return string.Empty;
-		}
 
 		#endregion
 	}

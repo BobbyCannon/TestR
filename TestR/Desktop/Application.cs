@@ -1,6 +1,7 @@
 ﻿#region References
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -9,7 +10,6 @@ using System.Threading;
 using TestR.Desktop.Automation;
 using TestR.Desktop.Elements;
 using TestR.Extensions;
-using TestR.Helpers;
 using TestR.Native;
 using Utility = TestR.Helpers.Utility;
 
@@ -297,6 +297,24 @@ namespace TestR.Desktop
 			}
 
 			return application;
+		}
+
+		/// <summary>
+		/// Gets a list of structure elements into a single collection.
+		/// </summary>
+		/// <returns> A collection of the items. </returns>
+		public IEnumerable<Element> Descendants()
+		{
+			var nodes = new Stack<Element>(Children);
+			while (nodes.Any())
+			{
+				var node = nodes.Pop();
+				yield return node;
+				foreach (var n in node.Children)
+				{
+					nodes.Push(n);
+				}
+			}
 		}
 
 		/// <summary>

@@ -3,10 +3,13 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
+using System.Management.Instrumentation;
 using System.Text;
 using System.Threading;
+using Newtonsoft.Json;
 using TestR.Desktop;
-using TestR.Native;
+using TestR.Extensions;
 
 #endregion
 
@@ -26,14 +29,15 @@ namespace TestR.Editor
 		public Project(string applicationFilePath)
 		{
 			_actions = new ObservableCollection<ElementAction>();
-			Application = Application.AttachOrCreate(applicationFilePath);
 			ApplicationFilePath = applicationFilePath;
+			Elements = new ObservableCollection<ElementReference>();
 		}
 
 		#endregion
 
 		#region Properties
 
+		[JsonIgnore]
 		public Application Application { get; set; }
 
 		public string ApplicationFilePath
@@ -56,10 +60,8 @@ namespace TestR.Editor
 			}
 		}
 
-		public ElementCollection<Element> Elements
-		{
-			get { return Application.Children; }
-		}
+		[JsonIgnore]
+		public ObservableCollection<ElementReference> Elements { get; set; }
 
 		#endregion
 
@@ -77,15 +79,15 @@ namespace TestR.Editor
 				switch (action.Type)
 				{
 					case ElementActionType.TypeText:
-						builder.AppendLine("    application.GetChild<Element>(\"" + action.ElementId + "\").TypeText(\"" + action.Input + "\");");
+						builder.AppendLine("    application.GetChild<Element>(\"" + action.ApplicationId + "\").TypeText(\"" + action.Input + "\");");
 						break;
-					
+
 					case ElementActionType.LeftMouseClick:
-						builder.AppendLine("    application.GetChild<Element>(\"" + action.ElementId + "\").Click();");
+						builder.AppendLine("    application.GetChild<Element>(\"" + action.ApplicationId + "\").Click();");
 						break;
-					
+
 					case ElementActionType.RightMouseClick:
-						builder.AppendLine("    application.GetChild<Element>(\"" + action.ElementId + "\").RightClick();");
+						builder.AppendLine("    application.GetChild<Element>(\"" + action.ApplicationId + "\").RightClick();");
 						break;
 				}
 			}
@@ -101,17 +103,46 @@ namespace TestR.Editor
 			GC.SuppressFinalize(this);
 		}
 
+		public Element GetElement(string applicationId)
+		{
+			return Application.Descendants().FirstOrDefault(x => x.ApplicationId == applicationId);
+		}
+
+		public void Initialize()
+		{
+			if (Application != null)
+			{
+				Application.Dispose();
+				Application = null;
+			}
+
+			if (Application.Exists(ApplicationFilePath))
+			{
+				Application = Application.Attach(ApplicationFilePath);
+				Application.Close();
+			}
+
+			Application = Application.Create(ApplicationFilePath);
+		}
+
 		public void RefreshElements()
 		{
 			Application.UpdateChildren();
-			Application.BringToFront();
+			Elements.Clear();
+			Application.Children.ForEach(x => Elements.Add(CreateElementReference(x)));
 		}
 
 		public void RunTests()
 		{
+			Initialize();
+
 			foreach (var action in ElementActions)
 			{
-				var element = Application.Children.GetChild(action.ElementId);
+				var element = Application.Children.GetChild(action.ApplicationId);
+				if (element == null)
+				{
+					throw new InstanceNotFoundException("Failed to find the element.");
+				}
 
 				switch (action.Type)
 				{
@@ -134,6 +165,13 @@ namespace TestR.Editor
 
 				Thread.Sleep(500);
 			}
+		}
+
+		private ElementReference CreateElementReference(Element element)
+		{
+			var reference = new ElementReference(element);
+			element.Children.ForEach(x => reference.Children.Add(CreateElementReference(x)));
+			return reference;
 		}
 
 		private void Dispose(bool disposing)

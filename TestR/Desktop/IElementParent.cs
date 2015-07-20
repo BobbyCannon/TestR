@@ -1,6 +1,7 @@
 #region References
 
 using System;
+using System.Collections.Generic;
 
 #endregion
 
@@ -36,6 +37,12 @@ namespace TestR.Desktop
 		#endregion
 
 		#region Methods
+
+		/// <summary>
+		/// Gets a list of structure elements into a single collection.
+		/// </summary>
+		/// <returns> A collection of the items. </returns>
+		IEnumerable<Element> Descendants();
 
 		/// <summary>
 		/// Get a child of a certain type and key.

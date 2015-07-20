@@ -4,18 +4,17 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Threading.Tasks;
+using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using TestR.Desktop;
 using TestR.Editor.DragDropManagers;
 using TestR.Editor.Extensions;
-using Keyboard = TestR.Native.Keyboard;
-using Mouse = TestR.Native.Mouse;
-using Point = System.Drawing.Point;
 
 #endregion
 
@@ -50,7 +49,7 @@ namespace TestR.Editor
 		#endregion
 
 		#region Methods
-		
+
 		/// <summary>
 		/// Raises the <see cref="E:System.Windows.Window.Closed" /> event.
 		/// </summary>
@@ -86,7 +85,7 @@ namespace TestR.Editor
 				return;
 			}
 
-			var element = _project.Elements.GetChild(action.ElementId);
+			var element = _project.GetElement(action.ApplicationId);
 			if (element != null)
 			{
 				_highlighter.Location = element.Location;
@@ -96,11 +95,17 @@ namespace TestR.Editor
 
 		private void ActionsOnDrop(object sender, DragEventArgs dragEventArgs)
 		{
-			var data = dragEventArgs.Data.GetData("SelectedItem") as Element;
+			var data = dragEventArgs.Data.GetData("SelectedItem") as ElementReference;
 			if (dragEventArgs.Effects == DragDropEffects.Copy && data != null)
 			{
-				_project.ElementActions.Add(new ElementAction(data, ElementActionType.MoveMouseTo));
+				var element = _project.GetElement(data.ApplicationId);
+				_project.ElementActions.Add(new ElementAction(element, ElementActionType.MoveMouseTo));
 			}
+		}
+
+		private void BuildTest(object sender, RoutedEventArgs e)
+		{
+			Code.Text = _project.Build();
 		}
 
 		private void ElementListOnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -108,14 +113,46 @@ namespace TestR.Editor
 			// Issue with trigger more than once.
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal, (NoArgDelegate) delegate
 			{
-				var element = e.NewValue as Element;
-				if (element != null)
+				var reference = e.NewValue as ElementReference;
+				if (reference != null)
 				{
+					var element = _project.GetElement(reference.ApplicationId);
 					_highlighter.Location = element.Location;
 					_highlighter.Visible = true;
 					Elements.Focus();
 				}
 			});
+		}
+
+		private void Load(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				Progress.Visibility = Visibility.Visible;
+
+				var dialog = new OpenFileDialog();
+				dialog.DefaultExt = ".json";
+				dialog.Filter = "JSON Files (*.json)|*.json";
+				dialog.Multiselect = false;
+				dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+				var result = dialog.ShowDialog(this);
+				if (result.Value)
+				{
+					var data = File.ReadAllText(dialog.FileName);
+					_project = JsonConvert.DeserializeObject<Project>(data);
+					_project.Initialize();
+					_project.RefreshElements();
+					DataContext = _project;
+
+					Elements.ForEach(x => x.IsExpanded = true);
+					Elements.ForEach(x => x.IsExpanded = false);
+				}
+			}
+			finally
+			{
+				Progress.Visibility = Visibility.Hidden;
+			}
 		}
 
 		private void Refresh(object sender, RoutedEventArgs e)
@@ -125,47 +162,83 @@ namespace TestR.Editor
 
 		private void RunTest(object sender, RoutedEventArgs e)
 		{
-			_highlighter.Visible = false;
-			_project.RunTests();
-		}
-		
-		private void SelectApplication(object sender, RoutedEventArgs e)
-		{
-			var dlg = new OpenFileDialog();
-			dlg.DefaultExt = ".exe";
-			dlg.Filter = "EXE Files (*.exe)|*.exe";
-			dlg.Multiselect = false;
-			dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+			var currentCursor = Cursor;
 
-			var result = dlg.ShowDialog(this);
+			try
+			{
+				Cursor = Cursors.Wait;
+
+				_highlighter.Visible = false;
+				_project.RunTests();
+			}
+			finally
+			{
+				Cursor = currentCursor;
+			}
+		}
+
+		private void Save(object sender, RoutedEventArgs e)
+		{
+			var data = JsonConvert.SerializeObject(_project);
+			var dialog = new SaveFileDialog();
+			dialog.DefaultExt = ".json";
+			dialog.Filter = "JSON Files (*.json)|*.json";
+			dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+			var result = dialog.ShowDialog(this);
 			if (result.Value)
 			{
-				if (_project != null)
+				File.WriteAllText(dialog.FileName, data);
+			}
+		}
+
+		private void SelectApplication(object sender, RoutedEventArgs e)
+		{
+			var currentCursor = Cursor;
+
+			try
+			{
+				Cursor = Cursors.Wait;
+
+				var dialog = new OpenFileDialog();
+				dialog.DefaultExt = ".exe";
+				dialog.Filter = "EXE Files (*.exe)|*.exe";
+				dialog.Multiselect = false;
+				dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+				var result = dialog.ShowDialog(this);
+				if (result.Value)
 				{
-					_project.Dispose();
-					_project = null;
+					if (_project != null)
+					{
+						_project.Dispose();
+						_project = null;
+					}
+
+					_project = new Project(dialog.FileName);
+					_project.Initialize();
+					_project.RefreshElements();
+					DataContext = _project;
+
+					Elements.ForEach(x => x.IsExpanded = true);
+					Elements.ForEach(x => x.IsExpanded = false);
 				}
-
-				_project = new Project(dlg.FileName);
-				_project.RefreshElements();
-				DataContext = _project;
-
-				Elements.ForEach(x => x.IsExpanded = true);
-				Elements.ForEach(x => x.IsExpanded = false);
+			}
+			finally
+			{
+				Cursor = currentCursor;
 			}
 		}
 
 		private void TimerControlDetectionTick(object sender, EventArgs e)
 		{
-			if (_project == null || (!System.Windows.Input.Keyboard.IsKeyDown(Key.LeftCtrl) && !System.Windows.Input.Keyboard.IsKeyDown(Key.RightCtrl)))
+			if (_project == null || (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl)))
 			{
 				return;
 			}
-			
+
 			var foundElement = Element.FromCursor();
 			foundElement.UpdateParents();
-
-			// Find parent with ID?
 			foundElement = Element.GetFirstParentWithId(foundElement);
 
 			// See if our element is already the focused element.
@@ -173,7 +246,7 @@ namespace TestR.Editor
 			{
 				return;
 			}
-			
+
 			Debug.WriteLine("Found: " + foundElement.ApplicationId);
 			if (_focusedElement != null)
 			{
@@ -181,16 +254,17 @@ namespace TestR.Editor
 			}
 
 			// Find the element in our collection.
-			var applicationElement = _project.Elements.GetChild(foundElement.ApplicationId);
+			var applicationElement = _project.GetElement(foundElement.ApplicationId);
 			if (applicationElement == null)
 			{
-				var applicationElementParent = _project.Elements.GetChild(((Element) foundElement.Parent).ApplicationId);
+				var applicationElementParent = _project.GetElement(((Element) foundElement.Parent).ApplicationId);
 				if (applicationElementParent != null)
 				{
 					applicationElementParent.UpdateChildren();
-					applicationElement = _project.Elements.GetChild(foundElement.ApplicationId);
+					applicationElement = _project.GetElement(foundElement.ApplicationId);
 				}
 			}
+
 			if (applicationElement == null || applicationElement.Automation.Current.ProcessId != _project.Application.Process.Id)
 			{
 				Debug.WriteLine("Could not find the application element...");
@@ -207,7 +281,7 @@ namespace TestR.Editor
 			}
 
 			elements.Reverse();
-			elements.ForEach(x => Elements.SelectItem(x));
+			elements.ForEach(x => Elements.SelectItem(_project.GetElement(x.ApplicationId)));
 
 			_focusedElement = applicationElement;
 			Debug.WriteLine("Selected new focused element [" + _focusedElement.ApplicationId + "]...");
@@ -233,10 +307,5 @@ namespace TestR.Editor
 		private delegate void NoArgDelegate();
 
 		#endregion
-
-		private void BuildTest(object sender, RoutedEventArgs e)
-		{
-			Code.Text = _project.Build();
-		}
 	}
 }
