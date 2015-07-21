@@ -176,11 +176,7 @@ namespace TestR.Native
 
 		private static void OnMouseChanged(MouseEvent mouseEvent, Point point)
 		{
-			var handler = MouseChanged;
-			if (handler != null)
-			{
-				handler(mouseEvent, point);
-			}
+			MouseChanged?.Invoke(mouseEvent, point);
 		}
 
 		#endregion

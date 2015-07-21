@@ -32,7 +32,7 @@ namespace TestR.Editor.ValueConverters
 
 		#endregion
 	}
-	
+
 	public class StringToBrushConverter : IValueConverter
 	{
 		#region Methods

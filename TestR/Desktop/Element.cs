@@ -51,7 +51,7 @@ namespace TestR.Desktop
 				var element = this;
 				do
 				{
-					builder.Insert(0, element.Id);
+					builder.Insert(0, new []{ element.Id, element.Name, " "}.FirstValue());
 					element = element.Parent as Element;
 				} while (element != null);
 				return builder.ToString();
@@ -71,10 +71,7 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Gets a value that indicates whether the element is enabled.
 		/// </summary>
-		public bool Enabled
-		{
-			get { return Automation.Current.IsEnabled; }
-		}
+		public bool Enabled => Automation.Current.IsEnabled;
 
 		/// <summary>
 		/// Gets the height of the element.
@@ -91,34 +88,22 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Gets the ID of this element.
 		/// </summary>
-		public string Id
-		{
-			get { return new[] { Automation.Current.AutomationId }.FirstValue(); }
-		}
+		public string Id => Automation.Current.AutomationId;
 
 		/// <summary>
 		/// Gets a value that indicates whether the element can be use by the keyboard.
 		/// </summary>
-		public bool KeyboardFocusable
-		{
-			get { return Automation.Current.IsKeyboardFocusable; }
-		}
+		public bool KeyboardFocusable => Automation.Current.IsKeyboardFocusable;
 
 		/// <summary>
 		/// Gets the location of the element.
 		/// </summary>
-		public Rectangle Location
-		{
-			get { return new Rectangle(Automation.Current.BoundingRectangle.Location.ToPoint(), Automation.Current.BoundingRectangle.Size.ToSize()); }
-		}
+		public Rectangle Location => new Rectangle(Automation.Current.BoundingRectangle.Location.ToPoint(), Automation.Current.BoundingRectangle.Size.ToSize());
 
 		/// <summary>
 		/// Gets the name of this element.
 		/// </summary>
-		public string Name
-		{
-			get { return Automation.Current.Name; }
-		}
+		public string Name => Automation.Current.Name;
 
 		/// <summary>
 		/// The parent element of this element.
@@ -128,34 +113,22 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Gets or sets the time out for delay request.
 		/// </summary>
-		public TimeSpan Timeout
-		{
-			get { return Parent.Timeout; }
-		}
+		public TimeSpan Timeout => Parent.Timeout;
 
 		/// <summary>
 		/// Gets the type ID of this element.
 		/// </summary>
-		public int TypeId
-		{
-			get { return Automation.Current.ControlType.Id; }
-		}
+		public int TypeId => Automation.Current.ControlType.Id;
 
 		/// <summary>
 		/// Gets the name of the control type.
 		/// </summary>
-		public string TypeName
-		{
-			get { return Automation.Current.LocalizedControlType; }
-		}
+		public string TypeName => Automation.Current.LocalizedControlType;
 
 		/// <summary>
 		/// Gets a value that indicates whether the element is visible.
 		/// </summary>
-		public bool Visible
-		{
-			get { return !Automation.Current.IsOffscreen; }
-		}
+		public bool Visible => !Automation.Current.IsOffscreen;
 
 		/// <summary>
 		/// Gets the width of the element.
@@ -316,7 +289,7 @@ namespace TestR.Desktop
 		{
 			if (value == null)
 			{
-				throw new ArgumentNullException("value", "String parameter must not be null.");
+				throw new ArgumentNullException(nameof(value), "String parameter must not be null.");
 			}
 
 			if (!Enabled)

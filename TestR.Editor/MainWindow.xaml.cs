@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -44,6 +43,9 @@ namespace TestR.Editor
 
 			_dispatcherTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(250), DispatcherPriority.Normal, TimerControlDetectionTick, Dispatcher);
 			_highlighter = new ScreenBoundingRectangle();
+			_project = new Project();
+
+			DataContext = _project;
 		}
 
 		#endregion
@@ -117,9 +119,12 @@ namespace TestR.Editor
 				if (reference != null)
 				{
 					var element = _project.GetElement(reference.ApplicationId);
-					_highlighter.Location = element.Location;
-					_highlighter.Visible = true;
-					Elements.Focus();
+					if (element != null)
+					{
+						_highlighter.Location = element.Location;
+						_highlighter.Visible = true;
+						Elements.Focus();
+					}
 				}
 			});
 		}
@@ -140,14 +145,22 @@ namespace TestR.Editor
 				if (result.Value)
 				{
 					var data = File.ReadAllText(dialog.FileName);
-					_project = JsonConvert.DeserializeObject<Project>(data);
-					_project.Initialize();
-					_project.RefreshElements();
-					DataContext = _project;
+					var project = JsonConvert.DeserializeObject<Project>(data);
+					try
+					{
+						_project.Initialize(project);
+						_project.RefreshElements();
 
-					Elements.ForEach(x => x.IsExpanded = true);
-					Elements.ForEach(x => x.IsExpanded = false);
+						Elements.ForEach(x => x.IsExpanded = true);
+						Elements.ForEach(x => x.IsExpanded = false);
+					}
+					catch (InvalidOperationException)
+					{
+						_project.Close();
+					}
 				}
+
+				UpdateLayout();
 			}
 			finally
 			{
@@ -167,7 +180,6 @@ namespace TestR.Editor
 			try
 			{
 				Cursor = Cursors.Wait;
-
 				_highlighter.Visible = false;
 				_project.RunTests();
 			}
@@ -209,19 +221,18 @@ namespace TestR.Editor
 				var result = dialog.ShowDialog(this);
 				if (result.Value)
 				{
-					if (_project != null)
+					try
 					{
-						_project.Dispose();
-						_project = null;
+						_project.Initialize(dialog.FileName);
+						_project.RefreshElements();
+
+						Elements.ForEach(x => x.IsExpanded = true);
+						Elements.ForEach(x => x.IsExpanded = false);
 					}
-
-					_project = new Project(dialog.FileName);
-					_project.Initialize();
-					_project.RefreshElements();
-					DataContext = _project;
-
-					Elements.ForEach(x => x.IsExpanded = true);
-					Elements.ForEach(x => x.IsExpanded = false);
+					catch (InvalidOperationException)
+					{
+						_project.Close();
+					}
 				}
 			}
 			finally
@@ -292,12 +303,8 @@ namespace TestR.Editor
 			_elementsDragManager = new TreeViewDragDropManager(Elements);
 			Elements.DragEnter += (o, args) => args.Effects = DragDropEffects.Move;
 			_actionsDragDropManager = new ListViewDragDropManager(Actions);
+			Actions.DragEnter += (o, args) => args.Effects = DragDropEffects.Move;
 			Actions.Drop += ActionsOnDrop;
-		}
-
-		private void WriteLine(string message)
-		{
-			Dispatcher.Invoke(() => { Log.Text = message + Environment.NewLine + Log.Text; }, DispatcherPriority.Background);
 		}
 
 		#endregion

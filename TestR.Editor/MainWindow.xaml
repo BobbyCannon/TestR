@@ -10,9 +10,7 @@
 		d:DataContext="{d:DesignInstance te:Project, IsDesignTimeCreatable=True}"
 		WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" Icon="TestR.ico">
 	<Window.Resources>
-		<valueConverters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
-		<valueConverters:BoolToBrushConverter x:Key="BoolToBrushConverter" />
-		<valueConverters:StringToBrushConverter x:Key="StringToBrushConverter" />
+        <valueConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
 		<ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type te:ElementActionType}" x:Key="ExampleEnumValues">
 			<ObjectDataProvider.MethodParameters>
 				<x:Type TypeName="te:ElementActionType" />
@@ -35,20 +33,20 @@
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 				<Button Width="48" Height="42" Click="Load" Margin="0,0,10,0" Background="Transparent" Foreground="White" BorderBrush="LightGray" FontFamily="Segoe UI Symbol" FontSize="28" ToolTip="Load"></Button>
-				<Button Width="48" Height="42" Click="Save" Margin="0,0,10,0" Background="Transparent" Foreground="White" BorderBrush="LightGray" FontFamily="Segoe UI Symbol" FontSize="28" ToolTip="Save"></Button>
+                <Button Width="48" Height="42" Click="Save" Margin="0,0,10,0" Background="Transparent" Foreground="White" BorderBrush="LightGray" FontFamily="Segoe UI Symbol" FontSize="28" ToolTip="Save"  IsEnabled="{Binding IsLoaded}"></Button>
 			</StackPanel>
 		</Grid>
 		<StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Background="#EEE">
 			<Button  Height="30" Click="SelectApplication" Margin="10" Padding="10,0,10,2">Select Application</Button>
-			<Label Content="{Binding Path=ApplicationFilePath}" VerticalContentAlignment="Center"></Label>
-			<Button Width="85" Height="28" Click="Refresh" Margin="0,0,10,0" Content="Refresh" Background="Transparent" Foreground="Blue" BorderBrush="Transparent" />
-		</StackPanel>
+			<Label Content="{Binding ApplicationFilePath}" VerticalContentAlignment="Center"></Label>
+            <Button Width="85" Height="28" Click="Refresh" Margin="0,0,10,0" Content="Refresh" Background="Transparent" Foreground="Blue" BorderBrush="Transparent" Visibility="{Binding IsLoaded, Converter={StaticResource BoolToVisibilityConverter}}" />
+        </StackPanel>
 		<ProgressBar x:Name="Progress" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Height="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" IsIndeterminate="True" Foreground="White" Background="#852B99" BorderBrush="Transparent" Visibility="Hidden" />
-		<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-			<Button Width="45" Height="28" Click="BuildTest" Margin="0,0,10,0">Build</Button>
-			<Button Width="45" Height="28" Click="RunTest" Margin="0,0,10,0">Run</Button>
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" IsEnabled="{Binding IsLoaded}">
+			<Button Width="45" Height="28" Click="BuildTest" Margin="10,0,0,0">Build</Button>
+			<Button Width="45" Height="28" Click="RunTest" Margin="10,0,10,0">Run</Button>
 		</StackPanel>
-		<TreeView x:Name="Elements" Grid.Row="2" Grid.Column="0" Margin="0,0,10,0" ItemsSource="{Binding Path=Elements}" SelectedItemChanged="ElementListOnSelectedItemChanged">
+		<TreeView x:Name="Elements" Grid.Row="2" Grid.Column="0" Margin="0,0,10,0" ItemsSource="{Binding Path=Elements}" SelectedItemChanged="ElementListOnSelectedItemChanged" IsEnabled="{Binding IsLoaded}">
 			<TreeView.ItemTemplate>
 				<HierarchicalDataTemplate ItemsSource="{Binding Children}">
 					<StackPanel Orientation="Horizontal">
@@ -58,7 +56,7 @@
 			</TreeView.ItemTemplate>
 		</TreeView>
 		<GridSplitter Grid.Row="2" Grid.Column="0" ResizeBehavior="CurrentAndNext" ResizeDirection="Columns" Width="10"></GridSplitter>
-		<TabControl Grid.Row="2" Grid.Column="1">
+		<TabControl Grid.Row="2" Grid.Column="1" IsEnabled="{Binding IsLoaded}">
 			<TabItem Header="Actions">
 				<ListView x:Name="Actions" AllowDrop="True" ItemsSource="{Binding ElementActions}" SelectionChanged="Actions_OnSelectionChanged" >
 					<ListView.ItemTemplate>
@@ -82,11 +80,6 @@
 					<TextBox x:Name="Code" TextWrapping="NoWrap" Text="" AcceptsReturn="True" HorizontalScrollBarVisibility="Auto" />
 				</ScrollViewer>
 			</TabItem>
-			<TabItem Header="Log">
-				<ScrollViewer>
-					<TextBox x:Name="Log" TextWrapping="Wrap" Text="" AcceptsReturn="True" HorizontalScrollBarVisibility="Auto" />
-				</ScrollViewer>
-			</TabItem>
-		</TabControl>
+        </TabControl>
 	</Grid>
 </Window>

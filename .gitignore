@@ -160,3 +160,4 @@ NuGet.exe
 NuGet.Config
 Help/html
 .vs
+*.DotSettings

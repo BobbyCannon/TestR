@@ -32,6 +32,8 @@ namespace TestR.Desktop
 		{
 			Children = new ElementCollection<Element>(this);
 			Process = process;
+			Process.Exited += (sender, args) => OnClosed();
+			Process.EnableRaisingEvents = true;
 			Timeout = TimeSpan.FromSeconds(5);
 		}
 
@@ -47,39 +49,27 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Gets the children for this element.
 		/// </summary>
-		public ElementCollection<Element> Children { get; private set; }
+		public ElementCollection<Element> Children { get; }
 
 		/// <summary>
 		/// Gets the handle for this window.
 		/// </summary>
-		public IntPtr Handle
-		{
-			get { return Process.MainWindowHandle; }
-		}
+		public IntPtr Handle => Process.MainWindowHandle;
 
 		/// <summary>
 		/// Gets the ID of this application.
 		/// </summary>
-		public string Id
-		{
-			get { return Process.Id.ToString(); }
-		}
+		public string Id => Process.Id.ToString();
 
 		/// <summary>
 		/// Gets the value indicating that the process is running.
 		/// </summary>
-		public bool IsRunning
-		{
-			get { return Process != null && !Process.HasExited; }
-		}
+		public bool IsRunning => Process != null && !Process.HasExited;
 
 		/// <summary>
 		/// Gets the name of this element.
 		/// </summary>
-		public string Name
-		{
-			get { return Handle.ToString(); }
-		}
+		public string Name => Handle.ToString();
 
 		/// <summary>
 		/// Gets the underlying process for this application.
@@ -110,7 +100,7 @@ namespace TestR.Desktop
 			}
 
 			var processName = Path.GetFileNameWithoutExtension(executablePath);
-			var query = string.Format("SELECT Handle, CommandLine FROM Win32_Process WHERE Name='{0}'", fileName);
+			var query = $"SELECT Handle, CommandLine FROM Win32_Process WHERE Name='{fileName}'";
 
 			using (var searcher = new ManagementObjectSearcher(query))
 			{
@@ -336,7 +326,7 @@ namespace TestR.Desktop
 		{
 			var fileName = Path.GetFileName(executablePath);
 			var processName = Path.GetFileNameWithoutExtension(executablePath);
-			var query = string.Format("SELECT Handle, CommandLine FROM Win32_Process WHERE Name='{0}'", fileName);
+			var query = $"SELECT Handle, CommandLine FROM Win32_Process WHERE Name='{fileName}'";
 
 			using (var searcher = new ManagementObjectSearcher(query))
 			{
@@ -533,11 +523,12 @@ namespace TestR.Desktop
 		/// </summary>
 		protected virtual void OnChildrenUpdated()
 		{
-			var handler = ChildrenUpdated;
-			if (handler != null)
-			{
-				handler();
-			}
+			ChildrenUpdated?.Invoke();
+		}
+
+		protected virtual void OnClosed()
+		{
+			Closed?.Invoke();
 		}
 
 		/// <summary>
@@ -547,11 +538,7 @@ namespace TestR.Desktop
 		/// <param name="e"> </param>
 		private void OnExited(object sender, EventArgs e)
 		{
-			var exited = Exited;
-			if (exited != null)
-			{
-				exited();
-			}
+			Exited?.Invoke();
 		}
 
 		#endregion
@@ -562,6 +549,11 @@ namespace TestR.Desktop
 		/// Occurs when the children are updated.
 		/// </summary>
 		public event Action ChildrenUpdated;
+
+		/// <summary>
+		/// Event called when the application process closes.
+		/// </summary>
+		public event Action Closed;
 
 		/// <summary>
 		/// Occurs when the application exits.

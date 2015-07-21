@@ -20,16 +20,18 @@ namespace TestR.Editor
 		#region Fields
 
 		private ObservableCollection<ElementAction> _actions;
+		private Application _application;
 		private string _applicationFilePath;
 
 		#endregion
 
 		#region Constructors
 
-		public Project(string applicationFilePath)
+		public Project()
 		{
 			_actions = new ObservableCollection<ElementAction>();
-			ApplicationFilePath = applicationFilePath;
+			_application = null;
+			ApplicationFilePath = string.Empty;
 			Elements = new ObservableCollection<ElementReference>();
 		}
 
@@ -38,7 +40,16 @@ namespace TestR.Editor
 		#region Properties
 
 		[JsonIgnore]
-		public Application Application { get; set; }
+		public Application Application
+		{
+			get { return _application; }
+			private set
+			{
+				_application = value;
+				OnPropertyChanged(nameof(Application));
+				OnPropertyChanged(nameof(IsLoaded));
+			}
+		}
 
 		public string ApplicationFilePath
 		{
@@ -46,7 +57,7 @@ namespace TestR.Editor
 			set
 			{
 				_applicationFilePath = value;
-				OnPropertyChanged("ApplicationFilePath");
+				OnPropertyChanged(nameof(ApplicationFilePath));
 			}
 		}
 
@@ -56,12 +67,17 @@ namespace TestR.Editor
 			set
 			{
 				_actions = value;
-				OnPropertyChanged("ElementActions");
+				OnPropertyChanged(nameof(ElementActions));
 			}
 		}
 
 		[JsonIgnore]
 		public ObservableCollection<ElementReference> Elements { get; set; }
+
+		/// <summary>
+		/// Returns true if the application is loaded.
+		/// </summary>
+		public bool IsLoaded => Application != null;
 
 		#endregion
 
@@ -79,15 +95,19 @@ namespace TestR.Editor
 				switch (action.Type)
 				{
 					case ElementActionType.TypeText:
-						builder.AppendLine("    application.GetChild<Element>(\"" + action.ApplicationId + "\").TypeText(\"" + action.Input + "\");");
+						builder.AppendLine("    application.WaitForChild<Element>(\"" + action.ApplicationId + "\").TypeText(\"" + action.Input + "\");");
+						break;
+
+					case ElementActionType.MoveMouseTo:
+						builder.AppendLine("    application.WaitForChild<Element>(\"" + action.ApplicationId + "\").MoveMouseTo();");
 						break;
 
 					case ElementActionType.LeftMouseClick:
-						builder.AppendLine("    application.GetChild<Element>(\"" + action.ApplicationId + "\").Click();");
+						builder.AppendLine("    application.WaitForChild<Element>(\"" + action.ApplicationId + "\").Click();");
 						break;
 
 					case ElementActionType.RightMouseClick:
-						builder.AppendLine("    application.GetChild<Element>(\"" + action.ApplicationId + "\").RightClick();");
+						builder.AppendLine("    application.WaitForChild<Element>(\"" + action.ApplicationId + "\").RightClick();");
 						break;
 				}
 			}
@@ -95,6 +115,13 @@ namespace TestR.Editor
 			builder.AppendLine("}");
 
 			return builder.ToString();
+		}
+
+		public void Close()
+		{
+			Application?.Dispose();
+			Application = null;
+			OnPropertyChanged(nameof(IsLoaded));
 		}
 
 		public void Dispose()
@@ -108,14 +135,11 @@ namespace TestR.Editor
 			return Application.Descendants().FirstOrDefault(x => x.ApplicationId == applicationId);
 		}
 
-		public void Initialize()
+		public void Initialize(string applicationPath)
 		{
-			if (Application != null)
-			{
-				Application.Dispose();
-				Application = null;
-			}
+			Close();
 
+			ApplicationFilePath = applicationPath;
 			if (Application.Exists(ApplicationFilePath))
 			{
 				Application = Application.Attach(ApplicationFilePath);
@@ -123,6 +147,16 @@ namespace TestR.Editor
 			}
 
 			Application = Application.Create(ApplicationFilePath);
+			Application.Closed += Close;
+
+			OnPropertyChanged(nameof(Application));
+			OnPropertyChanged(nameof(IsLoaded));
+		}
+
+		public void Initialize(Project project)
+		{
+			Initialize(project.ApplicationFilePath);
+			ElementActions.AddRange(project.ElementActions);
 		}
 
 		public void RefreshElements()
@@ -134,11 +168,11 @@ namespace TestR.Editor
 
 		public void RunTests()
 		{
-			Initialize();
+			Initialize(ApplicationFilePath);
 
 			foreach (var action in ElementActions)
 			{
-				var element = Application.Children.GetChild(action.ApplicationId);
+				var element = Application.WaitForChild(action.ApplicationId);
 				if (element == null)
 				{
 					throw new InstanceNotFoundException("Failed to find the element.");
@@ -183,18 +217,13 @@ namespace TestR.Editor
 
 			if (Application != null)
 			{
-				Application.Dispose();
-				Application = null;
+				Close();
 			}
 		}
 
 		private void OnPropertyChanged(string propertyName = null)
 		{
-			var handler = PropertyChanged;
-			if (handler != null)
-			{
-				handler(this, new PropertyChangedEventArgs(propertyName));
-			}
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
 		#endregion
