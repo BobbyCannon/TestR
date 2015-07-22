@@ -492,10 +492,7 @@ namespace TestR.Desktop
 		/// </summary>
 		/// <param name="key"> The key of the child. </param>
 		/// <returns> The child if found or null if otherwise. </returns>
-		public Element this[string key]
-		{
-			get { return Children[key]; }
-		}
+		public Element this[string key] => Children[key];
 
 		#endregion
 

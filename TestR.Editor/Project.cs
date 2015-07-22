@@ -3,10 +3,11 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Management.Instrumentation;
 using System.Text;
-using System.Threading;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using TestR.Desktop;
 using TestR.Extensions;
@@ -99,14 +100,41 @@ namespace TestR.Editor
 						break;
 
 					case ElementActionType.MoveMouseTo:
+						if (action.Input.Contains(","))
+						{
+							var points = action.Input.Split(",");
+							if (points.Length >= 2)
+							{
+								builder.AppendLine("    application.WaitForChild<Element>(\"" + action.ApplicationId + "\").MoveMouseTo(" + int.Parse(points[0]) + "," + int.Parse(points[1]) + ");");
+								break;
+							}
+						}
 						builder.AppendLine("    application.WaitForChild<Element>(\"" + action.ApplicationId + "\").MoveMouseTo();");
 						break;
 
 					case ElementActionType.LeftMouseClick:
+						if (action.Input.Contains(","))
+						{
+							var points = action.Input.Split(",");
+							if (points.Length >= 2)
+							{
+								builder.AppendLine("    application.WaitForChild<Element>(\"" + action.ApplicationId + "\").Click(" + int.Parse(points[0]) + "," + int.Parse(points[1]) + ");");
+								break;
+							}
+						}
 						builder.AppendLine("    application.WaitForChild<Element>(\"" + action.ApplicationId + "\").Click();");
 						break;
 
 					case ElementActionType.RightMouseClick:
+						if (action.Input.Contains(","))
+						{
+							var points = action.Input.Split(",");
+							if (points.Length >= 2)
+							{
+								builder.AppendLine("    application.WaitForChild<Element>(\"" + action.ApplicationId + "\").RightClick(" + int.Parse(points[0]) + "," + int.Parse(points[1]) + ");");
+								break;
+							}
+						}
 						builder.AppendLine("    application.WaitForChild<Element>(\"" + action.ApplicationId + "\").RightClick();");
 						break;
 				}
@@ -182,15 +210,42 @@ namespace TestR.Editor
 					break;
 
 				case ElementActionType.LeftMouseClick:
+					if (action.Input.Contains(","))
+					{
+						var points = action.Input.Split(",");
+						if (points.Length >= 2)
+						{
+							element.Click(int.Parse(points[0]), int.Parse(points[1]));
+							return;
+						}
+					}
 					element.Click();
 					break;
 
 				case ElementActionType.RightMouseClick:
+					if (action.Input.Contains(","))
+					{
+						var points = action.Input.Split(",");
+						if (points.Length >= 2)
+						{
+							element.RightClick(int.Parse(points[0]), int.Parse(points[1]));
+							break;
+						}
+					}
+
 					element.RightClick();
 					break;
 
 				case ElementActionType.TypeText:
 					element.TypeText(action.Input);
+					break;
+
+				case ElementActionType.Equals:
+					Assert.AreEqual(element.GetText(), action.Input);
+					break;
+
+				case ElementActionType.NotEqual:
+					Assert.AreNotEqual(element.GetText(), action.Input);
 					break;
 			}
 		}
