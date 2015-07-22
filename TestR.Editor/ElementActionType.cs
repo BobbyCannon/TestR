@@ -5,6 +5,10 @@
 		TypeText,
 		LeftMouseClick,
 		RightMouseClick,
-		MoveMouseTo
+		MoveMouseTo,
+		Equals,
+		NotEqual,
+		Exists,
+		NotExist,
 	}
 }

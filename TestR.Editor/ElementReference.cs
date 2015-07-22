@@ -2,6 +2,7 @@
 
 using System.Collections.ObjectModel;
 using TestR.Desktop;
+using TestR.Extensions;
 
 #endregion
 
@@ -13,7 +14,7 @@ namespace TestR.Editor
 
 		public ElementReference(Element element)
 		{
-			Display = element.Id + " : " + element.Name;
+			Display = new[] { element.Id, element.Name }.FirstValue();
 			ApplicationId = element.ApplicationId;
 			Children = new ObservableCollection<ElementReference>();
 		}

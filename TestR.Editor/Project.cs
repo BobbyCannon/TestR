@@ -148,6 +148,7 @@ namespace TestR.Editor
 
 			Application = Application.Create(ApplicationFilePath);
 			Application.Closed += Close;
+			Application.Timeout = TimeSpan.FromMinutes(5);
 
 			OnPropertyChanged(nameof(Application));
 			OnPropertyChanged(nameof(IsLoaded));
@@ -166,38 +167,42 @@ namespace TestR.Editor
 			Application.Children.ForEach(x => Elements.Add(CreateElementReference(x)));
 		}
 
+		public void RunAction(ElementAction action)
+		{
+			var element = Application.WaitForChild(action.ApplicationId);
+			if (element == null)
+			{
+				throw new InstanceNotFoundException("Failed to find the element.");
+			}
+
+			switch (action.Type)
+			{
+				case ElementActionType.MoveMouseTo:
+					element.MoveMouseTo();
+					break;
+
+				case ElementActionType.LeftMouseClick:
+					element.Click();
+					break;
+
+				case ElementActionType.RightMouseClick:
+					element.RightClick();
+					break;
+
+				case ElementActionType.TypeText:
+					element.TypeText(action.Input);
+					break;
+			}
+		}
+
 		public void RunTests()
 		{
 			Initialize(ApplicationFilePath);
 
 			foreach (var action in ElementActions)
 			{
-				var element = Application.WaitForChild(action.ApplicationId);
-				if (element == null)
-				{
-					throw new InstanceNotFoundException("Failed to find the element.");
-				}
-
-				switch (action.Type)
-				{
-					case ElementActionType.MoveMouseTo:
-						element.MoveMouseTo();
-						break;
-
-					case ElementActionType.LeftMouseClick:
-						element.Click();
-						break;
-
-					case ElementActionType.RightMouseClick:
-						element.RightClick();
-						break;
-
-					case ElementActionType.TypeText:
-						element.TypeText(action.Input);
-						break;
-				}
-
-				Thread.Sleep(500);
+				RunAction(action);
+				//Thread.Sleep(500);
 			}
 		}
 

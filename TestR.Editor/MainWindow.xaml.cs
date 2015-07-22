@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -14,6 +15,7 @@ using Newtonsoft.Json;
 using TestR.Desktop;
 using TestR.Editor.DragDropManagers;
 using TestR.Editor.Extensions;
+using TestR.Extensions;
 
 #endregion
 
@@ -44,7 +46,7 @@ namespace TestR.Editor
 			_dispatcherTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(250), DispatcherPriority.Normal, TimerControlDetectionTick, Dispatcher);
 			_highlighter = new ScreenBoundingRectangle();
 			_project = new Project();
-
+			
 			DataContext = _project;
 		}
 
@@ -108,6 +110,14 @@ namespace TestR.Editor
 		private void BuildTest(object sender, RoutedEventArgs e)
 		{
 			Code.Text = _project.Build();
+			TabControl.SelectedIndex = 1;
+		}
+
+		private void DeleteAction(object sender, RoutedEventArgs e)
+		{
+			var button = sender as Button;
+			var action = button?.DataContext as ElementAction;
+			_project.ElementActions.Remove(action);
 		}
 
 		private void ElementListOnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -171,6 +181,34 @@ namespace TestR.Editor
 		private void Refresh(object sender, RoutedEventArgs e)
 		{
 			_project.RefreshElements();
+		}
+
+		private void RefreshElement(object sender, RoutedEventArgs routedEventArgs)
+		{
+			var menuItem = sender as MenuItem;
+			var elementReference = menuItem?.DataContext as ElementReference;
+			var element = _project.GetElement(elementReference?.ApplicationId);
+			if (element == null)
+			{
+				return;
+			}
+
+			element?.UpdateChildren();
+			elementReference?.Children.Clear();
+			elementReference?.Children.AddRange(element?.Children.Select(x => new ElementReference(x)));
+		}
+
+		private void RunAction(object sender, RoutedEventArgs e)
+		{
+			var button = sender as Button;
+			var action = button?.DataContext as ElementAction;
+
+			if (action == null)
+			{
+				return;
+			}
+
+			_project.RunAction(action);
 		}
 
 		private void RunTest(object sender, RoutedEventArgs e)

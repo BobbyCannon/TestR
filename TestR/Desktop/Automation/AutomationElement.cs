@@ -227,8 +227,15 @@ namespace TestR.Desktop.Automation
 		{
 			Utility.ValidateArgumentNonNull(property, "property");
 
-			var obj = NativeElement.GetCurrentPropertyValueEx(property.Id, (ignoreDefaultValue) ? 1 : 0);
-			return Utility.WrapObjectAsProperty(property, obj);
+			try
+			{
+				var obj = NativeElement.GetCurrentPropertyValueEx(property.Id, (ignoreDefaultValue) ? 1 : 0);
+				return Utility.WrapObjectAsProperty(property, obj);
+			}
+			catch (COMException)
+			{
+				return string.Empty;
+			}
 		}
 
 		public override int GetHashCode()
