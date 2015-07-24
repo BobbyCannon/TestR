@@ -74,7 +74,7 @@
 									<ColumnDefinition Width="auto" />
 									<ColumnDefinition Width="auto" />
 								</Grid.ColumnDefinitions>
-								<TextBlock Grid.Column="0" Width="130" Text="{Binding DisplayText}" Margin="0,0,10,0"></TextBlock>
+								<TextBlock Grid.Column="0" Width="130" Text="{Binding DisplayText}" VerticalAlignment="Center" Margin="0,0,10,0"></TextBlock>
 								<ComboBox Grid.Column="1" Width="130" Text="{Binding Type, Mode=TwoWay}" SelectedItem="{Binding Type}" Margin="0,0,10,0" ItemsSource="{Binding Source={StaticResource ExampleEnumValues}}" ></ComboBox>
 								<TextBox Grid.Column="2" Width="100" Text="{Binding Input, Mode=TwoWay}"></TextBox>
                                 <Button Grid.Column="3" Width="55" Margin="10,0,0,0" Click="RunAction">Run</Button>

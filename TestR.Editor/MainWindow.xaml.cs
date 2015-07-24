@@ -6,6 +6,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -28,7 +30,7 @@ namespace TestR.Editor
 	{
 		#region Fields
 
-		private ListViewDragDropManager _actionsDragDropManager;
+		private ListViewDragDropManager<ElementAction> _actionsDragDropManager;
 		private readonly DispatcherTimer _dispatcherTimer;
 		private TreeViewDragDropManager _elementsDragManager;
 		private Element _focusedElement;
@@ -60,12 +62,8 @@ namespace TestR.Editor
 		/// <param name="e"> An <see cref="T:System.EventArgs" /> that contains the event data. </param>
 		protected override void OnClosed(EventArgs e)
 		{
-			if (_project != null)
-			{
-				_project.Dispose();
-				_project = null;
-			}
-
+			_project?.Dispose();
+			_project = null;
 			base.OnClosed(e);
 		}
 
@@ -84,27 +82,26 @@ namespace TestR.Editor
 		private void Actions_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			var action = ((ListView) sender).SelectedItem as ElementAction;
-			if (action == null)
+			var element = _project.GetElement(action?.ApplicationId);
+			if (element == null)
 			{
 				return;
 			}
 
-			var element = _project.GetElement(action.ApplicationId);
-			if (element != null)
-			{
-				_highlighter.Location = element.Location;
-				_highlighter.Visible = true;
-			}
+			_highlighter.Location = element.Location;
+			_highlighter.Visible = true;
 		}
 
 		private void ActionsOnDrop(object sender, DragEventArgs dragEventArgs)
 		{
-			var data = dragEventArgs.Data.GetData("SelectedItem") as ElementReference;
-			if (dragEventArgs.Effects == DragDropEffects.Copy && data != null)
+			var elementReference = dragEventArgs.Data.GetData(typeof(ElementReference)) as ElementReference;
+			if (dragEventArgs.Effects != DragDropEffects.Copy || elementReference == null)
 			{
-				var element = _project.GetElement(data.ApplicationId);
-				_project.ElementActions.Add(new ElementAction(element, ElementActionType.MoveMouseTo));
+				return;
 			}
+
+			var element = _project.GetElement(elementReference.ApplicationId);
+			_project.ElementActions.Add(new ElementAction(element, ElementActionType.MoveMouseTo));
 		}
 
 		private void BuildTest(object sender, RoutedEventArgs e)
@@ -126,16 +123,15 @@ namespace TestR.Editor
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal, (NoArgDelegate) delegate
 			{
 				var reference = e.NewValue as ElementReference;
-				if (reference != null)
+				var element = _project.GetElement(reference?.ApplicationId);
+				if (element == null)
 				{
-					var element = _project.GetElement(reference.ApplicationId);
-					if (element != null)
-					{
-						_highlighter.Location = element.Location;
-						_highlighter.Visible = true;
-						Elements.Focus();
-					}
+					return;
 				}
+
+				_highlighter.Location = element.Location;
+				_highlighter.Visible = true;
+				Elements.Focus();
 			});
 		}
 
@@ -188,11 +184,6 @@ namespace TestR.Editor
 			var menuItem = sender as MenuItem;
 			var elementReference = menuItem?.DataContext as ElementReference;
 			var element = _project.GetElement(elementReference?.ApplicationId);
-			if (element == null)
-			{
-				return;
-			}
-
 			element?.UpdateChildren();
 			elementReference?.Children.Clear();
 			elementReference?.Children.AddRange(element?.Children.Select(x => new ElementReference(x)));
@@ -202,12 +193,6 @@ namespace TestR.Editor
 		{
 			var button = sender as Button;
 			var action = button?.DataContext as ElementAction;
-
-			if (action == null)
-			{
-				return;
-			}
-
 			_project.RunAction(action);
 		}
 
@@ -244,38 +229,33 @@ namespace TestR.Editor
 
 		private void SelectApplication(object sender, RoutedEventArgs e)
 		{
-			var currentCursor = Cursor;
+			var dialog = new OpenFileDialog();
+			dialog.DefaultExt = ".exe";
+			dialog.Filter = "EXE Files (*.exe)|*.exe";
+			dialog.Multiselect = false;
+			dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-			try
+			var result = dialog.ShowDialog(this);
+			if (result.Value)
 			{
-				Cursor = Cursors.Wait;
-
-				var dialog = new OpenFileDialog();
-				dialog.DefaultExt = ".exe";
-				dialog.Filter = "EXE Files (*.exe)|*.exe";
-				dialog.Multiselect = false;
-				dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
-				var result = dialog.ShowDialog(this);
-				if (result.Value)
+				Task.Run(() =>
 				{
 					try
 					{
 						_project.Initialize(dialog.FileName);
-						_project.RefreshElements();
-
-						Elements.ForEach(x => x.IsExpanded = true);
-						Elements.ForEach(x => x.IsExpanded = false);
+						
+						Dispatcher.Invoke(() =>
+						{
+							_project.RefreshElements();
+							Elements.ForEach(x => x.IsExpanded = true);
+							Elements.ForEach(x => x.IsExpanded = false);
+						});
 					}
 					catch (InvalidOperationException)
 					{
 						_project.Close();
 					}
-				}
-			}
-			finally
-			{
-				Cursor = currentCursor;
+				});
 			}
 		}
 
@@ -306,7 +286,7 @@ namespace TestR.Editor
 			var applicationElement = _project.GetElement(foundElement.ApplicationId);
 			if (applicationElement == null)
 			{
-				var applicationElementParent = _project.GetElement(((Element) foundElement.Parent).ApplicationId);
+				var applicationElementParent = _project.GetElement(((Element) foundElement.Parent)?.ApplicationId);
 				if (applicationElementParent != null)
 				{
 					applicationElementParent.UpdateChildren();
@@ -340,7 +320,7 @@ namespace TestR.Editor
 		{
 			_elementsDragManager = new TreeViewDragDropManager(Elements);
 			Elements.DragEnter += (o, args) => args.Effects = DragDropEffects.Move;
-			_actionsDragDropManager = new ListViewDragDropManager(Actions);
+			_actionsDragDropManager = new ListViewDragDropManager<ElementAction>(Actions);
 			Actions.DragEnter += (o, args) => args.Effects = DragDropEffects.Move;
 			Actions.Drop += ActionsOnDrop;
 		}

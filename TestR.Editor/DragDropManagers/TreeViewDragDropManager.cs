@@ -102,8 +102,7 @@ namespace TestR.Editor.DragDropManagers
 			}
 
 			_isDragging = true;
-			var data = new DataObject("SelectedItem", _treeView.SelectedItem);
-			DragDrop.DoDragDrop(_treeView, data, DragDropEffects.Copy);
+			DragDrop.DoDragDrop(_treeView, _treeView.SelectedItem, DragDropEffects.Copy);
 			_isDragging = false;
 		}
 

@@ -3,7 +3,6 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Management.Instrumentation;
 using System.Text;
@@ -160,7 +159,7 @@ namespace TestR.Editor
 
 		public Element GetElement(string applicationId)
 		{
-			return Application.Descendants().FirstOrDefault(x => x.ApplicationId == applicationId);
+			return Application?.Descendants().FirstOrDefault(x => x.ApplicationId == applicationId);
 		}
 
 		public void Initialize(string applicationPath)
@@ -197,6 +196,11 @@ namespace TestR.Editor
 
 		public void RunAction(ElementAction action)
 		{
+			if (action == null)
+			{
+				return;
+			}
+
 			var element = Application.WaitForChild(action.ApplicationId);
 			if (element == null)
 			{
@@ -253,15 +257,10 @@ namespace TestR.Editor
 		public void RunTests()
 		{
 			Initialize(ApplicationFilePath);
-
-			foreach (var action in ElementActions)
-			{
-				RunAction(action);
-				//Thread.Sleep(500);
-			}
+			ElementActions.ForEach(RunAction);
 		}
 
-		private ElementReference CreateElementReference(Element element)
+		private static ElementReference CreateElementReference(Element element)
 		{
 			var reference = new ElementReference(element);
 			element.Children.ForEach(x => reference.Children.Add(CreateElementReference(x)));

@@ -18,18 +18,6 @@ namespace TestR.Editor.Extensions
 		#region Methods
 
 		/// <summary>
-		/// Returns the mouse cursor location.  This method is necessary during
-		/// a drag-drop operation because the WPF mechanisms for retrieving the
-		/// cursor coordinates are unreliable.
-		/// </summary>
-		/// <param name="relativeTo"> The Visual to which the mouse coordinates will be relative. </param>
-		public static Point GetMousePosition(this Visual relativeTo)
-		{
-			var mouse = Mouse.GetCursorPosition();
-			return relativeTo.PointFromScreen(new Point(mouse.X, mouse.Y));
-		}
-
-		/// <summary>
 		/// Run an action on each item in the tree view.
 		/// </summary>
 		/// <param name="treeView"> The treeview to expand all nodes. </param>
@@ -42,6 +30,29 @@ namespace TestR.Editor.Extensions
 			}
 
 			ProcessTreeViewItemsControlSelection(treeView.Items, treeView.ItemContainerGenerator, action);
+		}
+
+		/// <summary>
+		/// Returns the mouse cursor location.  This method is necessary during
+		/// a drag-drop operation because the WPF mechanisms for retrieving the
+		/// cursor coordinates are unreliable.
+		/// </summary>
+		/// <param name="relativeTo"> The Visual to which the mouse coordinates will be relative. </param>
+		public static Point GetMousePosition(this Visual relativeTo)
+		{
+			var mouse = Mouse.GetCursorPosition();
+			return relativeTo.PointFromScreen(new Point(mouse.X, mouse.Y));
+		}
+
+		public static bool IsMouseOver(this Visual target)
+		{
+			// We need to use MouseUtilities to figure out the cursor
+			// coordinates because, during a drag-drop operation, the WPF
+			// mechanisms for getting the coordinates behave strangely.
+
+			var bounds = VisualTreeHelper.GetDescendantBounds(target);
+			var mousePos = target.GetMousePosition();
+			return bounds.Contains(mousePos);
 		}
 
 		public static void SelectItem(this TreeView treeView, object item)
