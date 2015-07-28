@@ -28,8 +28,8 @@ $revision = [Math]::Floor([DateTime]::UtcNow.TimeOfDay.TotalSeconds / 2)
 .\IncrementVersion.ps1 TestR.IntegrationTests $build $revision
 .\IncrementVersion.ps1 TestR.PowerShell $build $revision
 
-$msbuild = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe"
-& $msbuild "$scriptPath\TestR.sln" /p:Configuration="$Configuration" /p:Platform="Any CPU" /t:Rebuild /p:VisualStudioVersion=12.0 /v:m /m
+$msbuild = "C:\Program Files (x86)\MSBuild\14.0\Bin\msbuild.exe"
+& $msbuild "$scriptPath\TestR.sln" /p:Configuration="$Configuration" /p:Platform="Any CPU" /t:Rebuild /p:VisualStudioVersion=14.0 /v:m /m
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Build has failed! " $watch.Elapsed -ForegroundColor Red

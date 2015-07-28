@@ -229,17 +229,7 @@ namespace TestR.IntegrationTests
 			ApplicationPath = info.Parent.Parent.Parent.FullName;
 			ApplicationPath += "\\TestR.TestWinForms\\Bin\\" + (assembly.IsAssemblyDebugBuild() ? "Debug" : "Release") + "\\TestR.TestWinForms.exe";
 		}
-
-		private void PrintChildren(Element element, string prefix = "")
-		{
-			Console.WriteLine(prefix + element.DebugString());
-
-			foreach (var child in element.Children)
-			{
-				PrintChildren(child, prefix + "\t");
-			}
-		}
-
+		
 		#endregion
 	}
 }

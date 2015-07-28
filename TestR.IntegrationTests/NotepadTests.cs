@@ -31,7 +31,8 @@ namespace TestR.IntegrationTests
 			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
 			{
 				var window = application.Children.Windows.First();
-				var document = window.Children.Documents["15"];
+				TestHelper.PrintChildren(window);
+				var document = window.Children.Edits["15"];
 				document.Text = "Hello World : Sub Collection";
 			}
 		}
@@ -43,7 +44,12 @@ namespace TestR.IntegrationTests
 			{
 				application.BringToFront();
 				var window = application.Children.Windows.First();
-				var menu = window.Children.MenuBars.First().GetChild<MenuItem>("File");
+				var menuBar = window.Children.MenuBars.First();
+				TestHelper.PrintChildren(menuBar);
+
+				var menu = menuBar.GetChild<MenuItem>("Untitled - NotepadApplicationFile");
+				Assert.IsNotNull(menu);
+
 				Console.WriteLine(menu.ExpandCollapseState);
 				Thread.Sleep(500);
 				menu.Click();
@@ -63,7 +69,7 @@ namespace TestR.IntegrationTests
 			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
 			{
 				var window = application.Children.Windows.First();
-				var document = window.GetChild<Document>("15");
+				var document = window.GetChild<Edit>("15");
 				document.Text = "Hello World : GetChild";
 				//window.Close();
 			}
@@ -75,7 +81,7 @@ namespace TestR.IntegrationTests
 			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
 			{
 				var window = application.Children.Windows.First();
-				var document = (Document) window["15"];
+				var document = (Edit) window["15"];
 				document.Text = "Hello World : Indexer";
 				//window.Close();
 			}

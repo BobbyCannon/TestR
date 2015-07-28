@@ -105,7 +105,7 @@ namespace TestR.Web.Browsers
 		/// <returns> The browser instance or null if not found. </returns>
 		public static Browser Attach()
 		{
-			var window = Application.Attach(Name, DebugArgument);
+			var window = Application.Attach(Name, DebugArgument, false);
 			if (window == null)
 			{
 				return null;

@@ -90,8 +90,9 @@ namespace TestR.Desktop
 		/// </summary>
 		/// <param name="executablePath"> The path to the executable. </param>
 		/// <param name="arguments"> The arguments for the executable. Arguments are optional. </param>
+		/// <param name="refresh"> The setting to determine to refresh children now. </param>
 		/// <returns> The instance that represents the application. </returns>
-		public static Application Attach(string executablePath, string arguments = null)
+		public static Application Attach(string executablePath, string arguments = null, bool refresh = false)
 		{
 			var fileName = Path.GetFileName(executablePath);
 			if (fileName != null && !fileName.Contains("."))
@@ -129,6 +130,11 @@ namespace TestR.Desktop
 					}
 
 					var application = new Application(process);
+					if (!refresh)
+					{
+						return application;
+					}
+
 					application.Refresh();
 					application.WaitWhileBusy();
 
@@ -143,8 +149,9 @@ namespace TestR.Desktop
 		/// Attaches the application to an existing process.
 		/// </summary>
 		/// <param name="handle"> The handle of the executable. </param>
+		/// <param name="refresh"> The setting to determine to refresh children now. </param>
 		/// <returns> The instance that represents the application. </returns>
-		public static Application Attach(IntPtr handle)
+		public static Application Attach(IntPtr handle, bool refresh = true)
 		{
 			var process = Process.GetProcesses().FirstOrDefault(x => x.MainWindowHandle == handle);
 			if (process == null)
@@ -153,6 +160,11 @@ namespace TestR.Desktop
 			}
 
 			var application = new Application(process);
+			if (!refresh)
+			{
+				return application;
+			}
+
 			application.Refresh();
 			application.WaitWhileBusy();
 
@@ -418,9 +430,9 @@ namespace TestR.Desktop
 
 				WaitWhileBusy();
 
-				Children.ForEach(x => x.UpdateChildren());
-
-				WaitWhileBusy();
+				// note: too slow, let test update only what it needs?
+				//Children.ForEach(x => x.UpdateChildren());
+				//WaitWhileBusy();
 			}
 			catch (ElementNotAvailableException)
 			{

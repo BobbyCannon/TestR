@@ -1,7 +1,9 @@
 ﻿#region References
 
+using System;
 using KellermanSoftware.CompareNetObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TestR.Desktop;
 using TestR.Logging;
 
 #endregion
@@ -27,6 +29,16 @@ namespace TestR.IntegrationTests
 
 			var result = compareObjects.Compare(expected, actual);
 			Assert.IsTrue(result.AreEqual, result.DifferencesString);
+		}
+
+		public static void PrintChildren(Element element, string prefix = "")
+		{
+			Console.WriteLine(prefix + element.DebugString());
+
+			foreach (var child in element.Children)
+			{
+				PrintChildren(child, prefix + "\t");
+			}
 		}
 
 		#endregion

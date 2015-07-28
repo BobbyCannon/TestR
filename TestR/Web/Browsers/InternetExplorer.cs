@@ -39,7 +39,7 @@ namespace TestR.Web.Browsers
 		#region Constructors
 
 		private InternetExplorer(SHDocVw.InternetExplorer browser)
-			: base(Application.Attach(new IntPtr(browser.HWND)))
+			: base(Application.Attach(new IntPtr(browser.HWND), false))
 		{
 			_browser = browser;
 		}
@@ -385,7 +385,7 @@ namespace TestR.Web.Browsers
 		{
 			Application.Dispose();
 			_browser = GetBrowserToAttachTo() ?? CreateInternetExplorerClass();
-			Application = Application.Attach(new IntPtr(_browser.HWND));
+			Application = Application.Attach(new IntPtr(_browser.HWND), false);
 		}
 
 		#endregion

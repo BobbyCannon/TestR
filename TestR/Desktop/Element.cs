@@ -165,14 +165,15 @@ namespace TestR.Desktop
 		{
 			var items = new Dictionary<string, string>
 			{
+				{ "ApplicationId", ApplicationId },
 				{ "Id", Id },
 				{ "Name", Name },
-				//{ "Handle", Automation.Current.NativeWindowHandle.ToString() },
-				//{ "Enabled", Enabled },
-				//{ "ParentId", Parent == null ? string.Empty : Parent.Id },
-				//{ "TypeId", TypeId },
+				{ "Handle", Automation.Current.NativeWindowHandle.ToString() },
+				{ "Enabled", Enabled.ToString() },
+				{ "ParentId", Parent == null ? string.Empty : Parent.Id },
+				{ "TypeId", TypeId.ToString() },
 				{ "TypeName", TypeName },
-				//{ "Type", GetType().Name },
+				{ "Type", GetType().Name },
 				{ "X", Automation.Current.BoundingRectangle.X.ToString() },
 				{ "Y", Automation.Current.BoundingRectangle.Y.ToString() }
 			};
