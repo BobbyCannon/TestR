@@ -22,7 +22,7 @@ namespace TestR.Desktop
 		public static IEnumerable<AutomationElement> GetChildren(AutomationElement element)
 		{
 			var walker = new TreeWalker(Automation.Automation.RawViewCondition);
-			var child = walker.GetFirstChild(element, CacheRequest.Current);
+			var child = walker.GetFirstChild(element);
 
 			while (child != null)
 			{
@@ -38,17 +38,16 @@ namespace TestR.Desktop
 		/// <returns> The list of automation elements for the process. </returns>
 		public static IEnumerable<AutomationElement> GetWindowsForProcess(int id)
 		{
-			var condition1 = new PropertyCondition(AutomationElement.ProcessIdProperty, id);
-			var condition2 = new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Window);
-			var conditions = new AndCondition(Automation.Automation.RawViewCondition, condition1, condition2);
-			var walker = new TreeWalker(conditions);
-			var root = AutomationElement.RootElement;
-			var element = walker.GetFirstChild(root);
+			var walker = new TreeWalker(Automation.Automation.RawViewCondition);
+			var child = walker.GetFirstChild(AutomationElement.RootElement);
 
-			while (element != null)
+			while (child != null)
 			{
-				yield return element;
-				element = walker.GetNextSibling(element);
+				if (child.Current.ProcessId == id && child.Current.ControlType.ProgrammaticName == ControlType.Window.ProgrammaticName)
+				{
+					yield return child;
+				}
+				child = walker.GetNextSibling(child);
 			}
 		}
 

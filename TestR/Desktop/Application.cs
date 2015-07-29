@@ -92,7 +92,7 @@ namespace TestR.Desktop
 		/// <param name="arguments"> The arguments for the executable. Arguments are optional. </param>
 		/// <param name="refresh"> The setting to determine to refresh children now. </param>
 		/// <returns> The instance that represents the application. </returns>
-		public static Application Attach(string executablePath, string arguments = null, bool refresh = false)
+		public static Application Attach(string executablePath, string arguments = null, bool refresh = true)
 		{
 			var fileName = Path.GetFileName(executablePath);
 			if (fileName != null && !fileName.Contains("."))
@@ -431,8 +431,8 @@ namespace TestR.Desktop
 				WaitWhileBusy();
 
 				// note: too slow, let test update only what it needs?
-				//Children.ForEach(x => x.UpdateChildren());
-				//WaitWhileBusy();
+				Children.ForEach(x => x.UpdateChildren());
+				WaitWhileBusy();
 			}
 			catch (ElementNotAvailableException)
 			{
