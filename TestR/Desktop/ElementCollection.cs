@@ -288,30 +288,70 @@ namespace TestR.Desktop
 		{
 			return this[key] != null;
 		}
-
 		
 		/// <summary>
 		/// Get a child of a certain type and key.
 		/// </summary>
 		/// <typeparam name="T"> The type of the child. </typeparam>
 		/// <param name="key"> The key of the child. </param>
-		/// <param name="includeDescendance"> Flag to determine to include descendance or not. </param>
+		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
 		/// <returns> The child if found or null if otherwise. </returns>
-		public T GetChild(string key, bool includeDescendance = true)
+		public T GetChild(string key, bool includeDescendants = true)
 		{
-			T child = null;
-
-			if (ContainsKey(key))
+			var response = this[key];
+			if (!includeDescendants)
 			{
-				child = this[key];
+				return response;
 			}
 
-			if (!includeDescendance)
+			if (response != null)
 			{
-				return child;
+				return response;
 			}
 
-			return child ?? this.Select(x => x.GetChild<T>(key)).FirstOrDefault(x => x != null);
+			foreach (var child in this)
+			{
+				response = child.GetChild<T>(key);
+				if (response != null)
+				{
+					return response;
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		/// Get a child of a certain type and meets the condition.
+		/// </summary>
+		/// <typeparam name="T1"> The type of the child. </typeparam>
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <returns> The child if found or null if otherwise. </returns>
+		public T1 GetChild<T1>(Func<T1, bool> condition, bool includeDescendants = true) where T1 : Element, IElementParent
+		{
+			var children = OfType<T1>().ToList();
+			var response = children.FirstOrDefault(condition);
+			if (!includeDescendants)
+			{
+				return response;
+			}
+
+			if (response != null)
+			{
+				return response;
+			}
+
+			foreach (var child in children)
+			{
+				response = child.GetChild<T1>(condition);
+				if (response != null)
+				{
+					return response;
+				}
+			}
+
+			return null;
 		}
 
 		/// <summary>

@@ -380,11 +380,23 @@ namespace TestR.Desktop
 		/// </summary>
 		/// <typeparam name="T"> The type of the child. </typeparam>
 		/// <param name="key"> The key of the child. </param>
-		/// <param name="includeDescendance"> Flag to determine to include descendance or not. </param>
+		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
 		/// <returns> The child if found or null if otherwise. </returns>
-		public T GetChild<T>(string key, bool includeDescendance = true) where T : Element, IElementParent
+		public T GetChild<T>(string key, bool includeDescendants = true) where T : Element, IElementParent
 		{
-			return (T) Children.GetChild(key, includeDescendance);
+			return (T) Children.GetChild(key, includeDescendants);
+		}
+
+		/// <summary>
+		/// Get a child of a certain type that meets the condition.
+		/// </summary>
+		/// <typeparam name="T"> The type of the child. </typeparam>
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <returns> The child if found or null if otherwise. </returns>
+		public T GetChild<T>(Func<T, bool> condition, bool includeDescendants = true) where T : Element, IElementParent
+		{
+			return Children.GetChild(condition, includeDescendants);
 		}
 
 		/// <summary>
@@ -429,15 +441,13 @@ namespace TestR.Desktop
 				}, Timeout.TotalMilliseconds, 100);
 
 				WaitWhileBusy();
-
-				// note: too slow, let test update only what it needs?
 				Children.ForEach(x => x.UpdateChildren());
 				WaitWhileBusy();
 			}
 			catch (ElementNotAvailableException)
 			{
 				// A window close while trying to enumerate it. Wait for a second then try again.
-				Thread.Sleep(1000);
+				Thread.Sleep(250);
 				Refresh();
 			}
 		}
@@ -455,26 +465,26 @@ namespace TestR.Desktop
 		/// Wait for the child to be available then return it.
 		/// </summary>
 		/// <param name="id"> The ID of the child to wait for. </param>
-		/// <param name="includeDescendance"> Flag to determine to include descendance or not. </param>
+		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
 		/// <returns> The child element for the ID. </returns>
-		public Element WaitForChild(string id, bool includeDescendance = true)
+		public Element WaitForChild(string id, bool includeDescendants = true)
 		{
-			return WaitForChild<Element>(id, includeDescendance);
+			return WaitForChild<Element>(id, includeDescendants);
 		}
 
 		/// <summary>
 		/// Wait for the child to be available then return it.
 		/// </summary>
 		/// <param name="id"> The ID of the child to wait for. </param>
-		/// <param name="includeDescendance"> Flag to determine to include descendance or not. </param>
+		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
 		/// <returns> The child element for the ID. </returns>
-		public T WaitForChild<T>(string id, bool includeDescendance = true) where T : Element
+		public T WaitForChild<T>(string id, bool includeDescendants = true) where T : Element
 		{
-			Element response = null;
+			T response = null;
 
 			Utility.Wait(() =>
 			{
-				response = GetChild<T>(id, includeDescendance);
+				response = GetChild<T>(id, includeDescendants);
 				if (response != null)
 				{
 					return true;
@@ -489,7 +499,37 @@ namespace TestR.Desktop
 				throw new ArgumentException("Failed to find the child by ID.");
 			}
 
-			return (T) response;
+			return response;
+		}
+
+		/// <summary>
+		/// Wait for the child to be available and meet the condition then return it.
+		/// </summary>
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <returns> The child element for the ID. </returns>
+		public T WaitForChild<T>(Func<T, bool> condition, bool includeDescendants = true) where T : Element
+		{
+			T response = null;
+
+			Utility.Wait(() =>
+			{
+				response = GetChild(condition, includeDescendants);
+				if (response != null)
+				{
+					return true;
+				}
+
+				UpdateChildren();
+				return false;
+			}, Timeout.TotalMilliseconds, 100);
+
+			if (response == null)
+			{
+				throw new ArgumentException("Failed to find the child by ID.");
+			}
+
+			return response;
 		}
 
 		/// <summary>

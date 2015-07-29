@@ -49,9 +49,18 @@ namespace TestR.Desktop
 		/// </summary>
 		/// <typeparam name="T"> The type of the child. </typeparam>
 		/// <param name="key"> The key of the child. </param>
-		/// <param name="includeDescendance"> Flag to determine to include descendance or not. </param>
+		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
 		/// <returns> The child if found or null if otherwise. </returns>
-		T GetChild<T>(string key, bool includeDescendance = true) where T : Element, IElementParent;
+		T GetChild<T>(string key, bool includeDescendants = true) where T : Element, IElementParent;
+
+		/// <summary>
+		/// Get a child of a certain type that meets the condition.
+		/// </summary>
+		/// <typeparam name="T"> The type of the child. </typeparam>
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <returns> The child if found or null if otherwise. </returns>
+		T GetChild<T>(Func<T, bool> condition, bool includeDescendants = true) where T : Element, IElementParent;
 
 		/// <summary>
 		/// Update the children for this element.
@@ -59,20 +68,28 @@ namespace TestR.Desktop
 		void UpdateChildren();
 
 		/// <summary>
-		/// Wait for the child to be available then return it.
+		/// Wait for the child to be available by the provided ID then return it.
 		/// </summary>
 		/// <param name="id"> The ID of the child to wait for. </param>
-		/// <param name="includeDescendance"> Flag to determine to include descendance or not. </param>
+		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
 		/// <returns> The child element for the ID. </returns>
-		Element WaitForChild(string id, bool includeDescendance = true);
+		Element WaitForChild(string id, bool includeDescendants = true);
 
 		/// <summary>
 		/// Wait for the child to be available then return it.
 		/// </summary>
 		/// <param name="id"> The ID of the child to wait for. </param>
-		/// <param name="includeDescendance"> Flag to determine to include descendance or not. </param>
+		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
 		/// <returns> The child element for the ID. </returns>
-		T WaitForChild<T>(string id, bool includeDescendance = true) where T : Element;
+		T WaitForChild<T>(string id, bool includeDescendants = true) where T : Element;
+
+		/// <summary>
+		/// Wait for the child to be available and meet the condition then return it.
+		/// </summary>
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <returns> The child element for the ID. </returns>
+		T WaitForChild<T>(Func<T, bool> condition, bool includeDescendants = true) where T : Element;
 
 		#endregion
 
