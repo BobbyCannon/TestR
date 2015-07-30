@@ -36,6 +36,16 @@ namespace TestR.IntegrationTests
 				document.Text = "Hello World : Sub Collection";
 			}
 		}
+
+		[TestMethod]
+		public void AddTextToDocument2()
+		{
+			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
+			{
+				var button = application.WaitForChild<Button>(x => x.Id == "UpButton");
+				button.MoveMouseTo();
+			}
+		}
 		
 		[TestMethod]
 		public void ClickMenu()

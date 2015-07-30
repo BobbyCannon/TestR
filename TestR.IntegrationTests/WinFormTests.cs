@@ -142,7 +142,8 @@ namespace TestR.IntegrationTests
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
 				var window = application.Children.Windows.First();
-				var mainMenu = window.Children["mainMenuStrip"];
+				TestHelper.PrintChildren(window);
+				var mainMenu = window.Children["MenuStrip"];
 				Assert.AreEqual("MenuStrip", mainMenu.Id);
 				Assert.AreEqual("mainMenuStrip", mainMenu.Name);
 				application.Close();
@@ -184,10 +185,8 @@ namespace TestR.IntegrationTests
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var handle = application.Handle;
 				var window = application.Children.Windows["FormMain"];
-				window.Close();
-				Assert.IsFalse(Process.GetProcesses().Any(x => x.MainWindowHandle == handle));
+				Assert.IsNotNull(window);
 			}
 		}
 
@@ -212,10 +211,8 @@ namespace TestR.IntegrationTests
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var handle = application.Handle;
-				var window = application.Children.Windows["TestR Test WinForm"];
-				window.Close();
-				Assert.IsFalse(Process.GetProcesses().Any(x => x.MainWindowHandle == handle));
+				var window = application.Children.FirstOrDefault(x => x.Name == "TestR Test WinForm");
+				Assert.IsNotNull(window);
 			}
 		}
 

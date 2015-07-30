@@ -342,9 +342,9 @@ namespace TestR.Desktop
 				return response;
 			}
 
-			foreach (var child in children)
+			foreach (var child in this)
 			{
-				response = child.GetChild<T1>(condition);
+				response = child.GetChild(condition);
 				if (response != null)
 				{
 					return response;
