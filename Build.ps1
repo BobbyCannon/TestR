@@ -24,9 +24,7 @@ if (!(Test-Path $nugetDestination -PathType Container)){
 $build = [Math]::Floor([DateTime]::UtcNow.Subtract([DateTime]::Parse("01/01/2000").Date).TotalDays)
 $revision = [Math]::Floor([DateTime]::UtcNow.TimeOfDay.TotalSeconds / 2)
 
-.\IncrementVersion.ps1 TestR $build $revision
-.\IncrementVersion.ps1 TestR.IntegrationTests $build $revision
-.\IncrementVersion.ps1 TestR.PowerShell $build $revision
+.\IncrementVersion.ps1 -Build $build -Revision $revision
 
 $msbuild = "C:\Program Files (x86)\MSBuild\14.0\Bin\msbuild.exe"
 & $msbuild "$scriptPath\TestR.sln" /p:Configuration="$Configuration" /p:Platform="Any CPU" /t:Rebuild /p:VisualStudioVersion=14.0 /v:m /m
