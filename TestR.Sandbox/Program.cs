@@ -1,8 +1,6 @@
 ﻿#region References
 
 using System;
-using TestR.Desktop;
-using TestR.Desktop.Elements;
 
 #endregion
 

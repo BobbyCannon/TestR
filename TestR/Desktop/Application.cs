@@ -7,11 +7,10 @@ using System.IO;
 using System.Linq;
 using System.Management;
 using System.Threading;
-using TestR.Desktop.Automation;
 using TestR.Desktop.Elements;
 using TestR.Extensions;
+using TestR.Helpers;
 using TestR.Native;
-using Utility = TestR.Helpers.Utility;
 
 #endregion
 
@@ -165,29 +164,6 @@ namespace TestR.Desktop
 				return application;
 			}
 
-			application.Refresh();
-			application.WaitWhileBusy();
-
-			return application;
-		}
-
-		/// <summary>
-		/// Attaches the application to an existing process using the title.
-		/// </summary>
-		/// <param name="title"> The title of the window in the application. </param>
-		/// <returns> The instance that represents the application. </returns>
-		public static Application AttachByTitle(string title)
-		{
-			var window = ElementWalker.GetChildren(AutomationElement.RootElement)
-				.Where(x => x.Current.ControlType.ProgrammaticName == ControlType.Window.ProgrammaticName)
-				.FirstOrDefault(x => x.Current.Name.Equals(title, StringComparison.OrdinalIgnoreCase));
-
-			if (window == null)
-			{
-				return null;
-			}
-
-			var application = new Application(Process.GetProcessById(window.Current.ProcessId));
 			application.Refresh();
 			application.WaitWhileBusy();
 
@@ -430,22 +406,20 @@ namespace TestR.Desktop
 			{
 				Utility.Wait(() =>
 				{
-					var windows = ElementWalker.GetWindowsForProcess(Process.Id)
-						.Select(x => new Window(x, this))
-						.ToList();
-
 					Children.Clear();
-					Children.AddRange(windows);
-
+					Children.AddRange(Process.GetWindows().Select(x => new Window(x, this)));
 					return Children.Any();
-				}, Timeout.TotalMilliseconds, 100);
+				}, Timeout.TotalMilliseconds, 10);
 
 				WaitWhileBusy();
 				Children.ForEach(x => x.UpdateChildren());
 				WaitWhileBusy();
 			}
-			catch (ElementNotAvailableException)
+			catch (Exception)
 			{
+				// todo: we need to get the real exception type.
+				Debugger.Break();
+
 				// A window close while trying to enumerate it. Wait for a second then try again.
 				Thread.Sleep(250);
 				Refresh();
@@ -492,7 +466,7 @@ namespace TestR.Desktop
 
 				UpdateChildren();
 				return false;
-			}, Timeout.TotalMilliseconds, 100);
+			}, Timeout.TotalMilliseconds, 10);
 
 			if (response == null)
 			{
@@ -522,7 +496,7 @@ namespace TestR.Desktop
 
 				UpdateChildren();
 				return false;
-			}, Timeout.TotalMilliseconds, 100);
+			}, Timeout.TotalMilliseconds, 10);
 
 			if (response == null)
 			{
@@ -543,7 +517,7 @@ namespace TestR.Desktop
 
 			while (watch.Elapsed.TotalMilliseconds < minimumDelay && minimumDelay > 0)
 			{
-				Thread.Sleep(1);
+				Thread.Sleep(10);
 			}
 		}
 
@@ -578,6 +552,9 @@ namespace TestR.Desktop
 			ChildrenUpdated?.Invoke();
 		}
 
+		/// <summary>
+		/// Handles the closed event.
+		/// </summary>
 		protected virtual void OnClosed()
 		{
 			Closed?.Invoke();

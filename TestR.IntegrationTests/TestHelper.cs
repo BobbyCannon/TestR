@@ -31,13 +31,18 @@ namespace TestR.IntegrationTests
 			Assert.IsTrue(result.AreEqual, result.DifferencesString);
 		}
 
-		public static void PrintChildren(Element element, string prefix = "")
+		public static void PrintChildren(IElementParent parent, string prefix = "")
 		{
-			Console.WriteLine(prefix + element.DebugString());
-
-			foreach (var child in element.Children)
+			var element = parent as Element;
+			if (element != null)
 			{
-				PrintChildren(child, prefix + "\t");
+				Console.WriteLine(prefix + element.DebugString());
+				prefix += "  ";
+			}
+
+			foreach (var child in parent.Children)
+			{
+				PrintChildren(child, prefix);
 			}
 		}
 

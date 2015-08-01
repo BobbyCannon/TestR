@@ -70,7 +70,7 @@ namespace TestR.Web
 		/// <summary>
 		/// Gets the browser this element is currently associated with.
 		/// </summary>
-		public Browser Browser { get; private set; }
+		public Browser Browser { get; }
 
 		/// <summary>
 		/// Gets the children for this element.

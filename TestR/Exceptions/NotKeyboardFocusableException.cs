@@ -16,7 +16,7 @@ namespace TestR.Exceptions
 		/// <summary>
 		/// Instantiates an exception when an element is not keyboard focusable.
 		/// </summary>
-		/// <param name="message"></param>
+		/// <param name="message"> </param>
 		public NotKeyboardFocusableException(string message)
 			: base(message)
 		{

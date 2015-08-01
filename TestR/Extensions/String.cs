@@ -4,7 +4,6 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using SHDocVw;
 
 #endregion
 
@@ -16,18 +15,6 @@ namespace TestR.Extensions
 	public static partial class Helper
 	{
 		#region Methods
-
-		/// <summary>
-		/// Splits a by a single separator.
-		/// </summary>
-		/// <param name="value"> The string to be split. </param>
-		/// <param name="separator"> The character to deliminate the string. </param>
-		/// <param name="options"> The options to use when splitting. </param>
-		/// <returns> The array of strings. </returns>
-		public static string[] Split(this string value, string separator, StringSplitOptions options = StringSplitOptions.None)
-		{
-			return value.Split(new[] { separator }, options);
-		}
 
 		/// <summary>
 		/// Deserialize JSON data into a JToken class.
@@ -50,6 +37,18 @@ namespace TestR.Extensions
 		public static bool Contains(this string source, string value, StringComparison comparisonType)
 		{
 			return source.IndexOf(value, comparisonType) >= 0;
+		}
+
+		/// <summary>
+		/// Splits a by a single separator.
+		/// </summary>
+		/// <param name="value"> The string to be split. </param>
+		/// <param name="separator"> The character to deliminate the string. </param>
+		/// <param name="options"> The options to use when splitting. </param>
+		/// <returns> The array of strings. </returns>
+		public static string[] Split(this string value, string separator, StringSplitOptions options = StringSplitOptions.None)
+		{
+			return value.Split(new[] { separator }, options);
 		}
 
 		#endregion

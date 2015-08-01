@@ -126,7 +126,7 @@ namespace TestR.Editor
 
 		#region Properties
 
-		public int LineWidth { get; private set; }
+		public int LineWidth { get; }
 
 		public Rectangle Location
 		{

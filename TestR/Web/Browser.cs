@@ -90,7 +90,7 @@ namespace TestR.Web
 		/// <summary>
 		/// Gets a list of all elements on the current page.
 		/// </summary>
-		public ElementCollection Elements { get; private set; }
+		public ElementCollection Elements { get; }
 
 		/// <summary>
 		/// Gets the ID of the browser.

@@ -2,16 +2,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using TestR.Desktop.Automation;
-using TestR.Desktop.Automation.Patterns;
+using TestR.Desktop.Elements;
 using TestR.Exceptions;
 using TestR.Extensions;
+using TestR.Helpers;
 using TestR.Native;
-using Utility = TestR.Helpers.Utility;
+using UIAutomationClient;
 
 #endregion
 
@@ -29,10 +30,10 @@ namespace TestR.Desktop
 		/// </summary>
 		/// <param name="element"> The automation element for this element. </param>
 		/// <param name="parent"> The parent element for this element. </param>
-		public Element(AutomationElement element, IElementParent parent)
+		internal Element(IUIAutomationElement element, IElementParent parent)
 		{
-			Automation = element;
 			Children = new ElementCollection<Element>(this);
+			NativeElement = element;
 			Parent = parent;
 		}
 
@@ -51,7 +52,7 @@ namespace TestR.Desktop
 				var element = this;
 				do
 				{
-					builder.Insert(0, new []{ element.Id, element.Name, " "}.FirstValue());
+					builder.Insert(0, new[] { element.Id, element.Name, " " }.FirstValue());
 					element = element.Parent as Element;
 				} while (element != null);
 				return builder.ToString();
@@ -59,56 +60,73 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
-		/// Gets or sets the automation element for this element.
+		/// Gets the bounding rectangle of the element.
 		/// </summary>
-		public AutomationElement Automation { get; private set; }
-
-		/// <summary>
-		/// Gets the children for this element.
-		/// </summary>
-		public ElementCollection<Element> Children { get; private set; }
-
-		/// <summary>
-		/// Gets a value that indicates whether the element is enabled.
-		/// </summary>
-		public bool Enabled => Automation.Current.IsEnabled;
-
-		/// <summary>
-		/// Gets the height of the element.
-		/// </summary>
-		public double Height
+		public Rectangle BoundingRectangle
 		{
 			get
 			{
-				var area = Automation.Current.BoundingRectangle;
-				return area.Bottom - area.Top;
+				var rectangle = NativeElement.CurrentBoundingRectangle;
+				return new Rectangle(rectangle.left, rectangle.top, rectangle.right - rectangle.left, rectangle.bottom - rectangle.top);
 			}
 		}
 
 		/// <summary>
+		/// Gets the children for this element.
+		/// </summary>
+		public ElementCollection<Element> Children { get; }
+
+		/// <summary>
+		/// Gets a value that indicates whether the element is enabled.
+		/// </summary>
+		public bool Enabled => NativeElement.CurrentIsEnabled == 1;
+
+		/// <summary>
 		/// Gets the ID of this element.
 		/// </summary>
-		public string Id => Automation.Current.AutomationId;
+		public string Id => NativeElement.CurrentAutomationId;
 
 		/// <summary>
 		/// Gets a value that indicates whether the element can be use by the keyboard.
 		/// </summary>
-		public bool KeyboardFocusable => Automation.Current.IsKeyboardFocusable;
+		public bool KeyboardFocusable => NativeElement.CurrentIsKeyboardFocusable == 1;
 
 		/// <summary>
 		/// Gets the location of the element.
 		/// </summary>
-		public Rectangle Location => new Rectangle(Automation.Current.BoundingRectangle.Location.ToPoint(), Automation.Current.BoundingRectangle.Size.ToSize());
+		public Point Location => new Point(BoundingRectangle.X, BoundingRectangle.Y);
 
 		/// <summary>
 		/// Gets the name of this element.
 		/// </summary>
-		public string Name => Automation.Current.Name;
+		public string Name => NativeElement.CurrentName;
+
+		/// <summary>
+		/// Gets or sets the automation element for this element.
+		/// </summary>
+		public IUIAutomationElement NativeElement { get; }
 
 		/// <summary>
 		/// The parent element of this element.
 		/// </summary>
 		public IElementParent Parent { get; private set; }
+
+		/// <summary>
+		/// Gets the current process ID  of the element.
+		/// </summary>
+		public int ProcessId => NativeElement.CurrentProcessId;
+
+		/// <summary>
+		/// Gets the size of the element.
+		/// </summary>
+		public Size Size
+		{
+			get
+			{
+				var test = NativeElement.CurrentBoundingRectangle;
+				return new Size(test.right - test.left, test.bottom - test.top);
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets the time out for delay request.
@@ -118,29 +136,17 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Gets the type ID of this element.
 		/// </summary>
-		public int TypeId => Automation.Current.ControlType.Id;
+		public int TypeId => NativeElement.CurrentControlType;
 
 		/// <summary>
 		/// Gets the name of the control type.
 		/// </summary>
-		public string TypeName => Automation.Current.LocalizedControlType;
+		public string TypeName => NativeElement.CurrentLocalizedControlType;
 
 		/// <summary>
 		/// Gets a value that indicates whether the element is visible.
 		/// </summary>
-		public bool Visible => !Automation.Current.IsOffscreen;
-
-		/// <summary>
-		/// Gets the width of the element.
-		/// </summary>
-		public double Width
-		{
-			get
-			{
-				var area = Automation.Current.BoundingRectangle;
-				return area.Right - area.Left;
-			}
-		}
+		public bool Visible => NativeElement.CurrentIsOffscreen == 0;
 
 		#endregion
 
@@ -165,17 +171,17 @@ namespace TestR.Desktop
 		{
 			var items = new Dictionary<string, string>
 			{
-				{ "ApplicationId", ApplicationId },
+				//{ "ApplicationId", ApplicationId },
 				{ "Id", Id },
 				{ "Name", Name },
-				{ "Handle", Automation.Current.NativeWindowHandle.ToString() },
-				{ "Enabled", Enabled.ToString() },
-				{ "ParentId", Parent == null ? string.Empty : Parent.Id },
+				//{ "Handle", NativeElement.CurrentNativeWindowHandle.ToString() },
+				//{ "Enabled", Enabled.ToString() },
+				//{ "ParentId", Parent == null ? string.Empty : Parent.Id },
 				{ "TypeId", TypeId.ToString() },
 				{ "TypeName", TypeName },
 				{ "Type", GetType().Name },
-				{ "X", Automation.Current.BoundingRectangle.X.ToString() },
-				{ "Y", Automation.Current.BoundingRectangle.Y.ToString() }
+				{ "X", NativeElement.CurrentBoundingRectangle.left.ToString() },
+				{ "Y", NativeElement.CurrentBoundingRectangle.top.ToString() }
 			};
 
 			return string.Join(" : ", items.Where(x => !string.IsNullOrWhiteSpace(x.Value)).Select(x => x.Key + " - " + x.Value));
@@ -204,27 +210,19 @@ namespace TestR.Desktop
 		/// </summary>
 		public void Focus()
 		{
-			Automation.SetFocus();
+			NativeElement.SetFocus();
 		}
 
+		/// <summary>
+		/// Gets the element that is currently under the cursor.
+		/// </summary>
+		/// <returns> The element if found or null if not found. </returns>
 		public static Element FromCursor()
 		{
 			var point = Mouse.GetCursorPosition();
-			var element = new Element(AutomationElement.FromPoint(new System.Windows.Point(point.X, point.Y)), null);
-
-			if (!string.IsNullOrWhiteSpace(element.Id) || !string.IsNullOrWhiteSpace(element.Name))
-			{
-				return element;
-			}
-
-			// if element has invalid id then try and go up until we get an id?
-			var parent = new Element(TreeWalker.RawViewWalker.GetParent(element.Automation), null);
-			while (parent.Automation != null && string.IsNullOrWhiteSpace(parent.Id) && string.IsNullOrWhiteSpace(parent.Name))
-			{
-				parent = new Element(TreeWalker.RawViewWalker.GetParent(parent.Automation), null);
-			}
-
-			return parent.Automation != null ? parent : element;
+			var automation = new CUIAutomationClass();
+			var element = automation.ElementFromPoint(new tagPOINT { x = point.X, y = point.Y });
+			return element == null ? null : new Element(element, null);
 		}
 
 		/// <summary>
@@ -252,23 +250,28 @@ namespace TestR.Desktop
 			return Children.GetChild(condition, includeDescendants);
 		}
 
+		/// <summary>
+		/// Gets the first parent that has an ID.
+		/// </summary>
+		/// <param name="element"> The element to iterate. </param>
+		/// <returns> The parent if found or null otherwise. </returns>
 		public static Element GetFirstParentWithId(Element element)
 		{
 			return !string.IsNullOrEmpty(element.Id) ? element : GetFirstParentWithId(element.Parent as Element);
 		}
 
-		public static Element GetFocusedElement()
-		{
-			return new Element(AutomationElement.FocusedElement, null);
-		}
-
+		/// <summary>
+		/// Gets the text value of the element.
+		/// </summary>
+		/// <returns> </returns>
 		public string GetText()
 		{
-			object pattern;
-			if (Automation.TryGetCurrentPattern(ValuePattern.Pattern, out pattern))
+			var pattern = NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_ValuePatternId) as IUIAutomationValuePattern;
+
+			if (pattern != null)
 			{
 				// Control supports the ValuePattern pattern so we can use the SetValue method to insert content. 
-				return ((ValuePattern) pattern).Current.Value;
+				return pattern.CurrentValue;
 			}
 
 			throw new NotSupportedException();
@@ -277,9 +280,11 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Moves mouse cursor to the center of the element.
 		/// </summary>
-		public void MoveMouseTo()
+		/// <param name="x"> Optional X offset when clicking. </param>
+		/// <param name="y"> Optional Y offset when clicking. </param>
+		public void MoveMouseTo(int x = 0, int y = 0)
 		{
-			var point = GetClickablePoint();
+			var point = GetClickablePoint(x, y);
 			Mouse.MoveTo(point);
 		}
 
@@ -310,11 +315,11 @@ namespace TestR.Desktop
 				throw new InvalidOperationException("The element is not enabled.");
 			}
 
-			object pattern;
-			if (Automation.TryGetCurrentPattern(ValuePattern.Pattern, out pattern))
+			var pattern = NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_ValuePatternId) as IUIAutomationValuePattern;
+			if (pattern != null)
 			{
 				// Control supports the ValuePattern pattern so we can use the SetValue method to insert content. 
-				((ValuePattern) pattern).SetValue(value);
+				pattern.SetValue(value);
 				return;
 			}
 
@@ -324,13 +329,17 @@ namespace TestR.Desktop
 			}
 
 			// Set focus for input functionality and begin.
-			Automation.SetFocus();
+			NativeElement.SetFocus();
 
 			// Pause before sending keyboard input.
 			Thread.Sleep(100);
 			Keyboard.TypeText(value);
 		}
 
+		/// <summary>
+		/// Provides a string of details for the element.
+		/// </summary>
+		/// <returns> The string of element details. </returns>
 		public string ToDetailString()
 		{
 			var items = new Dictionary<string, string>
@@ -340,10 +349,10 @@ namespace TestR.Desktop
 				{ "TypeId", TypeId.ToString() },
 				{ "TypeName", TypeName },
 				{ "Type", GetType().Name },
-				{ "X", Automation.Current.BoundingRectangle.X.ToString() },
-				{ "Y", Automation.Current.BoundingRectangle.Y.ToString() },
-				{ "Height", Automation.Current.BoundingRectangle.Height.ToString() },
-				{ "Weight", Automation.Current.BoundingRectangle.Width.ToString() }
+				{ "X", BoundingRectangle.X.ToString() },
+				{ "Y", BoundingRectangle.Y.ToString() },
+				{ "Height", Size.Height.ToString() },
+				{ "Weight", Size.Width.ToString() }
 			};
 
 			return string.Join(", ", items.Select(x => x.Key + " - " + x.Value));
@@ -449,19 +458,6 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
-		/// Gets the provided pattern from the automation element.
-		/// </summary>
-		/// <typeparam name="T"> The pattern to get. </typeparam>
-		/// <returns> The pattern requested. </returns>
-		protected T GetPattern<T>(int id)
-			where T : BasePattern
-		{
-			var patterns = Automation.GetSupportedPatterns();
-			var pattern = patterns.FirstOrDefault(x => x.Id == id);
-			return pattern == null ? null : (T) Automation.GetCurrentPattern(pattern);
-		}
-
-		/// <summary>
 		/// Handles the ChildrenUpdated event.
 		/// </summary>
 		protected void OnChildrenUpdated()
@@ -474,6 +470,110 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
+		/// Creates an element from the automation element.
+		/// </summary>
+		/// <param name="element"> The element to create. </param>
+		/// <param name="parent"> The parent of the element to create. </param>
+		private static Element Create(IUIAutomationElement element, IElementParent parent)
+		{
+			var itemType = element.CurrentControlType;
+
+			switch (itemType)
+			{
+				case UIA_ControlTypeIds.UIA_ButtonControlTypeId:
+					return new Button(element, parent);
+
+				case UIA_ControlTypeIds.UIA_CheckBoxControlTypeId:
+					return new CheckBox(element, parent);
+
+				case UIA_ControlTypeIds.UIA_ComboBoxControlTypeId:
+					return new ComboBox(element, parent);
+
+				case UIA_ControlTypeIds.UIA_CustomControlTypeId:
+					return new Custom(element, parent);
+
+				case UIA_ControlTypeIds.UIA_DocumentControlTypeId:
+					return new Document(element, parent);
+
+				case UIA_ControlTypeIds.UIA_EditControlTypeId:
+					return new Edit(element, parent);
+
+				case UIA_ControlTypeIds.UIA_GroupControlTypeId:
+					return new Group(element, parent);
+
+				case UIA_ControlTypeIds.UIA_HyperlinkControlTypeId:
+					return new Hyperlink(element, parent);
+
+				case UIA_ControlTypeIds.UIA_ListControlTypeId:
+					return new List(element, parent);
+
+				case UIA_ControlTypeIds.UIA_ListItemControlTypeId:
+					return new ListItem(element, parent);
+
+				case UIA_ControlTypeIds.UIA_MenuBarControlTypeId:
+					return new MenuBar(element, parent);
+
+				case UIA_ControlTypeIds.UIA_MenuItemControlTypeId:
+					return new MenuItem(element, parent);
+
+				case UIA_ControlTypeIds.UIA_PaneControlTypeId:
+					return new Pane(element, parent);
+
+				case UIA_ControlTypeIds.UIA_ScrollBarControlTypeId:
+					return new ScrollBar(element, parent);
+
+				case UIA_ControlTypeIds.UIA_SplitButtonControlTypeId:
+					return new SplitButton(element, parent);
+
+				case UIA_ControlTypeIds.UIA_StatusBarControlTypeId:
+					return new StatusBar(element, parent);
+
+				case UIA_ControlTypeIds.UIA_TableControlTypeId:
+					return new Table(element, parent);
+
+				case UIA_ControlTypeIds.UIA_TextControlTypeId:
+					return new Text(element, parent);
+
+				case UIA_ControlTypeIds.UIA_ThumbControlTypeId:
+					return new Thumb(element, parent);
+
+				case UIA_ControlTypeIds.UIA_TitleBarControlTypeId:
+					return new TitleBar(element, parent);
+
+				case UIA_ControlTypeIds.UIA_ToolBarControlTypeId:
+					return new ToolBar(element, parent);
+
+				case UIA_ControlTypeIds.UIA_TreeControlTypeId:
+					return new Tree(element, parent);
+
+				case UIA_ControlTypeIds.UIA_WindowControlTypeId:
+					return new Window(element, parent);
+
+				default:
+					Debug.WriteLine("Need to add support for [" + itemType + "] element.");
+					return new Element(element, parent);
+			}
+		}
+
+		/// <summary>
+		/// Gets all the direct children of an element.
+		/// </summary>
+		/// <param name="element"> The element to get the children of. </param>
+		/// <returns> The list of children for the element. </returns>
+		private static IEnumerable<IUIAutomationElement> GetChildren(Element element)
+		{
+			var automation = new CUIAutomationClass();
+			var walker = automation.CreateTreeWalker(automation.RawViewCondition);
+			var child = walker.GetFirstChildElement(element.NativeElement);
+
+			while (child != null)
+			{
+				yield return child;
+				child = walker.GetNextSiblingElement(child);
+			}
+		}
+
+		/// <summary>
 		/// Gets the clickable point for the element.
 		/// </summary>
 		/// <param name="x"> Optional X offset when calculating. </param>
@@ -481,17 +581,15 @@ namespace TestR.Desktop
 		/// <returns> The clickable point for the element. </returns>
 		private Point GetClickablePoint(int x = 0, int y = 0)
 		{
-			System.Windows.Point point;
-			if (Automation.TryGetClickablePoint(out point))
+			tagPOINT point;
+			if (NativeElement.GetClickablePoint(out point) == 1)
 			{
-				return new Point((int) (point.X + x), (int) (point.Y + y));
+				return new Point(point.x + x, point.y + y);
 			}
 
-			var tagRect = Automation.Current.BoundingRectangle;
-			var width = tagRect.Right - tagRect.Left;
-			var height = tagRect.Bottom - tagRect.Top;
-
-			return new Point((int) (tagRect.Left + (width / 2) + x), (int) (tagRect.Top + (height / 2) + y));
+			var location = BoundingRectangle;
+			var size = Size;
+			return new Point(location.X + (size.Width / 2) + x, location.Y + (Size.Height / 2) + y);
 		}
 
 		/// <summary>
@@ -501,7 +599,7 @@ namespace TestR.Desktop
 		private static void UpdateChildren(Element element)
 		{
 			element.Children.Clear();
-			ElementWalker.GetChildren(element.Automation).ForEach(x => element.Children.Add(x));
+			GetChildren(element).ForEach(x => element.Children.Add(Create(x, element)));
 			element.Children.ForEach(x => x.UpdateChildren());
 		}
 
@@ -511,13 +609,8 @@ namespace TestR.Desktop
 		/// <param name="element"> The element to update. </param>
 		private static void UpdateParent(Element element)
 		{
-			if (element == null)
-			{
-				return;
-			}
-
-			var parent = TreeWalker.RawViewWalker.GetParent(element.Automation);
-			if (parent == null || parent.Current.ProcessId != element.Automation.Current.ProcessId)
+			var parent = element?.NativeElement.GetCurrentParent();
+			if (parent == null || parent.CurrentProcessId != element.NativeElement.CurrentProcessId)
 			{
 				return;
 			}

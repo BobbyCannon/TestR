@@ -1,6 +1,6 @@
 ﻿#region References
 
-using TestR.Desktop.Automation;
+using UIAutomationClient;
 
 #endregion
 
@@ -13,7 +13,7 @@ namespace TestR.Desktop.Elements
 	{
 		#region Constructors
 
-		internal Document(AutomationElement element, IElementParent parent)
+		internal Document(IUIAutomationElement element, IElementParent parent)
 			: base(element, parent)
 		{
 		}
@@ -27,7 +27,7 @@ namespace TestR.Desktop.Elements
 		/// </summary>
 		public string Text
 		{
-			get { return Name; }
+			get { return GetText(); }
 			set { SetText(value); }
 		}
 

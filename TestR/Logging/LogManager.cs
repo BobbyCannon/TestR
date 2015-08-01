@@ -31,7 +31,7 @@ namespace TestR.Logging
 		/// <summary>
 		/// The loggers for this manager to manage write request to.
 		/// </summary>
-		public static ICollection<ILogger> Loggers { get; private set; }
+		public static ICollection<ILogger> Loggers { get; }
 
 		/// <summary>
 		/// Gets or sets the reference ID that will be associated with each write.

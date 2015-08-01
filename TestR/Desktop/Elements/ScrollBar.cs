@@ -1,6 +1,6 @@
 #region References
 
-using TestR.Desktop.Automation;
+using UIAutomationClient;
 
 #endregion
 
@@ -13,7 +13,7 @@ namespace TestR.Desktop.Elements
 	{
 		#region Constructors
 
-		internal ScrollBar(AutomationElement element, IElementParent parent)
+		internal ScrollBar(IUIAutomationElement element, IElementParent parent)
 			: base(element, parent)
 		{
 		}

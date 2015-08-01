@@ -1,7 +1,6 @@
 ﻿#region References
 
-using TestR.Desktop.Automation;
-using TestR.Desktop.Automation.Patterns;
+using UIAutomationClient;
 
 #endregion
 
@@ -14,17 +13,16 @@ namespace TestR.Desktop.Elements
 	{
 		#region Fields
 
-		private readonly TogglePattern _pattern;
+		private readonly IUIAutomationTogglePattern _pattern;
 
 		#endregion
 
 		#region Constructors
 
-		internal CheckBox(AutomationElement element, IElementParent parent)
+		internal CheckBox(IUIAutomationElement element, IElementParent parent)
 			: base(element, parent)
 		{
-			var pattern = element.GetCurrentPattern(TogglePattern.Pattern);
-			_pattern = (TogglePattern) pattern;
+			_pattern = NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_TogglePatternId) as IUIAutomationTogglePattern;
 		}
 
 		#endregion
@@ -32,27 +30,37 @@ namespace TestR.Desktop.Elements
 		#region Properties
 
 		/// <summary>
-		/// Gets a value indicating if the check box is checked or not. True for checked and false otherwise.
+		/// Gets a flag indicating if the checkbox is checked.
 		/// </summary>
-		public bool Checked
-		{
-			get { return _pattern.Current.ToggleState != ToggleState.Off; }
-		}
+		public bool Checked => _pattern?.CurrentToggleState != UIAutomationClient.ToggleState.ToggleState_Off;
 
 		/// <summary>
-		/// Get the checked state of the check box.
+		/// Gets the state of the checkbox.
 		/// </summary>
-		public ToggleState CheckedState
-		{
-			get { return _pattern.Current.ToggleState; }
-		}
+		public ToggleState CheckedState => Convert(_pattern.CurrentToggleState);
 
 		/// <summary>
 		/// Gets the text value.
 		/// </summary>
-		public string Text
+		public string Text => Name;
+
+		#endregion
+
+		#region Methods
+
+		private ToggleState Convert(UIAutomationClient.ToggleState state)
 		{
-			get { return Name; }
+			switch (state)
+			{
+				case UIAutomationClient.ToggleState.ToggleState_On:
+					return ToggleState.On;
+
+				case UIAutomationClient.ToggleState.ToggleState_Off:
+					return ToggleState.Off;
+
+				default:
+					return ToggleState.Indeterminate;
+			}
 		}
 
 		#endregion

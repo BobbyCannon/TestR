@@ -1,4 +1,8 @@
-﻿using TestR.Desktop.Automation;
+﻿#region References
+
+using UIAutomationClient;
+
+#endregion
 
 namespace TestR.Desktop.Elements
 {
@@ -9,7 +13,7 @@ namespace TestR.Desktop.Elements
 	{
 		#region Constructors
 
-		internal SplitButton(AutomationElement element, IElementParent parent)
+		internal SplitButton(IUIAutomationElement element, IElementParent parent)
 			: base(element, parent)
 		{
 		}

@@ -1,6 +1,6 @@
 ﻿#region References
 
-using TestR.Desktop.Automation;
+using UIAutomationClient;
 
 #endregion
 
@@ -13,7 +13,7 @@ namespace TestR.Desktop.Elements
 	{
 		#region Constructors
 
-		internal List(AutomationElement element, IElementParent parent)
+		internal List(IUIAutomationElement element, IElementParent parent)
 			: base(element, parent)
 		{
 		}

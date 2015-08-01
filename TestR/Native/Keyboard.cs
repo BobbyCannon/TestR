@@ -10,6 +10,9 @@ using System.Windows.Input;
 
 namespace TestR.Native
 {
+	/// <summary>
+	/// Represents the keyboard and allows for simulated input.
+	/// </summary>
 	public static class Keyboard
 	{
 		#region Constants
@@ -38,6 +41,9 @@ namespace TestR.Native
 
 		#region Methods
 
+		/// <summary>
+		/// Start monitoring the keyboard for keystrokes.
+		/// </summary>
 		public static void StartMonitoring()
 		{
 			using (var curProcess = Process.GetCurrentProcess())
@@ -49,9 +55,28 @@ namespace TestR.Native
 			}
 		}
 
+		/// <summary>
+		/// Stop monitoring the keyboard for keystrokes.
+		/// </summary>
 		public static void StopMonitoring()
 		{
 			NativeMethods.UnhookWindowsHookEx(_hookId);
+		}
+
+		/// <summary>
+		/// Types text as keyboard input.
+		/// </summary>
+		/// <param name="value"> </param>
+		public static void TypeText(string value)
+		{
+			// Delete existing content in the control and insert new content.
+			SendKeys.SendWait("^{HOME}"); // Move to start of control
+			SendKeys.SendWait("^+{END}"); // Select everything
+			SendKeys.SendWait("{DEL}"); // Delete selection
+
+			value = value.Replace("+", "{add}");
+
+			SendKeys.SendWait(value);
 		}
 
 		private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
@@ -83,21 +108,11 @@ namespace TestR.Native
 
 		#region Events
 
+		/// <summary>
+		/// Event for key press events when monitoring the keyboard.
+		/// </summary>
 		public static event Action<Key> KeyPressed;
 
 		#endregion
-
-
-		public static void TypeText(string value)
-		{
-			// Delete existing content in the control and insert new content.
-			SendKeys.SendWait("^{HOME}"); // Move to start of control
-			SendKeys.SendWait("^+{END}"); // Select everything
-			SendKeys.SendWait("{DEL}"); // Delete selection
-
-			value = value.Replace("+", "{add}");
-
-			SendKeys.SendWait(value);
-		}
 	}
 }

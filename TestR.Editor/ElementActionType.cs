@@ -9,6 +9,6 @@
 		Equals,
 		NotEqual,
 		Exists,
-		NotExist,
+		NotExist
 	}
 }

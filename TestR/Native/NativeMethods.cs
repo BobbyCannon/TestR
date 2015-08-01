@@ -1,7 +1,6 @@
 ﻿#region References
 
 using System;
-using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
 using mshtml;
@@ -13,33 +12,6 @@ namespace TestR.Native
 	internal static class NativeMethods
 	{
 		#region Methods
-
-		internal enum MouseMessages
-		{
-			WM_LBUTTONDOWN = 0x0201,
-			WM_LBUTTONUP = 0x0202,
-			WM_MOUSEMOVE = 0x0200,
-			WM_MOUSEWHEEL = 0x020A,
-			WM_RBUTTONDOWN = 0x0204,
-			WM_RBUTTONUP = 0x0205
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
-		internal struct Point
-		{
-			public int x;
-			public int y;
-		}
-		
-		[StructLayout(LayoutKind.Sequential)]
-		internal struct MouseHook
-		{
-			public Point pt;
-			public uint mouseData;
-			public uint flags;
-			public uint time;
-			public IntPtr dwExtraInfo;
-		}
 
 		[DllImport("user32.dll", SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
@@ -121,6 +93,49 @@ namespace TestR.Native
 		internal delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
 		private delegate bool EnumWindowProc(IntPtr hwnd, IntPtr lParam);
+
+		#endregion
+
+		#region Structures
+
+		[StructLayout(LayoutKind.Sequential)]
+		internal struct MouseHook
+		{
+			#region Fields
+
+			public IntPtr dwExtraInfo;
+			public uint flags;
+			public uint mouseData;
+			public Point pt;
+			public uint time;
+
+			#endregion
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		internal struct Point
+		{
+			#region Fields
+
+			public int x;
+			public int y;
+
+			#endregion
+		}
+
+		#endregion
+
+		#region Enumerations
+
+		internal enum MouseMessages
+		{
+			WM_LBUTTONDOWN = 0x0201,
+			WM_LBUTTONUP = 0x0202,
+			WM_MOUSEMOVE = 0x0200,
+			WM_MOUSEWHEEL = 0x020A,
+			WM_RBUTTONDOWN = 0x0204,
+			WM_RBUTTONUP = 0x0205
+		}
 
 		#endregion
 

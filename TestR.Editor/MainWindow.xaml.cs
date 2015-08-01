@@ -6,7 +6,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -48,7 +47,7 @@ namespace TestR.Editor
 			_dispatcherTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(250), DispatcherPriority.Normal, TimerControlDetectionTick, Dispatcher);
 			_highlighter = new ScreenBoundingRectangle();
 			_project = new Project();
-			
+
 			DataContext = _project;
 		}
 
@@ -88,13 +87,13 @@ namespace TestR.Editor
 				return;
 			}
 
-			_highlighter.Location = element.Location;
+			_highlighter.Location = element.BoundingRectangle;
 			_highlighter.Visible = true;
 		}
 
 		private void ActionsOnDrop(object sender, DragEventArgs dragEventArgs)
 		{
-			var elementReference = dragEventArgs.Data.GetData(typeof(ElementReference)) as ElementReference;
+			var elementReference = dragEventArgs.Data.GetData(typeof (ElementReference)) as ElementReference;
 			if (dragEventArgs.Effects != DragDropEffects.Copy || elementReference == null)
 			{
 				return;
@@ -129,7 +128,7 @@ namespace TestR.Editor
 					return;
 				}
 
-				_highlighter.Location = element.Location;
+				_highlighter.Location = element.BoundingRectangle;
 				_highlighter.Visible = true;
 				Elements.Focus();
 			});
@@ -243,7 +242,7 @@ namespace TestR.Editor
 					try
 					{
 						_project.Initialize(dialog.FileName);
-						
+
 						Dispatcher.Invoke(() =>
 						{
 							_project.RefreshElements();
@@ -294,7 +293,7 @@ namespace TestR.Editor
 				}
 			}
 
-			if (applicationElement == null || applicationElement.Automation.Current.ProcessId != _project.Application.Process.Id)
+			if (applicationElement == null || applicationElement.ProcessId != _project.Application.Process.Id)
 			{
 				Debug.WriteLine("Could not find the application element...");
 				return;

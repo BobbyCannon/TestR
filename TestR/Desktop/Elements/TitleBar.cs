@@ -1,6 +1,6 @@
 ﻿#region References
 
-using TestR.Desktop.Automation;
+using UIAutomationClient;
 
 #endregion
 
@@ -13,7 +13,7 @@ namespace TestR.Desktop.Elements
 	{
 		#region Constructors
 
-		internal TitleBar(AutomationElement element, IElementParent parent)
+		internal TitleBar(IUIAutomationElement element, IElementParent parent)
 			: base(element, parent)
 		{
 		}
@@ -25,34 +25,22 @@ namespace TestR.Desktop.Elements
 		/// <summary>
 		/// Gets the close button.
 		/// </summary>
-		public Button CloseButton
-		{
-			get { return Children.Buttons["Close"]; }
-		}
+		public Button CloseButton => Children.Buttons["Close"];
 
 		/// <summary>
 		/// Gets the maximize button.
 		/// </summary>
-		public Button MaximizeButton
-		{
-			get { return Children.Buttons["Maximize"]; }
-		}
+		public Button MaximizeButton => Children.Buttons["Maximize"];
 
 		/// <summary>
 		/// Gets the maximize button.
 		/// </summary>
-		public Button MinimizeButton
-		{
-			get { return Children.Buttons["Minimize"]; }
-		}
+		public Button MinimizeButton => Children.Buttons["Minimize"];
 
 		/// <summary>
 		/// Gets the text value.
 		/// </summary>
-		public string Text
-		{
-			get { return Name; }
-		}
+		public string Text => Name;
 
 		#endregion
 	}

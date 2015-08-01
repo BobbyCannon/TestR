@@ -1,6 +1,6 @@
 ﻿#region References
 
-using TestR.Desktop.Automation;
+using UIAutomationClient;
 
 #endregion
 
@@ -13,7 +13,7 @@ namespace TestR.Desktop.Elements
 	{
 		#region Constructors
 
-		internal Button(AutomationElement element, IElementParent parent)
+		internal Button(IUIAutomationElement element, IElementParent parent)
 			: base(element, parent)
 		{
 		}
@@ -25,10 +25,7 @@ namespace TestR.Desktop.Elements
 		/// <summary>
 		/// Gets the text value.
 		/// </summary>
-		public string Text
-		{
-			get { return Name; }
-		}
+		public string Text => Name;
 
 		#endregion
 	}

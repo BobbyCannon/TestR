@@ -1,15 +1,11 @@
 ﻿#region References
 
-using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Reflection;
-using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop;
-using TestR.Desktop.Automation;
 using TestR.Desktop.Elements;
 using TestR.Extensions;
 using TestR.PowerShell;
@@ -191,22 +187,6 @@ namespace TestR.IntegrationTests
 		}
 
 		[TestMethod]
-		public void GetMenuState()
-		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
-			{
-				application.BringToFront();
-				var window = application.Children.Windows.First();
-				var menuBar = window.Children.MenuBars.First();
-				var menuItem = menuBar.Children.MenuItems.First();
-				Assert.IsFalse(menuItem.SubMenuShown);
-				menuItem.Click();
-				Assert.IsTrue(menuItem.SubMenuShown);
-				application.Close();
-			}
-		}
-
-		[TestMethod]
 		public void GetWindowByName()
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
@@ -223,10 +203,10 @@ namespace TestR.IntegrationTests
 			var path = Path.GetDirectoryName(assembly.Location);
 			var info = new DirectoryInfo(path ?? "/");
 
-			ApplicationPath = info.Parent.Parent.Parent.FullName;
+			ApplicationPath = info.Parent?.Parent?.Parent?.FullName;
 			ApplicationPath += "\\TestR.TestWinForms\\Bin\\" + (assembly.IsAssemblyDebugBuild() ? "Debug" : "Release") + "\\TestR.TestWinForms.exe";
 		}
-		
+
 		#endregion
 	}
 }

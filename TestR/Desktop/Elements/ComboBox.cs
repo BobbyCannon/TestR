@@ -1,6 +1,6 @@
 ﻿#region References
 
-using TestR.Desktop.Automation;
+using UIAutomationClient;
 
 #endregion
 
@@ -13,7 +13,7 @@ namespace TestR.Desktop.Elements
 	{
 		#region Constructors
 
-		internal ComboBox(AutomationElement element, IElementParent parent)
+		internal ComboBox(IUIAutomationElement element, IElementParent parent)
 			: base(element, parent)
 		{
 		}

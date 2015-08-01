@@ -27,7 +27,7 @@ namespace TestR.IntegrationTests
 
 		public BrowserTests()
 		{
-			BrowserType = BrowserType.All;
+			BrowserType = BrowserType.Firefox;
 			//TestHelper.AddConsoleLogger();
 		}
 

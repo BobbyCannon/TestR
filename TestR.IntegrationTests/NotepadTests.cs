@@ -3,7 +3,6 @@
 using System;
 using System.Linq;
 using System.Management.Automation;
-using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop;
 using TestR.Desktop.Elements;
@@ -30,46 +29,10 @@ namespace TestR.IntegrationTests
 		{
 			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
 			{
-				var window = application.Children.Windows.First();
+				var window = application.Children.First();
 				TestHelper.PrintChildren(window);
-				var document = window.Children.Edits["15"];
-				document.Text = "Hello World : Sub Collection";
-			}
-		}
-
-		[TestMethod]
-		public void AddTextToDocument2()
-		{
-			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
-			{
-				var button = application.WaitForChild<Button>(x => x.Id == "UpButton");
-				button.MoveMouseTo();
-			}
-		}
-		
-		[TestMethod]
-		public void ClickMenu()
-		{
-			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
-			{
-				application.BringToFront();
-				var window = application.Children.Windows.First();
-				var menuBar = window.Children.MenuBars.First();
-				TestHelper.PrintChildren(menuBar);
-
-				var menu = menuBar.GetChild<MenuItem>("Untitled - NotepadApplicationFile");
-				Assert.IsNotNull(menu);
-
-				Console.WriteLine(menu.ExpandCollapseState);
-				Thread.Sleep(500);
-				menu.Click();
-				Console.WriteLine(menu.ExpandCollapseState);
-				Thread.Sleep(500);
-				menu.Collapse();
-				Console.WriteLine(menu.ExpandCollapseState);
-				Thread.Sleep(500);
-				menu.Expand();
-				Console.WriteLine(menu.ExpandCollapseState);
+				var document = window.Children["15"];
+				document.SetText("Hello World : Sub Collection");
 			}
 		}
 
@@ -81,7 +44,6 @@ namespace TestR.IntegrationTests
 				var window = application.Children.Windows.First();
 				var document = window.GetChild<Edit>("15");
 				document.Text = "Hello World : GetChild";
-				//window.Close();
 			}
 		}
 
@@ -145,6 +107,38 @@ namespace TestR.IntegrationTests
 				{
 					window.UpdateChildren();
 				}
+			}
+		}
+
+		[TestMethod]
+		public void ClickMenu()
+		{
+			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
+			{
+				application.BringToFront();
+				var window = application.Children.Windows.First();
+				var menuBar = window.Children.MenuBars.First();
+				TestHelper.PrintChildren(menuBar);
+
+				var menu = menuBar.GetChild<MenuItem>(x => x.Name == "File");
+				Assert.IsNotNull(menu);
+				Assert.IsTrue(menu.SupportsExpandingCollapsing);
+				menu.Click();
+				Console.WriteLine(menu.IsExpanded);
+			}
+		}
+
+		[TestMethod]
+		public void WaitForButtons()
+		{
+			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
+			{
+				TestHelper.PrintChildren(application);
+				var bar = application.WaitForChild("NonClientVerticalScrollBar");
+				var button = bar.WaitForChild<Button>(x => x.Id == "UpButton");
+				button.MoveMouseTo();
+				button = bar.WaitForChild<Button>(x => x.Id == "DownButton");
+				button.MoveMouseTo();
 			}
 		}
 

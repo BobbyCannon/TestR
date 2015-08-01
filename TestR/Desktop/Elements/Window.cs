@@ -1,11 +1,9 @@
 ﻿#region References
 
-using System;
 using System.Linq;
-using TestR.Desktop.Automation;
-using TestR.Desktop.Automation.Patterns;
+using TestR.Helpers;
 using TestR.Native;
-using Utility = TestR.Helpers.Utility;
+using UIAutomationClient;
 
 #endregion
 
@@ -16,12 +14,6 @@ namespace TestR.Desktop.Elements
 	/// </summary>
 	public class Window : Element
 	{
-		#region Fields
-
-		private readonly WindowPattern _pattern;
-
-		#endregion
-
 		#region Constructors
 
 		/// <summary>
@@ -29,32 +21,14 @@ namespace TestR.Desktop.Elements
 		/// </summary>
 		/// <param name="element"> The automation element for this element. </param>
 		/// <param name="parent"> The parent for this element. </param>
-		internal Window(AutomationElement element, IElementParent parent)
+		internal Window(IUIAutomationElement element, IElementParent parent)
 			: base(element, parent)
 		{
-			var pattern = element.GetCurrentPattern(WindowPattern.Pattern);
-			_pattern = (WindowPattern) pattern;
 		}
 
 		#endregion
 
 		#region Properties
-
-		/// <summary>
-		/// Gets or sets the interaction state of the browser.
-		/// </summary>
-		public WindowInteractionState InteractionState
-		{
-			get { return _pattern.Current.WindowInteractionState; }
-		}
-
-		/// <summary>
-		/// Gets a value indicating the window is a modal.
-		/// </summary>
-		public bool IsModal
-		{
-			get { return _pattern.Current.IsModal; }
-		}
 
 		/// <summary>
 		/// Gets the status bar for the window. Returns null if the window does not have a status bar.
@@ -72,15 +46,6 @@ namespace TestR.Desktop.Elements
 			get { return Children.TitleBars.FirstOrDefault(); }
 		}
 
-		/// <summary>
-		/// Gets or sets the visual state of the browser.
-		/// </summary>
-		public WindowVisualState VisualState
-		{
-			get { return _pattern.Current.WindowVisualState; }
-			set { _pattern.SetWindowVisualState(value); }
-		}
-
 		#endregion
 
 		#region Methods
@@ -90,7 +55,7 @@ namespace TestR.Desktop.Elements
 		/// </summary>
 		public void BringToFront()
 		{
-			var handle = new IntPtr(Automation.Current.NativeWindowHandle);
+			var handle = NativeElement.CurrentNativeWindowHandle;
 			NativeMethods.SetForegroundWindow(handle);
 			NativeMethods.BringWindowToTop(handle);
 		}
@@ -105,23 +70,6 @@ namespace TestR.Desktop.Elements
 				TitleBar.CloseButton.MoveMouseTo();
 				//TitleBar.CloseButton.Click();
 			}
-			else
-			{
-				_pattern.Close();
-			}
-		}
-
-		/// <summary>
-		/// Creates and initialize a window element.
-		/// </summary>
-		/// <param name="element"> The automation element for the window. </param>
-		/// <param name="parent"> The element this window belongs to. </param>
-		/// <returns> The window for the automation element. </returns>
-		public static Window Create(AutomationElement element, Element parent = null)
-		{
-			var window = new Window(element, parent);
-			window.UpdateChildren();
-			return window;
 		}
 
 		/// <summary>
@@ -146,7 +94,7 @@ namespace TestR.Desktop.Elements
 			//	throw new Exception("Timed out waiting for window to respond.");
 			//}
 
-			Utility.Wait(() => _pattern.Current.WindowInteractionState != WindowInteractionState.NotResponding);
+			//Utility.Wait(() => _pattern.Current.WindowInteractionState != WindowInteractionState.NotResponding);
 		}
 
 		#endregion

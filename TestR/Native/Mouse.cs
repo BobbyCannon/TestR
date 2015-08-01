@@ -22,9 +22,9 @@ namespace TestR.Native
 
 		#region Fields
 
+		private static readonly NativeMethods.LowLevelKeyboardProc _hook;
 		private static IntPtr _hookId;
 		private static readonly TimeSpan _timeout;
-		private static readonly NativeMethods.LowLevelKeyboardProc _hook;
 
 		#endregion
 
@@ -107,6 +107,9 @@ namespace TestR.Native
 			ExecuteMouseEvent(MouseEventFlags.RightUp);
 		}
 
+		/// <summary>
+		/// Start monitoring the mouse for changes.
+		/// </summary>
 		public static void StartMonitoring()
 		{
 			using (var curProcess = Process.GetCurrentProcess())
@@ -118,6 +121,9 @@ namespace TestR.Native
 			}
 		}
 
+		/// <summary>
+		/// Stops monitoring the mouse for changes.
+		/// </summary>
 		public static void StopMonitoring()
 		{
 			NativeMethods.UnhookWindowsHookEx(_hookId);
@@ -183,20 +189,53 @@ namespace TestR.Native
 
 		#region Events
 
+		/// <summary>
+		/// Event for when the mouse changes during monitoring.
+		/// </summary>
 		public static event Action<MouseEvent, Point> MouseChanged;
 
 		#endregion
 
 		#region Enumerations
 
+		/// <summary>
+		/// Represents a mouse event.
+		/// </summary>
 		public enum MouseEvent
 		{
+			/// <summary>
+			/// Unknown event.
+			/// </summary>
 			Unknown,
+
+			/// <summary>
+			/// Event for left button press.
+			/// </summary>
 			LeftButtonDown,
+
+			/// <summary>
+			/// Event for left button release.
+			/// </summary>
 			LeftButtonUp,
+
+			/// <summary>
+			/// Event for mouse moving.
+			/// </summary>
 			MouseMove,
+
+			/// <summary>
+			/// Event for mouse wheel moving.
+			/// </summary>
 			MouseWheel,
+
+			/// <summary>
+			/// Event for right button press.
+			/// </summary>
 			RightButtonDown,
+
+			/// <summary>
+			/// Event for right button release.
+			/// </summary>
 			RightButtonUp
 		}
 
