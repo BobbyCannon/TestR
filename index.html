@@ -22,7 +22,67 @@
 		</div>
 		<div id="main_content_wrap" class="outer">
 			<section id="main_content" class="inner">
-				
+				<p>Integration testing framework for developers. TestR allows automating testing of web applications. Currently we are supporting Internet Explorer, Chrome, and Firefox*. We have full automation support for Internet Explorer and Chrome. </p>
+
+<ul>
+<li>Firefox must be manually started and the "listen 6000" command issued to start the Firefox remote debugging port.</li>
+</ul>
+
+<h5>To install TestR, run one of the following command in the  Package Manager Console.</h5>
+
+<ul>
+<li>Install-Package TestR (without PowerShell)</li>
+<li>Install-Package TestR.PowerShell (with PowerShell)</li>
+</ul>
+
+
+<h3>Searching Bing using Internet Explorer</h3>
+
+<pre><code>using (var browser = InternetExplorerBrowser.AttachOrCreate())
+{
+	browser.NavigateTo(&quot;http://bing.com&quot;);
+	browser.Elements.TextInputs[&quot;sb_form_q&quot;].TypeText(&quot;Bobby Cannon&quot;);
+	browser.Elements[&quot;sb_form_go&quot;].Click();
+	browser.WaitForRedirect();
+}</code></pre>
+
+<h3>Searching Amazon using Chrome</h3>
+
+<pre><code>using (var browser = ChromeBrowser.AttachOrCreate()) 
+{
+	browser.NavigateTo(&quot;http://amazon.com&quot;);
+	browser.Elements.TextInputs[&quot;twotabsearchtextbox&quot;].TypeText(&quot;protein powder&quot;);
+	browser.Elements.First(x =&gt; x.GetAttributeValue(&quot;title&quot;) == &quot;Go&quot;).Click();
+	browser.WaitForRedirect();
+}</code></pre>
+
+<h3>Same example using FireFox</h3>
+
+<pre><code>// Don&#39;t Forget: Firefox debug port must be started manually (listen 6000).
+using (var browser = FirefoxBrowser.AttachOrCreate()) 
+{
+	browser.NavigateTo(&quot;http://amazon.com&quot;);
+	browser.Elements.TextInputs[&quot;twotabsearchtextbox&quot;].TypeText(&quot;protein powder&quot;);
+	browser.Elements.First(x =&gt; x.GetAttributeValue(&quot;title&quot;) == &quot;Go&quot;).Click();
+	browser.WaitForRedirect();
+}</code></pre>
+
+<h4>Coming Soon</h4>
+
+<ul>
+<li>More element attributes.</li>
+<li>More specific element implementation with their unique attributes.</li>
+</ul>
+
+<h4>Known Issues</h4>
+
+<ul>
+<li>IMPORTANT: KB3025390 an Update for IE 11 for Windows 8.1 will cause TestR to stop working. You'll need to remove this update to allow TestR to work properly. Special thanks to Gerald Fishel and Michael Bergerman for all their help in notifying me of the issue and finding the issue.</li>
+<li>Firefox debug port must be started manually (listen 6000).</li>
+<li>Internet Explorer will fail if you cross security boundaries like going from Internet to Intranet sites.</li>
+</ul>
+
+
 			</section>
 		</div>
 		<div id="footer_wrap" class="outer">
