@@ -5,7 +5,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Management.Instrumentation;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
@@ -135,8 +134,27 @@ namespace TestR.Editor
 								break;
 							}
 						}
-						builder.AppendLine("    application.WaitForChild<Element>(\"" + action.ApplicationId + "\").RightClick();");
+						builder.AppendLine($"    application.WaitForChild<Element>(\"{action.ApplicationId}\").RightClick();");
 						break;
+
+					case ElementActionType.Equals:
+						builder.AppendLine($"    Assert.AreEqual(\"{action.Input}\", application.WaitForChild<Element>(\"{action.ApplicationId}\").{action.Property}.ToString());");
+						break;
+
+					case ElementActionType.NotEqual:
+						builder.AppendLine($"    Assert.AreNotEqual(\"{action.Input}\", application.WaitForChild<Element>(\"{action.ApplicationId}\").{action.Property}.ToString());");
+						break;
+
+					case ElementActionType.Exists:
+						builder.AppendLine($"    Assert.IsNotNull(application.GetChild<Element>(\"{action.ApplicationId}\"));");
+						break;
+
+					case ElementActionType.NotExist:
+						builder.AppendLine($"    Assert.IsNull(application.GetChild<Element>(\"{action.ApplicationId}\"));");
+						break;
+
+					default:
+						throw new ArgumentOutOfRangeException();
 				}
 			}
 
@@ -216,13 +234,13 @@ namespace TestR.Editor
 			}
 
 			var element = Application.GetChild<Element>(action.ApplicationId);
-			if (element == null)
-			{
-				throw new InstanceNotFoundException("Failed to find the element.");
-			}
 
 			switch (action.Type)
 			{
+				case ElementActionType.TypeText:
+					element.TypeText(action.Input);
+					break;
+
 				case ElementActionType.MoveMouseTo:
 					element.MoveMouseTo();
 					break;
@@ -250,25 +268,31 @@ namespace TestR.Editor
 							break;
 						}
 					}
-
 					element.RightClick();
-					break;
-
-				case ElementActionType.TypeText:
-					element.TypeText(action.Input);
 					break;
 
 				case ElementActionType.Equals:
 					var type1 = element.GetType();
 					var property1 = type1.GetProperties().FirstOrDefault(x => x.Name == action.Property);
-					Assert.AreEqual(action.Input, property1?.GetValue(element));
+					Assert.AreEqual(action.Input, property1?.GetValue(element).ToString());
 					break;
 
 				case ElementActionType.NotEqual:
 					var type2 = element.GetType();
 					var property2 = type2.GetProperties().FirstOrDefault(x => x.Name == action.Property);
-					Assert.AreNotEqual(action.Input, property2?.GetValue(element));
+					Assert.AreNotEqual(action.Input, property2?.GetValue(element).ToString());
 					break;
+
+				case ElementActionType.Exists:
+					Assert.IsNotNull(element, "The element does not exist but should have.");
+					break;
+
+				case ElementActionType.NotExist:
+					Assert.IsNull(element, "The element does exist but should not have.");
+					break;
+
+				default:
+					throw new ArgumentOutOfRangeException();
 			}
 		}
 

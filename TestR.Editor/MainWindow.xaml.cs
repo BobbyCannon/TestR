@@ -102,8 +102,13 @@ namespace TestR.Editor
 
 			var element = _project.GetElement(elementReference.ApplicationId);
 			var action = new ElementAction(element, ElementActionType.MoveMouseTo);
-            _project.ElementActions.Add(action);
+			_project.ElementActions.Add(action);
 			Actions.SelectedItem = action;
+		}
+
+		private void AddToLog(string message)
+		{
+			Log.Text += message;
 		}
 
 		private void BuildTest(object sender, RoutedEventArgs e)
@@ -155,9 +160,11 @@ namespace TestR.Editor
 				{
 					var data = File.ReadAllText(dialog.FileName);
 					var project = JsonConvert.DeserializeObject<Project>(data);
+
 					try
 					{
 						_project.Initialize(project);
+						_project.Application.BringToFront();
 						_project.RefreshElements();
 					}
 					catch (InvalidOperationException)
@@ -208,6 +215,7 @@ namespace TestR.Editor
 			}
 			catch (Exception ex)
 			{
+				AddToLog(ex.Message);
 				MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 			finally
@@ -228,6 +236,7 @@ namespace TestR.Editor
 			}
 			catch (Exception ex)
 			{
+				AddToLog(ex.Message);
 				MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 			finally
@@ -267,6 +276,7 @@ namespace TestR.Editor
 					try
 					{
 						_project.Initialize(dialog.FileName);
+						_project.Application.BringToFront();
 						Dispatcher.Invoke(() => { _project.RefreshElements(); });
 					}
 					catch (InvalidOperationException)
@@ -292,6 +302,7 @@ namespace TestR.Editor
 					try
 					{
 						_project.Initialize(process);
+						_project.Application.BringToFront();
 						Dispatcher.Invoke(() => { _project.RefreshElements(); });
 					}
 					catch (InvalidOperationException)

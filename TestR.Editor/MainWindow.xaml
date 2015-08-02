@@ -105,6 +105,11 @@
                     <TextBox x:Name="Code" TextWrapping="NoWrap" Text="" AcceptsReturn="True" HorizontalScrollBarVisibility="Auto" />
                 </ScrollViewer>
             </TabItem>
+            <TabItem Header="Log">
+                <ScrollViewer>
+                    <TextBox x:Name="Log" TextWrapping="NoWrap" Text="" AcceptsReturn="True" HorizontalScrollBarVisibility="Auto" />
+                </ScrollViewer>
+            </TabItem>
         </TabControl>
         <GridSplitter Grid.Row="2" Grid.Column="0" ResizeBehavior="CurrentAndNext" ResizeDirection="Rows" Height="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"></GridSplitter>
         <Border Grid.Row="3" Grid.Column="0" BorderBrush="LightGray" BorderThickness="1" Margin="0,0,4,0">
