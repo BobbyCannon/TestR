@@ -193,7 +193,7 @@ namespace TestR.Editor
 			Close();
 
 			ApplicationFilePath = process.Modules[0].FileName;
-            Application = Application.Attach(process.MainWindowHandle);
+			Application = Application.Attach(process.MainWindowHandle);
 			Application.Closed += Close;
 			Application.Timeout = TimeSpan.FromSeconds(30);
 

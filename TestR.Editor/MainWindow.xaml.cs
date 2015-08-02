@@ -84,10 +84,13 @@ namespace TestR.Editor
 			var element = _project.GetElement(action?.ApplicationId);
 			if (element == null)
 			{
+				ElementDetails.Text = string.Empty;
 				return;
 			}
 
 			_highlighter.SetElement(element);
+			ElementDetails.Text = element.ToDetailString();
+			Actions.Focus();
 		}
 
 		private void ActionsOnDrop(object sender, DragEventArgs dragEventArgs)
@@ -124,10 +127,12 @@ namespace TestR.Editor
 				var element = _project.GetElement(reference?.ApplicationId);
 				if (element == null)
 				{
+					ElementDetails.Text = string.Empty;
 					return;
 				}
 
 				_highlighter.SetElement(element);
+				ElementDetails.Text = element.ToDetailString();
 				Elements.Focus();
 			});
 		}

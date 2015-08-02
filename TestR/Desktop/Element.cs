@@ -3,16 +3,25 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Windows.Forms;
 using TestR.Desktop.Elements;
 using TestR.Exceptions;
 using TestR.Extensions;
 using TestR.Helpers;
 using TestR.Native;
 using UIAutomationClient;
+using Button = TestR.Desktop.Elements.Button;
+using CheckBox = TestR.Desktop.Elements.CheckBox;
+using ComboBox = TestR.Desktop.Elements.ComboBox;
+using MenuItem = TestR.Desktop.Elements.MenuItem;
+using ScrollBar = TestR.Desktop.Elements.ScrollBar;
+using StatusBar = TestR.Desktop.Elements.StatusBar;
+using ToolBar = TestR.Desktop.Elements.ToolBar;
 
 #endregion
 
@@ -23,6 +32,11 @@ namespace TestR.Desktop
 	/// </summary>
 	public class Element : IElementParent
 	{
+		/// <summary>
+		/// Properties that should not be included in UI elements or the detail string.
+		/// </summary>
+		public static string[] ExcludedProperties;
+
 		#region Constructors
 
 		/// <summary>
@@ -35,6 +49,14 @@ namespace TestR.Desktop
 			Children = new ElementCollection<Element>(this);
 			NativeElement = element;
 			Parent = parent;
+		}
+
+		/// <summary>
+		/// Static constructor.
+		/// </summary>
+		static Element()
+		{
+			ExcludedProperties = new[] { "Parent", "Children", "NativeElement", "Item" };
 		}
 
 		#endregion
@@ -82,6 +104,11 @@ namespace TestR.Desktop
 		public bool Enabled => NativeElement.CurrentIsEnabled == 1;
 
 		/// <summary>
+		/// Gets a value that indicates whether the element is focussed.
+		/// </summary>
+		public bool Focused => FromFocusElement()?.Id == Id;
+
+		/// <summary>
 		/// Gets the ID of this element.
 		/// </summary>
 		public string Id => NativeElement.CurrentAutomationId;
@@ -89,7 +116,7 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Gets a value that indicates whether the element can be use by the keyboard.
 		/// </summary>
-		public bool KeyboardFocusable => NativeElement.CurrentIsKeyboardFocusable == 1;
+		public bool KeyboardFocusable => NativeElement.CurrentIsKeyboardFocusable == 1 && Enabled;
 
 		/// <summary>
 		/// Gets the location of the element.
@@ -151,7 +178,9 @@ namespace TestR.Desktop
 			get
 			{
 				tagPOINT point;
-				return NativeElement.CurrentIsOffscreen == 0 && NativeElement.GetClickablePoint(out point) > 0 && (point.x != 0 && point.y != 0);
+				var clickable = NativeElement.GetClickablePoint(out point) > 0 && (point.x != 0 && point.y != 0);
+				var focused = Focused || Children.Any(x => x.Focused);
+                return NativeElement.CurrentIsOffscreen == 0 && (clickable || focused);
 			}
 		}
 
@@ -168,6 +197,7 @@ namespace TestR.Desktop
 		{
 			var point = GetClickablePoint(x, y);
 			Mouse.LeftClick(point);
+			Thread.Sleep(1);
 		}
 
 		/// <summary>
@@ -176,22 +206,16 @@ namespace TestR.Desktop
 		/// <returns> </returns>
 		public string DebugString()
 		{
-			var items = new Dictionary<string, string>
-			{
-				//{ "ApplicationId", ApplicationId },
-				{ "Id", Id },
-				{ "Name", Name },
-				//{ "Handle", NativeElement.CurrentNativeWindowHandle.ToString() },
-				//{ "Enabled", Enabled.ToString() },
-				//{ "ParentId", Parent == null ? string.Empty : Parent.Id },
-				{ "TypeId", TypeId.ToString() },
-				{ "TypeName", TypeName },
-				{ "Type", GetType().Name },
-				{ "X", NativeElement.CurrentBoundingRectangle.left.ToString() },
-				{ "Y", NativeElement.CurrentBoundingRectangle.top.ToString() }
-			};
+			var type = GetType();
+			var properties = type.GetProperties().OrderBy(x => x.Name).ToList();
+			var items = new Dictionary<string, string>(properties.Count);
 
-			return string.Join(" : ", items.Where(x => !string.IsNullOrWhiteSpace(x.Value)).Select(x => x.Key + " - " + x.Value));
+			foreach (var property in properties)
+			{
+				items.Add(property.Name, property.GetValue(type).ToString());
+			}
+
+			return string.Join(Environment.NewLine, items.Where(x => !string.IsNullOrWhiteSpace(x.Value)).Select(x => x.Key + " - " + x.Value));
 		}
 
 		/// <summary>
@@ -246,6 +270,17 @@ namespace TestR.Desktop
 			var point = Mouse.GetCursorPosition();
 			var automation = new CUIAutomationClass();
 			var element = automation.ElementFromPoint(new tagPOINT { x = point.X, y = point.Y });
+			return element == null ? null : new Element(element, null);
+		}
+		
+		/// <summary>
+		/// Gets the element that is currently focused.
+		/// </summary>
+		/// <returns> The element if found or null if not found. </returns>
+		public static Element FromFocusElement()
+		{
+			var automation = new CUIAutomationClass();
+			var element = automation.GetFocusedElement();
 			return element == null ? null : new Element(element, null);
 		}
 
@@ -366,20 +401,24 @@ namespace TestR.Desktop
 		/// <returns> The string of element details. </returns>
 		public string ToDetailString()
 		{
-			var items = new Dictionary<string, string>
-			{
-				{ "Id", Id },
-				{ "Name", Name },
-				{ "TypeId", TypeId.ToString() },
-				{ "TypeName", TypeName },
-				{ "Type", GetType().Name },
-				{ "X", BoundingRectangle.X.ToString() },
-				{ "Y", BoundingRectangle.Y.ToString() },
-				{ "Height", Size.Height.ToString() },
-				{ "Weight", Size.Width.ToString() }
-			};
+			var type = GetType();
+			var properties = type.GetProperties()
+				.Where(x => !ExcludedProperties.Contains(x.Name))
+				.OrderBy(x => x.Name).ToList();
+			var items = new Dictionary<string, string>(properties.Count);
 
-			return string.Join(", ", items.Select(x => x.Key + " - " + x.Value));
+			foreach (var property in properties)
+			{
+				var value = property.GetValue(this);
+				if (value == null)
+				{
+					continue;
+				}
+
+                items.Add(property.Name, value.ToString());
+			}
+
+			return string.Join(Environment.NewLine, items.Where(x => !string.IsNullOrWhiteSpace(x.Value)).Select(x => x.Key + " - " + x.Value));
 		}
 
 		/// <summary>

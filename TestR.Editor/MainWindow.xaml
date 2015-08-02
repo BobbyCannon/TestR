@@ -3,7 +3,7 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:valueConverters="clr-namespace:TestR.Editor.ValueConverters"
 		xmlns:te="clr-namespace:TestR.Editor"
-		Title="TestR Editor" Height="640" Width="960" 
+		Title="TestR Editor" Height="640" Width="1024" 
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 		mc:Ignorable="d" 
@@ -11,6 +11,7 @@
 		WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" Icon="TestR.ico">
     <Window.Resources>
         <valueConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <valueConverters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
         <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type te:ElementActionType}" x:Key="ExampleEnumValues">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="te:ElementActionType" />
@@ -30,13 +31,14 @@
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="360" />
+            <ColumnDefinition Width="280" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="280" />
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" ColumnSpan="2" Background="#852B99">
             <StackPanel Orientation="Horizontal">
@@ -58,7 +60,7 @@
             <Button Width="45" Height="28" Click="BuildTest" Margin="10,0,0,0">Build</Button>
             <Button Width="45" Height="28" Click="RunTest" Margin="10,0,10,0">Run</Button>
         </StackPanel>
-        <TreeView x:Name="Elements" Grid.Row="2" Grid.Column="0" Margin="0,0,10,0" ItemsSource="{Binding Path=Elements}" SelectedItemChanged="ElementListOnSelectedItemChanged" IsEnabled="{Binding IsLoaded}" ItemContainerStyle="{StaticResource RootTreeViewItemStyle}">
+        <TreeView x:Name="Elements" Grid.Row="2" Grid.Column="0" Margin="0,0,4,4" ItemsSource="{Binding Path=Elements}" SelectedItemChanged="ElementListOnSelectedItemChanged" IsEnabled="{Binding IsLoaded}" ItemContainerStyle="{StaticResource RootTreeViewItemStyle}" BorderBrush="LightGray">
 			<TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Children}" ItemContainerStyle="{StaticResource ChildTreeViewItemStyle}">
                     <StackPanel Orientation="Horizontal">
@@ -72,25 +74,27 @@
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
-        <GridSplitter Grid.Row="2" Grid.Column="0" ResizeBehavior="CurrentAndNext" ResizeDirection="Columns" Width="10"></GridSplitter>
-        <TabControl x:Name="TabControl" Grid.Row="2" Grid.Column="1" IsEnabled="{Binding IsLoaded}">
+        <GridSplitter Grid.Row="2" Grid.Column="0" Grid.RowSpan="2" ResizeBehavior="CurrentAndNext" ResizeDirection="Columns" Width="4"></GridSplitter>
+        <TabControl x:Name="TabControl" Grid.Row="2" Grid.Column="1" Grid.RowSpan="2" IsEnabled="{Binding IsLoaded}">
             <TabItem Header="Actions">
                 <ListView x:Name="Actions" AllowDrop="True" ItemsSource="{Binding ElementActions}" SelectionChanged="Actions_OnSelectionChanged" >
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Grid HorizontalAlignment="Stretch">
-                                <Grid.ColumnDefinitions>
+	                            <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
                                     <ColumnDefinition Width="auto" />
                                     <ColumnDefinition Width="auto" />
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Width="130" Text="{Binding DisplayText}" Margin="0,0,10,0" VerticalAlignment="Center"></TextBlock>
-                                <ComboBox Grid.Column="1" Width="130" Text="{Binding Type, Mode=TwoWay}" SelectedItem="{Binding Type}" Margin="0,0,10,0" ItemsSource="{Binding Source={StaticResource ExampleEnumValues}}" ></ComboBox>
-                                <TextBox Grid.Column="2" Width="100" Text="{Binding Input, Mode=TwoWay}"></TextBox>
-                                <Button Grid.Column="3" Width="55" Margin="10,0,0,0" Click="RunAction">Run</Button>
-                                <Button Grid.Column="4" Width="55" Margin="10,0,0,0" Click="DeleteAction">Delete</Button>
+                                <ComboBox Grid.Column="1" Width="130" Text="{Binding Property, Mode=TwoWay}" SelectedItem="{Binding Property}" Margin="0,0,10,0" ItemsSource="{Binding Properties}" Visibility="{Binding Type, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter='Equals;NotEqual'}" ></ComboBox>
+                                <ComboBox Grid.Column="2" Width="130" Text="{Binding Type, Mode=TwoWay}" SelectedItem="{Binding Type}" Margin="0,0,10,0" ItemsSource="{Binding Source={StaticResource ExampleEnumValues}}" ></ComboBox>
+                                <TextBox Grid.Column="3" Width="100" Text="{Binding Input, Mode=TwoWay}"></TextBox>
+                                <Button Grid.Column="4" Width="55" Margin="10,0,0,0" Click="RunAction">Run</Button>
+                                <Button Grid.Column="5" Width="55" Margin="10,0,0,0" Click="DeleteAction">Delete</Button>
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -102,5 +106,11 @@
                 </ScrollViewer>
             </TabItem>
         </TabControl>
+        <GridSplitter Grid.Row="2" Grid.Column="0" ResizeBehavior="CurrentAndNext" ResizeDirection="Rows" Height="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"></GridSplitter>
+        <Border Grid.Row="3" Grid.Column="0" BorderBrush="LightGray" BorderThickness="1" Margin="0,0,4,0">
+			<ScrollViewer>
+				<TextBlock x:Name="ElementDetails" Padding="10" />
+			</ScrollViewer>
+		</Border>
     </Grid>
 </Window>

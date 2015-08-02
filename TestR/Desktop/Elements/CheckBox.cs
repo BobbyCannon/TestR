@@ -11,18 +11,11 @@ namespace TestR.Desktop.Elements
 	/// </summary>
 	public class CheckBox : Element
 	{
-		#region Fields
-
-		private readonly IUIAutomationTogglePattern _pattern;
-
-		#endregion
-
 		#region Constructors
 
 		internal CheckBox(IUIAutomationElement element, IElementParent parent)
 			: base(element, parent)
 		{
-			_pattern = NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_TogglePatternId) as IUIAutomationTogglePattern;
 		}
 
 		#endregion
@@ -32,12 +25,26 @@ namespace TestR.Desktop.Elements
 		/// <summary>
 		/// Gets a flag indicating if the checkbox is checked.
 		/// </summary>
-		public bool Checked => _pattern?.CurrentToggleState != UIAutomationClient.ToggleState.ToggleState_Off;
+		public bool Checked
+		{
+			get
+			{
+				var pattern = NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_TogglePatternId) as IUIAutomationTogglePattern;
+				return pattern?.CurrentToggleState != UIAutomationClient.ToggleState.ToggleState_Off;
+			}
+		}
 
 		/// <summary>
 		/// Gets the state of the checkbox.
 		/// </summary>
-		public ToggleState CheckedState => Convert(_pattern.CurrentToggleState);
+		public ToggleState CheckedState
+		{
+			get
+			{
+				var pattern = NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_TogglePatternId) as IUIAutomationTogglePattern;
+				return Convert(pattern?.CurrentToggleState);
+			}
+		}
 
 		/// <summary>
 		/// Gets the text value.
@@ -48,7 +55,16 @@ namespace TestR.Desktop.Elements
 
 		#region Methods
 
-		private ToggleState Convert(UIAutomationClient.ToggleState state)
+		/// <summary>
+		/// Toggle the checkbox.
+		/// </summary>
+		public void Toggle()
+		{
+			var pattern = NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_TogglePatternId) as IUIAutomationTogglePattern;
+			pattern?.Toggle();
+		}
+
+		private static ToggleState Convert(UIAutomationClient.ToggleState? state)
 		{
 			switch (state)
 			{

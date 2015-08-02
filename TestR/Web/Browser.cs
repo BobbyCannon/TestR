@@ -269,7 +269,7 @@ namespace TestR.Web
 		public static void ForEachBrowser(Action<Browser> action, BrowserType type = BrowserType.All)
 		{
 			var browsers = AttachOrCreate(type);
-            foreach (var browser in browsers)
+			foreach (var browser in browsers)
 			{
 				using (browser)
 				{

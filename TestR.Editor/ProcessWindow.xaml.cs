@@ -21,8 +21,6 @@ namespace TestR.Editor
 		{
 			InitializeComponent();
 			Processes = new ObservableCollection<Process>();
-			var processes = Process.GetProcesses().Where(x => x.MainWindowHandle.ToInt32() != 0);
-			Processes.AddRange(processes);
 			DataContext = this;
 		}
 
@@ -45,7 +43,13 @@ namespace TestR.Editor
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			var processes = Process.GetProcesses().Where(x => x.MainWindowHandle.ToInt32() != 0);
+			var process = Process.GetCurrentProcess();
+			var processes = Process.GetProcesses()
+				.Where(x => x.MainWindowHandle.ToInt32() != 0)
+				.Where(x => x.Id != process.Id)
+				.OrderBy(x => x.ProcessName)
+				.ToList();
+
 			Processes.Clear();
 			Processes.AddRange(processes);
 		}

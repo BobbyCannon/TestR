@@ -2,11 +2,8 @@
 
 using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TestR.Desktop;
 
@@ -222,19 +219,10 @@ namespace TestR.Editor
 			_worker.RunWorkerAsync(_element);
 		}
 
-		private void WorkerOnProgressChanged(object sender, ProgressChangedEventArgs args)
+		private void Stop()
 		{
-			switch (args.ProgressPercentage)
-			{
-				case 1:
-					Layout();
-					break;
-
-				default:
-					Visible = false;
-					_element = null;
-					break;
-			}
+			_worker?.CancelAsync();
+			_worker = null;
 		}
 
 		private static void WorkerOnDoWork(object sender, DoWorkEventArgs args)
@@ -273,10 +261,19 @@ namespace TestR.Editor
 			}
 		}
 
-		private void Stop()
+		private void WorkerOnProgressChanged(object sender, ProgressChangedEventArgs args)
 		{
-			_worker?.CancelAsync();
-			_worker = null;
+			switch (args.ProgressPercentage)
+			{
+				case 1:
+					Layout();
+					break;
+
+				default:
+					Visible = false;
+					_element = null;
+					break;
+			}
 		}
 
 		#endregion

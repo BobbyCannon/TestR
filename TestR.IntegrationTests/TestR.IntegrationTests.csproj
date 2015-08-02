@@ -46,6 +46,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <Choose>
@@ -61,8 +62,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="WinFormTests.cs" />
-    <Compile Include="NotepadTests.cs" />
+    <Compile Include="Desktop\CheckBoxTests.cs" />
+    <Compile Include="Desktop\WinFormTests.cs" />
+    <Compile Include="Desktop\NotepadTests.cs" />
     <Compile Include="BrowserTests.cs" />
     <Compile Include="InternetExplorerTests.cs" />
     <Compile Include="TestHelper.cs" />

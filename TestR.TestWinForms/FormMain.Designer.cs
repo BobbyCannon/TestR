@@ -88,7 +88,7 @@
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
 			this.exitToolStripMenuItem.Text = "Exit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -154,6 +154,7 @@
 			this.checkBox3.Size = new System.Drawing.Size(90, 17);
 			this.checkBox3.TabIndex = 6;
 			this.checkBox3.Text = "Indeterminate";
+			this.checkBox3.ThreeState = true;
 			this.checkBox3.UseVisualStyleBackColor = true;
 			// 
 			// checkBox4
@@ -309,24 +310,24 @@
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(12, 178);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(48, 13);
+			this.label2.Size = new System.Drawing.Size(77, 13);
 			this.label2.TabIndex = 19;
-			this.label2.Text = "Disabled";
+			this.label2.Text = "Disabled Label";
 			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(12, 198);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(57, 13);
+			this.label3.Size = new System.Drawing.Size(86, 13);
 			this.label3.TabIndex = 20;
-			this.label3.Text = "Not Visible";
+			this.label3.Text = "Not Visible Label";
 			this.label3.Visible = false;
 			// 
 			// linkLabel1
 			// 
 			this.linkLabel1.AutoSize = true;
-			this.linkLabel1.Location = new System.Drawing.Point(94, 158);
+			this.linkLabel1.Location = new System.Drawing.Point(12, 220);
 			this.linkLabel1.Name = "linkLabel1";
 			this.linkLabel1.Size = new System.Drawing.Size(56, 13);
 			this.linkLabel1.TabIndex = 21;
@@ -337,22 +338,22 @@
 			// 
 			this.linkLabel2.AutoSize = true;
 			this.linkLabel2.Enabled = false;
-			this.linkLabel2.Location = new System.Drawing.Point(94, 178);
+			this.linkLabel2.Location = new System.Drawing.Point(12, 240);
 			this.linkLabel2.Name = "linkLabel2";
-			this.linkLabel2.Size = new System.Drawing.Size(48, 13);
+			this.linkLabel2.Size = new System.Drawing.Size(100, 13);
 			this.linkLabel2.TabIndex = 22;
 			this.linkLabel2.TabStop = true;
-			this.linkLabel2.Text = "Disabled";
+			this.linkLabel2.Text = "Disabled Link Label";
 			// 
 			// linkLabel3
 			// 
 			this.linkLabel3.AutoSize = true;
-			this.linkLabel3.Location = new System.Drawing.Point(94, 198);
+			this.linkLabel3.Location = new System.Drawing.Point(12, 260);
 			this.linkLabel3.Name = "linkLabel3";
-			this.linkLabel3.Size = new System.Drawing.Size(57, 13);
+			this.linkLabel3.Size = new System.Drawing.Size(109, 13);
 			this.linkLabel3.TabIndex = 23;
 			this.linkLabel3.TabStop = true;
-			this.linkLabel3.Text = "Not Visible";
+			this.linkLabel3.Text = "Not Visible Link Label";
 			this.linkLabel3.Visible = false;
 			// 
 			// listBox1
