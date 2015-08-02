@@ -3,6 +3,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Management.Instrumentation;
 using System.Text;
@@ -146,8 +147,13 @@ namespace TestR.Editor
 
 		public void Close()
 		{
-			Application?.Dispose();
-			Application = null;
+			if (Application != null)
+			{
+				Application.Closed -= Close;
+				Application.Dispose();
+				Application = null;
+			}
+
 			OnPropertyChanged(nameof(IsLoaded));
 		}
 
@@ -167,13 +173,7 @@ namespace TestR.Editor
 			Close();
 
 			ApplicationFilePath = applicationPath;
-			if (Application.Exists(ApplicationFilePath))
-			{
-				Application = Application.Attach(ApplicationFilePath);
-				Application.Close();
-			}
-
-			Application = Application.Create(ApplicationFilePath);
+			Application = Application.AttachOrCreate(ApplicationFilePath);
 			Application.Closed += Close;
 			Application.Timeout = TimeSpan.FromMinutes(5);
 
@@ -184,7 +184,21 @@ namespace TestR.Editor
 		public void Initialize(Project project)
 		{
 			Initialize(project.ApplicationFilePath);
+			ElementActions.Clear();
 			ElementActions.AddRange(project.ElementActions);
+		}
+
+		public void Initialize(Process process)
+		{
+			Close();
+
+			ApplicationFilePath = process.Modules[0].FileName;
+            Application = Application.Attach(process.MainWindowHandle);
+			Application.Closed += Close;
+			Application.Timeout = TimeSpan.FromSeconds(30);
+
+			OnPropertyChanged(nameof(Application));
+			OnPropertyChanged(nameof(IsLoaded));
 		}
 
 		public void RefreshElements()
@@ -201,7 +215,7 @@ namespace TestR.Editor
 				return;
 			}
 
-			var element = Application.WaitForChild(action.ApplicationId);
+			var element = Application.GetChild<Element>(action.ApplicationId);
 			if (element == null)
 			{
 				throw new InstanceNotFoundException("Failed to find the element.");

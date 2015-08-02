@@ -146,7 +146,14 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Gets a value that indicates whether the element is visible.
 		/// </summary>
-		public bool Visible => NativeElement.CurrentIsOffscreen == 0;
+		public bool Visible
+		{
+			get
+			{
+				tagPOINT point;
+				return NativeElement.CurrentIsOffscreen == 0 && NativeElement.GetClickablePoint(out point) > 0 && (point.x != 0 && point.y != 0);
+			}
+		}
 
 		#endregion
 
@@ -202,6 +209,23 @@ namespace TestR.Desktop
 				{
 					nodes.Push(n);
 				}
+			}
+		}
+
+		/// <summary>
+		/// Check to see if the element still exists.
+		/// </summary>
+		/// <returns> True if the element still exists and false if otherwise. </returns>
+		public bool Exists()
+		{
+			try
+			{
+				NativeElement.GetRuntimeId();
+				return true;
+			}
+			catch (Exception)
+			{
+				return false;
 			}
 		}
 

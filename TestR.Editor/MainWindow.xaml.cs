@@ -33,7 +33,7 @@ namespace TestR.Editor
 		private readonly DispatcherTimer _dispatcherTimer;
 		private TreeViewDragDropManager _elementsDragManager;
 		private Element _focusedElement;
-		private readonly ScreenBoundingRectangle _highlighter;
+		private readonly Highlighter _highlighter;
 		private Project _project;
 
 		#endregion
@@ -45,7 +45,7 @@ namespace TestR.Editor
 			InitializeComponent();
 
 			_dispatcherTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(250), DispatcherPriority.Normal, TimerControlDetectionTick, Dispatcher);
-			_highlighter = new ScreenBoundingRectangle();
+			_highlighter = new Highlighter();
 			_project = new Project();
 
 			DataContext = _project;
@@ -87,8 +87,7 @@ namespace TestR.Editor
 				return;
 			}
 
-			_highlighter.Location = element.BoundingRectangle;
-			_highlighter.Visible = true;
+			_highlighter.SetElement(element);
 		}
 
 		private void ActionsOnDrop(object sender, DragEventArgs dragEventArgs)
@@ -128,8 +127,7 @@ namespace TestR.Editor
 					return;
 				}
 
-				_highlighter.Location = element.BoundingRectangle;
-				_highlighter.Visible = true;
+				_highlighter.SetElement(element);
 				Elements.Focus();
 			});
 		}
@@ -155,9 +153,6 @@ namespace TestR.Editor
 					{
 						_project.Initialize(project);
 						_project.RefreshElements();
-
-						Elements.ForEach(x => x.IsExpanded = true);
-						Elements.ForEach(x => x.IsExpanded = false);
 					}
 					catch (InvalidOperationException)
 					{
@@ -180,19 +175,39 @@ namespace TestR.Editor
 
 		private void RefreshElement(object sender, RoutedEventArgs routedEventArgs)
 		{
-			var menuItem = sender as MenuItem;
-			var elementReference = menuItem?.DataContext as ElementReference;
-			var element = _project.GetElement(elementReference?.ApplicationId);
-			element?.UpdateChildren();
-			elementReference?.Children.Clear();
-			elementReference?.Children.AddRange(element?.Children.Select(x => new ElementReference(x)));
+			try
+			{
+				Progress.Visibility = Visibility.Visible;
+				var menuItem = sender as MenuItem;
+				var elementReference = menuItem?.DataContext as ElementReference;
+				var element = _project.GetElement(elementReference?.ApplicationId);
+				element?.UpdateChildren();
+				elementReference?.Children.Clear();
+				elementReference?.Children.AddRange(element?.Children.Select(x => new ElementReference(x)));
+			}
+			finally
+			{
+				Progress.Visibility = Visibility.Hidden;
+			}
 		}
 
 		private void RunAction(object sender, RoutedEventArgs e)
 		{
 			var button = sender as Button;
 			var action = button?.DataContext as ElementAction;
-			_project.RunAction(action);
+			try
+			{
+				Progress.Visibility = Visibility.Visible;
+				_project.RunAction(action);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+			}
+			finally
+			{
+				Progress.Visibility = Visibility.Hidden;
+			}
 		}
 
 		private void RunTest(object sender, RoutedEventArgs e)
@@ -204,6 +219,10 @@ namespace TestR.Editor
 				Cursor = Cursors.Wait;
 				_highlighter.Visible = false;
 				_project.RunTests();
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 			finally
 			{
@@ -242,13 +261,32 @@ namespace TestR.Editor
 					try
 					{
 						_project.Initialize(dialog.FileName);
+						Dispatcher.Invoke(() => { _project.RefreshElements(); });
+					}
+					catch (InvalidOperationException)
+					{
+						_project.Close();
+					}
+				});
+			}
+		}
 
-						Dispatcher.Invoke(() =>
-						{
-							_project.RefreshElements();
-							Elements.ForEach(x => x.IsExpanded = true);
-							Elements.ForEach(x => x.IsExpanded = false);
-						});
+		private void SelectProcess(object sender, RoutedEventArgs e)
+		{
+			var dialog = new ProcessWindow();
+			dialog.Owner = this;
+
+			var result = dialog.ShowDialog();
+			if (result.HasValue && result.Value)
+			{
+				Task.Run(() =>
+				{
+					var process = dialog.SelectedProcess;
+
+					try
+					{
+						_project.Initialize(process);
+						Dispatcher.Invoke(() => { _project.RefreshElements(); });
 					}
 					catch (InvalidOperationException)
 					{

@@ -1,8 +1,14 @@
 ﻿#region References
 
 using System;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using TestR.Desktop;
 
 #endregion
 
@@ -15,8 +21,7 @@ namespace TestR.Editor
 	{
 		#region Fields
 
-		//form used as a rectangle
-		private readonly Form _window;
+		private Form _window;
 
 		#endregion
 
@@ -24,8 +29,6 @@ namespace TestR.Editor
 
 		public ScreenRectangle()
 		{
-			//initialize the form
-			//initialize the form
 			_window = new Form();
 			_window.FormBorderStyle = FormBorderStyle.None;
 			_window.ShowInTaskbar = false;
@@ -46,7 +49,7 @@ namespace TestR.Editor
 		#region Properties
 
 		/// <summary>
-		/// get/set location of the rectangle
+		/// Gets or sets the location of the rectangle.
 		/// </summary>
 		public Rectangle Location
 		{
@@ -61,16 +64,7 @@ namespace TestR.Editor
 		}
 
 		/// <summary>
-		/// get/set opacity for the rectangle
-		/// </summary>
-		public double Opacity
-		{
-			get { return _window.Opacity; }
-			set { _window.Opacity = value; }
-		}
-
-		/// <summary>
-		/// get/set visibility for the rectangle
+		/// Gets or sets if the rectangle is visible.
 		/// </summary>
 		public bool Visible
 		{
@@ -82,9 +76,24 @@ namespace TestR.Editor
 
 		#region Methods
 
+		/// <summary>
+		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+		/// </summary>
 		public void Dispose()
 		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!disposing || _window == null)
+			{
+				return;
+			}
+
 			_window.Close();
+			_window = null;
 		}
 
 		#endregion
@@ -93,26 +102,27 @@ namespace TestR.Editor
 	/// <summary>
 	/// This class is responsible to draw bounding rectangle around some location on the screen.
 	/// </summary>
-	internal class ScreenBoundingRectangle : IDisposable
+	internal class Highlighter : IDisposable
 	{
 		#region Fields
 
 		private readonly ScreenRectangle _bottomRectangle;
+		private Rectangle _currentLocation;
+		private Element _element;
 		private readonly ScreenRectangle _leftRectangle;
-		private Rectangle _location;
-		private readonly ScreenRectangle[] _rectangles;
+		private ScreenRectangle[] _rectangles;
 		private readonly ScreenRectangle _rightRectangle;
 		private readonly ScreenRectangle _topRectangle;
 		private bool _visible;
+		private BackgroundWorker _worker;
 
 		#endregion
 
 		#region Constructors
 
-		public ScreenBoundingRectangle()
+		public Highlighter()
 		{
-			//initialize instance
-			LineWidth = 3;
+			LineWidth = 2;
 
 			_leftRectangle = new ScreenRectangle();
 			_topRectangle = new ScreenRectangle();
@@ -127,37 +137,12 @@ namespace TestR.Editor
 		#region Properties
 
 		public int LineWidth { get; }
-
-		public Rectangle Location
-		{
-			get { return _location; }
-			set
-			{
-				_location = value;
-				Layout();
-			}
-		}
-
-		public double Opacity
-		{
-			get { return _leftRectangle.Opacity; }
-			set
-			{
-				_leftRectangle.Opacity = _rightRectangle.Opacity =
-					_topRectangle.Opacity = _bottomRectangle.Opacity = value;
-			}
-		}
-
 		public string ToolTipText { get; set; }
 
 		public bool Visible
 		{
 			get { return _visible; }
-			set
-			{
-				_visible = _leftRectangle.Visible = _rightRectangle.Visible =
-					_topRectangle.Visible = _bottomRectangle.Visible = value;
-			}
+			set { _visible = _leftRectangle.Visible = _rightRectangle.Visible = _topRectangle.Visible = _bottomRectangle.Visible = value; }
 		}
 
 		#endregion
@@ -166,18 +151,132 @@ namespace TestR.Editor
 
 		public void Dispose()
 		{
-			foreach (var rectangle in _rectangles)
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		/// <summary>
+		/// Layout the form using the provided location.
+		/// </summary>
+		public void Layout()
+		{
+			if (Visible && !_element.Visible)
 			{
-				rectangle.Dispose();
+				Visible = false;
+				return;
+			}
+
+			if (!Visible && _element.Visible)
+			{
+				Visible = true;
+			}
+
+			if (_currentLocation == _element.BoundingRectangle)
+			{
+				return;
+			}
+
+			_currentLocation = _element.BoundingRectangle;
+			_leftRectangle.Location = new Rectangle(_currentLocation.Left - LineWidth, _currentLocation.Top, LineWidth, _currentLocation.Height);
+			_topRectangle.Location = new Rectangle(_currentLocation.Left - LineWidth, _currentLocation.Top - LineWidth, _currentLocation.Width + (2 * LineWidth), LineWidth);
+			_rightRectangle.Location = new Rectangle(_currentLocation.Left + _currentLocation.Width, _currentLocation.Top, LineWidth, _currentLocation.Height);
+			_bottomRectangle.Location = new Rectangle(_currentLocation.Left - LineWidth, _currentLocation.Top + _currentLocation.Height, _currentLocation.Width + (2 * LineWidth), LineWidth);
+		}
+
+		public void SetElement(Element element)
+		{
+			Stop();
+			_element = element;
+			Layout();
+			Start();
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!disposing || _rectangles == null)
+			{
+				return;
+			}
+
+			Stop();
+
+			lock (_rectangles)
+			{
+				foreach (var rectangle in _rectangles)
+				{
+					rectangle.Dispose();
+				}
+
+				_rectangles = null;
 			}
 		}
 
-		private void Layout()
+		internal void Start()
 		{
-			_leftRectangle.Location = new Rectangle(_location.Left - LineWidth, _location.Top, LineWidth, _location.Height);
-			_topRectangle.Location = new Rectangle(_location.Left - LineWidth, _location.Top - LineWidth, _location.Width + (2 * LineWidth), LineWidth);
-			_rightRectangle.Location = new Rectangle(_location.Left + _location.Width, _location.Top, LineWidth, _location.Height);
-			_bottomRectangle.Location = new Rectangle(_location.Left - LineWidth, _location.Top + _location.Height, _location.Width + (2 * LineWidth), LineWidth);
+			Stop();
+			_worker = new BackgroundWorker();
+			_worker.WorkerReportsProgress = true;
+			_worker.WorkerSupportsCancellation = true;
+			_worker.DoWork += WorkerOnDoWork;
+			_worker.ProgressChanged += WorkerOnProgressChanged;
+			_worker.RunWorkerAsync(_element);
+		}
+
+		private void WorkerOnProgressChanged(object sender, ProgressChangedEventArgs args)
+		{
+			switch (args.ProgressPercentage)
+			{
+				case 1:
+					Layout();
+					break;
+
+				default:
+					Visible = false;
+					_element = null;
+					break;
+			}
+		}
+
+		private static void WorkerOnDoWork(object sender, DoWorkEventArgs args)
+		{
+			var worker = (BackgroundWorker) sender;
+			var element = (Element) args.Argument;
+			var lastLocation = element.BoundingRectangle;
+			var lastVisible = element.Visible;
+
+			while (!worker.CancellationPending)
+			{
+				try
+				{
+					if (element.BoundingRectangle != lastLocation)
+					{
+						worker.ReportProgress(1);
+						lastLocation = element.BoundingRectangle;
+						continue;
+					}
+
+					if (element.Visible != lastVisible)
+					{
+						worker.ReportProgress(1);
+						lastVisible = element.Visible;
+						continue;
+					}
+
+					Thread.Sleep(25);
+				}
+				catch (Exception)
+				{
+					worker.ReportProgress(100);
+					worker.CancelAsync();
+					break;
+				}
+			}
+		}
+
+		private void Stop()
+		{
+			_worker?.CancelAsync();
+			_worker = null;
 		}
 
 		#endregion
