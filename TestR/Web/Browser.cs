@@ -268,7 +268,8 @@ namespace TestR.Web
 		/// <param name="type"> The type of the browser to process against. </param>
 		public static void ForEachBrowser(Action<Browser> action, BrowserType type = BrowserType.All)
 		{
-			foreach (var browser in AttachOrCreate(type))
+			var browsers = AttachOrCreate(type);
+            foreach (var browser in browsers)
 			{
 				using (browser)
 				{

@@ -9,7 +9,7 @@
 		<projectUrl>http://bobbycannon.github.io/TestR/</projectUrl>
 		<tags>TestR Test UnitTest IntegrationTest Automation Testing Web InternetExplorer FireFox Chrome</tags>
 		<dependencies>
-			<dependency id="Newtonsoft.Json" version="6.0.8" />
+			<dependency id="Newtonsoft.Json" version="7.0.1" />
 		</dependencies>
 		<references>
 			<reference file="TestR.dll" />
