@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using TestR.Extensions;
 
 #endregion
@@ -34,6 +35,12 @@ namespace TestR.Editor
 		#endregion
 
 		#region Methods
+
+		private void ProcessList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			SelectedProcess = (Process)ProcessList.SelectedItem;
+			DialogResult = true;
+		}
 
 		private void Select(object sender, RoutedEventArgs e)
 		{

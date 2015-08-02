@@ -90,7 +90,6 @@ namespace TestR.Editor
 
 			_highlighter.SetElement(element);
 			ElementDetails.Text = element.ToDetailString();
-			Actions.Focus();
 		}
 
 		private void ActionsOnDrop(object sender, DragEventArgs dragEventArgs)
@@ -102,7 +101,9 @@ namespace TestR.Editor
 			}
 
 			var element = _project.GetElement(elementReference.ApplicationId);
-			_project.ElementActions.Add(new ElementAction(element, ElementActionType.MoveMouseTo));
+			var action = new ElementAction(element, ElementActionType.MoveMouseTo);
+            _project.ElementActions.Add(action);
+			Actions.SelectedItem = action;
 		}
 
 		private void BuildTest(object sender, RoutedEventArgs e)

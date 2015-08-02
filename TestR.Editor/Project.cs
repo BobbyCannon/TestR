@@ -259,11 +259,15 @@ namespace TestR.Editor
 					break;
 
 				case ElementActionType.Equals:
-					Assert.AreEqual(element.GetText(), action.Input);
+					var type1 = element.GetType();
+					var property1 = type1.GetProperties().FirstOrDefault(x => x.Name == action.Property);
+					Assert.AreEqual(action.Input, property1?.GetValue(element));
 					break;
 
 				case ElementActionType.NotEqual:
-					Assert.AreNotEqual(element.GetText(), action.Input);
+					var type2 = element.GetType();
+					var property2 = type2.GetProperties().FirstOrDefault(x => x.Name == action.Property);
+					Assert.AreNotEqual(action.Input, property2?.GetValue(element));
 					break;
 			}
 		}

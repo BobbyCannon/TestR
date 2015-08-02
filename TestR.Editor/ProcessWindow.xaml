@@ -16,7 +16,7 @@
 			<RowDefinition Height="*" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
-        <ListView x:Name="ProcessList" Grid.Row="0" ItemsSource="{Binding Processes}">
+        <ListView x:Name="ProcessList" Grid.Row="0" ItemsSource="{Binding Processes}" MouseDoubleClick="ProcessList_MouseDoubleClick">
             <ListView.ItemTemplate>
                 <DataTemplate>
 					<StackPanel Orientation="Horizontal" Margin="0">
