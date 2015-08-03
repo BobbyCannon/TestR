@@ -23,6 +23,11 @@ namespace TestR.Desktop.Elements
 		#region Properties
 
 		/// <summary>
+		/// Gets a value indicating whether the control can have a value set programmatically, or that can be edited by the user.
+		/// </summary>
+		public bool ReadOnly => GetPattern<IUIAutomationValuePattern>()?.CurrentIsReadOnly == 1;
+
+		/// <summary>
 		/// Gets the text value.
 		/// </summary>
 		public string Text

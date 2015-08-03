@@ -1,6 +1,8 @@
 ﻿#region References
 
+using TestR.Extensions;
 using UIAutomationClient;
+using ToggleState = TestR.Desktop.Pattern.ToggleState;
 
 #endregion
 
@@ -25,31 +27,22 @@ namespace TestR.Desktop.Elements
 		/// <summary>
 		/// Gets a flag indicating if the checkbox is checked.
 		/// </summary>
-		public bool Checked
-		{
-			get
-			{
-				var pattern = NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_TogglePatternId) as IUIAutomationTogglePattern;
-				return pattern?.CurrentToggleState != UIAutomationClient.ToggleState.ToggleState_Off;
-			}
-		}
+		public bool Checked => GetPattern<IUIAutomationTogglePattern>()?.CurrentToggleState.Convert() != ToggleState.Off;
 
 		/// <summary>
 		/// Gets the state of the checkbox.
 		/// </summary>
-		public ToggleState CheckedState
-		{
-			get
-			{
-				var pattern = NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_TogglePatternId) as IUIAutomationTogglePattern;
-				return Convert(pattern?.CurrentToggleState);
-			}
-		}
+		public ToggleState CheckedState => GetPattern<IUIAutomationTogglePattern>()?.CurrentToggleState.Convert() ?? ToggleState.Off;
+
+		/// <summary>
+		/// Gets a value indicating whether the control can have a value set programmatically, or that can be edited by the user.
+		/// </summary>
+		public bool ReadOnly => GetPattern<IUIAutomationValuePattern>()?.CurrentIsReadOnly == 1;
 
 		/// <summary>
 		/// Gets the text value.
 		/// </summary>
-		public string Text => Name;
+		public string Text => GetPattern<IUIAutomationValuePattern>()?.CurrentValue ?? Name;
 
 		#endregion
 
@@ -60,23 +53,7 @@ namespace TestR.Desktop.Elements
 		/// </summary>
 		public void Toggle()
 		{
-			var pattern = NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_TogglePatternId) as IUIAutomationTogglePattern;
-			pattern?.Toggle();
-		}
-
-		private static ToggleState Convert(UIAutomationClient.ToggleState? state)
-		{
-			switch (state)
-			{
-				case UIAutomationClient.ToggleState.ToggleState_On:
-					return ToggleState.On;
-
-				case UIAutomationClient.ToggleState.ToggleState_Off:
-					return ToggleState.Off;
-
-				default:
-					return ToggleState.Indeterminate;
-			}
+			GetPattern<IUIAutomationTogglePattern>()?.Toggle();
 		}
 
 		#endregion

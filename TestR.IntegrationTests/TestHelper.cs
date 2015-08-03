@@ -36,7 +36,7 @@ namespace TestR.IntegrationTests
 			var element = parent as Element;
 			if (element != null)
 			{
-				Console.WriteLine(prefix + element.DebugString());
+				Console.WriteLine(prefix + element.ToDetailString().Replace(Environment.NewLine, ", "));
 				prefix += "  ";
 			}
 

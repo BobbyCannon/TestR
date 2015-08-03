@@ -242,7 +242,7 @@ namespace TestR.Desktop
 		{
 			foreach (var item in this)
 			{
-				Console.WriteLine(prefix + item.DebugString());
+				Console.WriteLine(prefix + item.ToDetailString().Replace(Environment.NewLine, ", "));
 				item.Children.PrintDebug(prefix + "    ");
 			}
 		}

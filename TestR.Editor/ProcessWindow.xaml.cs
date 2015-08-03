@@ -38,7 +38,7 @@ namespace TestR.Editor
 
 		private void ProcessList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
-			SelectedProcess = (Process)ProcessList.SelectedItem;
+			SelectedProcess = (Process) ProcessList.SelectedItem;
 			DialogResult = true;
 		}
 

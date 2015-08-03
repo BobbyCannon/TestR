@@ -1,4 +1,4 @@
-﻿namespace TestR.Desktop.Elements
+﻿namespace TestR.Desktop.Pattern
 {
 	/// <summary>
 	/// Represents the state of a element with toggle pattern support.
@@ -6,17 +6,17 @@
 	public enum ToggleState
 	{
 		/// <summary>
-		/// On
+		/// The element is selected, checked, marked or otherwise activated.
 		/// </summary>
 		On,
 
 		/// <summary>
-		/// Off
+		/// The element is not selected, checked, marked or otherwise activated.
 		/// </summary>
 		Off,
 
 		/// <summary>
-		/// Indeterminate
+		/// The element is in an indeterminate state.
 		/// </summary>
 		Indeterminate
 	}

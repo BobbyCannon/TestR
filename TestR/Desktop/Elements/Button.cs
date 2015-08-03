@@ -1,6 +1,8 @@
 ﻿#region References
 
+using TestR.Extensions;
 using UIAutomationClient;
+using ToggleState = TestR.Desktop.Pattern.ToggleState;
 
 #endregion
 
@@ -23,9 +25,14 @@ namespace TestR.Desktop.Elements
 		#region Properties
 
 		/// <summary>
-		/// Gets the text value.
+		/// Gets a flag indicating if the button is checked. Usable for split buttons.
 		/// </summary>
-		public string Text => Name;
+		public bool Toggled => GetPattern<IUIAutomationTogglePattern>()?.CurrentToggleState.Convert() == ToggleState.Off;
+
+		/// <summary>
+		/// Gets the toggle state of the button.
+		/// </summary>
+		public ToggleState ToggleState => GetPattern<IUIAutomationTogglePattern>()?.CurrentToggleState.Convert() ?? ToggleState.Off;
 
 		#endregion
 	}

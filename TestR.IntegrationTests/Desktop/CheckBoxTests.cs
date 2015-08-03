@@ -1,14 +1,15 @@
 ﻿#region References
 
+using System.Drawing;
 using System.IO;
 using System.Management.Automation;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop;
 using TestR.Desktop.Elements;
+using TestR.Desktop.Pattern;
 using TestR.Extensions;
 using TestR.PowerShell;
-using System.Drawing;
 
 #endregion
 
@@ -144,16 +145,6 @@ namespace TestR.IntegrationTests.Desktop
 		}
 
 		[TestMethod]
-		public void KeyboardFocusableShouldBeTrue()
-		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
-			{
-				var checkbox = application.GetChild<CheckBox>("checkBox1");
-				Assert.AreEqual(true, checkbox.KeyboardFocusable);
-			}
-		}
-
-		[TestMethod]
 		public void KeyboardFocusableShouldBeFalse()
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
@@ -164,22 +155,22 @@ namespace TestR.IntegrationTests.Desktop
 		}
 
 		[TestMethod]
+		public void KeyboardFocusableShouldBeTrue()
+		{
+			using (var application = Application.AttachOrCreate(ApplicationPath))
+			{
+				var checkbox = application.GetChild<CheckBox>("checkBox1");
+				Assert.AreEqual(true, checkbox.KeyboardFocusable);
+			}
+		}
+
+		[TestMethod]
 		public void LocationShouldBeValid()
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
 				var checkbox = application.GetChild<CheckBox>("checkBox1");
-				Assert.AreEqual(new Point(737,371), checkbox.Location);
-			}
-		}
-
-		[TestMethod]
-		public void SizeShouldBeValid()
-		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
-			{
-				var checkbox = application.GetChild<CheckBox>("checkBox1");
-				Assert.AreEqual(new Size(67,17), checkbox.Size);
+				Assert.AreEqual(new Point(737, 371), checkbox.Location);
 			}
 		}
 
@@ -193,6 +184,16 @@ namespace TestR.IntegrationTests.Desktop
 			ApplicationPath = info.Parent?.Parent?.Parent?.FullName;
 			ApplicationPath += "\\TestR.TestWinForms\\Bin\\" + (assembly.IsAssemblyDebugBuild() ? "Debug" : "Release") + "\\TestR.TestWinForms.exe";
 			Application.CloseAll(ApplicationPath);
+		}
+
+		[TestMethod]
+		public void SizeShouldBeValid()
+		{
+			using (var application = Application.AttachOrCreate(ApplicationPath))
+			{
+				var checkbox = application.GetChild<CheckBox>("checkBox1");
+				Assert.AreEqual(new Size(82, 17), checkbox.Size);
+			}
 		}
 
 		[TestMethod]

@@ -7,6 +7,7 @@ using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop;
 using TestR.Desktop.Elements;
+using TestR.Desktop.Pattern;
 using TestR.Extensions;
 using TestR.PowerShell;
 

@@ -3,25 +3,16 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Windows.Forms;
 using TestR.Desktop.Elements;
 using TestR.Exceptions;
 using TestR.Extensions;
 using TestR.Helpers;
 using TestR.Native;
 using UIAutomationClient;
-using Button = TestR.Desktop.Elements.Button;
-using CheckBox = TestR.Desktop.Elements.CheckBox;
-using ComboBox = TestR.Desktop.Elements.ComboBox;
-using MenuItem = TestR.Desktop.Elements.MenuItem;
-using ScrollBar = TestR.Desktop.Elements.ScrollBar;
-using StatusBar = TestR.Desktop.Elements.StatusBar;
-using ToolBar = TestR.Desktop.Elements.ToolBar;
 
 #endregion
 
@@ -32,10 +23,14 @@ namespace TestR.Desktop
 	/// </summary>
 	public class Element : IElementParent
 	{
+		#region Fields
+
 		/// <summary>
 		/// Properties that should not be included in UI elements or the detail string.
 		/// </summary>
-		public static string[] ExcludedProperties;
+		public static readonly string[] ExcludedProperties;
+
+		#endregion
 
 		#region Constructors
 
@@ -104,7 +99,7 @@ namespace TestR.Desktop
 		public bool Enabled => NativeElement.CurrentIsEnabled == 1;
 
 		/// <summary>
-		/// Gets a value that indicates whether the element is focussed.
+		/// Gets a value that indicates whether the element is focused.
 		/// </summary>
 		public bool Focused => FromFocusElement()?.Id == Id;
 
@@ -180,7 +175,7 @@ namespace TestR.Desktop
 				tagPOINT point;
 				var clickable = NativeElement.GetClickablePoint(out point) > 0 && (point.x != 0 && point.y != 0);
 				var focused = Focused || Children.Any(x => x.Focused);
-                return NativeElement.CurrentIsOffscreen == 0 && (clickable || focused);
+				return NativeElement.CurrentIsOffscreen == 0 && (clickable || focused);
 			}
 		}
 
@@ -198,24 +193,6 @@ namespace TestR.Desktop
 			var point = GetClickablePoint(x, y);
 			Mouse.LeftClick(point);
 			Thread.Sleep(1);
-		}
-
-		/// <summary>
-		/// Temporary string to debug base controls.
-		/// </summary>
-		/// <returns> </returns>
-		public string DebugString()
-		{
-			var type = GetType();
-			var properties = type.GetProperties().OrderBy(x => x.Name).ToList();
-			var items = new Dictionary<string, string>(properties.Count);
-
-			foreach (var property in properties)
-			{
-				items.Add(property.Name, property.GetValue(type).ToString());
-			}
-
-			return string.Join(Environment.NewLine, items.Where(x => !string.IsNullOrWhiteSpace(x.Value)).Select(x => x.Key + " - " + x.Value));
 		}
 
 		/// <summary>
@@ -272,7 +249,7 @@ namespace TestR.Desktop
 			var element = automation.ElementFromPoint(new tagPOINT { x = point.X, y = point.Y });
 			return element == null ? null : new Element(element, null);
 		}
-		
+
 		/// <summary>
 		/// Gets the element that is currently focused.
 		/// </summary>
@@ -322,18 +299,10 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Gets the text value of the element.
 		/// </summary>
-		/// <returns> </returns>
+		/// <returns> The value of the element. </returns>
 		public string GetText()
 		{
-			var pattern = NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_ValuePatternId) as IUIAutomationValuePattern;
-
-			if (pattern != null)
-			{
-				// Control supports the ValuePattern pattern so we can use the SetValue method to insert content. 
-				return pattern.CurrentValue;
-			}
-
-			throw new NotSupportedException();
+			return GetPattern<IUIAutomationValuePattern>()?.CurrentValue ?? string.Empty;
 		}
 
 		/// <summary>
@@ -415,7 +384,7 @@ namespace TestR.Desktop
 					continue;
 				}
 
-                items.Add(property.Name, value.ToString());
+				items.Add(property.Name, value.ToString());
 			}
 
 			return string.Join(Environment.NewLine, items.Where(x => !string.IsNullOrWhiteSpace(x.Value)).Select(x => x.Key + " - " + x.Value));
@@ -520,16 +489,17 @@ namespace TestR.Desktop
 			return response;
 		}
 
+		protected T GetPattern<T>() where T : class
+		{
+			return NativeElement?.GetCurrentPattern(GetPatternId<T>()) as T;
+		}
+
 		/// <summary>
 		/// Handles the ChildrenUpdated event.
 		/// </summary>
 		protected void OnChildrenUpdated()
 		{
-			var handler = ChildrenUpdated;
-			if (handler != null)
-			{
-				handler();
-			}
+			ChildrenUpdated?.Invoke();
 		}
 
 		/// <summary>
@@ -653,6 +623,25 @@ namespace TestR.Desktop
 			var location = BoundingRectangle;
 			var size = Size;
 			return new Point(location.X + (size.Width / 2) + x, location.Y + (Size.Height / 2) + y);
+		}
+
+		private int GetPatternId<T>()
+		{
+			var type = typeof (T);
+			switch (type.Name)
+			{
+				case "IUIAutomationExpandCollapsePattern":
+					return UIA_PatternIds.UIA_ExpandCollapsePatternId;
+
+				case "IUIAutomationTogglePattern":
+					return UIA_PatternIds.UIA_TogglePatternId;
+
+				case "IUIAutomationValuePattern":
+					return UIA_PatternIds.UIA_ValuePatternId;
+
+				default:
+					return -1;
+			}
 		}
 
 		/// <summary>
