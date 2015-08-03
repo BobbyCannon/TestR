@@ -19,6 +19,7 @@
 	</metadata>
 	<files>
 		<file src="C:\Binaries\TestR\bin\TestR.dll" target="lib\net40" />
+		<file src="C:\Binaries\TestR\bin\TestR.Editor.exe" target="lib\net40" />
 		<file src="C:\Binaries\TestR\bin\TestR.PowerShell.dll" target="lib\net40" />
 		<file src="C:\Binaries\TestR\bin\Interop.SHDocVw.dll" target="lib\net40" />
 		<file src="C:\Binaries\TestR\bin\Interop.UIAutomationClient.dll" target="lib\net40" />

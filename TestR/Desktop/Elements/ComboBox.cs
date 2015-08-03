@@ -1,5 +1,6 @@
 ﻿#region References
 
+using TestR.Desktop.Pattern;
 using TestR.Extensions;
 using UIAutomationClient;
 using ExpandCollapseState = TestR.Desktop.Pattern.ExpandCollapseState;
@@ -27,17 +28,17 @@ namespace TestR.Desktop.Elements
 		/// <summary>
 		/// Gets the current expanded state of the combo box.
 		/// </summary>
-		public ExpandCollapseState ExpandCollapseState => GetPattern<IUIAutomationExpandCollapsePattern>()?.CurrentExpandCollapseState.Convert() ?? ExpandCollapseState.Expanded;
+		public ExpandCollapseState ExpandCollapseState => ExpandCollapsePattern.New(this)?.ExpandCollapseState ?? ExpandCollapseState.Collapsed;
 
 		/// <summary>
 		/// Gets a value indicating whether the control can have a value set programmatically, or that can be edited by the user.
 		/// </summary>
-		public bool ReadOnly => GetPattern<IUIAutomationValuePattern>()?.CurrentIsReadOnly == 1;
+		public bool ReadOnly => ValuePattern.New(this)?.IsReadOnly ?? false;
 
 		/// <summary>
 		/// Gets the text value.
 		/// </summary>
-		public string Text => GetPattern<IUIAutomationValuePattern>()?.CurrentValue ?? Name;
+		public string Text => ValuePattern.New(this)?.Value ?? string.Empty;
 
 		#endregion
 
@@ -48,7 +49,7 @@ namespace TestR.Desktop.Elements
 		/// </summary>
 		public void Collapse()
 		{
-			GetPattern<IUIAutomationExpandCollapsePattern>()?.Collapse();
+			ExpandCollapsePattern.New(this)?.Collapse();
 		}
 
 		/// <summary>
@@ -56,7 +57,7 @@ namespace TestR.Desktop.Elements
 		/// </summary>
 		public void Expand()
 		{
-			GetPattern<IUIAutomationExpandCollapsePattern>()?.Expand();
+			ExpandCollapsePattern.New(this)?.Expand();
 		}
 
 		#endregion

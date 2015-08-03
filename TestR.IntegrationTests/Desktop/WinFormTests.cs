@@ -21,7 +21,7 @@ namespace TestR.IntegrationTests.Desktop
 	{
 		#region Fields
 
-		public static string ApplicationPath;
+		private static string _applicationPath;
 
 		#endregion
 
@@ -30,7 +30,7 @@ namespace TestR.IntegrationTests.Desktop
 		[TestMethod]
 		public void CheckBoxCheckedStateShouldBeIndeterminate()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows.First();
 				var checkbox = window.WaitForChild<CheckBox>("checkBox3");
@@ -42,7 +42,7 @@ namespace TestR.IntegrationTests.Desktop
 		[TestMethod]
 		public void CheckBoxCheckedStateShouldBeOff()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows.First();
 				var checkbox = window.WaitForChild<CheckBox>("checkBox1");
@@ -54,7 +54,7 @@ namespace TestR.IntegrationTests.Desktop
 		[TestMethod]
 		public void CheckBoxCheckedStateShouldBeOn()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows.First();
 				var checkbox = window.WaitForChild<CheckBox>("checkBox2");
@@ -66,7 +66,7 @@ namespace TestR.IntegrationTests.Desktop
 		[TestMethod]
 		public void CheckBoxCount()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows.First();
 				var checkbox = window.Children.CheckBoxes;
@@ -78,7 +78,7 @@ namespace TestR.IntegrationTests.Desktop
 		[TestMethod]
 		public void CheckBoxWithIndeterminateStateShouldBeChecked()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows.First();
 				var checkbox = window.WaitForChild<CheckBox>("checkBox3");
@@ -90,7 +90,7 @@ namespace TestR.IntegrationTests.Desktop
 		[TestMethod]
 		public void CheckBoxWithOffStateShouldBeChecked()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows.First();
 				var checkbox = window.WaitForChild<CheckBox>("checkBox1");
@@ -102,7 +102,7 @@ namespace TestR.IntegrationTests.Desktop
 		[TestMethod]
 		public void CheckBoxWithOnStateShouldBeChecked()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows.First();
 				var checkbox = window.WaitForChild<CheckBox>("checkBox2");
@@ -114,7 +114,7 @@ namespace TestR.IntegrationTests.Desktop
 		[TestMethod]
 		public void CheckWindowId()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows.First();
 				Assert.AreEqual("FormMain", window.Id);
@@ -125,7 +125,7 @@ namespace TestR.IntegrationTests.Desktop
 		[TestMethod]
 		public void CheckWindowName()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows.First();
 				Assert.AreEqual("TestR Test WinForm", window.Name);
@@ -136,7 +136,7 @@ namespace TestR.IntegrationTests.Desktop
 		[TestMethod]
 		public void GetMainMenuBar()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows.First();
 				TestHelper.PrintChildren(window);
@@ -150,7 +150,7 @@ namespace TestR.IntegrationTests.Desktop
 		[TestMethod]
 		public void GetMainStatusStrip()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows.First();
 				var statusBar = window.StatusBar;
@@ -165,7 +165,7 @@ namespace TestR.IntegrationTests.Desktop
 		[TestMethod]
 		public void GetMainTitleBar()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows.First();
 				var titleBar = window.TitleBar;
@@ -180,7 +180,7 @@ namespace TestR.IntegrationTests.Desktop
 		[TestMethod]
 		public void GetWindowById()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows["FormMain"];
 				Assert.IsNotNull(window);
@@ -190,7 +190,7 @@ namespace TestR.IntegrationTests.Desktop
 		[TestMethod]
 		public void GetWindowByName()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.FirstOrDefault(x => x.Name == "TestR Test WinForm");
 				Assert.IsNotNull(window);
@@ -204,8 +204,8 @@ namespace TestR.IntegrationTests.Desktop
 			var path = Path.GetDirectoryName(assembly.Location);
 			var info = new DirectoryInfo(path ?? "/");
 
-			ApplicationPath = info.Parent?.Parent?.Parent?.FullName;
-			ApplicationPath += "\\TestR.TestWinForms\\Bin\\" + (assembly.IsAssemblyDebugBuild() ? "Debug" : "Release") + "\\TestR.TestWinForms.exe";
+			_applicationPath = info.Parent?.Parent?.Parent?.FullName;
+			_applicationPath += "\\TestR.TestWinForms\\Bin\\" + (assembly.IsAssemblyDebugBuild() ? "Debug" : "Release") + "\\TestR.TestWinForms.exe";
 		}
 
 		#endregion

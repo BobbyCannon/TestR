@@ -85,8 +85,12 @@
     <Compile Include="Desktop\Elements\Window.cs" />
     <Compile Include="Desktop\FilteredElementCollection.cs" />
     <Compile Include="Desktop\IElementParent.cs" />
+    <Compile Include="Desktop\Pattern\BasePattern.cs" />
+    <Compile Include="Desktop\Pattern\ExpandCollapsePattern.cs" />
     <Compile Include="Desktop\Pattern\ExpandCollapseState.cs" />
+    <Compile Include="Desktop\Pattern\TogglePattern.cs" />
     <Compile Include="Desktop\Pattern\ToggleState.cs" />
+    <Compile Include="Desktop\Pattern\ValuePattern.cs" />
     <Compile Include="Exceptions\NotKeyboardFocusableException.cs" />
     <Compile Include="Extensions\Assembly.cs" />
     <Compile Include="Extensions\PointExtensions.cs" />

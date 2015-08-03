@@ -39,6 +39,7 @@ Set-Location $scriptPath
 Copy-Item TestR\bin\$Configuration\TestR.dll $destination\bin\
 Copy-Item TestR\bin\$Configuration\Interop.SHDocVw.dll $destination\bin\
 Copy-Item TestR\bin\$Configuration\Interop.UIAutomationClient.dll $destination\bin\
+Copy-Item TestR.Editor\bin\$Configuration\TestR.Editor.exe $destination\bin\
 Copy-Item TestR.IntegrationTests\bin\$configuration\*.ps1 $destination\tests\
 Copy-Item TestR.IntegrationTests\bin\$configuration\*.dll $destination\tests\
 Copy-Item TestR.PowerShell\bin\$Configuration\TestR.PowerShell.dll $destination\bin\

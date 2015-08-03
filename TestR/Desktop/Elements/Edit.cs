@@ -1,5 +1,6 @@
 #region References
 
+using TestR.Desktop.Pattern;
 using UIAutomationClient;
 
 #endregion
@@ -25,7 +26,7 @@ namespace TestR.Desktop.Elements
 		/// <summary>
 		/// Gets a value indicating whether the control can have a value set programmatically, or that can be edited by the user.
 		/// </summary>
-		public bool ReadOnly => GetPattern<IUIAutomationValuePattern>()?.CurrentIsReadOnly == 1;
+		public bool ReadOnly => ValuePattern.New(this)?.IsReadOnly ?? true;
 
 		/// <summary>
 		/// Gets the text value.

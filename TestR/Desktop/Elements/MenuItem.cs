@@ -4,6 +4,7 @@
 
 #region References
 
+using TestR.Desktop.Pattern;
 using TestR.Extensions;
 using UIAutomationClient;
 using ExpandCollapseState = TestR.Desktop.Pattern.ExpandCollapseState;
@@ -31,12 +32,12 @@ namespace TestR.Desktop.Elements
 		/// <summary>
 		/// Gets the menu expand collapse state.
 		/// </summary>
-		public bool IsExpanded => SupportsExpandingCollapsing && GetPattern<IUIAutomationExpandCollapsePattern>()?.CurrentExpandCollapseState.Convert() != ExpandCollapseState.Collapsed;
+		public bool IsExpanded => ExpandCollapsePattern.New(this)?.IsExpanded ?? false;
 
 		/// <summary>
 		/// Gets a value indicating whether this menu item supports expanding and collapsing pattern.
 		/// </summary>
-		public bool SupportsExpandingCollapsing => GetPattern<IUIAutomationExpandCollapsePattern>() != null;
+		public bool SupportsExpandingCollapsing => ExpandCollapsePattern.New(this) != null;
 
 		/// <summary>
 		/// Gets the text value.
@@ -63,7 +64,7 @@ namespace TestR.Desktop.Elements
 		/// </summary>
 		public void Collapse()
 		{
-			GetPattern<IUIAutomationExpandCollapsePattern>()?.Collapse();
+			ExpandCollapsePattern.New(this)?.Collapse();
 		}
 
 		/// <summary>
@@ -71,7 +72,7 @@ namespace TestR.Desktop.Elements
 		/// </summary>
 		public void Expand()
 		{
-			GetPattern<IUIAutomationExpandCollapsePattern>()?.Expand();
+			ExpandCollapsePattern.New(this)?.Expand();
 		}
 
 		#endregion

@@ -1,5 +1,6 @@
 ﻿#region References
 
+using TestR.Desktop.Pattern;
 using TestR.Extensions;
 using UIAutomationClient;
 using ToggleState = TestR.Desktop.Pattern.ToggleState;
@@ -27,22 +28,22 @@ namespace TestR.Desktop.Elements
 		/// <summary>
 		/// Gets a flag indicating if the checkbox is checked.
 		/// </summary>
-		public bool Checked => GetPattern<IUIAutomationTogglePattern>()?.CurrentToggleState.Convert() != ToggleState.Off;
+		public bool Checked => TogglePattern.New(this).ToggleState != ToggleState.Off;
 
 		/// <summary>
 		/// Gets the state of the checkbox.
 		/// </summary>
-		public ToggleState CheckedState => GetPattern<IUIAutomationTogglePattern>()?.CurrentToggleState.Convert() ?? ToggleState.Off;
+		public ToggleState CheckedState => TogglePattern.New(this).ToggleState;
 
 		/// <summary>
 		/// Gets a value indicating whether the control can have a value set programmatically, or that can be edited by the user.
 		/// </summary>
-		public bool ReadOnly => GetPattern<IUIAutomationValuePattern>()?.CurrentIsReadOnly == 1;
+		public bool ReadOnly => ValuePattern.New(this)?.IsReadOnly ?? true;
 
 		/// <summary>
 		/// Gets the text value.
 		/// </summary>
-		public string Text => GetPattern<IUIAutomationValuePattern>()?.CurrentValue ?? Name;
+		public string Text => ValuePattern.New(this)?.Value;
 
 		#endregion
 
@@ -53,7 +54,7 @@ namespace TestR.Desktop.Elements
 		/// </summary>
 		public void Toggle()
 		{
-			GetPattern<IUIAutomationTogglePattern>()?.Toggle();
+			TogglePattern.New(this)?.Toggle();
 		}
 
 		#endregion

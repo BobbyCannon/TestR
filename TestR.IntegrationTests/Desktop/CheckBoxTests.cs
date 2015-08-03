@@ -197,16 +197,6 @@ namespace TestR.IntegrationTests.Desktop
 		}
 
 		[TestMethod]
-		public void TextShouldBeLabelValue()
-		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
-			{
-				var checkbox = application.GetChild<CheckBox>("checkBox1");
-				Assert.AreEqual("Unchecked", checkbox.Text);
-			}
-		}
-
-		[TestMethod]
 		public void VisibleShouldBeFalse()
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))

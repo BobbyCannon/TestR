@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using TestR.Desktop.Elements;
+using TestR.Desktop.Pattern;
 using TestR.Exceptions;
 using TestR.Extensions;
 using TestR.Helpers;
@@ -302,7 +303,7 @@ namespace TestR.Desktop
 		/// <returns> The value of the element. </returns>
 		public string GetText()
 		{
-			return GetPattern<IUIAutomationValuePattern>()?.CurrentValue ?? string.Empty;
+			return ValuePattern.New(this)?.Value ?? string.Empty;
 		}
 
 		/// <summary>
@@ -489,11 +490,6 @@ namespace TestR.Desktop
 			return response;
 		}
 
-		protected T GetPattern<T>() where T : class
-		{
-			return NativeElement?.GetCurrentPattern(GetPatternId<T>()) as T;
-		}
-
 		/// <summary>
 		/// Handles the ChildrenUpdated event.
 		/// </summary>
@@ -623,25 +619,6 @@ namespace TestR.Desktop
 			var location = BoundingRectangle;
 			var size = Size;
 			return new Point(location.X + (size.Width / 2) + x, location.Y + (Size.Height / 2) + y);
-		}
-
-		private int GetPatternId<T>()
-		{
-			var type = typeof (T);
-			switch (type.Name)
-			{
-				case "IUIAutomationExpandCollapsePattern":
-					return UIA_PatternIds.UIA_ExpandCollapsePatternId;
-
-				case "IUIAutomationTogglePattern":
-					return UIA_PatternIds.UIA_TogglePatternId;
-
-				case "IUIAutomationValuePattern":
-					return UIA_PatternIds.UIA_ValuePatternId;
-
-				default:
-					return -1;
-			}
 		}
 
 		/// <summary>
