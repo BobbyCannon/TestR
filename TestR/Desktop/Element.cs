@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using TestR.Desktop.Elements;
@@ -105,6 +106,11 @@ namespace TestR.Desktop
 		public bool Focused => FromFocusElement()?.Id == Id;
 
 		/// <summary>
+		/// Gets the height of the element.
+		/// </summary>
+		public int Height => Size.Height;
+
+		/// <summary>
 		/// Gets the ID of this element.
 		/// </summary>
 		public string Id => NativeElement.CurrentAutomationId;
@@ -179,6 +185,11 @@ namespace TestR.Desktop
 				return NativeElement.CurrentIsOffscreen == 0 && (clickable || focused);
 			}
 		}
+
+		/// <summary>
+		/// Gets the width of the element;
+		/// </summary>
+		public int Width => Size.Width;
 
 		#endregion
 
@@ -442,15 +453,22 @@ namespace TestR.Desktop
 
 			Utility.Wait(() =>
 			{
-				response = GetChild<T>(id, includeDescendants);
-				if (response != null)
+				try
 				{
-					return true;
-				}
+					response = GetChild<T>(id, includeDescendants);
+					if (response != null)
+					{
+						return true;
+					}
 
-				UpdateChildren();
-				return false;
-			}, Timeout.TotalMilliseconds, 100);
+					UpdateChildren();
+					return false;
+				}
+				catch (COMException)
+				{
+					return false;
+				}
+			}, Timeout.TotalMilliseconds, 10);
 
 			if (response == null)
 			{
@@ -472,15 +490,22 @@ namespace TestR.Desktop
 
 			Utility.Wait(() =>
 			{
-				response = GetChild(condition, includeDescendants);
-				if (response != null)
+				try
 				{
-					return true;
-				}
+					response = GetChild(condition, includeDescendants);
+					if (response != null)
+					{
+						return true;
+					}
 
-				UpdateChildren();
-				return false;
-			}, Timeout.TotalMilliseconds, 100);
+					UpdateChildren();
+					return false;
+				}
+				catch (COMException)
+				{
+					return false;
+				}
+			}, Timeout.TotalMilliseconds, 10);
 
 			if (response == null)
 			{

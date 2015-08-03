@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Management;
+using System.Runtime.InteropServices;
 using System.Threading;
 using TestR.Desktop.Elements;
 using TestR.Extensions;
@@ -458,14 +459,21 @@ namespace TestR.Desktop
 
 			Utility.Wait(() =>
 			{
-				response = GetChild<T>(id, includeDescendants);
-				if (response != null)
+				try
 				{
-					return true;
-				}
+					response = GetChild<T>(id, includeDescendants);
+					if (response != null)
+					{
+						return true;
+					}
 
-				UpdateChildren();
-				return false;
+					UpdateChildren();
+					return false;
+				}
+				catch (COMException)
+				{
+					return false;
+				}
 			}, Timeout.TotalMilliseconds, 10);
 
 			if (response == null)
@@ -488,14 +496,21 @@ namespace TestR.Desktop
 
 			Utility.Wait(() =>
 			{
-				response = GetChild(condition, includeDescendants);
-				if (response != null)
+				try
 				{
-					return true;
-				}
+					response = GetChild(condition, includeDescendants);
+					if (response != null)
+					{
+						return true;
+					}
 
-				UpdateChildren();
-				return false;
+					UpdateChildren();
+					return false;
+				}
+				catch (COMException)
+				{
+					return false;
+				}
 			}, Timeout.TotalMilliseconds, 10);
 
 			if (response == null)
