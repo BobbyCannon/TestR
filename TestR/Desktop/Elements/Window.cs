@@ -33,18 +33,12 @@ namespace TestR.Desktop.Elements
 		/// <summary>
 		/// Gets the status bar for the window. Returns null if the window does not have a status bar.
 		/// </summary>
-		public StatusBar StatusBar
-		{
-			get { return Children.StatusBars.FirstOrDefault(); }
-		}
+		public StatusBar StatusBar => Children.StatusBars.FirstOrDefault();
 
 		/// <summary>
 		/// Gets the title bar for the window. Returns null if the window does not have a title bar.
 		/// </summary>
-		public TitleBar TitleBar
-		{
-			get { return Children.TitleBars.FirstOrDefault(); }
-		}
+		public TitleBar TitleBar => Children.TitleBars.FirstOrDefault();
 
 		#endregion
 
@@ -65,11 +59,13 @@ namespace TestR.Desktop.Elements
 		/// </summary>
 		public void Close()
 		{
-			if (TitleBar != null)
+			if (TitleBar == null)
 			{
-				TitleBar.CloseButton.MoveMouseTo();
-				//TitleBar.CloseButton.Click();
+				return;
 			}
+
+			TitleBar.CloseButton.MoveMouseTo();
+			TitleBar.CloseButton.Click();
 		}
 
 		/// <summary>

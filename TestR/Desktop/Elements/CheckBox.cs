@@ -1,7 +1,6 @@
 ﻿#region References
 
 using TestR.Desktop.Pattern;
-using TestR.Extensions;
 using UIAutomationClient;
 using ToggleState = TestR.Desktop.Pattern.ToggleState;
 

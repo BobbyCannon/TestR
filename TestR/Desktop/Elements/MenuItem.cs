@@ -5,9 +5,7 @@
 #region References
 
 using TestR.Desktop.Pattern;
-using TestR.Extensions;
 using UIAutomationClient;
-using ExpandCollapseState = TestR.Desktop.Pattern.ExpandCollapseState;
 
 #endregion
 

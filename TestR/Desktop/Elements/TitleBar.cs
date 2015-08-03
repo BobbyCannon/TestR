@@ -25,17 +25,17 @@ namespace TestR.Desktop.Elements
 		/// <summary>
 		/// Gets the close button.
 		/// </summary>
-		public Button CloseButton => Children.Buttons["Close"];
+		public Button CloseButton => Children.GetChild<Button>(x => x.Name == "Close");
 
 		/// <summary>
 		/// Gets the maximize button.
 		/// </summary>
-		public Button MaximizeButton => Children.Buttons["Maximize"];
+		public Button MaximizeButton => Children.GetChild<Button>(x => x.Name == "Maximize");
 
 		/// <summary>
 		/// Gets the maximize button.
 		/// </summary>
-		public Button MinimizeButton => Children.Buttons["Minimize"];
+		public Button MinimizeButton => Children.GetChild<Button>(x => x.Name == "Minimize");
 
 		/// <summary>
 		/// Gets the text value.

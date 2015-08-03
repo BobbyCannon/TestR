@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -374,6 +375,21 @@ namespace TestR.Desktop
 			// Pause before sending keyboard input.
 			Thread.Sleep(100);
 			Keyboard.TypeText(value);
+		}
+
+		/// <summary>
+		/// Takes a screenshot of the element.
+		/// </summary>
+		public void TakeScreenshot(string filePath)
+		{
+			var result = new Bitmap(Width, Height);
+
+			using (var graphics = Graphics.FromImage(result))
+			{
+				graphics.CopyFromScreen(Location, Point.Empty, Size);
+			}
+
+			result.Save(filePath, ImageFormat.Png);
 		}
 
 		/// <summary>

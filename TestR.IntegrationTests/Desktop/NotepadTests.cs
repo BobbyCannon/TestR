@@ -129,6 +129,17 @@ namespace TestR.IntegrationTests.Desktop
 		}
 
 		[TestMethod]
+		public void Screenshot()
+		{
+			var filePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Test.png";
+			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
+			{
+				var window = application.Children.Windows.First();
+				window.TitleBar.TakeScreenshot(filePath);
+			}
+		}
+
+		[TestMethod]
 		public void WaitForButtons()
 		{
 			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
