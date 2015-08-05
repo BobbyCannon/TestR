@@ -18,7 +18,7 @@ namespace TestR.Web
 		Chrome = 0x01,
 
 		/// <summary>
-		/// Represents a Internet Explorer browser.
+		/// Represents an Internet Explorer browser.
 		/// </summary>
 		InternetExplorer = 0x02,
 
@@ -26,6 +26,11 @@ namespace TestR.Web
 		/// Represents a Firefox browser.
 		/// </summary>
 		Firefox = 0x04,
+
+		/// <summary>
+		/// Represents an Edge browser.
+		/// </summary>
+		Edge = 0x08,
 
 		/// <summary>
 		/// Represents all browser types.

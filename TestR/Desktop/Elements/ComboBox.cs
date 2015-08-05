@@ -27,17 +27,17 @@ namespace TestR.Desktop.Elements
 		/// <summary>
 		/// Gets the current expanded state of the combo box.
 		/// </summary>
-		public ExpandCollapseState ExpandCollapseState => ExpandCollapsePattern.New(this)?.ExpandCollapseState ?? ExpandCollapseState.Collapsed;
+		public ExpandCollapseState ExpandCollapseState => ExpandCollapsePattern.New(this).ExpandCollapseState;
 
 		/// <summary>
 		/// Gets a value indicating whether the control can have a value set programmatically, or that can be edited by the user.
 		/// </summary>
-		public bool ReadOnly => ValuePattern.New(this)?.IsReadOnly ?? false;
+		public bool ReadOnly => ValuePattern.New(this).IsReadOnly;
 
 		/// <summary>
 		/// Gets the text value.
 		/// </summary>
-		public string Text => ValuePattern.New(this)?.Value ?? string.Empty;
+		public string Text => ValuePattern.New(this).Value;
 
 		#endregion
 
@@ -48,7 +48,7 @@ namespace TestR.Desktop.Elements
 		/// </summary>
 		public void Collapse()
 		{
-			ExpandCollapsePattern.New(this)?.Collapse();
+			ExpandCollapsePattern.New(this).Collapse();
 		}
 
 		/// <summary>
@@ -56,7 +56,7 @@ namespace TestR.Desktop.Elements
 		/// </summary>
 		public void Expand()
 		{
-			ExpandCollapsePattern.New(this)?.Expand();
+			ExpandCollapsePattern.New(this).Expand();
 		}
 
 		#endregion

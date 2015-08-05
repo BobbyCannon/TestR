@@ -82,18 +82,7 @@ namespace TestR.Web.Browsers
 		/// <summary>
 		/// Gets the type of the browser.
 		/// </summary>
-		public override BrowserType BrowserType
-		{
-			get { return BrowserType.Chrome; }
-		}
-
-		/// <summary>
-		/// Gets the ID of the browser.
-		/// </summary>
-		public override int Id
-		{
-			get { return Application.Handle.ToInt32(); }
-		}
+		public override BrowserType BrowserType => BrowserType.Chrome;
 
 		#endregion
 
@@ -138,7 +127,7 @@ namespace TestR.Web.Browsers
 			}
 
 			// Create a new instance and return it.
-			var browser = new Chrome(CreateInstance(string.Format("{0}.exe", Name), DebugArgument));
+			var browser = new Chrome(CreateInstance($"{Name}.exe", DebugArgument));
 			browser.Connect();
 			return browser;
 		}

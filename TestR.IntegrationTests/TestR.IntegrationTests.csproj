@@ -58,18 +58,22 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
       </ItemGroup>
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Desktop\CheckBoxTests.cs" />
+    <Compile Include="Desktop\Elements\CheckBoxTests.cs" />
+    <Compile Include="Desktop\Elements\ComboBoxTests.cs" />
     <Compile Include="Desktop\WinFormTests.cs" />
     <Compile Include="Desktop\NotepadTests.cs" />
-    <Compile Include="BrowserTests.cs" />
-    <Compile Include="InternetExplorerTests.cs" />
+    <Compile Include="Web\BrowserTests.cs" />
+    <Compile Include="Web\InternetExplorerTests.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Web\EdgeTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TestR.PowerShell\TestR.PowerShell.csproj">

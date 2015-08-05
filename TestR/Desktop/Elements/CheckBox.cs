@@ -37,12 +37,7 @@ namespace TestR.Desktop.Elements
 		/// <summary>
 		/// Gets a value indicating whether the control can have a value set programmatically, or that can be edited by the user.
 		/// </summary>
-		public bool ReadOnly => ValuePattern.New(this)?.IsReadOnly ?? true;
-
-		/// <summary>
-		/// Gets the text value.
-		/// </summary>
-		public string Text => ValuePattern.New(this)?.Value;
+		public bool ReadOnly => ValuePattern.New(this).IsReadOnly;
 
 		#endregion
 
@@ -53,7 +48,7 @@ namespace TestR.Desktop.Elements
 		/// </summary>
 		public void Toggle()
 		{
-			TogglePattern.New(this)?.Toggle();
+			TogglePattern.New(this).Toggle();
 		}
 
 		#endregion

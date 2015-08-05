@@ -8,13 +8,15 @@ using UIAutomationClient;
 
 namespace TestR.Desktop.Pattern
 {
-	public class ExpandCollapsePattern : BasePattern
+	public class ExpandCollapsePattern
 	{
+		private readonly IUIAutomationExpandCollapsePattern _pattern;
+
 		#region Constructors
 
-		private ExpandCollapsePattern(Element element)
-			: base(element)
+		private ExpandCollapsePattern(IUIAutomationExpandCollapsePattern pattern)
 		{
+			_pattern = pattern;
 		}
 
 		#endregion
@@ -24,7 +26,7 @@ namespace TestR.Desktop.Pattern
 		/// <summary>
 		/// Gets the current expanded state of the element.
 		/// </summary>
-		public ExpandCollapseState ExpandCollapseState => GetPattern<IUIAutomationExpandCollapsePattern>()?.CurrentExpandCollapseState.Convert() ?? ExpandCollapseState.Expanded;
+		public ExpandCollapseState ExpandCollapseState => _pattern.CurrentExpandCollapseState.Convert();
 
 		/// <summary>
 		/// Gets the value indicating the element is expanded.
@@ -34,7 +36,7 @@ namespace TestR.Desktop.Pattern
 			get
 			{
 				var expandedStates = new[] { ExpandCollapseState.Expanded, ExpandCollapseState.PartiallyExpanded };
-				return expandedStates.Contains(GetPattern<IUIAutomationExpandCollapsePattern>()?.CurrentExpandCollapseState.Convert() ?? ExpandCollapseState.Collapsed);
+				return expandedStates.Contains(_pattern.CurrentExpandCollapseState.Convert());
 			}
 		}
 
@@ -47,7 +49,7 @@ namespace TestR.Desktop.Pattern
 		/// </summary>
 		public void Collapse()
 		{
-			GetPattern<IUIAutomationExpandCollapsePattern>()?.Collapse();
+			_pattern.Collapse();
 		}
 
 		/// <summary>
@@ -55,12 +57,13 @@ namespace TestR.Desktop.Pattern
 		/// </summary>
 		public void Expand()
 		{
-			GetPattern<IUIAutomationExpandCollapsePattern>()?.Expand();
+			_pattern.Expand();
 		}
 
 		public static ExpandCollapsePattern New(Element element)
 		{
-			return new ExpandCollapsePattern(element);
+			var pattern = element.NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_ExpandCollapsePatternId) as IUIAutomationExpandCollapsePattern;
+			return pattern == null ? null : new ExpandCollapsePattern(pattern);
 		}
 
 		#endregion

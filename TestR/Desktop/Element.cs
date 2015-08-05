@@ -339,7 +339,7 @@ namespace TestR.Desktop
 			var point = GetClickablePoint(x, y);
 			Mouse.RightClick(point);
 		}
-
+	
 		/// <summary>
 		/// Sets the text value of the element.
 		/// </summary>

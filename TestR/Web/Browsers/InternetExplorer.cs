@@ -51,26 +51,12 @@ namespace TestR.Web.Browsers
 		/// <summary>
 		/// Gets the type of the browser.
 		/// </summary>
-		public override BrowserType BrowserType
-		{
-			get { return BrowserType.InternetExplorer; }
-		}
-
-		/// <summary>
-		/// Gets the ID of the browser.
-		/// </summary>
-		public override int Id
-		{
-			get { return Application.Handle.ToInt32(); }
-		}
+		public override BrowserType BrowserType => BrowserType.InternetExplorer;
 
 		/// <summary>
 		/// Gets the raw HTML of the page.
 		/// </summary>
-		public override string RawHtml
-		{
-			get { return ((HTMLDocument) _browser.Document).documentElement.outerHTML; }
-		}
+		public override string RawHtml => ((HTMLDocument) _browser.Document).documentElement.outerHTML;
 
 		#endregion
 
@@ -80,7 +66,7 @@ namespace TestR.Web.Browsers
 		/// Attempts to attach to an existing browser.
 		/// </summary>
 		/// <returns> An instance of an Internet Explorer browser. </returns>
-		public static InternetExplorer Attach()
+		public static Browser Attach()
 		{
 			var foundBrowser = GetBrowserToAttachTo();
 			if (foundBrowser == null)
@@ -98,7 +84,7 @@ namespace TestR.Web.Browsers
 		/// Attempts to attach to an existing browser. If one is not found then create and return a new one.
 		/// </summary>
 		/// <returns> An instance of an Internet Explorer browser. </returns>
-		public static InternetExplorer AttachOrCreate()
+		public static Browser AttachOrCreate()
 		{
 			return Attach() ?? Create();
 		}
@@ -112,7 +98,7 @@ namespace TestR.Web.Browsers
 		{
 			if (url == null)
 			{
-				throw new ArgumentNullException("url");
+				throw new ArgumentNullException(nameof(url));
 			}
 
 			var path = Environment.GetFolderPath(Environment.SpecialFolder.Cookies);
@@ -142,7 +128,7 @@ namespace TestR.Web.Browsers
 		/// Creates a new instance of an Internet Explorer browser.
 		/// </summary>
 		/// <returns> An instance of an Internet Explorer browser. </returns>
-		public static InternetExplorer Create()
+		public static Browser Create()
 		{
 			return new InternetExplorer(CreateInternetExplorerClass());
 		}

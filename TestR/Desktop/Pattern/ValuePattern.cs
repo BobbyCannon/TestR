@@ -6,21 +6,27 @@ using UIAutomationClient;
 
 namespace TestR.Desktop.Pattern
 {
-	public class ValuePattern : BasePattern
+	public class ValuePattern
 	{
+		#region Fields
+
+		private readonly IUIAutomationValuePattern _pattern;
+
+		#endregion
+
 		#region Constructors
 
-		private ValuePattern(Element element)
-			: base(element)
+		private ValuePattern(IUIAutomationValuePattern pattern)
 		{
+			_pattern = pattern;
 		}
 
 		#endregion
 
 		#region Properties
 
-		public bool IsReadOnly => GetPattern<IUIAutomationValuePattern>()?.CurrentIsReadOnly == 1;
-		public string Value => GetPattern<IUIAutomationValuePattern>()?.CurrentValue ?? string.Empty;
+		public bool IsReadOnly => _pattern.CurrentIsReadOnly == 1;
+		public string Value => _pattern.CurrentValue;
 
 		#endregion
 
@@ -28,12 +34,13 @@ namespace TestR.Desktop.Pattern
 
 		public static ValuePattern New(Element element)
 		{
-			return new ValuePattern(element);
+			var pattern = element.NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_ValuePatternId) as IUIAutomationValuePattern;
+			return pattern == null ? null : new ValuePattern(pattern);
 		}
 
 		public void SetValue(string value)
 		{
-			GetPattern<IUIAutomationValuePattern>()?.SetValue(value);
+			_pattern.SetValue(value);
 		}
 
 		#endregion

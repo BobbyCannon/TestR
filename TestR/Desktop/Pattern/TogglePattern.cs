@@ -7,21 +7,23 @@ using UIAutomationClient;
 
 namespace TestR.Desktop.Pattern
 {
-	public class TogglePattern : BasePattern
+	public class TogglePattern
 	{
+		private readonly IUIAutomationTogglePattern _pattern;
+
 		#region Constructors
 
-		private TogglePattern(Element element)
-			: base(element)
+		private TogglePattern(IUIAutomationTogglePattern pattern)
 		{
+			_pattern = pattern;
 		}
 
 		#endregion
 
 		#region Properties
 
-		public bool Toggled => GetPattern<IUIAutomationTogglePattern>()?.CurrentToggleState.Convert() != ToggleState.Off;
-		public ToggleState ToggleState => GetPattern<IUIAutomationTogglePattern>()?.CurrentToggleState.Convert() ?? ToggleState.Off;
+		public bool Toggled => _pattern.CurrentToggleState.Convert() != ToggleState.Off;
+		public ToggleState ToggleState => _pattern.CurrentToggleState.Convert();
 
 		#endregion
 
@@ -29,12 +31,13 @@ namespace TestR.Desktop.Pattern
 
 		public static TogglePattern New(Element element)
 		{
-			return new TogglePattern(element);
+			var pattern = element.NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_TogglePatternId) as IUIAutomationTogglePattern;
+			return pattern == null ? null : new TogglePattern(pattern);
 		}
 
 		public void Toggle()
 		{
-			GetPattern<IUIAutomationTogglePattern>()?.Toggle();
+			_pattern.Toggle();
 		}
 
 		#endregion

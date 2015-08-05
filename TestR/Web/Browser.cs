@@ -95,7 +95,7 @@ namespace TestR.Web
 		/// <summary>
 		/// Gets the ID of the browser.
 		/// </summary>
-		public abstract int Id { get; }
+		public int Id => Application.Handle.ToInt32();
 
 		/// <summary>
 		/// Gets a list of JavaScript libraries that were detected on the page.
@@ -287,12 +287,12 @@ namespace TestR.Web
 		{
 			if (uri == null)
 			{
-				throw new ArgumentNullException("uri");
+				throw new ArgumentNullException(nameof(uri));
 			}
 
 			LogManager.Write("Navigating to " + uri + ".", LogLevel.Verbose);
 			BrowserNavigateTo(uri);
-			WaitForNavigation(expectedUri);
+			//WaitForNavigation(expectedUri);
 		}
 
 		/// <summary>
@@ -436,17 +436,25 @@ namespace TestR.Web
 		/// <summary>
 		/// Inserts the test script into the current page.
 		/// </summary>
-		protected static string GetTestScript()
+		public static string GetTestScript()
 		{
 			var assembly = Assembly.GetExecutingAssembly();
 
-			using (var stream = assembly.GetManifestResourceStream("TestR.TestR.min.js"))
+			using (var stream = assembly.GetManifestResourceStream("TestR.TestR.js"))
 			{
 				if (stream != null)
 				{
 					using (var reader = new StreamReader(stream))
 					{
-						return reader.ReadToEnd();
+						var data = reader.ReadToEnd();
+						var lines = data.Split(Environment.NewLine);
+						for (var i = 0; i < lines.Length; i++)
+						{
+							lines[i] = lines[i].Trim();
+						}
+
+						data = string.Join("", lines.Where(x => !x.StartsWith("//"))).Replace("\t", "");
+						return data;
 					}
 				}
 			}

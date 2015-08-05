@@ -83,18 +83,7 @@ namespace TestR.Web.Browsers
 		/// <summary>
 		/// Gets the type of the browser.
 		/// </summary>
-		public override BrowserType BrowserType
-		{
-			get { return BrowserType.Firefox; }
-		}
-
-		/// <summary>
-		/// Gets the ID of the browser.
-		/// </summary>
-		public override int Id
-		{
-			get { return Application.Handle.ToInt32(); }
-		}
+		public override BrowserType BrowserType => BrowserType.Firefox;
 
 		#endregion
 
@@ -138,7 +127,7 @@ namespace TestR.Web.Browsers
 		public static Browser Create()
 		{
 			// Create a new instance and return it.
-			var browser = new Firefox(CreateInstance(string.Format("{0}.exe", Name), DebugArgument));
+			var browser = new Firefox(CreateInstance($"{Name}.exe", DebugArgument));
 			browser.Connect();
 			return browser;
 		}
