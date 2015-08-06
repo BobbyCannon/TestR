@@ -105,10 +105,7 @@ namespace TestR.Web
 		/// <summary>
 		/// Gets the raw HTML of the page.
 		/// </summary>
-		public virtual string RawHtml
-		{
-			get { return ExecuteScript("document.getElementsByTagName('body')[0].innerHTML"); }
-		}
+		public virtual string RawHtml => ExecuteScript("document.getElementsByTagName('body')[0].innerHTML");
 
 		/// <summary>
 		/// Gets or sets a flag to tell the browser to act slower. Defaults to false.
@@ -123,10 +120,7 @@ namespace TestR.Web
 		/// <summary>
 		/// Gets the URI of the current page.
 		/// </summary>
-		public string Uri
-		{
-			get { return GetBrowserUri(); }
-		}
+		public string Uri => GetBrowserUri();
 
 		#endregion
 
@@ -287,7 +281,7 @@ namespace TestR.Web
 		{
 			if (uri == null)
 			{
-				throw new ArgumentNullException("uri");
+				throw new ArgumentNullException(nameof(uri));
 			}
 
 			LogManager.Write("Navigating to " + uri + ".", LogLevel.Verbose);

@@ -183,7 +183,7 @@ namespace TestR.Editor
 
 		public Element GetElement(string applicationId)
 		{
-			return Application?.Descendants().FirstOrDefault(x => x.ApplicationId == applicationId);
+			return Application?.GetChild<Element>(x => x.ApplicationId == applicationId);
 		}
 
 		public void Initialize(string applicationPath)

@@ -75,10 +75,7 @@ namespace TestR.Web
 		/// <summary>
 		/// Gets the children for this element.
 		/// </summary>
-		public ElementCollection Children
-		{
-			get { return new ElementCollection(_collection.Where(x => x.ParentId == Id)); }
-		}
+		public ElementCollection Children => new ElementCollection(_collection.Where(x => x.ParentId == Id));
 
 		/// <summary>
 		/// Gets or sets the class attribute.

@@ -1,5 +1,6 @@
 #region References
 
+using System.Linq;
 using TestR.Extensions;
 
 #endregion

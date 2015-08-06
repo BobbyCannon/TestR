@@ -1,7 +1,6 @@
 ﻿#region References
 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using TestR.Desktop.Elements;
@@ -200,7 +199,7 @@ namespace TestR.Desktop
 		/// <returns> The child if found or null if otherwise. </returns>
 		public T1 GetChild<T1>(Func<T1, bool> condition, bool includeDescendants = true) where T1 : Element, IElementParent
 		{
-			var children = OfType<T1>().ToList();
+			var children = this.OfType<T1>().ToList();
 			var response = children.FirstOrDefault(condition);
 			if (!includeDescendants)
 			{
@@ -222,16 +221,6 @@ namespace TestR.Desktop
 			}
 
 			return null;
-		}
-
-		/// <summary>
-		/// Gets a collection of element of the provided type.
-		/// </summary>
-		/// <typeparam name="TChild"> The type of the element for the collection. </typeparam>
-		/// <returns> The collection of elements of the provided type. </returns>
-		public IEnumerable<TChild> OfType<TChild>() where TChild : IElementParent
-		{
-			return this.Where(x => x.GetType() == typeof (TChild)).Cast<TChild>().ToList();
 		}
 
 		/// <summary>
