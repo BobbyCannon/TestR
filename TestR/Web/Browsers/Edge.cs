@@ -92,11 +92,19 @@ namespace TestR.Web.Browsers
 		{
 			if (script.Contains("var TestR=TestR") || script.Contains("var TestR = TestR"))
 			{
+				script = script.Replace("var TestR = TestR || {", "TestR = {");
 				return Request("POST", "http://localhost:17556/session/" + _sessionId + "/execute", "{\"script\": \"" + script + "\", \"args\": []}");
 			}
 
-			var wrappedScript = GetTestScript() + "TestR.runScript('" + script + "');";
-			return Request("POST", "http://localhost:17556/session/" + _sessionId + "/execute", "{\"script\": \"" + wrappedScript + "\", \"args\": []}");
+			var wrappedScript = "TestR.runScript('" + script + "');";
+			var data = Request("POST", "http://localhost:17556/session/" + _sessionId + "/execute", "{\"script\": \"" + wrappedScript + "\", \"args\": []}");
+			var response = JsonConvert.DeserializeObject<dynamic>(data);
+			if (response.status != 0)
+			{
+				return "TestR is not defined";
+			}
+
+			return GetScriptResults();
 		}
 
 		/// <summary>
@@ -106,14 +114,22 @@ namespace TestR.Web.Browsers
 		protected override string GetBrowserUri()
 		{
 			LogManager.Write("Get browser's URI.", LogLevel.Verbose);
-			var response = ExecuteJavaScript("window.location.href");
-			response.Dump();
-			return response;
+			return ExecuteScript("window.location.href");
 		}
 
-		public string Test()
+		private string GetScriptResults()
 		{
-			return Request("POST", "http://localhost:17556/session/" + _sessionId + "/element", "{\"using\":\"id\",\"value\":\"testrResult\"}");
+			var data = Request("POST", "http://localhost:17556/session/" + _sessionId + "/element", "{\"using\":\"id\",\"value\":\"testrResult\"}");
+			var response = JsonConvert.DeserializeObject<dynamic>(data);
+			if (response.status == 7)
+			{
+				return "TestR is not defined";
+			}
+
+			var elementId = ((object)response.value.ELEMENT).ToString();
+			data = Request("GET", "http://localhost:17556/session/" + _sessionId + "/element/" + elementId + "/attribute/value", null);
+			response = JsonConvert.DeserializeObject<dynamic>(data);
+			return ((object) response.value).ToString();
 		}
 
 		/// <summary>
@@ -154,7 +170,7 @@ namespace TestR.Web.Browsers
 		{
 			var request = (HttpWebRequest) WebRequest.Create(location);
 			request.Method = method;
-			request.Timeout = 5000;
+			request.Timeout = 30000;
 
 			if (data != null)
 			{
