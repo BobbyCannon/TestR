@@ -13,8 +13,8 @@ namespace TestR.Desktop.Elements
 	{
 		#region Constructors
 
-		internal ToolBar(IUIAutomationElement element, IElementParent parent)
-			: base(element, parent)
+		internal ToolBar(IUIAutomationElement element, Application application, Element parent)
+			: base(element, application, parent)
 		{
 		}
 

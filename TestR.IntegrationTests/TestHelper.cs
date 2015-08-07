@@ -31,7 +31,7 @@ namespace TestR.IntegrationTests
 			Assert.IsTrue(result.AreEqual, result.DifferencesString);
 		}
 
-		public static void PrintChildren(IElementParent parent, string prefix = "")
+		public static void PrintChildren(Element parent, string prefix = "")
 		{
 			var element = parent as Element;
 			if (element != null)

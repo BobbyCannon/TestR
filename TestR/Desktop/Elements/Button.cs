@@ -15,8 +15,8 @@ namespace TestR.Desktop.Elements
 	{
 		#region Constructors
 
-		internal Button(IUIAutomationElement element, IElementParent parent)
-			: base(element, parent)
+		internal Button(IUIAutomationElement element, Application application, Element parent)
+			: base(element, application, parent)
 		{
 		}
 

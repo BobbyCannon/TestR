@@ -16,13 +16,8 @@ namespace TestR.Desktop.Elements
 	{
 		#region Constructors
 
-		/// <summary>
-		/// Instantiates a window element.
-		/// </summary>
-		/// <param name="element"> The automation element for this element. </param>
-		/// <param name="parent"> The parent for this element. </param>
-		internal Window(IUIAutomationElement element, IElementParent parent)
-			: base(element, parent)
+		internal Window(IUIAutomationElement element, Application application, Element parent)
+			: base(element, application, parent)
 		{
 		}
 

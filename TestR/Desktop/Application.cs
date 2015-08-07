@@ -20,7 +20,7 @@ namespace TestR.Desktop
 	/// <summary>
 	/// Represents an application that can be automated.
 	/// </summary>
-	public class Application : IDisposable, IElementParent
+	public class Application : IDisposable
 	{
 		#region Constructors
 
@@ -30,7 +30,7 @@ namespace TestR.Desktop
 		/// <param name="process"> The process for the application. </param>
 		internal Application(Process process)
 		{
-			Children = new ElementCollection<Element>(this);
+			Children = new ElementCollection<Element>();
 			Process = process;
 			Process.Exited += (sender, args) => OnClosed();
 			Process.EnableRaisingEvents = true;
@@ -359,7 +359,7 @@ namespace TestR.Desktop
 		/// <param name="key"> The key of the child. </param>
 		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
 		/// <returns> The child if found or null if otherwise. </returns>
-		public T GetChild<T>(string key, bool includeDescendants = true) where T : Element, IElementParent
+		public T GetChild<T>(string key, bool includeDescendants = true) where T : Element
 		{
 			return (T) Children.GetChild(key, includeDescendants);
 		}
@@ -371,7 +371,7 @@ namespace TestR.Desktop
 		/// <param name="condition"> A function to test each element for a condition. </param>
 		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
 		/// <returns> The child if found or null if otherwise. </returns>
-		public T GetChild<T>(Func<T, bool> condition, bool includeDescendants = true) where T : Element, IElementParent
+		public T GetChild<T>(Func<T, bool> condition, bool includeDescendants = true) where T : Element
 		{
 			return Children.GetChild(condition, includeDescendants);
 		}
@@ -408,7 +408,7 @@ namespace TestR.Desktop
 				Utility.Wait(() =>
 				{
 					Children.Clear();
-					Children.AddRange(Process.GetWindows().Select(x => new Window(x, this)));
+					Children.AddRange(Process.GetWindows().Select(x => new Window(x, this, null)));
 					return Children.Any();
 				}, Timeout.TotalMilliseconds, 10);
 

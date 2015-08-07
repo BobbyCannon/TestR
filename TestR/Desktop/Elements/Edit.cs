@@ -14,8 +14,8 @@ namespace TestR.Desktop.Elements
 	{
 		#region Constructors
 
-		internal Edit(IUIAutomationElement element, IElementParent parent)
-			: base(element, parent)
+		internal Edit(IUIAutomationElement element, Application application, Element parent)
+			: base(element, application, parent)
 		{
 		}
 

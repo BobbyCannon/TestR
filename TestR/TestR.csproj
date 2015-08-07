@@ -83,8 +83,6 @@
     <Compile Include="Desktop\Elements\ToolBar.cs" />
     <Compile Include="Desktop\Elements\Tree.cs" />
     <Compile Include="Desktop\Elements\Window.cs" />
-    <Compile Include="Desktop\FilteredElementCollection.cs" />
-    <Compile Include="Desktop\IElementParent.cs" />
     <Compile Include="Desktop\Pattern\BasePattern.cs" />
     <Compile Include="Desktop\Pattern\ExpandCollapsePattern.cs" />
     <Compile Include="Desktop\Pattern\ExpandCollapseState.cs" />

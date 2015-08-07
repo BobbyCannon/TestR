@@ -13,8 +13,8 @@ namespace TestR.Desktop.Elements
 	{
 		#region Constructors
 
-		internal Custom(IUIAutomationElement element, IElementParent parent)
-			: base(element, parent)
+		internal Custom(IUIAutomationElement element, Application application, Element parent)
+			: base(element, application, parent)
 		{
 		}
 

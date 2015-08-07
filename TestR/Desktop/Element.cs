@@ -24,7 +24,7 @@ namespace TestR.Desktop
 	/// <summary>
 	/// Base element for desktop automation.
 	/// </summary>
-	public class Element : IElementParent
+	public class Element
 	{
 		#region Fields
 
@@ -32,6 +32,8 @@ namespace TestR.Desktop
 		/// Properties that should not be included in UI elements or the detail string.
 		/// </summary>
 		public static readonly string[] ExcludedProperties;
+
+		internal Application Application { get; }
 
 		#endregion
 
@@ -41,10 +43,12 @@ namespace TestR.Desktop
 		/// Creates an instance of an element.
 		/// </summary>
 		/// <param name="element"> The automation element for this element. </param>
+		/// <param name="application"> The application parent for this element. </param>
 		/// <param name="parent"> The parent element for this element. </param>
-		internal Element(IUIAutomationElement element, IElementParent parent)
+		internal Element(IUIAutomationElement element, Application application, Element parent)
 		{
-			Children = new ElementCollection<Element>(this);
+			Application = application;
+			Children = new ElementCollection<Element>();
 			NativeElement = element;
 			Parent = parent;
 		}
@@ -73,7 +77,7 @@ namespace TestR.Desktop
 				do
 				{
 					builder.Insert(0, new[] { element.Id, element.Name, " " }.FirstValue());
-					element = element.Parent as Element;
+					element = element.Parent;
 				} while (element != null);
 				return builder.ToString();
 			}
@@ -139,7 +143,7 @@ namespace TestR.Desktop
 		/// <summary>
 		/// The parent element of this element.
 		/// </summary>
-		public IElementParent Parent { get; private set; }
+		public Element Parent { get; private set; }
 
 		/// <summary>
 		/// Gets the current process ID  of the element.
@@ -157,11 +161,6 @@ namespace TestR.Desktop
 				return new Size(test.right - test.left, test.bottom - test.top);
 			}
 		}
-
-		/// <summary>
-		/// Gets or sets the time out for delay request.
-		/// </summary>
-		public TimeSpan Timeout => Parent.Timeout;
 
 		/// <summary>
 		/// Gets the type ID of this element.
@@ -260,7 +259,7 @@ namespace TestR.Desktop
 			var point = Mouse.GetCursorPosition();
 			var automation = new CUIAutomationClass();
 			var element = automation.ElementFromPoint(new tagPOINT { x = point.X, y = point.Y });
-			return element == null ? null : new Element(element, null);
+			return element == null ? null : new Element(element, null, null);
 		}
 
 		/// <summary>
@@ -271,7 +270,7 @@ namespace TestR.Desktop
 		{
 			var automation = new CUIAutomationClass();
 			var element = automation.GetFocusedElement();
-			return element == null ? null : new Element(element, null);
+			return element == null ? null : new Element(element, null, null);
 		}
 
 		/// <summary>
@@ -282,7 +281,7 @@ namespace TestR.Desktop
 		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
 		/// <returns> The child if found or null if otherwise. </returns>
 		public T GetChild<T>(string key, bool includeDescendants = true)
-			where T : Element, IElementParent
+			where T : Element
 		{
 			return (T) Children.GetChild(key, includeDescendants);
 		}
@@ -294,7 +293,7 @@ namespace TestR.Desktop
 		/// <param name="condition"> A function to test each element for a condition. </param>
 		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
 		/// <returns> The child if found or null if otherwise. </returns>
-		public T GetChild<T>(Func<T, bool> condition, bool includeDescendants = true) where T : Element, IElementParent
+		public T GetChild<T>(Func<T, bool> condition, bool includeDescendants = true) where T : Element
 		{
 			return Children.GetChild(condition, includeDescendants);
 		}
@@ -306,7 +305,7 @@ namespace TestR.Desktop
 		/// <returns> The parent if found or null otherwise. </returns>
 		public static Element GetFirstParentWithId(Element element)
 		{
-			return !string.IsNullOrEmpty(element.Id) ? element : GetFirstParentWithId(element.Parent as Element);
+			return !string.IsNullOrEmpty(element.Id) ? element : GetFirstParentWithId(element.Parent);
 		}
 
 		/// <summary>
@@ -484,7 +483,7 @@ namespace TestR.Desktop
 				{
 					return false;
 				}
-			}, Timeout.TotalMilliseconds, 10);
+			}, Application?.Timeout.TotalMilliseconds ?? 5000, 10);
 
 			if (response == null)
 			{
@@ -521,7 +520,7 @@ namespace TestR.Desktop
 				{
 					return false;
 				}
-			}, Timeout.TotalMilliseconds, 10);
+			}, Application?.Timeout.TotalMilliseconds ?? 5000, 10);
 
 			if (response == null)
 			{
@@ -543,85 +542,86 @@ namespace TestR.Desktop
 		/// Creates an element from the automation element.
 		/// </summary>
 		/// <param name="element"> The element to create. </param>
+		/// <param name="application"> The application parent for this element. </param>
 		/// <param name="parent"> The parent of the element to create. </param>
-		private static Element Create(IUIAutomationElement element, IElementParent parent)
+		private static Element Create(IUIAutomationElement element, Application application, Element parent)
 		{
 			var itemType = element.CurrentControlType;
 
 			switch (itemType)
 			{
 				case UIA_ControlTypeIds.UIA_ButtonControlTypeId:
-					return new Button(element, parent);
+					return new Button(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_CheckBoxControlTypeId:
-					return new CheckBox(element, parent);
+					return new CheckBox(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_ComboBoxControlTypeId:
-					return new ComboBox(element, parent);
+					return new ComboBox(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_CustomControlTypeId:
-					return new Custom(element, parent);
+					return new Custom(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_DocumentControlTypeId:
-					return new Document(element, parent);
+					return new Document(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_EditControlTypeId:
-					return new Edit(element, parent);
+					return new Edit(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_GroupControlTypeId:
-					return new Group(element, parent);
+					return new Group(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_HyperlinkControlTypeId:
-					return new Hyperlink(element, parent);
+					return new Hyperlink(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_ListControlTypeId:
-					return new List(element, parent);
+					return new List(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_ListItemControlTypeId:
-					return new ListItem(element, parent);
+					return new ListItem(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_MenuBarControlTypeId:
-					return new MenuBar(element, parent);
+					return new MenuBar(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_MenuItemControlTypeId:
-					return new MenuItem(element, parent);
+					return new MenuItem(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_PaneControlTypeId:
-					return new Pane(element, parent);
+					return new Pane(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_ScrollBarControlTypeId:
-					return new ScrollBar(element, parent);
+					return new ScrollBar(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_SplitButtonControlTypeId:
-					return new SplitButton(element, parent);
+					return new SplitButton(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_StatusBarControlTypeId:
-					return new StatusBar(element, parent);
+					return new StatusBar(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_TableControlTypeId:
-					return new Table(element, parent);
+					return new Table(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_TextControlTypeId:
-					return new Text(element, parent);
+					return new Text(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_ThumbControlTypeId:
-					return new Thumb(element, parent);
+					return new Thumb(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_TitleBarControlTypeId:
-					return new TitleBar(element, parent);
+					return new TitleBar(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_ToolBarControlTypeId:
-					return new ToolBar(element, parent);
+					return new ToolBar(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_TreeControlTypeId:
-					return new Tree(element, parent);
+					return new Tree(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_WindowControlTypeId:
-					return new Window(element, parent);
+					return new Window(element, application, parent);
 
 				default:
 					Debug.WriteLine("Need to add support for [" + itemType + "] element.");
-					return new Element(element, parent);
+					return new Element(element, application, parent);
 			}
 		}
 
@@ -669,7 +669,7 @@ namespace TestR.Desktop
 		private static void UpdateChildren(Element element)
 		{
 			element.Children.Clear();
-			GetChildren(element).ForEach(x => element.Children.Add(Create(x, element)));
+			GetChildren(element).ForEach(x => element.Children.Add(Create(x, element.Application, element)));
 			element.Children.ForEach(x => x.UpdateChildren());
 		}
 
@@ -685,8 +685,8 @@ namespace TestR.Desktop
 				return;
 			}
 
-			element.Parent = new Element(parent, null);
-			UpdateParent((Element) element.Parent);
+			element.Parent = new Element(parent, element.Application, null);
+			UpdateParent(element.Parent);
 		}
 
 		#endregion

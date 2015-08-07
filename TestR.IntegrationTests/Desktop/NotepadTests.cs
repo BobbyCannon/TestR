@@ -144,7 +144,6 @@ namespace TestR.IntegrationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
 			{
-				TestHelper.PrintChildren(application);
 				var bar = application.WaitForChild("NonClientVerticalScrollBar");
 				var button = bar.WaitForChild<Button>(x => x.Id == "UpButton");
 				button.MoveMouseTo();
