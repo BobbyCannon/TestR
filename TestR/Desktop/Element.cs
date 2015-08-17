@@ -33,8 +33,6 @@ namespace TestR.Desktop
 		/// </summary>
 		public static readonly string[] ExcludedProperties;
 
-		internal Application Application { get; }
-
 		#endregion
 
 		#region Constructors
@@ -190,6 +188,8 @@ namespace TestR.Desktop
 		/// Gets the width of the element;
 		/// </summary>
 		public int Width => Size.Width;
+
+		internal Application Application { get; }
 
 		#endregion
 
@@ -562,6 +562,9 @@ namespace TestR.Desktop
 				case UIA_ControlTypeIds.UIA_CustomControlTypeId:
 					return new Custom(element, application, parent);
 
+				case UIA_ControlTypeIds.UIA_DataItemControlTypeId:
+					return new DataItem(element, application, parent);
+
 				case UIA_ControlTypeIds.UIA_DocumentControlTypeId:
 					return new Document(element, application, parent);
 
@@ -570,6 +573,12 @@ namespace TestR.Desktop
 
 				case UIA_ControlTypeIds.UIA_GroupControlTypeId:
 					return new Group(element, application, parent);
+
+				case UIA_ControlTypeIds.UIA_HeaderControlTypeId:
+					return new Header(element, application, parent);
+
+				case UIA_ControlTypeIds.UIA_HeaderItemControlTypeId:
+					return new HeaderItem(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_HyperlinkControlTypeId:
 					return new Hyperlink(element, application, parent);
@@ -597,6 +606,12 @@ namespace TestR.Desktop
 
 				case UIA_ControlTypeIds.UIA_StatusBarControlTypeId:
 					return new StatusBar(element, application, parent);
+
+				case UIA_ControlTypeIds.UIA_TabControlTypeId:
+					return new TabControl(element, application, parent);
+
+				case UIA_ControlTypeIds.UIA_TabItemControlTypeId:
+					return new TabItem(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_TableControlTypeId:
 					return new Table(element, application, parent);

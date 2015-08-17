@@ -64,10 +64,14 @@
     <Compile Include="Desktop\Elements\CheckBox.cs" />
     <Compile Include="Desktop\Elements\ComboBox.cs" />
     <Compile Include="Desktop\Elements\Custom.cs" />
+    <Compile Include="Desktop\Elements\DataItem.cs" />
     <Compile Include="Desktop\Elements\Document.cs" />
     <Compile Include="Desktop\Elements\Edit.cs" />
     <Compile Include="Desktop\Elements\Group.cs" />
+    <Compile Include="Desktop\Elements\Header.cs" />
+    <Compile Include="Desktop\Elements\HeaderItem.cs" />
     <Compile Include="Desktop\Elements\Hyperlink.cs" />
+    <Compile Include="Desktop\Elements\TabControl.cs" />
     <Compile Include="Desktop\Elements\List.cs" />
     <Compile Include="Desktop\Elements\ListItem.cs" />
     <Compile Include="Desktop\Elements\MenuBar.cs" />
@@ -76,6 +80,7 @@
     <Compile Include="Desktop\Elements\ScrollBar.cs" />
     <Compile Include="Desktop\Elements\SplitButton.cs" />
     <Compile Include="Desktop\Elements\StatusBar.cs" />
+    <Compile Include="Desktop\Elements\TabItem.cs" />
     <Compile Include="Desktop\Elements\Table.cs" />
     <Compile Include="Desktop\Elements\Text.cs" />
     <Compile Include="Desktop\Elements\Thumb.cs" />
