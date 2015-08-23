@@ -418,9 +418,6 @@ namespace TestR.Desktop
 			}
 			catch (Exception)
 			{
-				// todo: we need to get the real exception type.
-				Debugger.Break();
-
 				// A window close while trying to enumerate it. Wait for a second then try again.
 				Thread.Sleep(250);
 				Refresh();
