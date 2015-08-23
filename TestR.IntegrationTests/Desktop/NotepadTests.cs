@@ -6,6 +6,7 @@ using System.Management.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop;
 using TestR.Desktop.Elements;
+using TestR.Extensions;
 using TestR.PowerShell;
 
 #endregion
@@ -132,9 +133,10 @@ namespace TestR.IntegrationTests.Desktop
 		public void Screenshot()
 		{
 			var filePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Test.png";
+			Application.CloseAll(NotepadApplicationPath);
 			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
 			{
-				var window = application.Children.Windows.First();
+				var window = application.WaitForChild<Window>("Untitled - Notepad");
 				window.TitleBar.TakeScreenshot(filePath);
 			}
 		}
@@ -142,6 +144,7 @@ namespace TestR.IntegrationTests.Desktop
 		[TestMethod]
 		public void WaitForButtons()
 		{
+			Application.CloseAll(NotepadApplicationPath);
 			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
 			{
 				var bar = application.WaitForChild("NonClientVerticalScrollBar");

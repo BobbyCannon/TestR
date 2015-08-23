@@ -6,6 +6,9 @@ using UIAutomationClient;
 
 namespace TestR.Desktop.Pattern
 {
+	/// <summary>
+	/// Represent the base pattern for all patterns.
+	/// </summary>
 	public abstract class BasePattern
 	{
 		#region Fields
@@ -16,6 +19,10 @@ namespace TestR.Desktop.Pattern
 
 		#region Constructors
 
+		/// <summary>
+		/// Creates an instance of the base pattern.
+		/// </summary>
+		/// <param name="element"> The element this pattern is for. </param>
 		protected BasePattern(Element element)
 		{
 			_element = element;

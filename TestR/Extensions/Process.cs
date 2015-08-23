@@ -14,19 +14,13 @@ namespace TestR.Extensions
 
 		internal static IEnumerable<IUIAutomationElement> GetWindows(this Process process)
 		{
+			// There is a issue in Windows 10 and Cortana (or modern apps) where there is a 60 second delay when walking the root element. 
+			// When you hit the last sibling it delays. For now we are simply going to return the main window and we'll roll this code 
+			// back once the Windows 10 issue has been resolved.
+
+			process.Refresh();
 			var automation = new CUIAutomationClass();
-			var walker = automation.CreateTreeWalker(automation.RawViewCondition);
-			var child = walker.GetFirstChildElement(automation.GetRootElement());
-
-			while (child != null)
-			{
-				if (child.CurrentProcessId == process.Id && child.CurrentControlType == UIA_ControlTypeIds.UIA_WindowControlTypeId)
-				{
-					yield return child;
-				}
-
-				child = walker.GetNextSiblingElement(child);
-			}
+			return new[] { automation.ElementFromHandle(process.MainWindowHandle) };
 		}
 
 		#endregion

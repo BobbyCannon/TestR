@@ -1,5 +1,8 @@
 ﻿namespace TestR.Desktop.Pattern
 {
+	/// <summary>
+	/// Represents the state of the expand collapse pattern.
+	/// </summary>
 	public enum ExpandCollapseState
 	{
 		/// <summary>

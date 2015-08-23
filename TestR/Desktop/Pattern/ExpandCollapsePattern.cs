@@ -8,6 +8,9 @@ using UIAutomationClient;
 
 namespace TestR.Desktop.Pattern
 {
+	/// <summary>
+	/// Represents the expand collapse pattern.
+	/// </summary>
 	public class ExpandCollapsePattern : BasePattern
 	{
 		#region Constructors
@@ -58,6 +61,11 @@ namespace TestR.Desktop.Pattern
 			GetPattern<IUIAutomationExpandCollapsePattern>()?.Expand();
 		}
 
+		/// <summary>
+		/// Creates a new instance of this pattern.
+		/// </summary>
+		/// <param name="element"> The element this pattern is for. </param>
+		/// <returns> The instance of the pattern. </returns>
 		public static ExpandCollapsePattern New(Element element)
 		{
 			return new ExpandCollapsePattern(element);
