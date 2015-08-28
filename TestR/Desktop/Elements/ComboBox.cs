@@ -46,17 +46,19 @@ namespace TestR.Desktop.Elements
 		/// <summary>
 		/// Collapses the combo box.
 		/// </summary>
-		public void Collapse()
+		public ComboBox Collapse()
 		{
 			ExpandCollapsePattern.New(this)?.Collapse();
+			return this;
 		}
 
 		/// <summary>
 		/// Expands the combo box.
 		/// </summary>
-		public void Expand()
+		public ComboBox Expand()
 		{
 			ExpandCollapsePattern.New(this)?.Expand();
+			return this;
 		}
 
 		#endregion

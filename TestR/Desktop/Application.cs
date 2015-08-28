@@ -185,20 +185,21 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Brings the application to the front and makes it the Top window.
 		/// </summary>
-		public void BringToFront()
+		public Application BringToFront()
 		{
 			NativeMethods.SetForegroundWindow(Handle);
 			NativeMethods.BringWindowToTop(Handle);
+			return this;
 		}
 
 		/// <summary>
 		/// Closes the window.
 		/// </summary>
-		public void Close()
+		public Application Close()
 		{
 			if (Process.HasExited)
 			{
-				return;
+				return this;
 			}
 
 			Process.CloseMainWindow();
@@ -206,6 +207,8 @@ namespace TestR.Desktop
 			{
 				Process.Kill();
 			}
+
+			return this;
 		}
 
 		/// <summary>
@@ -393,15 +396,16 @@ namespace TestR.Desktop
 		/// <param name="y"> The y coordinate to move to. </param>
 		/// <param name="width"> The width of the window. </param>
 		/// <param name="height"> The height of the window. </param>
-		public void MoveWindow(int x, int y, int width, int height)
+		public Application MoveWindow(int x, int y, int width, int height)
 		{
 			NativeMethods.MoveWindow(Handle, x, y, width, height, true);
+			return this;
 		}
 
 		/// <summary>
 		/// Refresh the list of items for the application.
 		/// </summary>
-		public void Refresh()
+		public Application Refresh()
 		{
 			try
 			{
@@ -415,22 +419,24 @@ namespace TestR.Desktop
 				WaitWhileBusy();
 				Children.ForEach(x => x.UpdateChildren());
 				WaitWhileBusy();
+				return this;
 			}
 			catch (Exception)
 			{
 				// A window close while trying to enumerate it. Wait for a second then try again.
 				Thread.Sleep(250);
-				Refresh();
+				return Refresh();
 			}
 		}
 
 		/// <summary>
 		/// Update the children for this element.
 		/// </summary>
-		public void UpdateChildren()
+		public Application UpdateChildren()
 		{
 			Refresh();
 			OnChildrenUpdated();
+			return this;
 		}
 
 		/// <summary>
@@ -522,7 +528,7 @@ namespace TestR.Desktop
 		/// Waits for the Process to not be busy.
 		/// </summary>
 		/// <param name="minimumDelay"> The minimum delay in milliseconds to wait. Defaults to 0 milliseconds. </param>
-		public void WaitWhileBusy(int minimumDelay = 0)
+		public Application WaitWhileBusy(int minimumDelay = 0)
 		{
 			var watch = Stopwatch.StartNew();
 			Process.WaitForInputIdle(Timeout.Milliseconds);
@@ -531,6 +537,8 @@ namespace TestR.Desktop
 			{
 				Thread.Sleep(10);
 			}
+
+			return this;
 		}
 
 		/// <summary>
@@ -549,11 +557,8 @@ namespace TestR.Desktop
 				Close();
 			}
 
-			if (Process != null)
-			{
-				Process.Dispose();
-				Process = null;
-			}
+			Process?.Dispose();
+			Process = null;
 		}
 
 		/// <summary>

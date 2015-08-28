@@ -200,11 +200,12 @@ namespace TestR.Desktop
 		/// </summary>
 		/// <param name="x"> Optional X offset when clicking. </param>
 		/// <param name="y"> Optional Y offset when clicking. </param>
-		public virtual void Click(int x = 0, int y = 0)
+		public virtual Element Click(int x = 0, int y = 0)
 		{
 			var point = GetClickablePoint(x, y);
 			Mouse.LeftClick(point);
 			Thread.Sleep(1);
+			return this;
 		}
 
 		/// <summary>
@@ -245,9 +246,10 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Set focus on the element.
 		/// </summary>
-		public void Focus()
+		public Element Focus()
 		{
 			NativeElement.SetFocus();
+			return this;
 		}
 
 		/// <summary>
@@ -322,10 +324,11 @@ namespace TestR.Desktop
 		/// </summary>
 		/// <param name="x"> Optional X offset when clicking. </param>
 		/// <param name="y"> Optional Y offset when clicking. </param>
-		public void MoveMouseTo(int x = 0, int y = 0)
+		public Element MoveMouseTo(int x = 0, int y = 0)
 		{
 			var point = GetClickablePoint(x, y);
 			Mouse.MoveTo(point);
+			return this;
 		}
 
 		/// <summary>
@@ -333,17 +336,18 @@ namespace TestR.Desktop
 		/// </summary>
 		/// <param name="x"> Optional X offset when clicking. </param>
 		/// <param name="y"> Optional Y offset when clicking. </param>
-		public virtual void RightClick(int x = 0, int y = 0)
+		public Element RightClick(int x = 0, int y = 0)
 		{
 			var point = GetClickablePoint(x, y);
 			Mouse.RightClick(point);
+			return this;
 		}
 
 		/// <summary>
 		/// Sets the text value of the element.
 		/// </summary>
 		/// <param name="value"> The text to set the element to. </param>
-		public void SetText(string value)
+		public Element SetText(string value)
 		{
 			if (value == null)
 			{
@@ -360,7 +364,7 @@ namespace TestR.Desktop
 			{
 				// Control supports the ValuePattern pattern so we can use the SetValue method to insert content. 
 				pattern.SetValue(value);
-				return;
+				return this;
 			}
 
 			if (!KeyboardFocusable)
@@ -374,12 +378,13 @@ namespace TestR.Desktop
 			// Pause before sending keyboard input.
 			Thread.Sleep(100);
 			Keyboard.TypeText(value);
+			return this;
 		}
 
 		/// <summary>
 		/// Takes a screenshot of the element.
 		/// </summary>
-		public void TakeScreenshot(string filePath)
+		public Element TakeScreenshot(string filePath)
 		{
 			var result = new Bitmap(Width, Height);
 
@@ -389,6 +394,7 @@ namespace TestR.Desktop
 			}
 
 			result.Save(filePath, ImageFormat.Png);
+			return this;
 		}
 
 		/// <summary>
@@ -421,27 +427,30 @@ namespace TestR.Desktop
 		/// Focus the element then type the text via the keyboard.
 		/// </summary>
 		/// <param name="value"> The value to type. </param>
-		public void TypeText(string value)
+		public Element TypeText(string value)
 		{
 			Focus();
 			Keyboard.TypeText(value);
+			return this;
 		}
 
 		/// <summary>
 		/// Update the children for this element.
 		/// </summary>
-		public void UpdateChildren()
+		public Element UpdateChildren()
 		{
 			UpdateChildren(this);
 			OnChildrenUpdated();
+			return this;
 		}
 
 		/// <summary>
 		/// Update the parents for this element.
 		/// </summary>
-		public void UpdateParents()
+		public Element UpdateParents()
 		{
 			UpdateParent(this);
+			return this;
 		}
 
 		/// <summary>

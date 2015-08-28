@@ -1,9 +1,5 @@
 ﻿#region References
 
-#endregion
-
-#region References
-
 using TestR.Desktop.Pattern;
 using UIAutomationClient;
 
@@ -51,26 +47,29 @@ namespace TestR.Desktop.Elements
 		/// </summary>
 		/// <param name="x"> Optional X offset when clicking. </param>
 		/// <param name="y"> Optional Y offset when clicking. </param>
-		public override void Click(int x = 0, int y = 0)
+		public override Element Click(int x = 0, int y = 0)
 		{
 			base.Click(x, y);
 			UpdateChildren();
+			return this;
 		}
 
 		/// <summary>
 		/// Collapse the menu item.
 		/// </summary>
-		public void Collapse()
+		public MenuItem Collapse()
 		{
 			ExpandCollapsePattern.New(this)?.Collapse();
+			return this;
 		}
 
 		/// <summary>
 		/// Expand the menu item.
 		/// </summary>
-		public void Expand()
+		public MenuItem Expand()
 		{
 			ExpandCollapsePattern.New(this)?.Expand();
+			return this;
 		}
 
 		#endregion

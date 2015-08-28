@@ -88,10 +88,7 @@ namespace TestR.Native
 		/// <summary>
 		/// Gets a list of cursors that represent wait cursors.
 		/// </summary>
-		public static IReadOnlyList<MouseCursor> WaitCursors
-		{
-			get { return _waitCursors.AsReadOnly(); }
-		}
+		public static IReadOnlyList<MouseCursor> WaitCursors => _waitCursors.AsReadOnly();
 
 		#endregion
 

@@ -44,10 +44,7 @@ namespace TestR.Native
 		/// <summary>
 		/// Gets the current cursor for the mouse.
 		/// </summary>
-		public static MouseCursor Cursor
-		{
-			get { return MouseCursor.Current; }
-		}
+		public static MouseCursor Cursor => MouseCursor.Current;
 
 		#endregion
 

@@ -69,13 +69,6 @@ namespace TestR.Native
 		/// <param name="value"> </param>
 		public static void TypeText(string value)
 		{
-			// Delete existing content in the control and insert new content.
-			SendKeys.SendWait("^{HOME}"); // Move to start of control
-			SendKeys.SendWait("^+{END}"); // Select everything
-			SendKeys.SendWait("{DEL}"); // Delete selection
-
-			value = value.Replace("+", "{add}");
-
 			SendKeys.SendWait(value);
 		}
 
@@ -98,10 +91,7 @@ namespace TestR.Native
 		private static void OnKeyPressed(Key obj)
 		{
 			var handler = KeyPressed;
-			if (handler != null)
-			{
-				handler(obj);
-			}
+			handler?.Invoke(obj);
 		}
 
 		#endregion

@@ -42,34 +42,37 @@ namespace TestR.Desktop.Elements
 		/// <summary>
 		/// Bring the window to the front.
 		/// </summary>
-		public void BringToFront()
+		public Window BringToFront()
 		{
 			var handle = NativeElement.CurrentNativeWindowHandle;
 			NativeMethods.SetForegroundWindow(handle);
 			NativeMethods.BringWindowToTop(handle);
+			return this;
 		}
 
 		/// <summary>
 		/// Closes a window.
 		/// </summary>
-		public void Close()
+		public Window Close()
 		{
 			if (TitleBar == null)
 			{
-				return;
+				return this;
 			}
 
 			TitleBar.CloseButton.MoveMouseTo();
 			TitleBar.CloseButton.Click();
+			return this;
 		}
 
 		/// <summary>
 		/// Waits for the window to no longer be busy.
 		/// </summary>
-		public void WaitWhileBusy()
+		public Window WaitWhileBusy()
 		{
 			WaitForWindow();
 			HourGlassWait();
+			return this;
 		}
 
 		private static void HourGlassWait()

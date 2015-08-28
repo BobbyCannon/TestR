@@ -51,9 +51,10 @@ namespace TestR.Desktop.Elements
 		/// <summary>
 		/// Toggle the checkbox.
 		/// </summary>
-		public void Toggle()
+		public CheckBox Toggle()
 		{
 			TogglePattern.New(this)?.Toggle();
+			return this;
 		}
 
 		#endregion

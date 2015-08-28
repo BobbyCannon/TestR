@@ -236,13 +236,15 @@ namespace TestR.Desktop
 		/// Prints out all children as a debug string.
 		/// </summary>
 		/// <param name="prefix"> Prefix to the debug information. </param>
-		public void PrintDebug(string prefix = "")
+		public ElementCollection<T> PrintDebug(string prefix = "")
 		{
 			foreach (var item in this)
 			{
 				Console.WriteLine(prefix + item.ToDetailString().Replace(Environment.NewLine, ", "));
 				item.Children.PrintDebug(prefix + "    ");
 			}
+
+			return this;
 		}
 
 		/// <summary>
