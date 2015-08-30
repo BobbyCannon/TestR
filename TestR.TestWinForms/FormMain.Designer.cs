@@ -73,7 +73,7 @@
             this.helpToolStripMenuItem});
 			this.MenuStrip.Location = new System.Drawing.Point(0, 0);
 			this.MenuStrip.Name = "MenuStrip";
-			this.MenuStrip.Size = new System.Drawing.Size(639, 24);
+			this.MenuStrip.Size = new System.Drawing.Size(730, 24);
 			this.MenuStrip.TabIndex = 0;
 			this.MenuStrip.Text = "mainMenuStrip";
 			// 
@@ -110,9 +110,9 @@
 			// 
 			this.StatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabelReady});
-			this.StatusStrip.Location = new System.Drawing.Point(0, 364);
+			this.StatusStrip.Location = new System.Drawing.Point(0, 331);
 			this.StatusStrip.Name = "StatusStrip";
-			this.StatusStrip.Size = new System.Drawing.Size(639, 22);
+			this.StatusStrip.Size = new System.Drawing.Size(730, 22);
 			this.StatusStrip.TabIndex = 9;
 			this.StatusStrip.Text = "statusStrip1";
 			// 
@@ -386,7 +386,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(639, 386);
+			this.ClientSize = new System.Drawing.Size(730, 353);
 			this.Controls.Add(this.listView1);
 			this.Controls.Add(this.listBox1);
 			this.Controls.Add(this.linkLabel3);

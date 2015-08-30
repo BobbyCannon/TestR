@@ -106,6 +106,7 @@
     <Compile Include="Native\Keyboard.cs" />
     <Compile Include="Native\Mouse.cs" />
     <Compile Include="Native\MouseCursor.cs" />
+    <Compile Include="Native\MouseMonitor.cs" />
     <Compile Include="Web\Browsers\Firefox.cs" />
     <Compile Include="Web\Elements\Abbreviation.cs" />
     <Compile Include="Web\Elements\Acronym.cs" />
@@ -270,7 +271,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

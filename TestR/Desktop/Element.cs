@@ -259,6 +259,16 @@ namespace TestR.Desktop
 		public static Element FromCursor()
 		{
 			var point = Mouse.GetCursorPosition();
+			return FromPoint(point);
+		}
+
+		/// <summary>
+		/// Gets the element that is currently at the point.
+		/// </summary>
+		/// <param name="point"> The point to try and detect at element at. </param>
+		/// <returns> The element if found or null if not found. </returns>
+		public static Element FromPoint(Point point)
+		{
 			var automation = new CUIAutomationClass();
 			var element = automation.ElementFromPoint(new tagPOINT { x = point.X, y = point.Y });
 			return element == null ? null : new Element(element, null, null);

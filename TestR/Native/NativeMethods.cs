@@ -103,11 +103,11 @@ namespace TestR.Native
 		{
 			#region Fields
 
-			public IntPtr dwExtraInfo;
-			public uint flags;
-			public uint mouseData;
 			public Point pt;
+			public uint mouseData;
+			public uint flags;
 			public uint time;
+			public IntPtr dwExtraInfo;
 
 			#endregion
 		}

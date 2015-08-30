@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Management;
@@ -22,6 +23,12 @@ namespace TestR.Desktop
 	/// </summary>
 	public class Application : IDisposable
 	{
+		#region Fields
+
+		private MouseMonitor _mouseMonitor;
+
+		#endregion
+
 		#region Constructors
 
 		/// <summary>
@@ -35,6 +42,9 @@ namespace TestR.Desktop
 			Process.Exited += (sender, args) => OnClosed();
 			Process.EnableRaisingEvents = true;
 			Timeout = TimeSpan.FromSeconds(5);
+			_mouseMonitor = new MouseMonitor(process.Id);
+			_mouseMonitor.MouseChanged += MouseMonitorOnMouseChanged;
+			_mouseMonitor.StartMonitoring();
 		}
 
 		#endregion
@@ -559,6 +569,9 @@ namespace TestR.Desktop
 
 			Process?.Dispose();
 			Process = null;
+
+			_mouseMonitor?.StopMonitoring();
+			_mouseMonitor = null;
 		}
 
 		/// <summary>
@@ -575,6 +588,22 @@ namespace TestR.Desktop
 		protected virtual void OnClosed()
 		{
 			Closed?.Invoke();
+		}
+
+		protected virtual void OnElementClicked(Element obj)
+		{
+			ElementClicked?.Invoke(obj);
+		}
+
+		private void MouseMonitorOnMouseChanged(Mouse.MouseEvent mouseEvent, Point point)
+		{
+			if (mouseEvent != Mouse.MouseEvent.LeftButtonDown && mouseEvent != Mouse.MouseEvent.RightButtonDown)
+			{
+				return;
+			}
+
+			var element = Element.FromPoint(point);
+			OnElementClicked(element);
 		}
 
 		/// <summary>
@@ -600,6 +629,11 @@ namespace TestR.Desktop
 		/// Event called when the application process closes.
 		/// </summary>
 		public event Action Closed;
+
+		/// <summary>
+		/// An element was clicked.
+		/// </summary>
+		public event Action<Element> ElementClicked;
 
 		/// <summary>
 		/// Occurs when the application exits.

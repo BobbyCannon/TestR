@@ -3,7 +3,6 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
-using System.Runtime.InteropServices;
 
 #endregion
 
@@ -14,16 +13,8 @@ namespace TestR.Native
 	/// </summary>
 	public static class Mouse
 	{
-		#region Constants
-
-		private const int MouseLowLevel = 14;
-
-		#endregion
-
 		#region Fields
 
-		private static readonly NativeMethods.LowLevelKeyboardProc _hook;
-		private static IntPtr _hookId;
 		private static readonly TimeSpan _timeout;
 
 		#endregion
@@ -33,8 +24,6 @@ namespace TestR.Native
 		static Mouse()
 		{
 			_timeout = new TimeSpan(0, 0, 5);
-			_hookId = IntPtr.Zero;
-			_hook = HookCallback;
 		}
 
 		#endregion
@@ -104,35 +93,7 @@ namespace TestR.Native
 			ExecuteMouseEvent(MouseEventFlags.RightUp);
 		}
 
-		/// <summary>
-		/// Start monitoring the mouse for changes.
-		/// </summary>
-		public static void StartMonitoring()
-		{
-			using (var curProcess = Process.GetCurrentProcess())
-			{
-				using (var curModule = curProcess.MainModule)
-				{
-					_hookId = NativeMethods.SetWindowsHookEx(MouseLowLevel, _hook, NativeMethods.GetModuleHandle(curModule.ModuleName), 0);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Stops monitoring the mouse for changes.
-		/// </summary>
-		public static void StopMonitoring()
-		{
-			NativeMethods.UnhookWindowsHookEx(_hookId);
-		}
-
-		private static void ExecuteMouseEvent(MouseEventFlags value)
-		{
-			var position = GetCursorPosition();
-			NativeMethods.MouseEvent((int) value, position.X, position.Y, 0, 0);
-		}
-
-		private static MouseEvent GetEvent(NativeMethods.MouseMessages message)
+		internal static MouseEvent GetEvent(NativeMethods.MouseMessages message)
 		{
 			switch (message)
 			{
@@ -159,37 +120,11 @@ namespace TestR.Native
 			}
 		}
 
-		private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+		private static void ExecuteMouseEvent(MouseEventFlags value)
 		{
-			if (nCode < 0)
-			{
-				return NativeMethods.CallNextHookEx(_hookId, nCode, wParam, lParam);
-			}
-
-			var message = (NativeMethods.MouseMessages) wParam;
-			var hook = (NativeMethods.MouseHook) Marshal.PtrToStructure(lParam, typeof (NativeMethods.MouseHook));
-
-			if (message != NativeMethods.MouseMessages.WM_MOUSEMOVE)
-			{
-				OnMouseChanged(GetEvent(message), new Point(hook.pt.x, hook.pt.y));
-			}
-
-			return NativeMethods.CallNextHookEx(_hookId, nCode, wParam, lParam);
+			var position = GetCursorPosition();
+			NativeMethods.MouseEvent((int) value, position.X, position.Y, 0, 0);
 		}
-
-		private static void OnMouseChanged(MouseEvent mouseEvent, Point point)
-		{
-			MouseChanged?.Invoke(mouseEvent, point);
-		}
-
-		#endregion
-
-		#region Events
-
-		/// <summary>
-		/// Event for when the mouse changes during monitoring.
-		/// </summary>
-		public static event Action<MouseEvent, Point> MouseChanged;
 
 		#endregion
 
