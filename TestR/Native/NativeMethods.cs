@@ -2,8 +2,6 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Text;
-using mshtml;
 
 #endregion
 
@@ -14,31 +12,18 @@ namespace TestR.Native
 		#region Methods
 
 		[DllImport("user32.dll", SetLastError = true)]
-		[return: MarshalAs(UnmanagedType.Bool)]
 		internal static extern bool BringWindowToTop(IntPtr hWnd);
 
-		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		internal static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
-
-		[DllImport("user32", SetLastError = true)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		internal static extern bool EnumChildWindows(IntPtr hWndParent, EnumChildWindowProc lpEnumFunc, IntPtr lParam);
-
-		[DllImport("user32", SetLastError = true)]
-		internal static extern int GetClassName(IntPtr handleToWindow, StringBuilder className, int maxClassNameLength);
-
-		[DllImport("user32.dll", EntryPoint = "GetCursorPos")]
-		[return: MarshalAs(UnmanagedType.Bool)]
+		[DllImport("user32.dll", EntryPoint = "GetCursorPos", SetLastError = true)]
 		internal static extern bool GetCursorPosition(out System.Drawing.Point lpMousePoint);
 
 		[DllImport("user32.dll", SetLastError = true)]
 		internal static extern IntPtr GetForegroundWindow();
 
-		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		[DllImport("kernel32.dll", SetLastError = true)]
 		internal static extern IntPtr GetModuleHandle(string lpModuleName);
 
 		[DllImport("user32.dll")]
-		[return: MarshalAs(UnmanagedType.Bool)]
 		internal static extern bool IsWindowVisible(IntPtr hWnd);
 
 		[DllImport("user32.dll", EntryPoint = "mouse_event")]
@@ -47,56 +32,65 @@ namespace TestR.Native
 		[DllImport("user32.dll", SetLastError = true)]
 		internal static extern bool MoveWindow(IntPtr hWnd, int x, int y, int nWidth, int nHeight, bool bRepaint);
 
-		[DllImport("oleacc", SetLastError = true)]
-		internal static extern int ObjectFromLresult(int lResult, ref Guid riid, int wParam, ref IHTMLDocument2 ppvObject);
-
-		[DllImport("user32", SetLastError = true)]
-		internal static extern int RegisterWindowMessage(string lpString);
-
-		[DllImport("user32", SetLastError = true)]
-		internal static extern int SendMessageTimeout(IntPtr hWnd, int msg, int wParam, int lParam, int fuFlags, int uTimeout, ref int lpdwResult);
-
 		[DllImport("user32.dll", EntryPoint = "SetCursorPos")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		internal static extern bool SetCursorPosition(int x, int y);
 
 		[DllImport("user32.dll", SetLastError = true)]
-		internal static extern IntPtr SetFocus(IntPtr hWnd);
-
-		[DllImport("user32.dll", SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		internal static extern bool SetForegroundWindow(IntPtr hWnd);
+		
+		[DllImport("user32.dll", EntryPoint = "WindowFromPoint")]
+		internal static extern IntPtr WindowFromPoint(System.Drawing.Point point);
 
-		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		internal static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
+		[DllImport("User32.dll")]
+		internal static extern bool GetWindowRect(IntPtr hWnd, out Rect lpRect);
 
-		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		internal static extern bool UnhookWindowsHookEx(IntPtr hhk);
+		[DllImport("User32.dll")]
+		private static extern bool GetWindowPlacement(IntPtr hWnd, ref WindowPlacement lpwndpl);
 
-		[DllImport("user32", SetLastError = true)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		private static extern bool EnumWindows(EnumWindowProc lpEnumFunc, IntPtr lParam);
+		internal static WindowPlacement GetWindowPlacement(IntPtr handle)
+		{
+			var placement = new WindowPlacement();
+			placement.length = Marshal.SizeOf(placement);
+			GetWindowPlacement(handle, ref placement);
+			return placement;
+		}
 
-		[DllImport("user32.dll", SetLastError = true)]
-		private static extern IntPtr GetWindow(IntPtr hWnd, uint uCmd);
+		public delegate int HookDelegate(int code, int wParam, IntPtr lParam);
 
-		[DllImport("user32.dll", SetLastError = true)]
-		private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+		[DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
+		internal static extern int CallNextHookEx(int idHook, int nCode, int wParam, IntPtr lParam);
 
-		#endregion
+		[DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+		internal static extern int UnhookWindowsHookEx(int idHook);
 
-		#region Delegates
-
-		internal delegate bool EnumChildWindowProc(IntPtr hWnd, IntPtr lParam);
-
-		internal delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
-
-		private delegate bool EnumWindowProc(IntPtr hwnd, IntPtr lParam);
+		[DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+		internal static extern int SetWindowsHookEx(int idHook, HookDelegate lpfn, IntPtr hMod, int dwThreadId);
 
 		#endregion
 
 		#region Structures
+
+		[StructLayout(LayoutKind.Sequential)]
+		internal struct WindowPlacement
+		{
+			public int length;
+			public int flags;
+			public int ShowState;
+			public System.Drawing.Point ptMinPosition;
+			public System.Drawing.Point ptMaxPosition;
+			public System.Drawing.Rectangle rcNormalPosition;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		internal struct Rect
+		{
+			public int Left;        // x position of upper-left corner
+			public int Top;         // y position of upper-left corner
+			public int Right;       // x position of lower-right corner
+			public int Bottom;      // y position of lower-right corner
+		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		internal struct MouseHook
@@ -135,24 +129,6 @@ namespace TestR.Native
 			WM_MOUSEWHEEL = 0x020A,
 			WM_RBUTTONDOWN = 0x0204,
 			WM_RBUTTONUP = 0x0205
-		}
-
-		#endregion
-
-		#region Interfaces
-
-		[ComImport]
-		[Guid("6d5140c1-7436-11ce-8034-00aa006009fa")]
-		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-		public interface IServiceProvider
-		{
-			#region Methods
-
-			[PreserveSig]
-			[return: MarshalAs(UnmanagedType.I4)]
-			uint QueryService(ref Guid guidService, ref Guid riid, [MarshalAs(UnmanagedType.Interface)] out object ppvObject);
-
-			#endregion
 		}
 
 		#endregion

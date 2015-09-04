@@ -24,8 +24,8 @@ namespace TestR.Native
 
 		#region Fields
 
-		private static readonly NativeMethods.LowLevelKeyboardProc _hook;
-		private static IntPtr _hookId;
+		private static readonly NativeMethods.HookDelegate _hook;
+		private static int _hookId;
 
 		#endregion
 
@@ -33,7 +33,7 @@ namespace TestR.Native
 
 		static Keyboard()
 		{
-			_hookId = IntPtr.Zero;
+			_hookId = 0;
 			_hook = HookCallback;
 		}
 
@@ -72,9 +72,9 @@ namespace TestR.Native
 			SendKeys.SendWait(value);
 		}
 
-		private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+		private static int HookCallback(int nCode, int wParam, IntPtr lParam)
 		{
-			if (nCode < 0 || wParam != (IntPtr) KeyDown)
+			if (nCode < 0 || wParam != KeyDown)
 			{
 				return NativeMethods.CallNextHookEx(_hookId, nCode, wParam, lParam);
 			}

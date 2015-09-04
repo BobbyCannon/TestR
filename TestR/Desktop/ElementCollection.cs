@@ -25,7 +25,7 @@ namespace TestR.Desktop
 		public ElementCollection()
 		{
 		}
-		
+
 		/// <summary>
 		/// Initializes an instance of the ElementCollection class.
 		/// </summary>
@@ -34,7 +34,7 @@ namespace TestR.Desktop
 		{
 			this.AddRange(collection);
 		}
-		
+
 		#endregion
 
 		#region Properties
@@ -169,15 +169,16 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
-		/// Get a child of a certain type and key.
+		/// Get the child from the children.
 		/// </summary>
-		/// <param name="key"> The key of the child. </param>
-		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
-		/// <returns> The child if found or null if otherwise. </returns>
-		public T GetChild(string key, bool includeDescendants = true)
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
+		/// <returns> The child element for the condition. </returns>
+		public T1 Get<T1>(Func<T1, bool> condition, bool recursive = true) where T1 : Element
 		{
-			var response = this[key];
-			if (!includeDescendants)
+			var children = OfType<T1>().ToList();
+			var response = children.FirstOrDefault(condition);
+			if (!recursive)
 			{
 				return response;
 			}
@@ -189,7 +190,7 @@ namespace TestR.Desktop
 
 			foreach (var child in this)
 			{
-				response = child.GetChild<T>(key);
+				response = child.Get(condition, true, false);
 				if (response != null)
 				{
 					return response;
@@ -200,36 +201,13 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
-		/// Get a child of a certain type and meets the condition.
+		/// Gets a collection of element of the provided type.
 		/// </summary>
-		/// <typeparam name="T1"> The type of the child. </typeparam>
-		/// <param name="condition"> A function to test each element for a condition. </param>
-		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
-		/// <returns> The child if found or null if otherwise. </returns>
-		public T1 GetChild<T1>(Func<T1, bool> condition, bool includeDescendants = true) where T1 : Element
+		/// <typeparam name="T1"> The type of the element for the collection. </typeparam>
+		/// <returns> The collection of elements of the provided type. </returns>
+		public ElementCollection<T1> OfType<T1>() where T1 : Element
 		{
-			var children = this.OfType<T1>().ToList();
-			var response = children.FirstOrDefault(condition);
-			if (!includeDescendants)
-			{
-				return response;
-			}
-
-			if (response != null)
-			{
-				return response;
-			}
-
-			foreach (var child in this)
-			{
-				response = child.GetChild(condition);
-				if (response != null)
-				{
-					return response;
-				}
-			}
-
-			return null;
+			return new ElementCollection<T1>(this.Where(x => x.GetType() == typeof (T1) || x is T1).Cast<T1>());
 		}
 
 		/// <summary>
@@ -256,16 +234,6 @@ namespace TestR.Desktop
 		{
 			Add(element);
 			return element;
-		}
-
-		/// <summary>
-		/// Gets a collection of element of the provided type.
-		/// </summary>
-		/// <typeparam name="T1"> The type of the element for the collection. </typeparam>
-		/// <returns> The collection of elements of the provided type. </returns>
-		public ElementCollection<T1> OfType<T1>() where T1 : Element
-		{
-			return new ElementCollection<T1>(this.Where(x => x.GetType() == typeof(T1)).Cast<T1>());
 		}
 
 		#endregion

@@ -159,20 +159,28 @@ namespace TestR.Web
 		public static IEnumerable<Browser> AttachOrCreate(BrowserType type = BrowserType.All)
 		{
 			var response = new List<Browser>();
+			var browserOffset = 0;
+			var browserWidth = 500;
 
 			if ((type & BrowserType.Chrome) == BrowserType.Chrome)
 			{
-				response.Add(Chrome.AttachOrCreate());
+				var chrome = Chrome.AttachOrCreate();
+				chrome.Application.MoveWindow((browserOffset++ * browserWidth), 0, browserWidth, browserWidth * 2);
+                response.Add(chrome);
 			}
 
 			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)
 			{
-				response.Add(InternetExplorer.AttachOrCreate());
+				var explorer = InternetExplorer.AttachOrCreate();
+				explorer.Application.MoveWindow((browserOffset++ * browserWidth), 0, browserWidth, browserWidth * 2);
+				response.Add(explorer);
 			}
 
 			if ((type & BrowserType.Firefox) == BrowserType.Firefox)
 			{
-				response.Add(Firefox.AttachOrCreate());
+				var firefox = Firefox.AttachOrCreate();
+				firefox.Application.MoveWindow((browserOffset++ * browserWidth), 0, browserWidth, browserWidth * 2);
+				response.Add(firefox);
 			}
 
 			return response;

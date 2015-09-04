@@ -16,6 +16,7 @@ using TestR.Extensions;
 using TestR.Helpers;
 using TestR.Native;
 using UIAutomationClient;
+using Image = TestR.Desktop.Elements.Image;
 
 #endregion
 
@@ -74,9 +75,10 @@ namespace TestR.Desktop
 				var element = this;
 				do
 				{
-					builder.Insert(0, new[] { element.Id, element.Name, " " }.FirstValue());
+					builder.Insert(0, new[] { element.Id, element.Name, " " }.FirstValue() + ",");
 					element = element.Parent;
 				} while (element != null);
+				builder.Remove(builder.Length - 1, 1);
 				return builder.ToString();
 			}
 		}
@@ -204,7 +206,7 @@ namespace TestR.Desktop
 		{
 			var point = GetClickablePoint(x, y);
 			Mouse.LeftClick(point);
-			Thread.Sleep(1);
+			Thread.Sleep(100);
 			return this;
 		}
 
@@ -263,51 +265,109 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
+		/// Gets the element that is currently focused.
+		/// </summary>
+		/// <returns> The element if found or null if not found. </returns>
+		public static Element FromFocusElement()
+		{
+			try
+			{
+				var automation = new CUIAutomationClass();
+				var element = automation.GetFocusedElement();
+				return element == null ? null : new Element(element, null, null);
+			}
+			catch (COMException)
+			{
+				return null;
+			}
+		}
+
+		/// <summary>
 		/// Gets the element that is currently at the point.
 		/// </summary>
 		/// <param name="point"> The point to try and detect at element at. </param>
 		/// <returns> The element if found or null if not found. </returns>
 		public static Element FromPoint(Point point)
 		{
-			var automation = new CUIAutomationClass();
-			var element = automation.ElementFromPoint(new tagPOINT { x = point.X, y = point.Y });
-			return element == null ? null : new Element(element, null, null);
+			try
+			{
+				var automation = new CUIAutomationClass();
+				var element = automation.ElementFromPoint(new tagPOINT { x = point.X, y = point.Y });
+				return element == null ? null : new Element(element, null, null);
+			}
+			catch (COMException)
+			{
+				return null;
+			}
 		}
 
 		/// <summary>
-		/// Gets the element that is currently focused.
+		/// Get the child from the children.
 		/// </summary>
-		/// <returns> The element if found or null if not found. </returns>
-		public static Element FromFocusElement()
+		/// <param name="id"> An ID of the element to get. </param>
+		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <returns> The child element for the ID. </returns>
+		public Element Get(string id, bool recursive = true, bool wait = true)
 		{
-			var automation = new CUIAutomationClass();
-			var element = automation.GetFocusedElement();
-			return element == null ? null : new Element(element, null, null);
+			return Get<Element>(x => x.Id == id, recursive, wait);
 		}
 
 		/// <summary>
-		/// Get a child of a certain type and key.
+		/// Get the child from the children.
 		/// </summary>
-		/// <typeparam name="T"> The type of the child. </typeparam>
-		/// <param name="key"> The key of the child. </param>
-		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
-		/// <returns> The child if found or null if otherwise. </returns>
-		public T GetChild<T>(string key, bool includeDescendants = true)
-			where T : Element
+		/// <param name="id"> An ID of the element to get. </param>
+		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <returns> The child element for the ID. </returns>
+		public T Get<T>(string id, bool recursive = true, bool wait = true) where T : Element
 		{
-			return (T) Children.GetChild(key, includeDescendants);
+			return Get<T>(x => x.Id == id || x.ApplicationId == id, recursive, wait);
 		}
 
 		/// <summary>
-		/// Get a child of a certain type that meets the condition.
+		/// Get the child from the children.
 		/// </summary>
-		/// <typeparam name="T"> The type of the child. </typeparam>
 		/// <param name="condition"> A function to test each element for a condition. </param>
-		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
-		/// <returns> The child if found or null if otherwise. </returns>
-		public T GetChild<T>(Func<T, bool> condition, bool includeDescendants = true) where T : Element
+		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <returns> The child element for the condition. </returns>
+		public Element Get(Func<Element, bool> condition, bool recursive = true, bool wait = true)
 		{
-			return Children.GetChild(condition, includeDescendants);
+			return Get<Element>(condition, recursive, wait);
+		}
+
+		/// <summary>
+		/// Get the child from the children.
+		/// </summary>
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <returns> The child element for the condition. </returns>
+		public T Get<T>(Func<T, bool> condition, bool recursive = true, bool wait = true) where T : Element
+		{
+			T response = null;
+
+			Utility.Wait(() =>
+			{
+				try
+				{
+					response = Children.Get(condition, recursive);
+					if (response != null || !wait)
+					{
+						return true;
+					}
+
+					UpdateChildren();
+					return false;
+				}
+				catch (COMException)
+				{
+					return !wait;
+				}
+			}, Application.Timeout.TotalMilliseconds, 10);
+
+			return response;
 		}
 
 		/// <summary>
@@ -455,98 +515,28 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
-		/// Update the parents for this element.
+		/// Update the parent for the provided element.
 		/// </summary>
-		public Element UpdateParents()
+		public Element UpdateParent()
 		{
-			UpdateParent(this);
+			var parent = NativeElement.GetCurrentParent();
+			if (parent == null || parent.CurrentProcessId != NativeElement.CurrentProcessId)
+			{
+				return this;
+			}
+
+			Parent = new Element(parent, Application, null);
 			return this;
 		}
 
 		/// <summary>
-		/// Wait for the child to be available then return it.
+		/// Update the parents for this element.
 		/// </summary>
-		/// <param name="id"> The ID of the child to wait for. </param>
-		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
-		/// <returns> The child element for the ID. </returns>
-		public Element WaitForChild(string id, bool includeDescendants = true)
+		public Element UpdateParents()
 		{
-			return WaitForChild<Element>(id, includeDescendants);
-		}
-
-		/// <summary>
-		/// Wait for the child to be available then return it.
-		/// </summary>
-		/// <param name="id"> The ID of the child to wait for. </param>
-		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
-		/// <returns> The child element for the ID. </returns>
-		public T WaitForChild<T>(string id, bool includeDescendants = true)
-			where T : Element
-		{
-			T response = null;
-
-			Utility.Wait(() =>
-			{
-				try
-				{
-					response = GetChild<T>(id, includeDescendants);
-					if (response != null)
-					{
-						return true;
-					}
-
-					UpdateChildren();
-					return false;
-				}
-				catch (COMException)
-				{
-					return false;
-				}
-			}, Application?.Timeout.TotalMilliseconds ?? 5000, 10);
-
-			if (response == null)
-			{
-				throw new ArgumentException("Failed to find the child by ID.");
-			}
-
-			return response;
-		}
-
-		/// <summary>
-		/// Wait for the child to be available and meet the condition then return it.
-		/// </summary>
-		/// <param name="condition"> A function to test each element for a condition. </param>
-		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
-		/// <returns> The child element for the ID. </returns>
-		public T WaitForChild<T>(Func<T, bool> condition, bool includeDescendants = true) where T : Element
-		{
-			T response = null;
-
-			Utility.Wait(() =>
-			{
-				try
-				{
-					response = GetChild(condition, includeDescendants);
-					if (response != null)
-					{
-						return true;
-					}
-
-					UpdateChildren();
-					return false;
-				}
-				catch (COMException)
-				{
-					return false;
-				}
-			}, Application?.Timeout.TotalMilliseconds ?? 5000, 10);
-
-			if (response == null)
-			{
-				throw new ArgumentException("Failed to find the child by ID.");
-			}
-
-			return response;
+			UpdateParent();
+			Parent?.UpdateParents();
+			return this;
 		}
 
 		/// <summary>
@@ -572,6 +562,9 @@ namespace TestR.Desktop
 				case UIA_ControlTypeIds.UIA_ButtonControlTypeId:
 					return new Button(element, application, parent);
 
+				case UIA_ControlTypeIds.UIA_CalendarControlTypeId:
+					return new Calendar(element, application, parent);
+
 				case UIA_ControlTypeIds.UIA_CheckBoxControlTypeId:
 					return new CheckBox(element, application, parent);
 
@@ -580,6 +573,9 @@ namespace TestR.Desktop
 
 				case UIA_ControlTypeIds.UIA_CustomControlTypeId:
 					return new Custom(element, application, parent);
+
+				case UIA_ControlTypeIds.UIA_DataGridControlTypeId:
+					return new DataGrid(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_DataItemControlTypeId:
 					return new DataItem(element, application, parent);
@@ -602,11 +598,17 @@ namespace TestR.Desktop
 				case UIA_ControlTypeIds.UIA_HyperlinkControlTypeId:
 					return new Hyperlink(element, application, parent);
 
+				case UIA_ControlTypeIds.UIA_ImageControlTypeId:
+					return new Image(element, application, parent);
+
 				case UIA_ControlTypeIds.UIA_ListControlTypeId:
 					return new List(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_ListItemControlTypeId:
 					return new ListItem(element, application, parent);
+
+				case UIA_ControlTypeIds.UIA_MenuControlTypeId:
+					return new Menu(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_MenuBarControlTypeId:
 					return new MenuBar(element, application, parent);
@@ -617,8 +619,26 @@ namespace TestR.Desktop
 				case UIA_ControlTypeIds.UIA_PaneControlTypeId:
 					return new Pane(element, application, parent);
 
+				case UIA_ControlTypeIds.UIA_ProgressBarControlTypeId:
+					return new ProgressBar(element, application, parent);
+
+				case UIA_ControlTypeIds.UIA_RadioButtonControlTypeId:
+					return new RadioButton(element, application, parent);
+
+				case UIA_ControlTypeIds.UIA_SeparatorControlTypeId:
+					return new Separator(element, application, parent);
+
 				case UIA_ControlTypeIds.UIA_ScrollBarControlTypeId:
 					return new ScrollBar(element, application, parent);
+
+				case UIA_ControlTypeIds.UIA_SemanticZoomControlTypeId:
+					return new SemanticZoom(element, application, parent);
+
+				case UIA_ControlTypeIds.UIA_SliderControlTypeId:
+					return new Slider(element, application, parent);
+
+				case UIA_ControlTypeIds.UIA_SpinnerControlTypeId:
+					return new Spinner(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_SplitButtonControlTypeId:
 					return new SplitButton(element, application, parent);
@@ -647,8 +667,14 @@ namespace TestR.Desktop
 				case UIA_ControlTypeIds.UIA_ToolBarControlTypeId:
 					return new ToolBar(element, application, parent);
 
+				case UIA_ControlTypeIds.UIA_ToolTipControlTypeId:
+					return new ToolTip(element, application, parent);
+
 				case UIA_ControlTypeIds.UIA_TreeControlTypeId:
 					return new Tree(element, application, parent);
+
+				case UIA_ControlTypeIds.UIA_TreeItemControlTypeId:
+					return new TreeItem(element, application, parent);
 
 				case UIA_ControlTypeIds.UIA_WindowControlTypeId:
 					return new Window(element, application, parent);
@@ -705,22 +731,6 @@ namespace TestR.Desktop
 			element.Children.Clear();
 			GetChildren(element).ForEach(x => element.Children.Add(Create(x, element.Application, element)));
 			element.Children.ForEach(x => x.UpdateChildren());
-		}
-
-		/// <summary>
-		/// Update the parent for the provided element.
-		/// </summary>
-		/// <param name="element"> The element to update. </param>
-		private static void UpdateParent(Element element)
-		{
-			var parent = element?.NativeElement.GetCurrentParent();
-			if (parent == null || parent.CurrentProcessId != element.NativeElement.CurrentProcessId)
-			{
-				return;
-			}
-
-			element.Parent = new Element(parent, element.Application, null);
-			UpdateParent(element.Parent);
 		}
 
 		#endregion

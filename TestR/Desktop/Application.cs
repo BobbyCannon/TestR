@@ -23,12 +23,6 @@ namespace TestR.Desktop
 	/// </summary>
 	public class Application : IDisposable
 	{
-		#region Fields
-
-		private MouseMonitor _mouseMonitor;
-
-		#endregion
-
 		#region Constructors
 
 		/// <summary>
@@ -42,9 +36,6 @@ namespace TestR.Desktop
 			Process.Exited += (sender, args) => OnClosed();
 			Process.EnableRaisingEvents = true;
 			Timeout = TimeSpan.FromSeconds(5);
-			_mouseMonitor = new MouseMonitor(process.Id);
-			_mouseMonitor.MouseChanged += MouseMonitorOnMouseChanged;
-			_mouseMonitor.StartMonitoring();
 		}
 
 		#endregion
@@ -77,6 +68,11 @@ namespace TestR.Desktop
 		public bool IsRunning => Process != null && !Process.HasExited;
 
 		/// <summary>
+		/// Gets the location of the application.
+		/// </summary>
+		public Point Location => Process.GetWindowLocation();
+
+		/// <summary>
 		/// Gets the name of this element.
 		/// </summary>
 		public string Name => Handle.ToString();
@@ -90,6 +86,11 @@ namespace TestR.Desktop
 		/// Gets or sets the time out for delay request. Defaults to 5 seconds.
 		/// </summary>
 		public TimeSpan Timeout { get; set; }
+
+		/// <summary>
+		/// Gets the size of the application.
+		/// </summary>
+		public Size Size => Process.GetWindowSize();
 
 		#endregion
 
@@ -158,17 +159,23 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Attaches the application to an existing process.
 		/// </summary>
-		/// <param name="handle"> The handle of the executable. </param>
+		/// <param name="handle"> The main window handle of the executable. </param>
 		/// <param name="refresh"> The setting to determine to refresh children now. </param>
 		/// <returns> The instance that represents the application. </returns>
 		public static Application Attach(IntPtr handle, bool refresh = true)
 		{
 			var process = Process.GetProcesses().FirstOrDefault(x => x.MainWindowHandle == handle);
-			if (process == null)
-			{
-				return null;
-			}
+			return process == null ? null : Attach(process, refresh);
+		}
 
+		/// <summary>
+		/// Attaches the application to an existing process.
+		/// </summary>
+		/// <param name="process"> The process to attach to. </param>
+		/// <param name="refresh"> The setting to determine to refresh children now. </param>
+		/// <returns> The instance that represents the application. </returns>
+		public static Application Attach(Process process, bool refresh = true)
+		{
 			var application = new Application(process);
 			if (!refresh)
 			{
@@ -186,10 +193,11 @@ namespace TestR.Desktop
 		/// </summary>
 		/// <param name="executablePath"> The path to the executable. </param>
 		/// <param name="arguments"> The arguments for the executable. Arguments are optional. </param>
+		/// <param name="refresh"> The setting to determine to refresh children now. </param>
 		/// <returns> The instance that represents the application. </returns>
-		public static Application AttachOrCreate(string executablePath, string arguments = null)
+		public static Application AttachOrCreate(string executablePath, string arguments = null, bool refresh = true)
 		{
-			return Attach(executablePath, arguments) ?? Create(executablePath, arguments);
+			return Attach(executablePath, arguments, refresh) ?? Create(executablePath, arguments, refresh);
 		}
 
 		/// <summary>
@@ -366,27 +374,72 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
-		/// Get a child of a certain type and key.
+		/// Get the child from the children.
 		/// </summary>
-		/// <typeparam name="T"> The type of the child. </typeparam>
-		/// <param name="key"> The key of the child. </param>
-		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
-		/// <returns> The child if found or null if otherwise. </returns>
-		public T GetChild<T>(string key, bool includeDescendants = true) where T : Element
+		/// <param name="id"> An ID of the element to get. </param>
+		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <returns> The child element for the ID. </returns>
+		public Element Get(string id, bool recursive = true, bool wait = true)
 		{
-			return (T) Children.GetChild(key, includeDescendants);
+			return Get<Element>(x => x.Id == id, recursive, wait);
 		}
 
 		/// <summary>
-		/// Get a child of a certain type that meets the condition.
+		/// Get the child from the children.
 		/// </summary>
-		/// <typeparam name="T"> The type of the child. </typeparam>
 		/// <param name="condition"> A function to test each element for a condition. </param>
-		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
-		/// <returns> The child if found or null if otherwise. </returns>
-		public T GetChild<T>(Func<T, bool> condition, bool includeDescendants = true) where T : Element
+		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <returns> The child element for the condition. </returns>
+		public Element Get(Func<Element, bool> condition, bool recursive = true, bool wait = true)
 		{
-			return Children.GetChild(condition, includeDescendants);
+			return Get<Element>(condition, recursive, wait);
+		}
+
+		/// <summary>
+		/// Get the child from the children.
+		/// </summary>
+		/// <param name="id"> An ID of the element to get. </param>
+		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <returns> The child element for the ID. </returns>
+		public T Get<T>(string id, bool recursive = true, bool wait = true) where T : Element
+		{
+			return Get<T>(x => x.Id == id || x.ApplicationId == id, recursive, wait);
+		}
+
+		/// <summary>
+		/// Get the child from the children.
+		/// </summary>
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <returns> The child element for the condition. </returns>
+		public T Get<T>(Func<T, bool> condition, bool recursive = true, bool wait = true) where T : Element
+		{
+			T response = null;
+
+			Utility.Wait(() =>
+			{
+				try
+				{
+					response = Children.Get(condition, recursive);
+					if (response != null || !wait)
+					{
+						return true;
+					}
+
+					UpdateChildren();
+					return false;
+				}
+				catch (COMException)
+				{
+					return !wait;
+				}
+			}, Timeout.TotalMilliseconds, 10);
+			
+			return response;
 		}
 
 		/// <summary>
@@ -450,91 +503,6 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
-		/// Wait for the child to be available then return it.
-		/// </summary>
-		/// <param name="id"> The ID of the child to wait for. </param>
-		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
-		/// <returns> The child element for the ID. </returns>
-		public Element WaitForChild(string id, bool includeDescendants = true)
-		{
-			return WaitForChild<Element>(id, includeDescendants);
-		}
-
-		/// <summary>
-		/// Wait for the child to be available then return it.
-		/// </summary>
-		/// <param name="id"> The ID of the child to wait for. </param>
-		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
-		/// <returns> The child element for the ID. </returns>
-		public T WaitForChild<T>(string id, bool includeDescendants = true) where T : Element
-		{
-			T response = null;
-
-			Utility.Wait(() =>
-			{
-				try
-				{
-					response = GetChild<T>(id, includeDescendants);
-					if (response != null)
-					{
-						return true;
-					}
-
-					UpdateChildren();
-					return false;
-				}
-				catch (COMException)
-				{
-					return false;
-				}
-			}, Timeout.TotalMilliseconds, 10);
-
-			if (response == null)
-			{
-				throw new ArgumentException("Failed to find the child by ID.");
-			}
-
-			return response;
-		}
-
-		/// <summary>
-		/// Wait for the child to be available and meet the condition then return it.
-		/// </summary>
-		/// <param name="condition"> A function to test each element for a condition. </param>
-		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
-		/// <returns> The child element for the ID. </returns>
-		public T WaitForChild<T>(Func<T, bool> condition, bool includeDescendants = true) where T : Element
-		{
-			T response = null;
-
-			Utility.Wait(() =>
-			{
-				try
-				{
-					response = GetChild(condition, includeDescendants);
-					if (response != null)
-					{
-						return true;
-					}
-
-					UpdateChildren();
-					return false;
-				}
-				catch (COMException)
-				{
-					return false;
-				}
-			}, Timeout.TotalMilliseconds, 10);
-
-			if (response == null)
-			{
-				throw new ArgumentException("Failed to find the child by ID.");
-			}
-
-			return response;
-		}
-
-		/// <summary>
 		/// Waits for the Process to not be busy.
 		/// </summary>
 		/// <param name="minimumDelay"> The minimum delay in milliseconds to wait. Defaults to 0 milliseconds. </param>
@@ -569,9 +537,6 @@ namespace TestR.Desktop
 
 			Process?.Dispose();
 			Process = null;
-
-			_mouseMonitor?.StopMonitoring();
-			_mouseMonitor = null;
 		}
 
 		/// <summary>
@@ -590,9 +555,19 @@ namespace TestR.Desktop
 			Closed?.Invoke();
 		}
 
-		protected virtual void OnElementClicked(Element obj)
+		/// <summary>
+		/// Triggers th element clicked event.
+		/// </summary>
+		/// <param name="element"> The element that was clicked. </param>
+		/// <param name="point"> The point that was clicked. </param>
+		protected virtual void OnElementClicked(Element element, Point point)
 		{
-			ElementClicked?.Invoke(obj);
+			if (element.ProcessId != Process.Id)
+			{
+				return;
+			}
+
+			ElementClicked?.Invoke(element, point);
 		}
 
 		private void MouseMonitorOnMouseChanged(Mouse.MouseEvent mouseEvent, Point point)
@@ -603,7 +578,12 @@ namespace TestR.Desktop
 			}
 
 			var element = Element.FromPoint(point);
-			OnElementClicked(element);
+			if (element.ProcessId != Process.Id)
+			{
+				return;
+			}
+
+			OnElementClicked(element, point);
 		}
 
 		/// <summary>
@@ -633,7 +613,7 @@ namespace TestR.Desktop
 		/// <summary>
 		/// An element was clicked.
 		/// </summary>
-		public event Action<Element> ElementClicked;
+		public event Action<Element, Point> ElementClicked;
 
 		/// <summary>
 		/// Occurs when the application exits.

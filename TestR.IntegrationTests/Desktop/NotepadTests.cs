@@ -43,7 +43,7 @@ namespace TestR.IntegrationTests.Desktop
 			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
 			{
 				var window = application.Children.Windows.First();
-				var document = window.GetChild<Edit>("15");
+				var document = window.Get<Edit>("15");
 				document.Text = "Hello World : GetChild";
 			}
 		}
@@ -121,7 +121,7 @@ namespace TestR.IntegrationTests.Desktop
 				var menuBar = window.Children.MenuBars.First();
 				TestHelper.PrintChildren(menuBar);
 
-				var menu = menuBar.GetChild<MenuItem>(x => x.Name == "File");
+				var menu = menuBar.Get<MenuItem>(x => x.Name == "File");
 				Assert.IsNotNull(menu);
 				Assert.IsTrue(menu.SupportsExpandingCollapsing);
 				menu.Click();
@@ -136,7 +136,7 @@ namespace TestR.IntegrationTests.Desktop
 			Application.CloseAll(NotepadApplicationPath);
 			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
 			{
-				var window = application.WaitForChild<Window>("Untitled - Notepad");
+				var window = application.Get<Window>(x => x.Name == "Untitled - Notepad");
 				window.TitleBar.TakeScreenshot(filePath);
 			}
 		}
@@ -147,10 +147,10 @@ namespace TestR.IntegrationTests.Desktop
 			Application.CloseAll(NotepadApplicationPath);
 			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
 			{
-				var bar = application.WaitForChild("NonClientVerticalScrollBar");
-				var button = bar.WaitForChild<Button>(x => x.Id == "UpButton");
+				var bar = application.Get("NonClientVerticalScrollBar");
+				var button = bar.Get<Button>(x => x.Id == "UpButton");
 				button.MoveMouseTo();
-				button = bar.WaitForChild<Button>(x => x.Id == "DownButton");
+				button = bar.Get<Button>(x => x.Id == "DownButton");
 				button.MoveMouseTo();
 			}
 		}

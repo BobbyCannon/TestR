@@ -1,9 +1,12 @@
 ﻿#region References
 
+using System;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Reflection;
+using System.Runtime.Remoting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop;
 using TestR.Desktop.Elements;
@@ -28,12 +31,69 @@ namespace TestR.IntegrationTests.Desktop
 		#region Methods
 
 		[TestMethod]
+		public void ApplicationLocation()
+		{
+			using (var application = Application.AttachOrCreate(_applicationPath))
+			{
+				var expected = application.Children.Windows.First();
+				var actual = application.Location;
+				Assert.AreEqual(expected.Location, actual);
+				application.Close();
+			}
+		}
+
+		[TestMethod]
+		public void ApplicationLocationWhileMaximized()
+		{
+			using (var application = Application.AttachOrCreate(_applicationPath))
+			{
+				var expected = application.Children.Windows.First();
+				expected.TitleBar.MaximizeButton.Click();
+				expected.Location.Dump();
+
+				var actual = application.Location;
+				Assert.AreEqual(new Point(0,0), actual);
+				application.Close();
+			}
+		}
+
+		[TestMethod]
+		public void ApplicationSize()
+		{
+			using (var application = Application.AttachOrCreate(_applicationPath))
+			{
+				var expected = application.Children.Windows.First();
+				var actual = application.Size;
+				Assert.AreEqual(expected.Size, actual);
+				application.Close();
+			}
+		}
+
+		[TestMethod]
+		public void GetParents()
+		{
+			CheckBox checkbox;
+			using (var application = Application.AttachOrCreate(_applicationPath))
+			{
+				var window = application.Children.Windows.First();
+				checkbox = window.Get<CheckBox>("checkBox1");
+			}
+
+			var element = Element.FromPoint(checkbox.Location);
+			Assert.AreEqual("checkBox1", element.ApplicationId);
+
+			element.UpdateParents();
+			Assert.AreEqual(checkbox.ApplicationId, element.ApplicationId);
+
+		}
+
+		[TestMethod]
 		public void CheckBoxCheckedStateShouldBeIndeterminate()
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows.First();
-				var checkbox = window.WaitForChild<CheckBox>("checkBox3");
+				var checkbox = window.Get<CheckBox>("checkBox3");
 				Assert.AreEqual(ToggleState.Indeterminate, checkbox.CheckedState);
 				application.Close();
 			}
@@ -45,7 +105,7 @@ namespace TestR.IntegrationTests.Desktop
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows.First();
-				var checkbox = window.WaitForChild<CheckBox>("checkBox1");
+				var checkbox = window.Get<CheckBox>("checkBox1");
 				Assert.AreEqual(ToggleState.Off, checkbox.CheckedState);
 				application.Close();
 			}
@@ -57,7 +117,7 @@ namespace TestR.IntegrationTests.Desktop
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows.First();
-				var checkbox = window.WaitForChild<CheckBox>("checkBox2");
+				var checkbox = window.Get<CheckBox>("checkBox2");
 				Assert.AreEqual(ToggleState.On, checkbox.CheckedState);
 				application.Close();
 			}
@@ -68,7 +128,7 @@ namespace TestR.IntegrationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows.First();
+				var window = application.Get<Window>(x => x.Id == "FormMain");
 				var checkbox = window.Children.CheckBoxes;
 				Assert.AreEqual(4, checkbox.Count);
 				application.Close();
@@ -81,7 +141,7 @@ namespace TestR.IntegrationTests.Desktop
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows.First();
-				var checkbox = window.WaitForChild<CheckBox>("checkBox3");
+				var checkbox = window.Get<CheckBox>("checkBox3");
 				Assert.IsTrue(checkbox.Checked);
 				application.Close();
 			}
@@ -93,7 +153,7 @@ namespace TestR.IntegrationTests.Desktop
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows.First();
-				var checkbox = window.WaitForChild<CheckBox>("checkBox1");
+				var checkbox = window.Get<CheckBox>("checkBox1");
 				Assert.IsFalse(checkbox.Checked);
 				application.Close();
 			}
@@ -105,7 +165,7 @@ namespace TestR.IntegrationTests.Desktop
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows.First();
-				var checkbox = window.WaitForChild<CheckBox>("checkBox2");
+				var checkbox = window.Get<CheckBox>("checkBox2");
 				Assert.IsTrue(checkbox.Checked);
 				application.Close();
 			}
@@ -117,7 +177,7 @@ namespace TestR.IntegrationTests.Desktop
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows.First();
-				Assert.AreEqual("FormMain", window.Id);
+				Assert.AreEqual("ParentForm", window.Id);
 				application.Close();
 			}
 		}
@@ -128,7 +188,7 @@ namespace TestR.IntegrationTests.Desktop
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows.First();
-				Assert.AreEqual("TestR Test WinForm", window.Name);
+				Assert.AreEqual("ParentForm", window.Name);
 				application.Close();
 			}
 		}
@@ -140,9 +200,9 @@ namespace TestR.IntegrationTests.Desktop
 			{
 				var window = application.Children.Windows.First();
 				TestHelper.PrintChildren(window);
-				var mainMenu = window.Children["MenuStrip"];
-				Assert.AreEqual("MenuStrip", mainMenu.Id);
-				Assert.AreEqual("mainMenuStrip", mainMenu.Name);
+				var mainMenu = window.Children["menuStrip"];
+				Assert.AreEqual("menuStrip", mainMenu.Id);
+				Assert.AreEqual("MenuStrip", mainMenu.Name);
 				application.Close();
 			}
 		}
@@ -155,9 +215,9 @@ namespace TestR.IntegrationTests.Desktop
 				var window = application.Children.Windows.First();
 				var statusBar = window.StatusBar;
 				Assert.IsNotNull(statusBar);
-				Assert.AreEqual("StatusStrip", statusBar.Id);
-				Assert.AreEqual("statusStrip1", statusBar.Name);
-				Assert.AreEqual("statusStrip1", statusBar.Text);
+				Assert.AreEqual("statusStrip", statusBar.Id);
+				Assert.AreEqual("StatusStrip", statusBar.Name);
+				Assert.AreEqual("StatusStrip", statusBar.Text);
 				application.Close();
 			}
 		}
@@ -182,7 +242,7 @@ namespace TestR.IntegrationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows["FormMain"];
+				var window = application.Get<Window>("FormMain");
 				Assert.IsNotNull(window);
 			}
 		}
@@ -192,7 +252,7 @@ namespace TestR.IntegrationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.FirstOrDefault(x => x.Name == "TestR Test WinForm");
+				var window = application.Get<Window>(x => x.Name == "TestR Test WinForm");
 				Assert.IsNotNull(window);
 			}
 		}

@@ -95,7 +95,7 @@ namespace TestR.Editor
 				switch (action.Type)
 				{
 					case ElementActionType.TypeText:
-						builder.AppendLine("    application.WaitForChild<Element>(\"" + action.ApplicationId + "\").TypeText(\"" + action.Input + "\");");
+						builder.AppendLine("    application.Get<Element>(\"" + action.ApplicationId + "\").TypeText(\"" + action.Input + "\");");
 						break;
 
 					case ElementActionType.MoveMouseTo:
@@ -104,11 +104,11 @@ namespace TestR.Editor
 							var points = action.Input.Split(",");
 							if (points.Length >= 2)
 							{
-								builder.AppendLine("    application.WaitForChild<Element>(\"" + action.ApplicationId + "\").MoveMouseTo(" + int.Parse(points[0]) + "," + int.Parse(points[1]) + ");");
+								builder.AppendLine("    application.Get<Element>(\"" + action.ApplicationId + "\").MoveMouseTo(" + int.Parse(points[0]) + "," + int.Parse(points[1]) + ");");
 								break;
 							}
 						}
-						builder.AppendLine("    application.WaitForChild<Element>(\"" + action.ApplicationId + "\").MoveMouseTo();");
+						builder.AppendLine("    application.Get<Element>(\"" + action.ApplicationId + "\").MoveMouseTo();");
 						break;
 
 					case ElementActionType.LeftMouseClick:
@@ -117,11 +117,11 @@ namespace TestR.Editor
 							var points = action.Input.Split(",");
 							if (points.Length >= 2)
 							{
-								builder.AppendLine("    application.WaitForChild<Element>(\"" + action.ApplicationId + "\").Click(" + int.Parse(points[0]) + "," + int.Parse(points[1]) + ");");
+								builder.AppendLine("    application.Get<Element>(\"" + action.ApplicationId + "\").Click(" + int.Parse(points[0]) + "," + int.Parse(points[1]) + ");");
 								break;
 							}
 						}
-						builder.AppendLine("    application.WaitForChild<Element>(\"" + action.ApplicationId + "\").Click();");
+						builder.AppendLine("    application.Get<Element>(\"" + action.ApplicationId + "\").Click();");
 						break;
 
 					case ElementActionType.RightMouseClick:
@@ -130,27 +130,27 @@ namespace TestR.Editor
 							var points = action.Input.Split(",");
 							if (points.Length >= 2)
 							{
-								builder.AppendLine("    application.WaitForChild<Element>(\"" + action.ApplicationId + "\").RightClick(" + int.Parse(points[0]) + "," + int.Parse(points[1]) + ");");
+								builder.AppendLine("    application.Get<Element>(\"" + action.ApplicationId + "\").RightClick(" + int.Parse(points[0]) + "," + int.Parse(points[1]) + ");");
 								break;
 							}
 						}
-						builder.AppendLine($"    application.WaitForChild<Element>(\"{action.ApplicationId}\").RightClick();");
+						builder.AppendLine($"    application.Get<Element>(\"{action.ApplicationId}\").RightClick();");
 						break;
 
 					case ElementActionType.Equals:
-						builder.AppendLine($"    Assert.AreEqual(\"{action.Input}\", application.WaitForChild<Element>(\"{action.ApplicationId}\").{action.Property}.ToString());");
+						builder.AppendLine($"    Assert.AreEqual(\"{action.Input}\", application.Get<Element>(\"{action.ApplicationId}\").{action.Property}.ToString());");
 						break;
 
 					case ElementActionType.NotEqual:
-						builder.AppendLine($"    Assert.AreNotEqual(\"{action.Input}\", application.WaitForChild<Element>(\"{action.ApplicationId}\").{action.Property}.ToString());");
+						builder.AppendLine($"    Assert.AreNotEqual(\"{action.Input}\", application.Get<Element>(\"{action.ApplicationId}\").{action.Property}.ToString());");
 						break;
 
 					case ElementActionType.Exists:
-						builder.AppendLine($"    Assert.IsNotNull(application.GetChild<Element>(\"{action.ApplicationId}\"));");
+						builder.AppendLine($"    Assert.IsNotNull(application.Get<Element>(\"{action.ApplicationId}\"));");
 						break;
 
 					case ElementActionType.NotExist:
-						builder.AppendLine($"    Assert.IsNull(application.GetChild<Element>(\"{action.ApplicationId}\"));");
+						builder.AppendLine($"    Assert.IsNull(application.Get<Element>(\"{action.ApplicationId}\"));");
 						break;
 
 					default:
@@ -183,7 +183,7 @@ namespace TestR.Editor
 
 		public Element GetElement(string applicationId)
 		{
-			return Application?.GetChild<Element>(applicationId);
+			return Application?.Get<Element>(applicationId);
 		}
 
 		public void Initialize(string applicationPath)
@@ -233,7 +233,7 @@ namespace TestR.Editor
 				return;
 			}
 
-			var element = Application.GetChild<Element>(action.ApplicationId);
+			var element = Application.Get<Element>(action.ApplicationId);
 
 			switch (action.Type)
 			{
