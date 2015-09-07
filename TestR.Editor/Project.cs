@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
@@ -78,6 +79,8 @@ namespace TestR.Editor
 		/// Returns true if the application is loaded.
 		/// </summary>
 		public bool IsLoaded => Application != null;
+
+		public string Version => Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
 		#endregion
 
