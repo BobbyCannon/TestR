@@ -130,7 +130,13 @@ namespace TestR.Editor
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal, (NoArgDelegate) delegate
 			{
 				var reference = e.NewValue as ElementReference;
-				var element = _project.GetElement(reference?.ApplicationId);
+				if (reference == null)
+				{
+					ElementDetails.Text = string.Empty;
+					return;
+				}
+
+				var element = _project.GetElement(reference.ApplicationId);
 				if (element == null)
 				{
 					ElementDetails.Text = string.Empty;
