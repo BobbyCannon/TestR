@@ -433,11 +433,11 @@ namespace TestR.Desktop
 					UpdateChildren();
 					return false;
 				}
-				catch (COMException)
+				catch (Exception)
 				{
 					return !wait;
 				}
-			}, Timeout.TotalMilliseconds, 10);
+			}, Timeout.TotalMilliseconds);
 			
 			return response;
 		}

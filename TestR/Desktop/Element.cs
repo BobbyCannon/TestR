@@ -276,7 +276,7 @@ namespace TestR.Desktop
 				var element = automation.GetFocusedElement();
 				return element == null ? null : new Element(element, null, null);
 			}
-			catch (COMException)
+			catch (Exception)
 			{
 				return null;
 			}
@@ -295,7 +295,7 @@ namespace TestR.Desktop
 				var element = automation.ElementFromPoint(new tagPOINT { x = point.X, y = point.Y });
 				return element == null ? null : new Element(element, null, null);
 			}
-			catch (COMException)
+			catch (Exception)
 			{
 				return null;
 			}
@@ -361,11 +361,11 @@ namespace TestR.Desktop
 					UpdateChildren();
 					return false;
 				}
-				catch (COMException)
+				catch (Exception)
 				{
 					return !wait;
 				}
-			}, Application.Timeout.TotalMilliseconds, 10);
+			}, Application.Timeout.TotalMilliseconds);
 
 			return response;
 		}

@@ -170,7 +170,7 @@ namespace TestR.Web.Browsers
 
 				Thread.Sleep(50);
 			}
-			catch (COMException)
+			catch (Exception)
 			{
 				// A COMException with "RPC_E_DISCONNECTED" happens when the browser switches security context.
 				Thread.Sleep(150);
@@ -254,7 +254,7 @@ namespace TestR.Web.Browsers
 
 				return GetJavascriptResult((IHTMLDocument3) document);
 			}
-			catch (COMException ex)
+			catch (Exception ex)
 			{
 				if (ex.HResult == -2147352319)
 				{
@@ -322,7 +322,7 @@ namespace TestR.Web.Browsers
 				explorer.Visible = true;
 				return explorer;
 			}
-			catch (COMException)
+			catch (Exception)
 			{
 				return CreateInternetExplorerClass();
 			}
