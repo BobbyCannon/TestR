@@ -553,7 +553,7 @@ namespace TestR.Desktop
 		/// <param name="element"> The element to create. </param>
 		/// <param name="application"> The application parent for this element. </param>
 		/// <param name="parent"> The parent of the element to create. </param>
-		private static Element Create(IUIAutomationElement element, Application application, Element parent)
+		internal static Element Create(IUIAutomationElement element, Application application, Element parent)
 		{
 			var itemType = element.CurrentControlType;
 

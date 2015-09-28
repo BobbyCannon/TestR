@@ -7,6 +7,7 @@ using System.Linq;
 using System.Management.Automation;
 using System.Reflection;
 using System.Runtime.Remoting;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop;
 using TestR.Desktop.Elements;
@@ -35,7 +36,7 @@ namespace TestR.IntegrationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var expected = application.Children.Windows.First();
+				var expected = application.Children.Windows["ParentForm"];
 				var actual = application.Location;
 				Assert.AreEqual(expected.Location, actual);
 				application.Close();
@@ -47,7 +48,9 @@ namespace TestR.IntegrationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var expected = application.Children.Windows.First();
+				application.BringToFront();
+
+				var expected = application.Children.Windows["ParentForm"];
 				expected.TitleBar.MaximizeButton.Click();
 				expected.Location.Dump();
 
@@ -62,7 +65,7 @@ namespace TestR.IntegrationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var expected = application.Children.Windows.First();
+				var expected = application.Children.Windows["ParentForm"];
 				var actual = application.Size;
 				Assert.AreEqual(expected.Size, actual);
 				application.Close();
@@ -75,7 +78,7 @@ namespace TestR.IntegrationTests.Desktop
 			CheckBox checkbox;
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows.First();
+				var window = application.Children.Windows["ParentForm"];
 				checkbox = window.Get<CheckBox>("checkBox1");
 			}
 
@@ -92,7 +95,7 @@ namespace TestR.IntegrationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows.First();
+				var window = application.Children.Windows["ParentForm"];
 				var checkbox = window.Get<CheckBox>("checkBox3");
 				Assert.AreEqual(ToggleState.Indeterminate, checkbox.CheckedState);
 				application.Close();
@@ -104,7 +107,7 @@ namespace TestR.IntegrationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows.First();
+				var window = application.Children.Windows["ParentForm"];
 				var checkbox = window.Get<CheckBox>("checkBox1");
 				Assert.AreEqual(ToggleState.Off, checkbox.CheckedState);
 				application.Close();
@@ -116,7 +119,7 @@ namespace TestR.IntegrationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows.First();
+				var window = application.Children.Windows["ParentForm"];
 				var checkbox = window.Get<CheckBox>("checkBox2");
 				Assert.AreEqual(ToggleState.On, checkbox.CheckedState);
 				application.Close();
@@ -140,7 +143,7 @@ namespace TestR.IntegrationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows.First();
+				var window = application.Children.Windows["ParentForm"];
 				var checkbox = window.Get<CheckBox>("checkBox3");
 				Assert.IsTrue(checkbox.Checked);
 				application.Close();
@@ -152,7 +155,7 @@ namespace TestR.IntegrationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows.First();
+				var window = application.Children.Windows["ParentForm"];
 				var checkbox = window.Get<CheckBox>("checkBox1");
 				Assert.IsFalse(checkbox.Checked);
 				application.Close();
@@ -164,7 +167,7 @@ namespace TestR.IntegrationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows.First();
+				var window = application.Children.Windows["ParentForm"];
 				var checkbox = window.Get<CheckBox>("checkBox2");
 				Assert.IsTrue(checkbox.Checked);
 				application.Close();
@@ -176,7 +179,7 @@ namespace TestR.IntegrationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows.First();
+				var window = application.Children.Windows["ParentForm"];
 				Assert.AreEqual("ParentForm", window.Id);
 				application.Close();
 			}
@@ -187,7 +190,7 @@ namespace TestR.IntegrationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows.First();
+				var window = application.Children.Windows["ParentForm"];
 				Assert.AreEqual("ParentForm", window.Name);
 				application.Close();
 			}
@@ -198,7 +201,7 @@ namespace TestR.IntegrationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows.First();
+				var window = application.Children.Windows["ParentForm"];
 				TestHelper.PrintChildren(window);
 				var mainMenu = window.Children["menuStrip"];
 				Assert.AreEqual("menuStrip", mainMenu.Id);
@@ -212,7 +215,7 @@ namespace TestR.IntegrationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows.First();
+				var window = application.Children.Windows["ParentForm"];
 				var statusBar = window.StatusBar;
 				Assert.IsNotNull(statusBar);
 				Assert.AreEqual("statusStrip", statusBar.Id);
@@ -227,7 +230,7 @@ namespace TestR.IntegrationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows.First();
+				var window = application.Children.Windows["ParentForm"];
 				var titleBar = window.TitleBar;
 				Assert.IsNotNull(titleBar);
 				Assert.AreEqual("", titleBar.Id);

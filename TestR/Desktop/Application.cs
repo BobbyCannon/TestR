@@ -475,7 +475,7 @@ namespace TestR.Desktop
 				Utility.Wait(() =>
 				{
 					Children.Clear();
-					Children.AddRange(Process.GetWindows().Select(x => new Window(x, this, null)));
+					Children.AddRange(Process.GetWindows(this));
 					return Children.Any();
 				}, Timeout.TotalMilliseconds, 10);
 
