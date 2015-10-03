@@ -346,7 +346,7 @@ namespace TestR.Editor
 			var applicationElement = _project.GetElement(foundElement.ApplicationId);
 			if (applicationElement == null)
 			{
-				var applicationElementParent = _project.GetElement(((Element) foundElement.Parent)?.ApplicationId);
+				var applicationElementParent = _project.GetElement(foundElement.Parent?.ApplicationId);
 				if (applicationElementParent != null)
 				{
 					applicationElementParent.UpdateChildren();
@@ -366,7 +366,7 @@ namespace TestR.Editor
 			while (currentElement != null)
 			{
 				elements.Add(currentElement);
-				currentElement = currentElement.Parent as Element;
+				currentElement = currentElement.Parent;
 			}
 
 			elements.Reverse();

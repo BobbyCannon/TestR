@@ -1,12 +1,8 @@
 ﻿#region References
 
 using System;
-using System.Diagnostics;
-using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Threading;
-using TestR.Desktop;
-using Application = TestR.Desktop.Application;
 
 #endregion
 
@@ -43,7 +39,6 @@ namespace TestR.TestWinForms
 
 		#region Methods
 
-		
 		private void ArrangeIconsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			LayoutMdi(MdiLayout.ArrangeIcons);
@@ -92,8 +87,6 @@ namespace TestR.TestWinForms
 			main.MdiParent = this;
 			//main.WindowState = FormWindowState.Maximized;
 			main.Show();
-
-			
 		}
 
 		private void PasteToolStripMenuItem_Click(object sender, EventArgs e)

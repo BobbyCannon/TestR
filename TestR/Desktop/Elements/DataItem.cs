@@ -1,4 +1,8 @@
-﻿using UIAutomationClient;
+﻿#region References
+
+using UIAutomationClient;
+
+#endregion
 
 namespace TestR.Desktop.Elements
 {

@@ -41,7 +41,6 @@ namespace TestR.Desktop.Pattern
 		/// </summary>
 		/// <param name="element"> The element this pattern is for. </param>
 		/// <returns> The instance of the pattern. </returns>
-
 		public static ValuePattern New(Element element)
 		{
 			return new ValuePattern(element);
@@ -50,7 +49,7 @@ namespace TestR.Desktop.Pattern
 		/// <summary>
 		/// Sets the value of the element.
 		/// </summary>
-		/// <param name="value"></param>
+		/// <param name="value"> </param>
 		public void SetValue(string value)
 		{
 			GetPattern<IUIAutomationValuePattern>()?.SetValue(value);

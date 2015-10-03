@@ -26,9 +26,10 @@ namespace TestR.Native
 		/// Filters out a message before it is dispatched.
 		/// </summary>
 		/// <returns>
-		/// true to filter the message and stop it from being dispatched; false to allow the message to continue to the next filter or control.
+		/// true to filter the message and stop it from being dispatched; false to allow the message to continue to the next filter
+		/// or control.
 		/// </returns>
-		/// <param name="m">The message to be dispatched. You cannot modify this message. </param>
+		/// <param name="m"> The message to be dispatched. You cannot modify this message. </param>
 		public bool PreFilterMessage(ref Message m)
 		{
 			Point mousePosition;

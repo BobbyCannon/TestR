@@ -241,17 +241,13 @@ namespace TestR.Desktop
 		#region Indexers
 
 		/// <summary>
-		/// Access an element by the ID or by Name.
+		/// Access an element by the Application ID, ID, or Name.
 		/// </summary>
-		/// <param name="id"> The ID or Name of the element. </param>
+		/// <param name="id"> The ID of the element. </param>
 		/// <returns> The element if found or null if not found. </returns>
 		public T this[string id]
 		{
-			get
-			{
-				// Try to use the full application ID first.
-				return this.FirstOrDefault(x => x.ApplicationId == id) ?? this.FirstOrDefault(x => x.Id == id);
-			}
+			get { return this.FirstOrDefault(x => x.ApplicationId == id) ?? this.FirstOrDefault(x => x.Id == id) ?? this.FirstOrDefault(x => x.Name == id); }
 		}
 
 		#endregion

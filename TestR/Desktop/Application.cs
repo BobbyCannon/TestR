@@ -7,9 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Management;
-using System.Runtime.InteropServices;
 using System.Threading;
-using TestR.Desktop.Elements;
 using TestR.Extensions;
 using TestR.Helpers;
 using TestR.Native;
@@ -83,14 +81,14 @@ namespace TestR.Desktop
 		public Process Process { get; private set; }
 
 		/// <summary>
-		/// Gets or sets the time out for delay request. Defaults to 5 seconds.
-		/// </summary>
-		public TimeSpan Timeout { get; set; }
-
-		/// <summary>
 		/// Gets the size of the application.
 		/// </summary>
 		public Size Size => Process.GetWindowSize();
+
+		/// <summary>
+		/// Gets or sets the time out for delay request. Defaults to 5 seconds.
+		/// </summary>
+		public TimeSpan Timeout { get; set; }
 
 		#endregion
 
@@ -382,7 +380,7 @@ namespace TestR.Desktop
 		/// <returns> The child element for the ID. </returns>
 		public Element Get(string id, bool recursive = true, bool wait = true)
 		{
-			return Get<Element>(x => x.Id == id, recursive, wait);
+			return Get<Element>(id, recursive, wait);
 		}
 
 		/// <summary>
@@ -406,7 +404,7 @@ namespace TestR.Desktop
 		/// <returns> The child element for the ID. </returns>
 		public T Get<T>(string id, bool recursive = true, bool wait = true) where T : Element
 		{
-			return Get<T>(x => x.Id == id || x.ApplicationId == id, recursive, wait);
+			return Get<T>(x => x.ApplicationId == id || x.Id == id || x.Name == id, recursive, wait);
 		}
 
 		/// <summary>
@@ -438,7 +436,7 @@ namespace TestR.Desktop
 					return !wait;
 				}
 			}, Timeout.TotalMilliseconds);
-			
+
 			return response;
 		}
 
@@ -595,6 +593,17 @@ namespace TestR.Desktop
 		{
 			Exited?.Invoke();
 		}
+
+		#endregion
+
+		#region Indexers
+
+		/// <summary>
+		/// Get a child using a provided key.
+		/// </summary>
+		/// <param name="key"> The key of the child. </param>
+		/// <returns> The child if found or null if otherwise. </returns>
+		public Element this[string key] => Get(key, false);
 
 		#endregion
 

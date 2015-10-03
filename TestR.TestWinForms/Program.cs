@@ -21,7 +21,7 @@ namespace TestR.TestWinForms
 		#endregion
 
 		#region Methods
-		
+
 		private static string GetParentWindowsTitle(Element element)
 		{
 			var parent = element;
@@ -65,5 +65,4 @@ namespace TestR.TestWinForms
 
 		#endregion
 	}
-
 }

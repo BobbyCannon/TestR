@@ -166,7 +166,7 @@ namespace TestR.Web
 			{
 				var chrome = Chrome.AttachOrCreate();
 				chrome.Application.MoveWindow((browserOffset++ * browserWidth), 0, browserWidth, browserWidth * 2);
-                response.Add(chrome);
+				response.Add(chrome);
 			}
 
 			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)

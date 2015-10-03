@@ -33,7 +33,7 @@ namespace TestR.IntegrationTests
 
 		public static void PrintChildren(Element parent, string prefix = "")
 		{
-			var element = parent as Element;
+			var element = parent;
 			if (element != null)
 			{
 				Console.WriteLine(prefix + element.ToDetailString().Replace(Environment.NewLine, ", "));

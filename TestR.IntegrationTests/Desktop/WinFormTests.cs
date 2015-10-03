@@ -1,13 +1,9 @@
 ﻿#region References
 
-using System;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Management.Automation;
 using System.Reflection;
-using System.Runtime.Remoting;
-using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop;
 using TestR.Desktop.Elements;
@@ -55,7 +51,7 @@ namespace TestR.IntegrationTests.Desktop
 				expected.Location.Dump();
 
 				var actual = application.Location;
-				Assert.AreEqual(new Point(0,0), actual);
+				Assert.AreEqual(new Point(0, 0), actual);
 				application.Close();
 			}
 		}
@@ -70,24 +66,6 @@ namespace TestR.IntegrationTests.Desktop
 				Assert.AreEqual(expected.Size, actual);
 				application.Close();
 			}
-		}
-
-		[TestMethod]
-		public void GetParents()
-		{
-			CheckBox checkbox;
-			using (var application = Application.AttachOrCreate(_applicationPath))
-			{
-				var window = application.Children.Windows["ParentForm"];
-				checkbox = window.Get<CheckBox>("checkBox1");
-			}
-
-			var element = Element.FromPoint(checkbox.Location);
-			Assert.AreEqual("checkBox1", element.ApplicationId);
-
-			element.UpdateParents();
-			Assert.AreEqual(checkbox.ApplicationId, element.ApplicationId);
-
 		}
 
 		[TestMethod]
@@ -241,6 +219,23 @@ namespace TestR.IntegrationTests.Desktop
 		}
 
 		[TestMethod]
+		public void GetParents()
+		{
+			CheckBox checkbox;
+			using (var application = Application.AttachOrCreate(_applicationPath))
+			{
+				var window = application.Children.Windows["ParentForm"];
+				checkbox = window.Get<CheckBox>("checkBox1");
+			}
+
+			var element = Element.FromPoint(checkbox.Location);
+			Assert.AreEqual("checkBox1", element.ApplicationId);
+
+			element.UpdateParents();
+			Assert.AreEqual(checkbox.ApplicationId, element.ApplicationId);
+		}
+
+		[TestMethod]
 		public void GetWindowById()
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
@@ -255,7 +250,7 @@ namespace TestR.IntegrationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Get<Window>(x => x.Name == "TestR Test WinForm");
+				var window = application.Get<Window>("TestR Test WinForm");
 				Assert.IsNotNull(window);
 			}
 		}

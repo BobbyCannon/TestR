@@ -6,7 +6,6 @@ using System.Management.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop;
 using TestR.Desktop.Elements;
-using TestR.Extensions;
 using TestR.PowerShell;
 
 #endregion
