@@ -7,10 +7,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Windows;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using TestR.Desktop;
 using TestR.Extensions;
+using Application = TestR.Desktop.Application;
 
 #endregion
 
@@ -23,6 +25,7 @@ namespace TestR.Editor
 		private ObservableCollection<ElementAction> _actions;
 		private Application _application;
 		private string _applicationFilePath;
+		private Element _focusedElement;
 
 		#endregion
 
@@ -33,7 +36,6 @@ namespace TestR.Editor
 			_actions = new ObservableCollection<ElementAction>();
 			_application = null;
 			ApplicationFilePath = string.Empty;
-			Elements = new ObservableCollection<ElementReference>();
 		}
 
 		#endregion
@@ -73,14 +75,30 @@ namespace TestR.Editor
 		}
 
 		[JsonIgnore]
-		public ObservableCollection<ElementReference> Elements { get; set; }
+		public Element FocusedElement
+		{
+			get { return _focusedElement; }
+			internal set
+			{
+				_focusedElement = value;
+				OnPropertyChanged(nameof(FocusedElement));
+				OnPropertyChanged(nameof(IsElementFocused));
+				OnPropertyChanged(nameof(FocusedElementDetails));
+			}
+		}
+
+		public bool IsElementFocused => FocusedElement != null;
 
 		/// <summary>
 		/// Returns true if the application is loaded.
 		/// </summary>
 		public bool IsLoaded => Application != null;
 
+		public int ProcessId => Application?.Process?.Id ?? 0;
+
 		public string Version => Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
+		public string FocusedElementDetails => FocusedElement?.ToDetailString() ?? string.Empty;
 
 		#endregion
 
@@ -170,11 +188,14 @@ namespace TestR.Editor
 		{
 			if (Application != null)
 			{
+				ApplicationFilePath = string.Empty;
 				Application.Closed -= Close;
 				Application.Dispose();
 				Application = null;
+				FocusedElement = null;
 			}
 
+			OnClosed();
 			OnPropertyChanged(nameof(IsLoaded));
 		}
 
@@ -222,13 +243,6 @@ namespace TestR.Editor
 			OnPropertyChanged(nameof(IsLoaded));
 		}
 
-		public void RefreshElements()
-		{
-			Application.UpdateChildren();
-			Elements.Clear();
-			Application.Children.ForEach(x => Elements.Add(CreateElementReference(x)));
-		}
-
 		public void RunAction(ElementAction action)
 		{
 			if (action == null)
@@ -236,7 +250,12 @@ namespace TestR.Editor
 				return;
 			}
 
-			var element = Application.Get<Element>(action.ApplicationId);
+			var element = Application.Get(action.ApplicationId);
+			if (element == null)
+			{
+				MessageBox.Show("Failed to find the element...");
+				return;
+			}
 
 			switch (action.Type)
 			{
@@ -305,13 +324,6 @@ namespace TestR.Editor
 			ElementActions.ForEach(RunAction);
 		}
 
-		private static ElementReference CreateElementReference(Element element)
-		{
-			var reference = new ElementReference(element);
-			element.Children.ForEach(x => reference.Children.Add(CreateElementReference(x)));
-			return reference;
-		}
-
 		private void Dispose(bool disposing)
 		{
 			if (!disposing)
@@ -325,6 +337,11 @@ namespace TestR.Editor
 			}
 		}
 
+		private void OnClosed()
+		{
+			Closed?.Invoke();
+		}
+
 		private void OnPropertyChanged(string propertyName = null)
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -334,6 +351,7 @@ namespace TestR.Editor
 
 		#region Events
 
+		public event Action Closed;
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		#endregion

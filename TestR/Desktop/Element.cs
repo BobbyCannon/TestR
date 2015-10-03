@@ -376,6 +376,11 @@ namespace TestR.Desktop
 		/// <returns> The parent if found or null otherwise. </returns>
 		public static Element GetFirstParentWithId(Element element)
 		{
+			if (element == null)
+			{
+				return null;
+			}
+
 			return !string.IsNullOrEmpty(element.Id) ? element : GetFirstParentWithId(element.Parent);
 		}
 
@@ -476,20 +481,23 @@ namespace TestR.Desktop
 			var properties = type.GetProperties()
 				.Where(x => !ExcludedProperties.Contains(x.Name))
 				.OrderBy(x => x.Name).ToList();
-			var items = new Dictionary<string, string>(properties.Count);
+
+			var builder = new StringBuilder();
 
 			foreach (var property in properties)
 			{
-				var value = property.GetValue(this);
+				var value = property.GetValue(this)?.ToString();
 				if (value == null)
 				{
 					continue;
 				}
 
-				items.Add(property.Name, value.ToString());
+				builder.AppendLine(property.Name + " - " + value);
 			}
 
-			return string.Join(Environment.NewLine, items.Where(x => !string.IsNullOrWhiteSpace(x.Value)).Select(x => x.Key + " - " + x.Value));
+			builder.AppendLine("GetText() - " + GetText());
+
+			return builder.ToString();
 		}
 
 		/// <summary>

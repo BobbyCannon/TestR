@@ -1,7 +1,9 @@
 #region References
 
 using System.Linq;
+using System.Text;
 using TestR.Desktop;
+using TestR.Editor.Extensions;
 
 #endregion
 
@@ -24,7 +26,7 @@ namespace TestR.Editor
 		public ElementAction(Element element, ElementActionType actionType)
 		{
 			ApplicationId = element.ApplicationId;
-			DisplayText = element.Id + " : " + element.Name;
+			DisplayText = GetDisplayName(element);
 			Input = string.Empty;
 			Type = actionType;
 			Properties = GetProperties(element);
@@ -45,6 +47,16 @@ namespace TestR.Editor
 		#endregion
 
 		#region Methods
+
+		private string GetDisplayName(Element element)
+		{
+			var builder = new StringBuilder(128);
+			builder.AppendFirst(element.Id, element.Name);
+			builder.AppendIf(" -> ", builder.Length > 0);
+			builder.Append(element.ApplicationId);
+
+			return builder.ToString();
+		}
 
 		private static string[] GetProperties(Element element)
 		{

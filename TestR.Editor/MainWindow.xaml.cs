@@ -1,12 +1,9 @@
 ﻿#region References
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -14,9 +11,6 @@ using System.Windows.Threading;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using TestR.Desktop;
-using TestR.Editor.DragDropManagers;
-using TestR.Editor.Extensions;
-using TestR.Extensions;
 
 #endregion
 
@@ -29,12 +23,10 @@ namespace TestR.Editor
 	{
 		#region Fields
 
-		private ListViewDragDropManager<ElementAction> _actionsDragDropManager;
 		private readonly DispatcherTimer _dispatcherTimer;
-		private TreeViewDragDropManager _elementsDragManager;
-		private Element _focusedElement;
 		private readonly Highlighter _highlighter;
 		private Project _project;
+		private Element _lastAutoFocusedElement;
 
 		#endregion
 
@@ -47,6 +39,7 @@ namespace TestR.Editor
 			_dispatcherTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(250), DispatcherPriority.Normal, TimerControlDetectionTick, Dispatcher);
 			_highlighter = new Highlighter();
 			_project = new Project();
+			_project.Closed += ProjectOnClosed;
 
 			DataContext = _project;
 		}
@@ -78,32 +71,23 @@ namespace TestR.Editor
 			base.OnClosing(e);
 		}
 
-		private void Actions_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void AddFocusedElement(object sender, RoutedEventArgs e)
 		{
-			var action = ((ListView) sender).SelectedItem as ElementAction;
-			var element = _project.GetElement(action?.ApplicationId);
-			if (element == null)
-			{
-				ElementDetails.Text = string.Empty;
-				return;
-			}
-
-			_highlighter.SetElement(element);
-			ElementDetails.Text = element.ToDetailString();
-		}
-
-		private void ActionsOnDrop(object sender, DragEventArgs dragEventArgs)
-		{
-			var elementReference = dragEventArgs.Data.GetData(typeof (ElementReference)) as ElementReference;
-			if (dragEventArgs.Effects != DragDropEffects.Copy || elementReference == null)
+			if (_project.FocusedElement == null)
 			{
 				return;
 			}
+			try
+			{
 
-			var element = _project.GetElement(elementReference.ApplicationId);
-			var action = new ElementAction(element, ElementActionType.MoveMouseTo);
-			_project.ElementActions.Add(action);
-			Actions.SelectedItem = action;
+				var action = new ElementAction(_project.FocusedElement, ElementActionType.MoveMouseTo);
+				_project.ElementActions.Add(action);
+				Actions.SelectedItem = action;
+			}
+			catch (Exception ex)
+			{
+				Debug.WriteLine("Failed to add focused element... " + ex.Message);
+			}
 		}
 
 		private void AddToLog(string message)
@@ -122,31 +106,6 @@ namespace TestR.Editor
 			var button = sender as Button;
 			var action = button?.DataContext as ElementAction;
 			_project.ElementActions.Remove(action);
-		}
-
-		private void ElementListOnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-		{
-			// Issue with trigger more than once.
-			Dispatcher.BeginInvoke(DispatcherPriority.Normal, (NoArgDelegate) delegate
-			{
-				var reference = e.NewValue as ElementReference;
-				if (reference == null)
-				{
-					ElementDetails.Text = string.Empty;
-					return;
-				}
-
-				var element = _project.GetElement(reference.ApplicationId);
-				if (element == null)
-				{
-					ElementDetails.Text = string.Empty;
-					return;
-				}
-
-				_highlighter.SetElement(element);
-				ElementDetails.Text = element.ToDetailString();
-				Elements.Focus();
-			});
 		}
 
 		private void Load(object sender, RoutedEventArgs e)
@@ -171,15 +130,12 @@ namespace TestR.Editor
 					{
 						_project.Initialize(project);
 						_project.Application.BringToFront();
-						_project.RefreshElements();
 					}
 					catch (InvalidOperationException)
 					{
 						_project.Close();
 					}
 				}
-
-				UpdateLayout();
 			}
 			finally
 			{
@@ -187,27 +143,9 @@ namespace TestR.Editor
 			}
 		}
 
-		private void Refresh(object sender, RoutedEventArgs e)
+		private void ProjectOnClosed()
 		{
-			_project.RefreshElements();
-		}
-
-		private void RefreshElement(object sender, RoutedEventArgs routedEventArgs)
-		{
-			try
-			{
-				Progress.Visibility = Visibility.Visible;
-				var menuItem = sender as MenuItem;
-				var elementReference = menuItem?.DataContext as ElementReference;
-				var element = _project.GetElement(elementReference?.ApplicationId);
-				element?.UpdateChildren();
-				elementReference?.Children.Clear();
-				elementReference?.Children.AddRange(element?.Children.Select(x => new ElementReference(x)));
-			}
-			finally
-			{
-				Progress.Visibility = Visibility.Hidden;
-			}
+			Dispatcher.BeginInvoke(DispatcherPriority.Normal, (NoArgDelegate) delegate { Code.Clear(); });
 		}
 
 		private void RunAction(object sender, RoutedEventArgs e)
@@ -275,21 +213,19 @@ namespace TestR.Editor
 			dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
 			var result = dialog.ShowDialog(this);
-			if (result.Value)
+			if (!result.Value)
 			{
-				Task.Run(() =>
-				{
-					try
-					{
-						_project.Initialize(dialog.FileName);
-						_project.Application.BringToFront();
-						Dispatcher.Invoke(() => { _project.RefreshElements(); });
-					}
-					catch (InvalidOperationException)
-					{
-						_project.Close();
-					}
-				});
+				return;
+			}
+
+			try
+			{
+				_project.Initialize(dialog.FileName);
+				_project.Application.BringToFront();
+			}
+			catch (InvalidOperationException)
+			{
+				_project.Close();
 			}
 		}
 
@@ -299,90 +235,72 @@ namespace TestR.Editor
 			dialog.Owner = this;
 
 			var result = dialog.ShowDialog();
-			if (result.HasValue && result.Value)
+			if (!result.HasValue || !result.Value)
 			{
-				Task.Run(() =>
-				{
-					var process = dialog.SelectedProcess;
+				return;
+			}
 
-					try
-					{
-						_project.Initialize(process);
-						_project.Application.BringToFront();
-						Dispatcher.Invoke(() => { _project.RefreshElements(); });
-					}
-					catch (InvalidOperationException)
-					{
-						_project.Close();
-					}
-				});
+			var process = dialog.SelectedProcess;
+
+			try
+			{
+				_project.Initialize(process);
+				_project.Application.BringToFront();
+			}
+			catch (InvalidOperationException)
+			{
+				_project.Close();
 			}
 		}
 
 		private void TimerControlDetectionTick(object sender, EventArgs e)
 		{
-			if (_project == null || (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl)))
+			try
 			{
-				return;
-			}
+				var foundElement = Element.FromFocusElement();
+				foundElement?.UpdateParents();
+				//foundElement?.UpdateChildren();
+				var processId = GetFirstProcessId(foundElement);
 
-			var foundElement = Element.FromCursor();
-			foundElement.UpdateParents();
-			foundElement = Element.GetFirstParentWithId(foundElement);
-
-			// See if our element is already the focused element.
-			if (_focusedElement != null && foundElement.ApplicationId == _focusedElement.ApplicationId)
-			{
-				return;
-			}
-
-			Debug.WriteLine("Found: " + foundElement.ApplicationId);
-			if (_focusedElement != null)
-			{
-				Debug.WriteLine("Current: " + _focusedElement.ApplicationId);
-			}
-
-			// Find the element in our collection.
-			var applicationElement = _project.GetElement(foundElement.ApplicationId);
-			if (applicationElement == null)
-			{
-				var applicationElementParent = _project.GetElement(foundElement.Parent?.ApplicationId);
-				if (applicationElementParent != null)
+				if (foundElement != null && processId == _project.ProcessId && foundElement.ApplicationId != _lastAutoFocusedElement?.ApplicationId)
 				{
-					applicationElementParent.UpdateChildren();
-					applicationElement = _project.GetElement(foundElement.ApplicationId);
+					_lastAutoFocusedElement = foundElement;
+					_project.FocusedElement = _lastAutoFocusedElement;
+					_highlighter.SetElement(_project.FocusedElement);
+				}
+
+				if (_project == null || (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl)))
+				{
+					return;
+				}
+
+				foundElement = Element.FromCursor();
+				foundElement?.UpdateParents();
+				//foundElement?.UpdateChildren();
+				processId = GetFirstProcessId(foundElement);
+
+				if (foundElement != null && processId == _project.ProcessId && foundElement.ApplicationId != _project.FocusedElement?.Id)
+				{
+					_project.FocusedElement = foundElement;
+					_highlighter.SetElement(_project.FocusedElement);
 				}
 			}
-
-			if (applicationElement == null || applicationElement.ProcessId != _project.Application.Process.Id)
+			catch (Exception ex)
 			{
-				Debug.WriteLine("Could not find the application element...");
-				return;
+				Debug.WriteLine("Failed to get element... " + ex.Message);
 			}
-
-			var currentElement = applicationElement;
-			var elements = new List<Element>();
-
-			while (currentElement != null)
-			{
-				elements.Add(currentElement);
-				currentElement = currentElement.Parent;
-			}
-
-			elements.Reverse();
-			elements.ForEach(x => Elements.SelectItem(_project.GetElement(x.ApplicationId)));
-
-			_focusedElement = applicationElement;
-			Debug.WriteLine("Selected new focused element [" + _focusedElement.ApplicationId + "]...");
 		}
 
-		private void Window_Loaded(object sender, RoutedEventArgs e)
+		private int GetFirstProcessId(Element element)
 		{
-			_elementsDragManager = new TreeViewDragDropManager(Elements);
-			Elements.DragEnter += (o, args) => args.Effects = DragDropEffects.Move;
-			_actionsDragDropManager = new ListViewDragDropManager<ElementAction>(Actions);
-			Actions.DragEnter += (o, args) => args.Effects = DragDropEffects.Move;
-			Actions.Drop += ActionsOnDrop;
+			if (element == null)
+			{
+				return 0;
+			}
+
+			return element.ProcessId != 0 
+				? element.ProcessId 
+				: GetFirstProcessId(element.Parent);
 		}
 
 		#endregion

@@ -70,12 +70,11 @@
     <Compile Include="DragAdorner.cs" />
     <Compile Include="ElementAction.cs" />
     <Compile Include="ElementActionType.cs" />
-    <Compile Include="ElementReference.cs" />
-    <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\ListViewExtensions.cs" />
-    <Compile Include="Extensions\VisualExtensions.cs" />
     <Compile Include="DragDropManagers\TreeViewDragDropManager.cs" />
     <Compile Include="DragDropManagers\ListViewDragDropManager.cs" />
+    <Compile Include="Extensions\StringBuilderExtensions.cs" />
+    <Compile Include="Extensions\VisualExtensions.cs" />
     <Compile Include="ProcessWindow.xaml.cs">
       <DependentUpon>ProcessWindow.xaml</DependentUpon>
     </Compile>

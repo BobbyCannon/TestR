@@ -2,6 +2,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
@@ -157,23 +158,32 @@ namespace TestR.Editor
 		/// </summary>
 		public void Layout()
 		{
-			if (Visible && !_element.Visible)
+			try
 			{
-				Visible = false;
-				return;
+				if (Visible && !_element.Visible)
+				{
+					Visible = false;
+					return;
+				}
+
+				if (!Visible && _element.Visible)
+				{
+					Visible = true;
+				}
+
+				if (_currentLocation == _element.BoundingRectangle)
+				{
+					return;
+				}
+
+				_currentLocation = _element.BoundingRectangle;
+			}
+			catch (Exception ex)
+			{
+				_currentLocation = new Rectangle(0,0,0,0);
+				Debug.WriteLine("Error trying to layout the element highlighter. " + ex.Message);
 			}
 
-			if (!Visible && _element.Visible)
-			{
-				Visible = true;
-			}
-
-			if (_currentLocation == _element.BoundingRectangle)
-			{
-				return;
-			}
-
-			_currentLocation = _element.BoundingRectangle;
 			_leftRectangle.Location = new Rectangle(_currentLocation.Left - LineWidth, _currentLocation.Top, LineWidth, _currentLocation.Height);
 			_topRectangle.Location = new Rectangle(_currentLocation.Left - LineWidth, _currentLocation.Top - LineWidth, _currentLocation.Width + (2 * LineWidth), LineWidth);
 			_rightRectangle.Location = new Rectangle(_currentLocation.Left + _currentLocation.Width, _currentLocation.Top, LineWidth, _currentLocation.Height);

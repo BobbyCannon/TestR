@@ -19,7 +19,7 @@ namespace TestR.Editor.ValueConverters
 			var typeValue = value.ToString();
 			var parameterValues = ((string) parameter).Split(';');
 
-			return parameterValues.Contains(typeValue) ? Visibility.Visible : Visibility.Hidden;
+			return parameterValues.Contains(typeValue) ? Visibility.Visible : Visibility.Collapsed;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
