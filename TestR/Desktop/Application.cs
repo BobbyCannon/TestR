@@ -601,9 +601,9 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Get a child using a provided key.
 		/// </summary>
-		/// <param name="key"> The key of the child. </param>
+		/// <param name="id"> The ID of the child. </param>
 		/// <returns> The child if found or null if otherwise. </returns>
-		public Element this[string key] => Get(key, false);
+		public Element this[string id] => Get(id, false);
 
 		#endregion
 

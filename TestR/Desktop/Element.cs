@@ -309,7 +309,7 @@ namespace TestR.Desktop
 		/// <returns> The child element for the ID. </returns>
 		public Element Get(string id, bool recursive = true, bool wait = true)
 		{
-			return Get<Element>(x => x.Id == id, recursive, wait);
+			return Get<Element>(id, recursive, wait);
 		}
 
 		/// <summary>
@@ -321,7 +321,7 @@ namespace TestR.Desktop
 		/// <returns> The child element for the ID. </returns>
 		public T Get<T>(string id, bool recursive = true, bool wait = true) where T : Element
 		{
-			return Get<T>(x => x.Id == id || x.ApplicationId == id, recursive, wait);
+			return Get<T>(x => x.ApplicationId == id || x.Id == id || x.Name == id, recursive, wait);
 		}
 
 		/// <summary>
@@ -739,9 +739,9 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Get a child using a provided key.
 		/// </summary>
-		/// <param name="key"> The key of the child. </param>
+		/// <param name="id"> The ID of the child. </param>
 		/// <returns> The child if found or null if otherwise. </returns>
-		public Element this[string key] => Get(key, false);
+		public Element this[string id] => Get(id, false);
 
 		#endregion
 

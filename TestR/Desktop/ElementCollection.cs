@@ -171,6 +171,17 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Get the child from the children.
 		/// </summary>
+		/// <param name="id"> An ID of the element to get. </param>
+		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
+		/// <returns> The child element for the condition. </returns>
+		public T1 Get<T1>(string id, bool recursive = true) where T1 : Element
+		{
+			return Get<T1>(x => x.ApplicationId == id || x.Id == id || x.Name == id, recursive);
+		}
+
+		/// <summary>
+		/// Get the child from the children.
+		/// </summary>
 		/// <param name="condition"> A function to test each element for a condition. </param>
 		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
 		/// <returns> The child element for the condition. </returns>
@@ -245,10 +256,7 @@ namespace TestR.Desktop
 		/// </summary>
 		/// <param name="id"> The ID of the element. </param>
 		/// <returns> The element if found or null if not found. </returns>
-		public T this[string id]
-		{
-			get { return this.FirstOrDefault(x => x.ApplicationId == id) ?? this.FirstOrDefault(x => x.Id == id) ?? this.FirstOrDefault(x => x.Name == id); }
-		}
+		public T this[string id] => Get<T>(id, false);
 
 		#endregion
 	}
