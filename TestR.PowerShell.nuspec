@@ -6,6 +6,7 @@
 		<version>1.0</version>
 		<authors>Bobby Cannon</authors>
 		<description>Integration testing framework for developers. TestR allows automating testing of web applications. Adds PowerShell features that are not part of the regular deployment.</description>
+		<iconUrl>https://raw.githubusercontent.com/BobbyCannon/TestR/master/TestR.png</iconUrl>
 		<projectUrl>http://bobbycannon.github.io/TestR/</projectUrl>
 		<tags>TestR Test UnitTest IntegrationTest Automation Testing Web InternetExplorer FireFox Chrome PowerShell</tags>
 		<dependencies>

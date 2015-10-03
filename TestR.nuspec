@@ -6,6 +6,7 @@
 		<version>1.0</version>
 		<authors>Bobby Cannon</authors>
 		<description>Integration testing framework for developers. TestR allows automating testing of web applications.</description>
+		<iconUrl>https://raw.githubusercontent.com/BobbyCannon/TestR/master/TestR.png</iconUrl>
 		<projectUrl>http://bobbycannon.github.io/TestR/</projectUrl>
 		<tags>TestR Test UnitTest IntegrationTest Automation Testing Web InternetExplorer FireFox Chrome</tags>
 		<dependencies>
