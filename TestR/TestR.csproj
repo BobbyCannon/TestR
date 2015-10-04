@@ -110,6 +110,7 @@
     <Compile Include="Desktop\Pattern\ValuePattern.cs" />
     <Compile Include="Exceptions\NotKeyboardFocusableException.cs" />
     <Compile Include="Extensions\Assembly.cs" />
+    <Compile Include="Extensions\Exception.cs" />
     <Compile Include="Extensions\Object.cs" />
     <Compile Include="Extensions\PointExtensions.cs" />
     <Compile Include="Extensions\Process.cs" />

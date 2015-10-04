@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows;
+using System.Windows.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using TestR.Desktop;
@@ -25,16 +26,20 @@ namespace TestR.Editor
 		private ObservableCollection<ElementAction> _actions;
 		private Application _application;
 		private string _applicationFilePath;
+		private readonly Dispatcher _dispatcher;
 		private Element _focusedElement;
+		private readonly Highlighter _highlighter;
 
 		#endregion
 
 		#region Constructors
 
-		public Project()
+		public Project(Dispatcher dispatcher)
 		{
 			_actions = new ObservableCollection<ElementAction>();
 			_application = null;
+			_dispatcher = dispatcher;
+			_highlighter = new Highlighter();
 			ApplicationFilePath = string.Empty;
 		}
 
@@ -81,11 +86,20 @@ namespace TestR.Editor
 			internal set
 			{
 				_focusedElement = value;
+				_highlighter.SetElement(value);
 				OnPropertyChanged(nameof(FocusedElement));
+				OnPropertyChanged(nameof(FocusedElementHasParent));
+				OnPropertyChanged(nameof(FocusedElementHasChildren));
 				OnPropertyChanged(nameof(IsElementFocused));
 				OnPropertyChanged(nameof(FocusedElementDetails));
 			}
 		}
+
+		public string FocusedElementDetails => FocusedElement?.ToDetailString() ?? string.Empty;
+
+		public bool FocusedElementHasChildren => FocusedElement?.Children?.Count > 0;
+
+		public bool FocusedElementHasParent => FocusedElement?.Parent != null;
 
 		public bool IsElementFocused => FocusedElement != null;
 
@@ -97,8 +111,6 @@ namespace TestR.Editor
 		public int ProcessId => Application?.Process?.Id ?? 0;
 
 		public string Version => Assembly.GetExecutingAssembly().GetName().Version.ToString();
-
-		public string FocusedElementDetails => FocusedElement?.ToDetailString() ?? string.Empty;
 
 		#endregion
 
@@ -186,16 +198,22 @@ namespace TestR.Editor
 
 		public void Close()
 		{
+			OnClosed();
+
 			if (Application != null)
 			{
+				_dispatcher.Invoke(() =>
+				{
+					ElementActions.Clear();
+					FocusedElement = null;
+				});
+
 				ApplicationFilePath = string.Empty;
 				Application.Closed -= Close;
 				Application.Dispose();
 				Application = null;
-				FocusedElement = null;
 			}
 
-			OnClosed();
 			OnPropertyChanged(nameof(IsLoaded));
 		}
 
@@ -217,7 +235,7 @@ namespace TestR.Editor
 			ApplicationFilePath = applicationPath;
 			Application = Application.AttachOrCreate(ApplicationFilePath);
 			Application.Closed += Close;
-			Application.Timeout = TimeSpan.FromMinutes(5);
+			Application.Timeout = TimeSpan.FromSeconds(5);
 
 			OnPropertyChanged(nameof(Application));
 			OnPropertyChanged(nameof(IsLoaded));
@@ -237,7 +255,7 @@ namespace TestR.Editor
 			ApplicationFilePath = process.Modules[0].FileName;
 			Application = Application.Attach(process.MainWindowHandle);
 			Application.Closed += Close;
-			Application.Timeout = TimeSpan.FromSeconds(30);
+			Application.Timeout = TimeSpan.FromSeconds(5);
 
 			OnPropertyChanged(nameof(Application));
 			OnPropertyChanged(nameof(IsLoaded));
@@ -320,7 +338,6 @@ namespace TestR.Editor
 
 		public void RunTests()
 		{
-			Initialize(ApplicationFilePath);
 			ElementActions.ForEach(RunAction);
 		}
 

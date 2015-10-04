@@ -178,8 +178,8 @@ namespace TestR.Desktop
 		{
 			get
 			{
-				tagPOINT point;
-				var clickable = NativeElement.GetClickablePoint(out point) > 0 && (point.x != 0 && point.y != 0);
+				Point point;
+				var clickable = TryGetClickablePoint(out point) && (point.Y != 0 && point.Y != 0);
 				var focused = Focused || Children.Any(x => x.Focused);
 				return NativeElement.CurrentIsOffscreen == 0 && (clickable || focused);
 			}
@@ -486,13 +486,20 @@ namespace TestR.Desktop
 
 			foreach (var property in properties)
 			{
-				var value = property.GetValue(this)?.ToString();
-				if (value == null)
+				try
 				{
-					continue;
-				}
+					var value = property.GetValue(this)?.ToString();
+					if (value == null)
+					{
+						continue;
+					}
 
-				builder.AppendLine(property.Name + " - " + value);
+					builder.AppendLine(property.Name + " - " + value);
+				}
+				catch (Exception ex)
+				{
+					builder.AppendLine(property.Name + " - " + ex.Message);
+				}
 			}
 
 			builder.AppendLine("GetText() - " + GetText());
@@ -727,6 +734,34 @@ namespace TestR.Desktop
 			var location = BoundingRectangle;
 			var size = Size;
 			return new Point(location.X + (size.Width / 2) + x, location.Y + (Size.Height / 2) + y);
+		}
+
+		/// <summary>
+		/// Try to get a clickable point for the element.
+		/// </summary>
+		/// <param name="point"> The point value if call was successful. </param>
+		/// <param name="x"> Optional X offset when calculating. </param>
+		/// <param name="y"> Optional Y offset when calculating. </param>
+		/// <returns> The clickable point for the element. </returns>
+		private bool TryGetClickablePoint(out Point point, int x = 0, int y = 0)
+		{
+			try
+			{
+				tagPOINT point2;
+				if (NativeElement.GetClickablePoint(out point2) == 1)
+				{
+					point = new Point(point2.x + x, point2.y + y);
+					return true;
+				}
+
+				point = new Point(0, 0);
+			}
+			catch (Exception)
+			{
+				point = new Point(0,0);
+			}
+
+			return false;
 		}
 
 		/// <summary>

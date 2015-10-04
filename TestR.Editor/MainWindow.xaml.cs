@@ -4,13 +4,15 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Threading;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using TestR.Desktop;
+using TestR.Helpers;
+using Keyboard = TestR.Native.Keyboard;
 
 #endregion
 
@@ -23,10 +25,8 @@ namespace TestR.Editor
 	{
 		#region Fields
 
-		private readonly DispatcherTimer _dispatcherTimer;
-		private readonly Highlighter _highlighter;
 		private Project _project;
-		private Element _lastAutoFocusedElement;
+		private readonly BackgroundWorker _worker;
 
 		#endregion
 
@@ -36,9 +36,12 @@ namespace TestR.Editor
 		{
 			InitializeComponent();
 
-			_dispatcherTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(250), DispatcherPriority.Normal, TimerControlDetectionTick, Dispatcher);
-			_highlighter = new Highlighter();
-			_project = new Project();
+			_worker = new BackgroundWorker();
+			_worker.WorkerReportsProgress = true;
+			_worker.WorkerSupportsCancellation = true;
+			_worker.DoWork += WorkerOnDoWork;
+			_worker.ProgressChanged += WorkerOnProgressChanged;
+			_project = new Project(Dispatcher);
 			_project.Closed += ProjectOnClosed;
 
 			DataContext = _project;
@@ -65,9 +68,9 @@ namespace TestR.Editor
 		/// <param name="e"> A <see cref="T:System.ComponentModel.CancelEventArgs" /> that contains the event data. </param>
 		protected override void OnClosing(CancelEventArgs e)
 		{
-			_dispatcherTimer.Stop();
-			_dispatcherTimer.Tick -= TimerControlDetectionTick;
-			_highlighter.Dispose();
+			_worker.CancelAsync();
+			_project.Dispose();
+			Utility.Wait(() => !_worker.IsBusy);
 			base.OnClosing(e);
 		}
 
@@ -79,7 +82,6 @@ namespace TestR.Editor
 			}
 			try
 			{
-
 				var action = new ElementAction(_project.FocusedElement, ElementActionType.MoveMouseTo);
 				_project.ElementActions.Add(action);
 				Actions.SelectedItem = action;
@@ -108,6 +110,33 @@ namespace TestR.Editor
 			_project.ElementActions.Remove(action);
 		}
 
+		private void FocusChildrenSelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (e.AddedItems.Count <= 0)
+			{
+				return;
+			}
+
+			var child = e.AddedItems[0] as Element;
+			if (child != null)
+			{
+				child.UpdateChildren();
+				_project.FocusedElement = child;
+			}
+		}
+
+		private static int GetFirstProcessId(Element element)
+		{
+			if (element == null)
+			{
+				return 0;
+			}
+
+			return element.ProcessId != 0
+				? element.ProcessId
+				: GetFirstProcessId(element.Parent);
+		}
+
 		private void Load(object sender, RoutedEventArgs e)
 		{
 			try
@@ -130,6 +159,7 @@ namespace TestR.Editor
 					{
 						_project.Initialize(project);
 						_project.Application.BringToFront();
+						_worker.RunWorkerAsync(_project);
 					}
 					catch (InvalidOperationException)
 					{
@@ -145,7 +175,7 @@ namespace TestR.Editor
 
 		private void ProjectOnClosed()
 		{
-			Dispatcher.BeginInvoke(DispatcherPriority.Normal, (NoArgDelegate) delegate { Code.Clear(); });
+			_worker.CancelAsync();
 		}
 
 		private void RunAction(object sender, RoutedEventArgs e)
@@ -175,7 +205,6 @@ namespace TestR.Editor
 			try
 			{
 				Cursor = Cursors.Wait;
-				_highlighter.Visible = false;
 				_project.RunTests();
 			}
 			catch (Exception ex)
@@ -222,10 +251,21 @@ namespace TestR.Editor
 			{
 				_project.Initialize(dialog.FileName);
 				_project.Application.BringToFront();
+				_worker.RunWorkerAsync(_project);
 			}
 			catch (InvalidOperationException)
 			{
 				_project.Close();
+			}
+		}
+
+		private void SelectParentElement(object sender, RoutedEventArgs e)
+		{
+			var parent = _project.FocusedElement?.Parent;
+			if (parent != null)
+			{
+				parent.UpdateChildren();
+				_project.FocusedElement = parent;
 			}
 		}
 
@@ -246,6 +286,7 @@ namespace TestR.Editor
 			{
 				_project.Initialize(process);
 				_project.Application.BringToFront();
+				_worker.RunWorkerAsync(_project);
 			}
 			catch (InvalidOperationException)
 			{
@@ -253,61 +294,67 @@ namespace TestR.Editor
 			}
 		}
 
-		private void TimerControlDetectionTick(object sender, EventArgs e)
+		private void UpdateFocusedElementChildren(object sender, RoutedEventArgs e)
 		{
-			try
+			_project?.FocusedElement?.UpdateChildren();
+		}
+
+		private static void WorkerOnDoWork(object sender, DoWorkEventArgs doWorkEventArgs)
+		{
+			var worker = (BackgroundWorker) sender;
+			Element lastAutoFocusedElement = null;
+			var project = (Project) doWorkEventArgs.Argument;
+
+			while (!worker.CancellationPending)
 			{
-				var foundElement = Element.FromFocusElement();
-				foundElement?.UpdateParents();
-				//foundElement?.UpdateChildren();
-				var processId = GetFirstProcessId(foundElement);
-
-				if (foundElement != null && processId == _project.ProcessId && foundElement.ApplicationId != _lastAutoFocusedElement?.ApplicationId)
+				try
 				{
-					_lastAutoFocusedElement = foundElement;
-					_project.FocusedElement = _lastAutoFocusedElement;
-					_highlighter.SetElement(_project.FocusedElement);
-				}
+					var foundElement = Element.FromFocusElement();
+					foundElement?.UpdateParents();
+					var processId = GetFirstProcessId(foundElement);
 
-				if (_project == null || (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl)))
+					if (foundElement != null && processId == project.ProcessId && foundElement.ApplicationId != lastAutoFocusedElement?.ApplicationId)
+					{
+						lastAutoFocusedElement = foundElement;
+						worker.ReportProgress(0, foundElement);
+					}
+
+					if (!Keyboard.IsControlPressed())
+					{
+						Thread.Sleep(250);
+						continue;
+					}
+
+					foundElement = Element.FromCursor();
+					foundElement?.UpdateParents();
+					processId = GetFirstProcessId(foundElement);
+
+					if (foundElement != null && processId == project.ProcessId && foundElement.ApplicationId != project.FocusedElement?.Id)
+					{
+						worker.ReportProgress(0, foundElement);
+					}
+
+					Thread.Sleep(250);
+				}
+				catch (Exception ex)
 				{
-					return;
+					Debug.WriteLine("Failed to get element... " + ex.Message);
 				}
-
-				foundElement = Element.FromCursor();
-				foundElement?.UpdateParents();
-				//foundElement?.UpdateChildren();
-				processId = GetFirstProcessId(foundElement);
-
-				if (foundElement != null && processId == _project.ProcessId && foundElement.ApplicationId != _project.FocusedElement?.Id)
-				{
-					_project.FocusedElement = foundElement;
-					_highlighter.SetElement(_project.FocusedElement);
-				}
-			}
-			catch (Exception ex)
-			{
-				Debug.WriteLine("Failed to get element... " + ex.Message);
 			}
 		}
 
-		private int GetFirstProcessId(Element element)
+		private void WorkerOnProgressChanged(object sender, ProgressChangedEventArgs progressChangedEventArgs)
 		{
-			if (element == null)
+			var foundElement = (Element) progressChangedEventArgs.UserState;
+			var applicationElement = _project.Application.Get(foundElement?.ApplicationId) ?? foundElement;
+
+			if (_project.FocusedElement == applicationElement)
 			{
-				return 0;
+				return;
 			}
-
-			return element.ProcessId != 0 
-				? element.ProcessId 
-				: GetFirstProcessId(element.Parent);
+			
+			_project.FocusedElement = applicationElement;
 		}
-
-		#endregion
-
-		#region Delegates
-
-		private delegate void NoArgDelegate();
 
 		#endregion
 	}

@@ -6,12 +6,12 @@
 		Title="TestR Editor" Height="640" Width="1024" 
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-		mc:Ignorable="d" 
-		d:DataContext="{d:DesignInstance te:Project, IsDesignTimeCreatable=True}"
+		mc:Ignorable="d" d:DataContext="{d:DesignInstance te:Project, IsDesignTimeCreatable=True}"
 		WindowStartupLocation="CenterScreen" Icon="TestR.ico">
     <Window.Resources>
         <valueConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <valueConverters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+        <valueConverters:CollectionToVisibilityConverter x:Key="CollectionToVisibilityConverter" />
         <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type te:ElementActionType}" x:Key="ExampleEnumValues">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="te:ElementActionType" />
@@ -106,20 +106,37 @@
         <Border Grid.Row="2" Grid.Column="0" BorderBrush="LightGray" BorderThickness="1" Margin="0,0,4,0">
 			<Grid>
 				<Grid.RowDefinitions>
-					<RowDefinition Height="*" />
-					<RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
 					<RowDefinition Height="auto" />
 				</Grid.RowDefinitions>
-                <ScrollViewer Grid.Row="0">
-                    <TextBlock x:Name="ElementDetails" Padding="10" TextWrapping="Wrap" Text="{Binding FocusedElementDetails}" />
-                </ScrollViewer>
-                <Border Grid.Row="1" BorderBrush="LightGray" BorderThickness="1" Margin="0">
-                    <Button Click="AddFocusedElement" Padding="4" IsEnabled="{Binding IsElementFocused}">Add To Script</Button>
+                <Border Grid.Row="0" BorderBrush="LightGray" BorderThickness="1" Margin="0">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+                        <Button Grid.Row="0" Grid.Column="0" Click="SelectParentElement" Padding="4" IsEnabled="{Binding FocusedElementHasParent}">Select Parent</Button>
+                        <Button Grid.Row="0" Grid.Column="1" Click="UpdateFocusedElementChildren" Padding="4" IsEnabled="{Binding IsElementFocused}">UpdateChildren</Button>
+                        <ComboBox  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding FocusedElement.Children}" Visibility="{Binding FocusedElement.Children, Converter={StaticResource CollectionToVisibilityConverter}}" Text="Select Children" DisplayMemberPath="ApplicationId" SelectedValuePath="ApplicationId" SelectionChanged="FocusChildrenSelectionChanged"></ComboBox>
+                    </Grid>
                 </Border>
-                <TextBlock Grid.Row="2" Padding="0,10,0,12" TextAlignment="Center">
+                <ScrollViewer Grid.Row="1">
+                    <TextBlock Padding="10" Text="{Binding FocusedElementDetails}" />
+                </ScrollViewer>
+                <Border Grid.Row="2" BorderBrush="LightGray" BorderThickness="1" Margin="0" Visibility="{Binding IsElementFocused, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <StackPanel>
+                        <Button Click="AddFocusedElement" Padding="4" IsEnabled="{Binding IsElementFocused}">Add To Script</Button>
+                        <TextBlock Padding="0,10,0,12" TextAlignment="Center">
 							[CTRL + Mouse Hover]<LineBreak />
 							To Find Elements
-                </TextBlock>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
             </Grid>
 		</Border>
     </Grid>

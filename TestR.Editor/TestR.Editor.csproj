@@ -80,6 +80,7 @@
     </Compile>
     <Compile Include="ValueConverters\BoolToBrushConverter.cs" />
     <Compile Include="ValueConverters\BoolToVisibilityConverter.cs" />
+    <Compile Include="ValueConverters\CollectionToVisibilityConverter.cs" />
     <Compile Include="ValueConverters\IntToBoolConverter.cs" />
     <Compile Include="ValueConverters\StringToVisibilityConverter.cs" />
     <Page Include="MainWindow.xaml">

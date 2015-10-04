@@ -15,7 +15,7 @@ namespace TestR.Editor.ValueConverters
 
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			return (bool) value ? Visibility.Visible : Visibility.Hidden;
+			return (bool) value ? Visibility.Visible : Visibility.Collapsed;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

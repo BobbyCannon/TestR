@@ -239,21 +239,21 @@ namespace TestR.Editor
 		{
 			var worker = (BackgroundWorker) sender;
 			var element = (Element) args.Argument;
-			var lastLocation = element.BoundingRectangle;
-			var lastVisible = element.Visible;
+			var lastLocation = element?.BoundingRectangle;
+			var lastVisible = element?.Visible;
 
 			while (!worker.CancellationPending)
 			{
 				try
 				{
-					if (element.BoundingRectangle != lastLocation)
+					if (element?.BoundingRectangle != null && element.BoundingRectangle != lastLocation)
 					{
 						worker.ReportProgress(1);
 						lastLocation = element.BoundingRectangle;
 						continue;
 					}
 
-					if (element.Visible != lastVisible)
+					if (element?.Visible != null && element.Visible != lastVisible)
 					{
 						worker.ReportProgress(1);
 						lastVisible = element.Visible;

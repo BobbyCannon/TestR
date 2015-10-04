@@ -72,6 +72,19 @@ namespace TestR.Native
 			SendKeys.SendWait(value);
 		}
 
+		/// <summary>
+		/// Determinse if the control key is pressed.
+		/// </summary>
+		/// <returns>
+		/// True if either control key is pressed.
+		/// </returns>
+		public static bool IsControlPressed()
+		{
+			var result1 = NativeMethods.GetKeyState(NativeMethods.VirtualKeyStates.VK_LCONTROL);
+			var result2 = NativeMethods.GetKeyState(NativeMethods.VirtualKeyStates.VK_RCONTROL);
+			return (result1 & 0x8000) == 0x8000 || (result2 & 0x8000) == 0x8000;
+		}
+
 		private static int HookCallback(int nCode, int wParam, IntPtr lParam)
 		{
 			if (nCode < 0 || wParam != KeyDown)

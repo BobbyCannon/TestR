@@ -67,6 +67,9 @@ namespace TestR.Native
 		[DllImport("User32.dll")]
 		private static extern bool GetWindowPlacement(IntPtr hWnd, ref WindowPlacement lpwndpl);
 
+		[DllImport("USER32.dll")]
+		internal static extern int GetKeyState(VirtualKeyStates keyState);
+
 		#endregion
 
 		#region Delegates
@@ -79,6 +82,14 @@ namespace TestR.Native
 
 		#region Enumerations
 
+		internal enum VirtualKeyStates
+		{
+			VK_LSHIFT = 0xA0,
+			VK_RSHIFT = 0xA1,
+			VK_LCONTROL = 0xA2,
+			VK_RCONTROL = 0xA3,
+		}
+		
 		internal enum MouseMessages
 		{
 			WM_LBUTTONDOWN = 0x0201,
