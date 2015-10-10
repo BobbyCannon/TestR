@@ -45,6 +45,8 @@ Copy-Item TestR.IntegrationTests\bin\$configuration\*.dll $destination\tests\
 Copy-Item TestR.PowerShell\bin\$Configuration\TestR.PowerShell.dll $destination\bin\
 #Copy-Item Help\Documentation.chm $destination
 
+Copy-Item .\TestR.Extension\bin\$Configuration\TestR.Extension.vsix $destination
+
 $versionInfo = [System.Diagnostics.FileVersionInfo]::GetVersionInfo("$destination\bin\TestR.dll")
 $version = $versionInfo.FileVersion.ToString()
 
@@ -55,8 +57,6 @@ Copy-Item "$destination\TestR.$version.nupkg" "$nugetDestination" -force
 & ".nuget\NuGet.exe" pack TestR.PowerShell.nuspec -Prop Configuration="$Configuration" -Version $version
 Move-Item "TestR.PowerShell.$version.nupkg" "$destination" -force
 Copy-Item "$destination\TestR.PowerShell.$version.nupkg" "$nugetDestination" -force
-
-.\ResetAssemblyInfos.ps1
 
 Write-Host
 Set-Location $scriptPath

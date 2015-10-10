@@ -11,6 +11,11 @@ namespace TestR.Extensions
 	{
 		#region Methods
 
+		/// <summary>
+		/// Convert the exception to a detailed string.
+		/// </summary>
+		/// <param name="ex"> The exception to convert to a detailed string. </param>
+		/// <returns> The details of the exception as a string. </returns>
 		public static string ToDetailedString(this Exception ex)
 		{
 			var builder = new StringBuilder();

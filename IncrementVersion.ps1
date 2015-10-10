@@ -77,30 +77,39 @@ function Convert-VersionArray
     return "{0}.{1}.{2}.{3}" -f $VersionArray[0], $VersionArray[1], $VersionArray[2], $VersionArray[3]
 }
 
-function Set-AutoUpdateClientStatusNumber
+function Set-VsixManifest
 {
-    param($newVersionNumber)
+    param($desiredPath, $versionNumber)
 
-    $filePath = "$scriptPath\SmartFusion.WinForms\AutoUpdateClient_status.xml"
-    $data = "<?xml version=`"1.0`" ?>" + [Environment]::NewLine
-    $data += "<updatronomaticStatus>" + [Environment]::NewLine
-    $data += "  <lastSuccessfulUpdateVersion>$newVersionNumber</lastSuccessfulUpdateVersion>" + [Environment]::NewLine
-    $data += "</updatronomaticStatus>"
+    $foundFiles = Get-ChildItem $desiredPath\*.*.vsixmanifest -Recurse
+    if ($foundFiles.Length -le 0)
+    {
+        Write-Verbose "No files found"
+        return
+    }
 
-    Set-Content $filePath $data
-}
+    foreach($file in $foundFiles)
+    {   
+        Write-Verbose $file.FullName
 
-function Set-UpdateConfigurationNumber
-{
-    param($newVersionNumber)
+        $content = (Get-Content $file -Raw)
+        $startKey = "<Identity Id=`"TestR.Extension.Bobby Cannon.4b947f52-27f3-446c-9bf0-c3fecf015775`" Version=`""
+        $startIndex = $content.IndexOf($startKey)
+        if ($startIndex -lt 0) 
+        {
+            Write-Error "Failed to find the identity of the package."
+            continue
+        } 
 
-    $filePath = "$scriptPath\SmartFusion.WinForms\UpdateConfiguration.bak"
-    $data = "<?xml version=`"1.0`" ?>" + [Environment]::NewLine
-    $data += "<updatronomatic>" + [Environment]::NewLine
-    $data += "  <currentVersion>$newVersionNumber</currentVersion>" + [Environment]::NewLine
-    $data += "</updatronomatic>"
-
-    Set-Content $filePath $data
+        $startIndex += $startKey.Length
+        $endIndex = $content.IndexOf("`" Language=`"en-US`"")
+        
+        if (($startIndex -ge 0) -and ($endIndex -ge $startIndex)) {
+            $content = $content.Remove($startIndex, $endIndex - $startIndex)
+            $content = $content.Insert($startIndex, $versionNumber)
+            $content | Set-Content $file.FullName -Encoding UTF8
+        }
+    }
 }
 
 function Set-BuildNumbers
@@ -136,14 +145,13 @@ function Set-BuildNumbers
         $newAssemblyFileVersionLine = $oldAssemblyFileVersionLine.Replace($oldAssemblyFileVersion, $newVersionNumber)
         Write-Verbose $newAssemblyFileVersionLine
     
-        (Get-Content $file) | % {
+        (Get-Content $file -Raw) | % {
             $_.Replace($oldAssemblyVersionLine, $newAssemblyVersionLine).Replace($oldAssemblyFileVersionLine, $newAssemblyFileVersionLine) 
-        } | Set-Content $file
+        } | Set-Content $file -Encoding UTF8
     }
 }
 
 try {
-
     $scriptPath = Split-Path (Get-Variable MyInvocation).Value.MyCommand.Path 
     Set-Location $scriptPath
 
@@ -191,6 +199,7 @@ try {
 
     Write-Host "Updating Assembly Infos to $newVersionNumber"
     Set-BuildNumbers $scriptPath $newVersionNumber
+    Set-VsixManifest $scriptPath $newVersionNumber
 
     exit $LASTEXITCODE
 } 
