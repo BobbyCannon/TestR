@@ -107,6 +107,7 @@ function Set-VsixManifest
         if (($startIndex -ge 0) -and ($endIndex -ge $startIndex)) {
             $content = $content.Remove($startIndex, $endIndex - $startIndex)
             $content = $content.Insert($startIndex, $versionNumber)
+            $content = $content.Trim()
             $content | Set-Content $file.FullName -Encoding UTF8
         }
     }
@@ -137,7 +138,6 @@ function Set-BuildNumbers
         $oldAssemblyVersion = ,($oldAssemblyVersionLine | Get-VersionArray) | Convert-VersionArray
         $newAssemblyVersionLine = $oldAssemblyVersionLine.Replace($oldAssemblyVersion, $newVersionNumber)
         Write-Verbose $newAssemblyVersionLine
-
         $versionPattern2 = $versionPattern1.Replace("AssemblyVersion","AssemblyFileVersion")
         $oldAssemblyFileVersionLine = Get-VersionLine $file $versionPattern2
         Write-Verbose $oldAssemblyFileVersionLine
@@ -145,7 +145,7 @@ function Set-BuildNumbers
         $newAssemblyFileVersionLine = $oldAssemblyFileVersionLine.Replace($oldAssemblyFileVersion, $newVersionNumber)
         Write-Verbose $newAssemblyFileVersionLine
     
-        (Get-Content $file -Raw) | % {
+        (Get-Content $file -Raw).Trim() | % {
             $_.Replace($oldAssemblyVersionLine, $newAssemblyVersionLine).Replace($oldAssemblyFileVersionLine, $newAssemblyFileVersionLine) 
         } | Set-Content $file -Encoding UTF8
     }
