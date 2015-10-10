@@ -9,7 +9,7 @@ using System.Windows.Data;
 
 #endregion
 
-namespace TestR.Editor.ValueConverters
+namespace TestR.Extension.ValueConverters
 {
 	public class CollectionToVisibilityConverter : IValueConverter
 	{

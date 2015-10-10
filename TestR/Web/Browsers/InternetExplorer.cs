@@ -50,26 +50,17 @@ namespace TestR.Web.Browsers
 		/// <summary>
 		/// Gets the type of the browser.
 		/// </summary>
-		public override BrowserType BrowserType
-		{
-			get { return BrowserType.InternetExplorer; }
-		}
+		public override BrowserType BrowserType => BrowserType.InternetExplorer;
 
 		/// <summary>
 		/// Gets the ID of the browser.
 		/// </summary>
-		public override int Id
-		{
-			get { return Application.Handle.ToInt32(); }
-		}
+		public override int Id => Application.Handle.ToInt32();
 
 		/// <summary>
 		/// Gets the raw HTML of the page.
 		/// </summary>
-		public override string RawHtml
-		{
-			get { return ((HTMLDocument) _browser.Document).documentElement.outerHTML; }
-		}
+		public override string RawHtml => ((HTMLDocument) _browser.Document).documentElement.outerHTML;
 
 		#endregion
 
@@ -111,7 +102,7 @@ namespace TestR.Web.Browsers
 		{
 			if (url == null)
 			{
-				throw new ArgumentNullException("url");
+				throw new ArgumentNullException(nameof(url));
 			}
 
 			var path = Environment.GetFolderPath(Environment.SpecialFolder.Cookies);
@@ -248,7 +239,7 @@ namespace TestR.Web.Browsers
 				}
 
 				// Run the script using TestR.
-				var wrappedScript = "TestR.runScript('" + script.Replace("'", "\\'") + "');";
+				var wrappedScript = $"TestR.runScript('{script.Replace("'", "\\'")}');";
 				document.parentWindow.execScript(wrappedScript, "javascript");
 
 				return GetJavascriptResult((IHTMLDocument3) document);
@@ -345,7 +336,7 @@ namespace TestR.Web.Browsers
 
 					using (var browser = new InternetExplorer(explorer))
 					{
-						LogManager.Write("Found browser with id of " + browser.Id + " at location " + browser.Uri + ".", LogLevel.Verbose);
+						LogManager.Write($"Found browser with id of {browser.Id} at location {browser.Uri}.", LogLevel.Verbose);
 					}
 
 					return explorer;
@@ -353,7 +344,7 @@ namespace TestR.Web.Browsers
 				catch (Exception ex)
 				{
 					// Ignore this browser and move to the next one.
-					LogManager.Write("Error with finding browser to attach to. Exception: " + ex.Message + ".", LogLevel.Verbose);
+					LogManager.Write($"Error with finding browser to attach to. Exception: {ex.Message}.", LogLevel.Verbose);
 				}
 			}
 

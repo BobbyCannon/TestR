@@ -1,0 +1,34 @@
+﻿<Window x:Class="TestR.Extension.ProcessWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:valueConverters="clr-namespace:TestR.Extension.ValueConverters"
+		xmlns:extension="clr-namespace:TestR.Extension"
+		mc:Ignorable="d"
+		d:DataContext="{d:DesignInstance extension:ProcessWindow, IsDesignTimeCreatable=True}"
+        Title="Select Process" Height="450" Width="400" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Topmost="True">
+	<Window.Resources>
+        <valueConverters:IntToBoolConverter x:Key="IntToBoolConverter" />
+	</Window.Resources>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+        <ListView x:Name="ProcessList" Grid.Row="0" ItemsSource="{Binding Processes}" MouseDoubleClick="ProcessList_MouseDoubleClick">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+					<StackPanel Orientation="Horizontal" Margin="0">
+                        <Label Content="{Binding Id}" Width="55"></Label>
+                        <Label Content="{Binding ProcessName}"></Label>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+		<StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+            <Button Width="45" Height="28" Margin="10,10,0,10" Click="Select" IsEnabled="{Binding Path=SelectedItems.Count, ElementName=ProcessList, Converter={StaticResource IntToBoolConverter}}">OK</Button>
+            <Button Width="45" Height="28" Margin="10" IsCancel="True">Cancel</Button>
+        </StackPanel>
+    </Grid>
+</Window>

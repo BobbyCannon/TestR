@@ -36,7 +36,7 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" ColumnSpan="2" Background="#852B99">
+        <Grid Grid.Row="0" ColumnSpan="2" Background="#555555">
             <StackPanel Orientation="Horizontal">
                 <Label FontFamily="Segoe UI Light" FontSize="26" Margin="20,8,0,10" Foreground="White">TestR Editor</Label>
                 <Label FontFamily="Segoe UI Light" FontSize="14" Margin="0,8,0,0" VerticalAlignment="Center" Foreground="DarkGray" Content="{Binding Version}"></Label>
@@ -120,8 +120,8 @@
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="Auto" />
 						</Grid.RowDefinitions>
-                        <Button Grid.Row="0" Grid.Column="0" Click="SelectParentElement" Padding="4" IsEnabled="{Binding FocusedElementHasParent}">Select Parent</Button>
-                        <Button Grid.Row="0" Grid.Column="1" Click="UpdateFocusedElementChildren" Padding="4" IsEnabled="{Binding IsElementFocused}">UpdateChildren</Button>
+                        <Button Grid.Row="0" Grid.Column="0" Click="SelectParentElement" Padding="4" IsEnabled="{Binding FocusedElementHasParent}" BorderBrush="#555555">Go To Parent</Button>
+                        <Button Grid.Row="0" Grid.Column="1" Click="UpdateFocusedElementChildren" Padding="4" IsEnabled="{Binding IsElementFocused}"  BorderBrush="#555555">Update Children</Button>
                         <ComboBox  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding FocusedElement.Children}" Visibility="{Binding FocusedElement.Children, Converter={StaticResource CollectionToVisibilityConverter}}" Text="Select Children" DisplayMemberPath="ApplicationId" SelectedValuePath="ApplicationId" SelectionChanged="FocusChildrenSelectionChanged"></ComboBox>
                     </Grid>
                 </Border>
@@ -130,8 +130,8 @@
                 </ScrollViewer>
                 <Border Grid.Row="2" BorderBrush="LightGray" BorderThickness="1" Margin="0" Visibility="{Binding IsElementFocused, Converter={StaticResource BoolToVisibilityConverter}}">
                     <StackPanel>
-                        <Button Click="AddFocusedElement" Padding="4" IsEnabled="{Binding IsElementFocused}">Add To Script</Button>
-                        <TextBlock Padding="0,10,0,12" TextAlignment="Center">
+                        <Button Click="AddFocusedElement" Padding="4" IsEnabled="{Binding IsElementFocused}" BorderBrush="#555555">Add To Script</Button>
+                        <TextBlock Padding="0,10,0,12" TextAlignment="Center" Foreground="#555555">
 							[CTRL + Mouse Hover]<LineBreak />
 							To Find Elements
                         </TextBlock>

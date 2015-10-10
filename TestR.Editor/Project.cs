@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -334,6 +335,8 @@ namespace TestR.Editor
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
+
+			Thread.Sleep(150);
 		}
 
 		public void RunTests()

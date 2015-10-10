@@ -77,3 +77,5 @@ while ($Loop) {
     $count += 1
     RunLoop $count
 }
+
+[TestR.Web.Browser]::CloseBrowsers()

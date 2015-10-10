@@ -83,18 +83,12 @@ namespace TestR.Web.Browsers
 		/// <summary>
 		/// Gets the type of the browser.
 		/// </summary>
-		public override BrowserType BrowserType
-		{
-			get { return BrowserType.Firefox; }
-		}
+		public override BrowserType BrowserType => BrowserType.Firefox;
 
 		/// <summary>
 		/// Gets the ID of the browser.
 		/// </summary>
-		public override int Id
-		{
-			get { return Application.Handle.ToInt32(); }
-		}
+		public override int Id => Application.Handle.ToInt32();
 
 		#endregion
 
@@ -138,7 +132,7 @@ namespace TestR.Web.Browsers
 		public static Browser Create()
 		{
 			// Create a new instance and return it.
-			var browser = new Firefox(CreateInstance(string.Format("{0}.exe", Name), DebugArgument));
+			var browser = new Firefox(CreateInstance($"{Name}.exe", DebugArgument));
 			browser.Connect();
 			return browser;
 		}
@@ -155,7 +149,7 @@ namespace TestR.Web.Browsers
 			SendRequest("Wake up, Neo...");
 
 			// todo: There must be a better way to determine when Chrome and Firefox is done processing.
-			Thread.Sleep(100);
+			Thread.Sleep(250);
 		}
 
 		/// <summary>
@@ -421,17 +415,17 @@ namespace TestR.Web.Browsers
 			{
 				if (index >= _buffer.Count)
 				{
-					throw new ArgumentOutOfRangeException("index");
+					throw new ArgumentOutOfRangeException(nameof(index));
 				}
 
 				if (length > _buffer.Count)
 				{
-					throw new ArgumentOutOfRangeException("length");
+					throw new ArgumentOutOfRangeException(nameof(length));
 				}
 
 				if (index + length > _buffer.Count)
 				{
-					throw new ArgumentOutOfRangeException("length");
+					throw new ArgumentOutOfRangeException(nameof(length));
 				}
 
 				var response = new byte[length];

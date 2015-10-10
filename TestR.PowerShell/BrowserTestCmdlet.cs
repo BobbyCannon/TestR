@@ -38,10 +38,14 @@ namespace TestR.PowerShell
 		/// <seealso cref="BrowserType" />
 		public void ForEachBrowser(Action<Browser> action)
 		{
+			var browserOffset = 0;
+			var browserWidth = 500;
+
 			Browser.ForEachBrowser(x =>
 			{
 				try
 				{
+					x.Application.MoveWindow((browserOffset++ * browserWidth), 0, browserWidth, browserWidth * 2);
 					action(x);
 				}
 				catch (Exception ex)

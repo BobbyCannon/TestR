@@ -82,18 +82,12 @@ namespace TestR.Web.Browsers
 		/// <summary>
 		/// Gets the type of the browser.
 		/// </summary>
-		public override BrowserType BrowserType
-		{
-			get { return BrowserType.Chrome; }
-		}
+		public override BrowserType BrowserType => BrowserType.Chrome;
 
 		/// <summary>
 		/// Gets the ID of the browser.
 		/// </summary>
-		public override int Id
-		{
-			get { return Application.Handle.ToInt32(); }
-		}
+		public override int Id => Application.Handle.ToInt32();
 
 		#endregion
 
@@ -138,7 +132,7 @@ namespace TestR.Web.Browsers
 			}
 
 			// Create a new instance and return it.
-			var browser = new Chrome(CreateInstance(string.Format("{0}.exe", Name), DebugArgument));
+			var browser = new Chrome(CreateInstance($"{Name}.exe", DebugArgument));
 			browser.Connect();
 			return browser;
 		}
@@ -162,7 +156,7 @@ namespace TestR.Web.Browsers
 			SendRequestAndReadResponse(request, x => x.id == request.Id);
 
 			// todo: There must be a better way to determine when Chrome and Firefox is done processing.
-			Thread.Sleep(100);
+			Thread.Sleep(250);
 		}
 
 		/// <summary>
@@ -329,6 +323,11 @@ namespace TestR.Web.Browsers
 			try
 			{
 				WebSocketReceiveResult result;
+
+				if (_socket.State == WebSocketState.Aborted || _socket.State == WebSocketState.Closed)
+				{
+					return false;
+				}
 
 				do
 				{
