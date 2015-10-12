@@ -78,6 +78,22 @@ namespace TestR.Web.Browsers
 		}
 
 		/// <summary>
+		/// Attempts to attach to an existing browser.
+		/// </summary>
+		/// <returns> The browser instance or null if not found. </returns>
+		public static Browser Attach(Process process)
+		{
+			if (process.ProcessName != Name)
+			{
+				return null;
+			}
+
+			var application = Application.Attach(process, false);
+			var session = GetSession();
+			return new Edge(application, session);
+		}
+
+		/// <summary>
 		/// Attempts to attach to an existing browser. If one is not found then create and return a new one.
 		/// </summary>
 		/// <returns> An instance of an Internet Explorer browser. </returns>
@@ -142,60 +158,6 @@ namespace TestR.Web.Browsers
 		{
 			// todo: figure out how to really move the window. Windows store apps do not play nice with old api.
 			return this;
-		}
-
-		private static string Request(string method, string location, string data, int timeout = 1500)
-		{
-			var request = (HttpWebRequest) WebRequest.Create(location);
-			request.Method = method;
-			request.Timeout = timeout;
-
-			if (data != null)
-			{
-				request.ContentType = "Content-Type: text/plain; charset=UTF-8";
-				request.ContentLength = data.Length;
-
-				using (var stream = request.GetRequestStream())
-				{
-					var buffer = Encoding.UTF8.GetBytes(data);
-					stream.Write(buffer, 0, buffer.Length);
-				}
-			}
-
-			using (var response = request.GetResponse())
-			{
-				var stream = response.GetResponseStream();
-				if (stream == null)
-				{
-					throw new Exception("Failed to get a response.");
-				}
-
-				using (var reader = new StreamReader(stream))
-				{
-					return reader.ReadToEnd();
-				}
-			}
-		}
-
-		private static string StartSession()
-		{
-			string response = null;
-
-			Utility.Wait(() =>
-			{
-				var data = Request("POST", "http://localhost:17556/session", "{\"desiredCapabilities\": {},\"requiredCapabilities\": {}}");
-				var item = JsonConvert.DeserializeObject<dynamic>(data);
-
-				if (item.status != 0)
-				{
-					return false;
-				}
-
-				response = item.sessionId.ToString();
-				return true;
-			});
-
-			return response;
 		}
 
 		/// <summary>
@@ -275,6 +237,60 @@ namespace TestR.Web.Browsers
 			var data = Request("GET", "http://localhost:17556/sessions", null);
 			var response = JsonConvert.DeserializeObject<dynamic>(data);
 			return response.status.ToString() != "success" ? null : response.value[0].id.ToString();
+		}
+
+		private static string Request(string method, string location, string data, int timeout = 1500)
+		{
+			var request = (HttpWebRequest) WebRequest.Create(location);
+			request.Method = method;
+			request.Timeout = timeout;
+
+			if (data != null)
+			{
+				request.ContentType = "Content-Type: text/plain; charset=UTF-8";
+				request.ContentLength = data.Length;
+
+				using (var stream = request.GetRequestStream())
+				{
+					var buffer = Encoding.UTF8.GetBytes(data);
+					stream.Write(buffer, 0, buffer.Length);
+				}
+			}
+
+			using (var response = request.GetResponse())
+			{
+				var stream = response.GetResponseStream();
+				if (stream == null)
+				{
+					throw new Exception("Failed to get a response.");
+				}
+
+				using (var reader = new StreamReader(stream))
+				{
+					return reader.ReadToEnd();
+				}
+			}
+		}
+
+		private static string StartSession()
+		{
+			string response = null;
+
+			Utility.Wait(() =>
+			{
+				var data = Request("POST", "http://localhost:17556/session", "{\"desiredCapabilities\": {},\"requiredCapabilities\": {}}");
+				var item = JsonConvert.DeserializeObject<dynamic>(data);
+
+				if (item.status != 0)
+				{
+					return false;
+				}
+
+				response = item.sessionId.ToString();
+				return true;
+			});
+
+			return response;
 		}
 
 		#endregion

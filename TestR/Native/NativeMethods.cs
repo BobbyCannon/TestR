@@ -38,19 +38,19 @@ namespace TestR.Native
 			return placement;
 		}
 
-		[DllImport("User32.dll")]
+		[DllImport("user32.dll", SetLastError = true)]
 		internal static extern bool GetWindowRect(IntPtr hWnd, out Rect lpRect);
 
-		[DllImport("user32.dll")]
+		[DllImport("user32.dll", SetLastError = true)]
 		internal static extern bool IsWindowVisible(IntPtr hWnd);
 
-		[DllImport("user32.dll", EntryPoint = "mouse_event")]
+		[DllImport("user32.dll", SetLastError = true, EntryPoint = "mouse_event")]
 		internal static extern void MouseEvent(int dwFlags, int dx, int dy, int dwData, int dwExtraInfo);
 
 		[DllImport("user32.dll", SetLastError = true)]
 		internal static extern bool MoveWindow(IntPtr hWnd, int x, int y, int nWidth, int nHeight, bool bRepaint);
 
-		[DllImport("user32.dll", EntryPoint = "SetCursorPos")]
+		[DllImport("user32.dll", SetLastError = true, EntryPoint = "SetCursorPos")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		internal static extern bool SetCursorPosition(int x, int y);
 
@@ -58,17 +58,20 @@ namespace TestR.Native
 		[return: MarshalAs(UnmanagedType.Bool)]
 		internal static extern bool SetForegroundWindow(IntPtr hWnd);
 
-		[DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+		[DllImport("user32.dll", SetLastError = true)]
 		internal static extern int SetWindowsHookEx(int idHook, HookDelegate lpfn, IntPtr hMod, int dwThreadId);
 
-		[DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+		[DllImport("user32.dll", SetLastError = true)]
 		internal static extern int UnhookWindowsHookEx(int idHook);
-		
-		[DllImport("User32.dll")]
+
+		[DllImport("user32.dll", SetLastError = true)]
 		private static extern bool GetWindowPlacement(IntPtr hWnd, ref WindowPlacement lpwndpl);
 
-		[DllImport("USER32.dll")]
+		[DllImport("user32.dll", SetLastError = true)]
 		internal static extern int GetKeyState(VirtualKeyStates keyState);
+
+		[DllImport("user32.dll", SetLastError = true)]
+		internal static extern bool GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
 		#endregion
 

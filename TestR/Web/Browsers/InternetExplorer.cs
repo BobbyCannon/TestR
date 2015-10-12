@@ -79,6 +79,29 @@ namespace TestR.Web.Browsers
 		}
 
 		/// <summary>
+		/// Attempts to attach to an existing browser.
+		/// </summary>
+		/// <returns> The browser instance or null if not found. </returns>
+		public static Browser Attach(Process process)
+		{
+			if (process.ProcessName != Name)
+			{
+				return null;
+			}
+
+			var foundBrowser = GetBrowserToAttachTo(process.Id);
+			if (foundBrowser == null)
+			{
+				return null;
+			}
+
+			var browser = new InternetExplorer(foundBrowser);
+			browser.Refresh();
+
+			return browser;
+		}
+
+		/// <summary>
 		/// Attempts to attach to an existing browser. If one is not found then create and return a new one.
 		/// </summary>
 		/// <returns> An instance of an Internet Explorer browser. </returns>
@@ -86,7 +109,7 @@ namespace TestR.Web.Browsers
 		{
 			return Attach() ?? Create();
 		}
-		
+
 		/// <summary>
 		/// Creates a new instance of an Internet Explorer browser.
 		/// </summary>
@@ -277,7 +300,7 @@ namespace TestR.Web.Browsers
 			}
 		}
 
-		private static SHDocVw.InternetExplorer GetBrowserToAttachTo(string host = null)
+		private static SHDocVw.InternetExplorer GetBrowserToAttachTo(int processId = 0)
 		{
 			var explorers = new ShellWindowsClass()
 				.Cast<SHDocVw.InternetExplorer>()
@@ -288,9 +311,13 @@ namespace TestR.Web.Browsers
 			{
 				try
 				{
-					if (host != null && !(new Uri(explorer.LocationURL)).Host.Contains(host))
+					if (processId > 0)
 					{
-						continue;
+						uint foundProcessId;
+						if (!Native.NativeMethods.GetWindowThreadProcessId(new IntPtr(explorer.HWND), out foundProcessId) || foundProcessId != processId)
+						{
+							continue;
+						}
 					}
 
 					using (var browser = new InternetExplorer(explorer))

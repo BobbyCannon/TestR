@@ -27,14 +27,14 @@ namespace TestR.Web.Browsers
 		#region Constants
 
 		/// <summary>
-		/// The name of the browser.
-		/// </summary>
-		public const string Name = "firefox";
-
-		/// <summary>
 		/// The debugging argument for starting the browser.
 		/// </summary>
 		public const string DebugArgument = "-start-debugger-server 6000";
+
+		/// <summary>
+		/// The name of the browser.
+		/// </summary>
+		public const string Name = "firefox";
 
 		#endregion
 
@@ -51,15 +51,6 @@ namespace TestR.Web.Browsers
 		#endregion
 
 		#region Constructors
-
-		/// <summary>
-		/// Initializes a new instance of the Firefox class.
-		/// </summary>
-		/// <param name="process"> The process of the existing browser. </param>
-		private Firefox(Process process)
-			: this(new Application(process))
-		{
-		}
 
 		/// <summary>
 		/// Initializes a new instance of the Firefox class.
@@ -107,6 +98,28 @@ namespace TestR.Web.Browsers
 		}
 
 		/// <summary>
+		/// Attempts to attach to an existing browser.
+		/// </summary>
+		/// <returns> The browser instance or null if not found. </returns>
+		public static Browser Attach(Process process)
+		{
+			if (process.ProcessName != Name)
+			{
+				return null;
+			}
+
+			if (!Application.Exists(Name, DebugArgument))
+			{
+				throw new ArgumentException("The process was not started with the debug arguments.", nameof(process));
+			}
+
+			var application = Application.Attach(process, false);
+			var browser = new Firefox(application);
+			browser.Connect();
+			return browser;
+		}
+
+		/// <summary>
 		/// Attempts to attach to an existing browser. If one is not found then create and return a new one.
 		/// </summary>
 		/// <returns> The browser instance. </returns>
@@ -126,7 +139,8 @@ namespace TestR.Web.Browsers
 		public static Browser Create()
 		{
 			// Create a new instance and return it.
-			var browser = new Firefox(CreateInstance($"{Name}.exe", DebugArgument));
+			var application = Application.Create($"{Name}.exe", DebugArgument, false);
+			var browser = new Firefox(application);
 			browser.Connect();
 			return browser;
 		}

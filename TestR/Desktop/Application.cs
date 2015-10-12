@@ -332,6 +332,11 @@ namespace TestR.Desktop
 		/// <returns> True if the application exists and false otherwise. </returns>
 		public static bool Exists(string executablePath, string arguments = null)
 		{
+			if (!executablePath.EndsWith(".exe"))
+			{
+				executablePath += ".exe";
+			}
+
 			var fileName = Path.GetFileName(executablePath);
 			var processName = Path.GetFileNameWithoutExtension(executablePath);
 			var query = $"SELECT Handle, CommandLine FROM Win32_Process WHERE Name='{fileName}'";

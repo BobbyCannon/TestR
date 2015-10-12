@@ -56,15 +56,6 @@ namespace TestR.Web.Browsers
 		/// <summary>
 		/// Initializes a new instance of the Chrome class.
 		/// </summary>
-		/// <param name="process"> The process of the existing browser. </param>
-		private Chrome(Process process)
-			: this(new Application(process))
-		{
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the Chrome class.
-		/// </summary>
 		/// <param name="application"> The window of the existing browser. </param>
 		private Chrome(Application application)
 			: base(application)
@@ -93,13 +84,28 @@ namespace TestR.Web.Browsers
 		/// <returns> The browser instance or null if not found. </returns>
 		public static Browser Attach()
 		{
-			var window = Application.Attach(Name, DebugArgument, false);
-			if (window == null)
+			var application = Application.Attach(Name, DebugArgument, false);
+			return application == null ? null : Attach(application.Process);
+		}
+		
+		/// <summary>
+		/// Attempts to attach to an existing browser.
+		/// </summary>
+		/// <returns> The browser instance or null if not found. </returns>
+		public static Browser Attach(Process process)
+		{
+			if (process.ProcessName != Name)
 			{
 				return null;
 			}
 
-			var browser = new Chrome(window);
+			if (!Application.Exists(Name, DebugArgument))
+			{
+				throw new ArgumentException("The process was not started with the debug arguments.", nameof(process));
+			}
+
+			var application = Application.Attach(process, false);
+			var browser = new Chrome(application);
 			browser.Connect();
 			return browser;
 		}
@@ -126,7 +132,8 @@ namespace TestR.Web.Browsers
 			}
 
 			// Create a new instance and return it.
-			var browser = new Chrome(CreateInstance($"{Name}.exe", DebugArgument));
+			var application = Application.Create($"{Name}.exe", DebugArgument, false);
+            var browser = new Chrome(application);
 			browser.Connect();
 			return browser;
 		}

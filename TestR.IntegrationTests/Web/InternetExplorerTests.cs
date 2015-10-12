@@ -20,10 +20,8 @@ namespace TestR.IntegrationTests.Web
 		#region Methods
 
 		[TestMethod]
-		public void AttachOneBrowserShouldSucceed()
+		public void AttachOneBrowser()
 		{
-			Browser.CloseBrowsers(BrowserType.InternetExplorer);
-
 			using (var browser1 = InternetExplorer.Create())
 			{
 				Assert.IsNotNull(browser1);
@@ -36,10 +34,8 @@ namespace TestR.IntegrationTests.Web
 		}
 
 		[TestMethod]
-		public void AttachOneBrowserWithTwoCreatedShouldSucceed()
+		public void AttachOneBrowserWithTwoCreated()
 		{
-			Browser.CloseBrowsers(BrowserType.InternetExplorer);
-
 			using (var browser1 = InternetExplorer.Create())
 			{
 				Assert.IsNotNull(browser1);
@@ -57,10 +53,17 @@ namespace TestR.IntegrationTests.Web
 		}
 
 		[TestMethod]
-		public void AttachOrCreateOneBrowserShouldSucceed()
+		public void AttachOrCreate()
 		{
-			Browser.CloseBrowsers(BrowserType.InternetExplorer);
+			using (var browser = InternetExplorer.AttachOrCreate())
+			{
+				Assert.IsNotNull(browser);
+			}
+		}
 
+		[TestMethod]
+		public void AttachOrCreateOneBrowser()
+		{
 			using (var browser = InternetExplorer.Create())
 			{
 				Assert.IsNotNull(browser);
@@ -74,14 +77,28 @@ namespace TestR.IntegrationTests.Web
 		}
 
 		[TestMethod]
-		public void AttachOrCreateShouldSucceed()
+		public void AttachToBrowser()
 		{
-			Browser.CloseBrowsers(BrowserType.InternetExplorer);
+			int processId;
 
-			using (var browser = InternetExplorer.AttachOrCreate())
+			using (var browser1 = InternetExplorer.Create())
 			{
-				Assert.IsNotNull(browser);
+				Assert.IsNotNull(browser1);
+				processId = browser1.Application.Process.Id;
 			}
+
+			var process = Process.GetProcessById(processId);
+			using (var browser2 = Browser.AttachToBrowser(process))
+			{
+				Assert.IsNotNull(browser2);
+				Assert.AreEqual(typeof (InternetExplorer), browser2.GetType());
+			}
+		}
+
+		[TestCleanup]
+		public void Cleanup()
+		{
+			Browser.CloseBrowsers();
 		}
 
 		[TestMethod]
@@ -98,10 +115,8 @@ namespace TestR.IntegrationTests.Web
 		}
 
 		[TestMethod]
-		public void CreateOneBrowserShouldSucceed()
+		public void CreateOneBrowser()
 		{
-			Browser.CloseBrowsers(BrowserType.InternetExplorer);
-
 			using (var browser = InternetExplorer.Create())
 			{
 				Assert.IsNotNull(browser);
@@ -109,10 +124,8 @@ namespace TestR.IntegrationTests.Web
 		}
 
 		[TestMethod]
-		public void CreateTwoBrowsersShouldSucceed()
+		public void CreateTwoBrowsers()
 		{
-			Browser.CloseBrowsers(BrowserType.InternetExplorer);
-
 			using (var browser1 = InternetExplorer.Create())
 			{
 				Assert.IsNotNull(browser1);
@@ -122,6 +135,12 @@ namespace TestR.IntegrationTests.Web
 			{
 				Assert.IsNotNull(browser2);
 			}
+		}
+
+		[TestInitialize]
+		public void Initialize()
+		{
+			Browser.CloseBrowsers();
 		}
 
 		#endregion

@@ -127,6 +127,16 @@ namespace TestR.Web
 		#region Methods
 
 		/// <summary>
+		/// Attach process as a browser.
+		/// </summary>
+		/// <param name="process"> The process of the browser to attach to. </param>
+		/// <returns> The browser if successfully attached or otherwise null. </returns>
+		public static Browser AttachToBrowser(Process process)
+		{
+			return Chrome.Attach(process) ?? Edge.Attach(process) ?? InternetExplorer.Attach(process) ?? Firefox.Attach(process);
+		}
+
+		/// <summary>
 		/// Attach browsers for each type provided.
 		/// </summary>
 		/// <param name="type"> The type of the browser to attach to. </param>
@@ -437,34 +447,6 @@ namespace TestR.Web
 		/// </summary>
 		/// <param name="uri"> The URI to navigate to. </param>
 		protected abstract void BrowserNavigateTo(string uri);
-
-		/// <summary>
-		/// Creates a new process.
-		/// </summary>
-		/// <param name="fileName"> The filename of the browser. </param>
-		/// <param name="arguments"> The arguments for the browser. </param>
-		/// <returns> The new process for the browser. </returns>
-		/// <exception cref="Exception"> Failed to start the process. </exception>
-		protected static Process CreateInstance(string fileName, string arguments = "")
-		{
-			var info = new ProcessStartInfo(fileName);
-			info.Arguments = arguments;
-			info.WindowStyle = ProcessWindowStyle.Normal;
-			info.UseShellExecute = true;
-
-			var process = new Process();
-			process.StartInfo = info;
-
-			if (!process.Start())
-			{
-				throw new Exception("Failed to start the process. ExitCode: " + process.ExitCode);
-			}
-
-			Utility.Wait(process, p => p.Handle != IntPtr.Zero);
-			Thread.Sleep(250);
-
-			return process;
-		}
 
 		/// <summary>
 		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
