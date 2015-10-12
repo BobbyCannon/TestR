@@ -48,12 +48,7 @@ namespace TestR.Desktop.Pattern
 		public static TogglePattern Create(Element element)
 		{
 			var pattern = element.NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_TogglePatternId) as IUIAutomationTogglePattern;
-			if (pattern == null)
-			{
-				throw new NotSupportedException("This element does not support the toggle pattern.");
-			}
-
-			return new TogglePattern(pattern);
+			return pattern == null ? null : new TogglePattern(pattern);
 		}
 
 		/// <summary>

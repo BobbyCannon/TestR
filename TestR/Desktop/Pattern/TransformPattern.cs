@@ -34,12 +34,7 @@ namespace TestR.Desktop.Pattern
 		public static TransformPattern Create(Element element)
 		{
 			var pattern = element.NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_TransformPatternId) as IUIAutomationTransformPattern;
-			if (pattern == null)
-			{
-				throw new NotSupportedException("This element does not support the transform pattern.");
-			}
-
-			return new TransformPattern(pattern);
+			return pattern == null ? null : new TransformPattern(pattern);
 		}
 
 		/// <summary>

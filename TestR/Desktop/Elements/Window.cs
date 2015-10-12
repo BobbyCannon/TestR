@@ -73,7 +73,7 @@ namespace TestR.Desktop.Elements
 		/// <param name="y"> The y value of the position to move to. </param>
 		public void Move(int x, int y)
 		{
-			TransformPattern.Create(this).Move(x, y);
+			TransformPattern.Create(this)?.Move(x, y);
 		}
 
 		/// <summary>
@@ -83,7 +83,7 @@ namespace TestR.Desktop.Elements
 		/// <param name="height"> The height to set. </param>
 		public void Resize(int width, int height)
 		{
-			TransformPattern.Create(this).Resize(width, height);
+			TransformPattern.Create(this)?.Resize(width, height);
 		}
 
 		/// <summary>

@@ -72,12 +72,7 @@ namespace TestR.Desktop.Pattern
 		public static ExpandCollapsePattern Create(Element element)
 		{
 			var pattern = element.NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_ExpandCollapsePatternId) as IUIAutomationExpandCollapsePattern;
-			if (pattern == null)
-			{
-				throw new NotSupportedException("This element does not support the expand / collapse pattern.");
-			}
-
-			return new ExpandCollapsePattern(pattern);
+			return pattern == null ? null : new ExpandCollapsePattern(pattern);
 		}
 
 		#endregion

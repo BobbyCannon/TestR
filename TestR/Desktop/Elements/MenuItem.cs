@@ -33,11 +33,6 @@ namespace TestR.Desktop.Elements
 		/// </summary>
 		public bool SupportsExpandingCollapsing => ExpandCollapsePattern.Create(this) != null;
 
-		/// <summary>
-		/// Gets the text value.
-		/// </summary>
-		public string Text => Name;
-
 		#endregion
 
 		#region Methods

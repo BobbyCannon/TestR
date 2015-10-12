@@ -37,11 +37,6 @@ namespace TestR.Desktop.Elements
 		/// </summary>
 		public Button MinimizeButton => Children.Get<Button>(x => x.Name == "Minimize");
 
-		/// <summary>
-		/// Gets the text value.
-		/// </summary>
-		public string Text => Name;
-
 		#endregion
 	}
 }

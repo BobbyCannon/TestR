@@ -198,7 +198,6 @@ namespace TestR.IntegrationTests.Desktop
 				Assert.IsNotNull(statusBar);
 				Assert.AreEqual("statusStrip", statusBar.Id);
 				Assert.AreEqual("StatusStrip", statusBar.Name);
-				Assert.AreEqual("StatusStrip", statusBar.Text);
 				application.Close();
 			}
 		}
@@ -213,7 +212,6 @@ namespace TestR.IntegrationTests.Desktop
 				Assert.IsNotNull(titleBar);
 				Assert.AreEqual("", titleBar.Id);
 				Assert.AreEqual(null, titleBar.Name);
-				Assert.AreEqual(null, titleBar.Text);
 				application.Close();
 			}
 		}

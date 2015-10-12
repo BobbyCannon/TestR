@@ -19,18 +19,5 @@ namespace TestR.Desktop.Elements
 		}
 
 		#endregion
-
-		#region Properties
-
-		/// <summary>
-		/// Gets the text value.
-		/// </summary>
-		public string Text
-		{
-			get { return Name; }
-			set { SetText(value); }
-		}
-
-		#endregion
 	}
 }

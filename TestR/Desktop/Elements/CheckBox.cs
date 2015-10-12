@@ -27,17 +27,17 @@ namespace TestR.Desktop.Elements
 		/// <summary>
 		/// Gets a flag indicating if the checkbox is checked.
 		/// </summary>
-		public bool Checked => TogglePattern.Create(this).ToggleState != ToggleState.Off;
+		public bool Checked => TogglePattern.Create(this)?.ToggleState != ToggleState.Off;
 
 		/// <summary>
 		/// Gets the state of the checkbox.
 		/// </summary>
-		public ToggleState CheckedState => TogglePattern.Create(this).ToggleState;
+		public ToggleState CheckedState => TogglePattern.Create(this)?.ToggleState ?? ToggleState.Indeterminate;
 
 		/// <summary>
 		/// Gets a value indicating whether the control can have a value set programmatically, or that can be edited by the user.
 		/// </summary>
-		public bool ReadOnly => ValuePattern.Create(this).IsReadOnly;
+		public bool ReadOnly => ValuePattern.Create(this)?.IsReadOnly ?? true;
 
 		#endregion
 
@@ -48,7 +48,7 @@ namespace TestR.Desktop.Elements
 		/// </summary>
 		public CheckBox Toggle()
 		{
-			TogglePattern.Create(this).Toggle();
+			TogglePattern.Create(this)?.Toggle();
 			return this;
 		}
 
