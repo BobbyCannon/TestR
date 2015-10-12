@@ -36,6 +36,9 @@ if ($LASTEXITCODE -ne 0) {
 
 Set-Location $scriptPath
 
+$versionInfo = [System.Diagnostics.FileVersionInfo]::GetVersionInfo("$scriptPath\TestR\bin\$Configuration\TestR.dll")
+$version = $versionInfo.FileVersion.ToString()
+
 Copy-Item TestR\bin\$Configuration\TestR.dll $destination\bin\
 Copy-Item TestR\bin\$Configuration\Interop.SHDocVw.dll $destination\bin\
 Copy-Item TestR\bin\$Configuration\Interop.UIAutomationClient.dll $destination\bin\
@@ -43,10 +46,7 @@ Copy-Item TestR.Editor\bin\$Configuration\TestR.Editor.exe $destination\bin\
 Copy-Item TestR.IntegrationTests\bin\$configuration\*.ps1 $destination\tests\
 Copy-Item TestR.IntegrationTests\bin\$configuration\*.dll $destination\tests\
 Copy-Item TestR.PowerShell\bin\$Configuration\TestR.PowerShell.dll $destination\bin\
-Copy-Item .\TestR.Extension\bin\$Configuration\TestR.Extension.vsix $destination
-
-$versionInfo = [System.Diagnostics.FileVersionInfo]::GetVersionInfo("$destination\bin\TestR.dll")
-$version = $versionInfo.FileVersion.ToString()
+Copy-Item .\TestR.Extension\bin\$Configuration\TestR.Extension.vsix "C:\Binaries\TestR\TestR.Extension.$version.vsix"
 
 & ".nuget\NuGet.exe" pack TestR.nuspec -Prop Configuration="$Configuration" -Version $version
 Move-Item "TestR.$version.nupkg" "$destination" -force

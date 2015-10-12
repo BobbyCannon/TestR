@@ -1,8 +1,13 @@
 ﻿#region References
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Management.Automation;
+using System.Windows.Forms;
+using TestR.Extensions;
 using TestR.Web;
+using TestR.Web.Browsers;
 
 #endregion
 
@@ -35,17 +40,20 @@ namespace TestR.PowerShell
 		/// Run a test against each browser. BrowserType property will determine which browsers to run the test against.
 		/// </summary>
 		/// <param name="action"> The action to run each browser against. </param>
+		/// <param name="useSecondaryMonitor"> The flag to determine to attempt to use secondary monitor. </param>
 		/// <seealso cref="BrowserType" />
-		public void ForEachBrowser(Action<Browser> action)
+		public void ForEachBrowser(Action<Browser> action, bool useSecondaryMonitor = true)
 		{
+			var screen = Screen.AllScreens.FirstOrDefault(x => x.Primary == false) ?? Screen.AllScreens.First(x => x.Primary);
 			var browserOffset = 0;
-			var browserWidth = 500;
-
+			var browserWidth = screen.WorkingArea.Width / BrowserType.Count();
+			
 			Browser.ForEachBrowser(x =>
 			{
 				try
 				{
-					x.Application.MoveWindow((browserOffset++ * browserWidth), 0, browserWidth, browserWidth * 2);
+					x.Application.MoveWindow(screen.WorkingArea.Left + (browserOffset++ * browserWidth), 0, browserWidth, browserWidth * 2);
+					x.Application.BringToFront();
 					action(x);
 				}
 				catch (Exception ex)
@@ -54,7 +62,7 @@ namespace TestR.PowerShell
 				}
 			}, BrowserType);
 		}
-
+		
 		#endregion
 	}
 }

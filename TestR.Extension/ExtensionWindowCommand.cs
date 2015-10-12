@@ -34,7 +34,7 @@ namespace TestR.Extension
 		/// <summary>
 		/// VS Package that provides this command, not null.
 		/// </summary>
-		private readonly Package package;
+		private readonly Package _package;
 
 		#endregion
 
@@ -52,7 +52,7 @@ namespace TestR.Extension
 				throw new ArgumentNullException(nameof(package));
 			}
 
-			this.package = package;
+			_package = package;
 
 			var commandService = ServiceProvider.GetService(typeof (IMenuCommandService)) as OleMenuCommandService;
 			if (commandService != null)
@@ -75,10 +75,7 @@ namespace TestR.Extension
 		/// <summary>
 		/// Gets the service provider from the owner package.
 		/// </summary>
-		private IServiceProvider ServiceProvider
-		{
-			get { return package; }
-		}
+		private IServiceProvider ServiceProvider => _package;
 
 		#endregion
 
@@ -103,8 +100,8 @@ namespace TestR.Extension
 			// Get the instance number 0 of this tool window. This window is single instance so this instance
 			// is actually the only one.
 			// The last flag is set to true so that if the tool window does not exists it will be created.
-			var window = package.FindToolWindow(typeof (ExtensionWindow), 0, true);
-			if ((null == window) || (null == window.Frame))
+			var window = _package.FindToolWindow(typeof (ExtensionWindow), 0, true);
+			if (window?.Frame == null)
 			{
 				throw new NotSupportedException("Cannot create tool window");
 			}
