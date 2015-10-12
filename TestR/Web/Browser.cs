@@ -95,7 +95,7 @@ namespace TestR.Web
 		/// <summary>
 		/// Gets the ID of the browser.
 		/// </summary>
-		public abstract int Id { get; }
+		public int Id => Application.Handle.ToInt32();
 
 		/// <summary>
 		/// Gets a list of JavaScript libraries that were detected on the page.
@@ -139,6 +139,11 @@ namespace TestR.Web
 				response.Add(Chrome.Attach());
 			}
 
+			if ((type & BrowserType.Edge) == BrowserType.Edge)
+			{
+				response.Add(Edge.Attach());
+			}
+
 			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)
 			{
 				response.Add(InternetExplorer.Attach());
@@ -166,6 +171,12 @@ namespace TestR.Web
 				response.Add(chrome);
 			}
 
+			if ((type & BrowserType.Edge) == BrowserType.Edge)
+			{
+				var edge = Edge.AttachOrCreate();
+				response.Add(edge);
+			}
+
 			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)
 			{
 				var explorer = InternetExplorer.AttachOrCreate();
@@ -182,6 +193,15 @@ namespace TestR.Web
 		}
 
 		/// <summary>
+		/// Brings the application to the front and makes it the top window.
+		/// </summary>
+		public virtual Browser BringToFront()
+		{
+			Application.BringToFront();
+			return this;
+		}
+
+		/// <summary>
 		/// Closes all browsers of the provided type.
 		/// </summary>
 		/// <param name="type"> The type of the browser to close. </param>
@@ -190,6 +210,11 @@ namespace TestR.Web
 			if ((type & BrowserType.Chrome) == BrowserType.Chrome)
 			{
 				Application.CloseAll(Chrome.Name);
+			}
+
+			if ((type & BrowserType.Edge) == BrowserType.Edge)
+			{
+				Application.CloseAll(Edge.Name);
 			}
 
 			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)
@@ -214,6 +239,11 @@ namespace TestR.Web
 			if ((type & BrowserType.Chrome) == BrowserType.Chrome)
 			{
 				response.Add(Chrome.Create());
+			}
+
+			if ((type & BrowserType.Edge) == BrowserType.Edge)
+			{
+				response.Add(Edge.Create());
 			}
 
 			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)
@@ -273,6 +303,49 @@ namespace TestR.Web
 					action(browser);
 				}
 			}
+		}
+
+		/// <summary>
+		/// Inserts the test script into the current page.
+		/// </summary>
+		public static string GetTestScript()
+		{
+			var assembly = Assembly.GetExecutingAssembly();
+
+			using (var stream = assembly.GetManifestResourceStream("TestR.TestR.js"))
+			{
+				if (stream != null)
+				{
+					using (var reader = new StreamReader(stream))
+					{
+						var data = reader.ReadToEnd();
+						var lines = data.Split(Environment.NewLine);
+						for (var i = 0; i < lines.Length; i++)
+						{
+							lines[i] = lines[i].Trim();
+						}
+
+						data = string.Join("", lines.Where(x => !x.StartsWith("//"))).Replace("\t", "");
+						return data;
+					}
+				}
+			}
+
+			return string.Empty;
+		}
+
+		/// <summary>
+		/// Move the window and resize it.
+		/// </summary>
+		/// <param name="x"> The x coordinate to move to. </param>
+		/// <param name="y"> The y coordinate to move to. </param>
+		/// <param name="width"> The width of the window. </param>
+		/// <param name="height"> The height of the window. </param>
+
+		public virtual Browser MoveWindow(int x, int y, int width, int height)
+		{
+			Application.MoveWindow(x, y, width, height);
+			return this;
 		}
 
 		/// <summary>
@@ -404,16 +477,13 @@ namespace TestR.Web
 				return;
 			}
 
-			if (AutoClose && Application != null)
+			if (AutoClose)
 			{
-				Application.Close();
+				Application?.Close();
 			}
 
-			if (Application != null)
-			{
-				Application.Dispose();
-				Application = null;
-			}
+			Application?.Dispose();
+			Application = null;
 		}
 
 		/// <summary>
@@ -429,27 +499,6 @@ namespace TestR.Web
 		/// </summary>
 		/// <returns> The current URI that was read from the browser. </returns>
 		protected abstract string GetBrowserUri();
-
-		/// <summary>
-		/// Inserts the test script into the current page.
-		/// </summary>
-		protected static string GetTestScript()
-		{
-			var assembly = Assembly.GetExecutingAssembly();
-
-			using (var stream = assembly.GetManifestResourceStream("TestR.TestR.min.js"))
-			{
-				if (stream != null)
-				{
-					using (var reader = new StreamReader(stream))
-					{
-						return reader.ReadToEnd();
-					}
-				}
-			}
-
-			return string.Empty;
-		}
 
 		/// <summary>
 		/// Refreshes the element collection for the current page.

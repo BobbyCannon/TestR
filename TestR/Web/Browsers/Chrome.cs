@@ -24,9 +24,8 @@ using TestR.Logging;
 namespace TestR.Web.Browsers
 {
 	/// <summary>
-	/// This is the place hold for what may be Chrome support.
+	/// Represents an Chrome browser.
 	/// </summary>
-	/// <exclude />
 	public class Chrome : Browser
 	{
 		#region Constants
@@ -39,7 +38,7 @@ namespace TestR.Web.Browsers
 		/// <summary>
 		/// The debugging argument for starting the browser.
 		/// </summary>
-		private const string DebugArgument = "--remote-debugging-port=9222";
+		public const string DebugArgument = "--remote-debugging-port=9222";
 
 		#endregion
 
@@ -83,11 +82,6 @@ namespace TestR.Web.Browsers
 		/// Gets the type of the browser.
 		/// </summary>
 		public override BrowserType BrowserType => BrowserType.Chrome;
-
-		/// <summary>
-		/// Gets the ID of the browser.
-		/// </summary>
-		public override int Id => Application.Handle.ToInt32();
 
 		#endregion
 

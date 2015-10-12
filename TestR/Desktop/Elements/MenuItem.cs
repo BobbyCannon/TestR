@@ -26,12 +26,12 @@ namespace TestR.Desktop.Elements
 		/// <summary>
 		/// Gets the menu expand collapse state.
 		/// </summary>
-		public bool IsExpanded => ExpandCollapsePattern.New(this)?.IsExpanded ?? false;
+		public bool IsExpanded => ExpandCollapsePattern.Create(this)?.IsExpanded ?? false;
 
 		/// <summary>
 		/// Gets a value indicating whether this menu item supports expanding and collapsing pattern.
 		/// </summary>
-		public bool SupportsExpandingCollapsing => ExpandCollapsePattern.New(this) != null;
+		public bool SupportsExpandingCollapsing => ExpandCollapsePattern.Create(this) != null;
 
 		/// <summary>
 		/// Gets the text value.
@@ -59,7 +59,7 @@ namespace TestR.Desktop.Elements
 		/// </summary>
 		public MenuItem Collapse()
 		{
-			ExpandCollapsePattern.New(this)?.Collapse();
+			ExpandCollapsePattern.Create(this)?.Collapse();
 			return this;
 		}
 
@@ -68,7 +68,7 @@ namespace TestR.Desktop.Elements
 		/// </summary>
 		public MenuItem Expand()
 		{
-			ExpandCollapsePattern.New(this)?.Expand();
+			ExpandCollapsePattern.Create(this)?.Expand();
 			return this;
 		}
 

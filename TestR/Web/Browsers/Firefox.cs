@@ -20,9 +20,8 @@ using TestR.Logging;
 namespace TestR.Web.Browsers
 {
 	/// <summary>
-	/// This is the place hold for what may be FireFox support.
+	/// Represents a Firefox browser.
 	/// </summary>
-	/// <exclude />
 	public class Firefox : Browser
 	{
 		#region Constants
@@ -35,7 +34,7 @@ namespace TestR.Web.Browsers
 		/// <summary>
 		/// The debugging argument for starting the browser.
 		/// </summary>
-		private const string DebugArgument = "-start-debugger-server 6000";
+		public const string DebugArgument = "-start-debugger-server 6000";
 
 		#endregion
 
@@ -84,11 +83,6 @@ namespace TestR.Web.Browsers
 		/// Gets the type of the browser.
 		/// </summary>
 		public override BrowserType BrowserType => BrowserType.Firefox;
-
-		/// <summary>
-		/// Gets the ID of the browser.
-		/// </summary>
-		public override int Id => Application.Handle.ToInt32();
 
 		#endregion
 

@@ -1,5 +1,6 @@
 ﻿#region References
 
+using System;
 using System.Linq;
 using TestR.Extensions;
 using UIAutomationClient;
@@ -9,15 +10,17 @@ using UIAutomationClient;
 namespace TestR.Desktop.Pattern
 {
 	/// <summary>
-	/// Represents the expand collapse pattern.
+	/// Represents the Windows expand / collapse pattern.
 	/// </summary>
-	public class ExpandCollapsePattern : BasePattern
+	public class ExpandCollapsePattern
 	{
+		private readonly IUIAutomationExpandCollapsePattern _pattern;
+
 		#region Constructors
 
-		private ExpandCollapsePattern(Element element)
-			: base(element)
+		private ExpandCollapsePattern(IUIAutomationExpandCollapsePattern pattern)
 		{
+			_pattern = pattern;
 		}
 
 		#endregion
@@ -27,7 +30,7 @@ namespace TestR.Desktop.Pattern
 		/// <summary>
 		/// Gets the current expanded state of the element.
 		/// </summary>
-		public ExpandCollapseState ExpandCollapseState => GetPattern<IUIAutomationExpandCollapsePattern>()?.CurrentExpandCollapseState.Convert() ?? ExpandCollapseState.Expanded;
+		public ExpandCollapseState ExpandCollapseState => _pattern.CurrentExpandCollapseState.Convert();
 
 		/// <summary>
 		/// Gets the value indicating the element is expanded.
@@ -37,7 +40,7 @@ namespace TestR.Desktop.Pattern
 			get
 			{
 				var expandedStates = new[] { ExpandCollapseState.Expanded, ExpandCollapseState.PartiallyExpanded };
-				return expandedStates.Contains(GetPattern<IUIAutomationExpandCollapsePattern>()?.CurrentExpandCollapseState.Convert() ?? ExpandCollapseState.Collapsed);
+				return expandedStates.Contains(_pattern.CurrentExpandCollapseState.Convert());
 			}
 		}
 
@@ -50,7 +53,7 @@ namespace TestR.Desktop.Pattern
 		/// </summary>
 		public void Collapse()
 		{
-			GetPattern<IUIAutomationExpandCollapsePattern>()?.Collapse();
+			_pattern.Collapse();
 		}
 
 		/// <summary>
@@ -58,17 +61,23 @@ namespace TestR.Desktop.Pattern
 		/// </summary>
 		public void Expand()
 		{
-			GetPattern<IUIAutomationExpandCollapsePattern>()?.Expand();
+			_pattern.Expand();
 		}
 
 		/// <summary>
-		/// Creates a new instance of this pattern.
+		/// Create a new pattern for the provided element.
 		/// </summary>
-		/// <param name="element"> The element this pattern is for. </param>
-		/// <returns> The instance of the pattern. </returns>
-		public static ExpandCollapsePattern New(Element element)
+		/// <param name="element"> The element that supports the pattern. </param>
+		/// <returns> The pattern if we could find one else null will be returned. </returns>
+		public static ExpandCollapsePattern Create(Element element)
 		{
-			return new ExpandCollapsePattern(element);
+			var pattern = element.NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_ExpandCollapsePatternId) as IUIAutomationExpandCollapsePattern;
+			if (pattern == null)
+			{
+				throw new NotSupportedException("This element does not support the expand / collapse pattern.");
+			}
+
+			return new ExpandCollapsePattern(pattern);
 		}
 
 		#endregion

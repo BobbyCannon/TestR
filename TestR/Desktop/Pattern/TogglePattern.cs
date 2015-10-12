@@ -1,5 +1,6 @@
 ﻿#region References
 
+using System;
 using TestR.Extensions;
 using UIAutomationClient;
 
@@ -8,15 +9,17 @@ using UIAutomationClient;
 namespace TestR.Desktop.Pattern
 {
 	/// <summary>
-	/// Represents the toggle pattern.
+	/// Represents the Windows toggle pattern.
 	/// </summary>
-	public class TogglePattern : BasePattern
+	public class TogglePattern
 	{
+		private readonly IUIAutomationTogglePattern _pattern;
+
 		#region Constructors
 
-		private TogglePattern(Element element)
-			: base(element)
+		private TogglePattern(IUIAutomationTogglePattern pattern)
 		{
+			_pattern = pattern;
 		}
 
 		#endregion
@@ -24,35 +27,41 @@ namespace TestR.Desktop.Pattern
 		#region Properties
 
 		/// <summary>
-		/// Gets a Boolean representation of the toggle state.
+		/// Gets the toggled value.
 		/// </summary>
-		public bool Toggled => GetPattern<IUIAutomationTogglePattern>()?.CurrentToggleState.Convert() != ToggleState.Off;
+		public bool Toggled => _pattern.CurrentToggleState.Convert() != ToggleState.Off;
 
 		/// <summary>
 		/// Gets the toggle state of the element.
 		/// </summary>
-		public ToggleState ToggleState => GetPattern<IUIAutomationTogglePattern>()?.CurrentToggleState.Convert() ?? ToggleState.Off;
+		public ToggleState ToggleState => _pattern.CurrentToggleState.Convert();
 
 		#endregion
 
 		#region Methods
 
 		/// <summary>
-		/// Creates a new instance of this pattern.
+		/// Create a new pattern for the provided element.
 		/// </summary>
-		/// <param name="element"> The element this pattern is for. </param>
-		/// <returns> The instance of the pattern. </returns>
-		public static TogglePattern New(Element element)
+		/// <param name="element"> The element that supports the pattern. </param>
+		/// <returns> The pattern if we could find one else null will be returned. </returns>
+		public static TogglePattern Create(Element element)
 		{
-			return new TogglePattern(element);
+			var pattern = element.NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_TogglePatternId) as IUIAutomationTogglePattern;
+			if (pattern == null)
+			{
+				throw new NotSupportedException("This element does not support the toggle pattern.");
+			}
+
+			return new TogglePattern(pattern);
 		}
 
 		/// <summary>
-		/// Toggles the element.
+		/// Toggle the element.
 		/// </summary>
 		public void Toggle()
 		{
-			GetPattern<IUIAutomationTogglePattern>()?.Toggle();
+			_pattern.Toggle();
 		}
 
 		#endregion

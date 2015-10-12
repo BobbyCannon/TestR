@@ -24,6 +24,11 @@ namespace TestR.Extensions
 				response++;
 			}
 
+			if ((type & BrowserType.Edge) == BrowserType.Edge)
+			{
+				response++;
+			}
+
 			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)
 			{
 				response++;

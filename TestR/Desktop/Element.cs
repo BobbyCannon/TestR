@@ -390,7 +390,7 @@ namespace TestR.Desktop
 		/// <returns> The value of the element. </returns>
 		public string GetText()
 		{
-			return ValuePattern.New(this)?.Value ?? string.Empty;
+			return ValuePattern.Create(this)?.Value ?? string.Empty;
 		}
 
 		/// <summary>
@@ -416,7 +416,7 @@ namespace TestR.Desktop
 			Mouse.RightClick(point);
 			return this;
 		}
-
+	
 		/// <summary>
 		/// Sets the text value of the element.
 		/// </summary>

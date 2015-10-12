@@ -13,10 +13,10 @@ using TestR.PowerShell;
 
 #endregion
 
-namespace TestR.IntegrationTests.Desktop
+namespace TestR.IntegrationTests.Desktop.Elements
 {
 	[TestClass]
-	[Cmdlet(VerbsDiagnostic.Test, "CheckBoxes")]
+	[Cmdlet(VerbsDiagnostic.Test, "CheckBox")]
 	public class CheckBoxTests : TestCmdlet
 	{
 		#region Fields
@@ -91,6 +91,18 @@ namespace TestR.IntegrationTests.Desktop
 				Assert.AreEqual(ToggleState.On, checkbox.CheckedState);
 				checkbox.Toggle();
 				Assert.AreEqual(ToggleState.Off, checkbox.CheckedState);
+			}
+		}
+
+		[TestMethod]
+		public void CheckedShouldBeChecked()
+		{
+			using (var application = Application.AttachOrCreate(ApplicationPath))
+			{
+				var checkbox = application.Get<CheckBox>("checkBox2");
+				Assert.AreEqual(true, checkbox.Checked);
+				checkbox.Toggle();
+				Assert.AreEqual(false, checkbox.Checked);
 			}
 		}
 
@@ -170,7 +182,7 @@ namespace TestR.IntegrationTests.Desktop
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
 				var checkbox = application.Get<CheckBox>("checkBox1");
-				Assert.AreEqual(new Point(604, 348), checkbox.Location);
+				Assert.AreEqual(new Point(737, 396), checkbox.Location);
 			}
 		}
 

@@ -1,6 +1,7 @@
 ﻿#region References
 
 using System.Linq;
+using TestR.Desktop.Pattern;
 using TestR.Helpers;
 using TestR.Native;
 using UIAutomationClient;
@@ -63,6 +64,26 @@ namespace TestR.Desktop.Elements
 			TitleBar.CloseButton.MoveMouseTo();
 			TitleBar.CloseButton.Click();
 			return this;
+		}
+
+		/// <summary>
+		/// Move the window.
+		/// </summary>
+		/// <param name="x"> The x value of the position to move to. </param>
+		/// <param name="y"> The y value of the position to move to. </param>
+		public void Move(int x, int y)
+		{
+			TransformPattern.Create(this).Move(x, y);
+		}
+
+		/// <summary>
+		/// Resize the window.
+		/// </summary>
+		/// <param name="width"> The width to set. </param>
+		/// <param name="height"> The height to set. </param>
+		public void Resize(int width, int height)
+		{
+			TransformPattern.Create(this).Resize(width, height);
 		}
 
 		/// <summary>

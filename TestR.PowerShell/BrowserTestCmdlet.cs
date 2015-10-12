@@ -52,8 +52,8 @@ namespace TestR.PowerShell
 			{
 				try
 				{
-					x.Application.MoveWindow(screen.WorkingArea.Left + (browserOffset++ * browserWidth), 0, browserWidth, browserWidth * 2);
-					x.Application.BringToFront();
+					x.MoveWindow(screen.WorkingArea.Left + (browserOffset++ * browserWidth), 0, browserWidth, browserWidth * 2);
+					x.BringToFront();
 					action(x);
 				}
 				catch (Exception ex)

@@ -199,7 +199,7 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
-		/// Brings the application to the front and makes it the Top window.
+		/// Brings the application to the front and makes it the top window.
 		/// </summary>
 		public Application BringToFront()
 		{

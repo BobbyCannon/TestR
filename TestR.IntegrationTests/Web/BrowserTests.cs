@@ -11,7 +11,7 @@ using TestR.Web.Elements;
 
 #endregion
 
-namespace TestR.IntegrationTests
+namespace TestR.IntegrationTests.Web
 {
 	[TestClass]
 	[Cmdlet(VerbsDiagnostic.Test, "Browsers")]

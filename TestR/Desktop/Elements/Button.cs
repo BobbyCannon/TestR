@@ -27,12 +27,12 @@ namespace TestR.Desktop.Elements
 		/// <summary>
 		/// Gets a flag indicating if the button is checked. Usable for split buttons.
 		/// </summary>
-		public bool Toggled => TogglePattern.New(this).Toggled;
+		public bool Toggled => TogglePattern.Create(this).Toggled;
 
 		/// <summary>
 		/// Gets the toggle state of the button.
 		/// </summary>
-		public ToggleState ToggleState => TogglePattern.New(this)?.ToggleState ?? ToggleState.Off;
+		public ToggleState ToggleState => TogglePattern.Create(this)?.ToggleState ?? ToggleState.Off;
 
 		#endregion
 	}

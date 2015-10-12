@@ -2,7 +2,6 @@
 
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using mshtml;
@@ -53,11 +52,6 @@ namespace TestR.Web.Browsers
 		public override BrowserType BrowserType => BrowserType.InternetExplorer;
 
 		/// <summary>
-		/// Gets the ID of the browser.
-		/// </summary>
-		public override int Id => Application.Handle.ToInt32();
-
-		/// <summary>
 		/// Gets the raw HTML of the page.
 		/// </summary>
 		public override string RawHtml => ((HTMLDocument) _browser.Document).documentElement.outerHTML;
@@ -70,7 +64,7 @@ namespace TestR.Web.Browsers
 		/// Attempts to attach to an existing browser.
 		/// </summary>
 		/// <returns> An instance of an Internet Explorer browser. </returns>
-		public static InternetExplorer Attach()
+		public static Browser Attach()
 		{
 			var foundBrowser = GetBrowserToAttachTo();
 			if (foundBrowser == null)
@@ -88,51 +82,16 @@ namespace TestR.Web.Browsers
 		/// Attempts to attach to an existing browser. If one is not found then create and return a new one.
 		/// </summary>
 		/// <returns> An instance of an Internet Explorer browser. </returns>
-		public static InternetExplorer AttachOrCreate()
+		public static Browser AttachOrCreate()
 		{
 			return Attach() ?? Create();
 		}
-
-		/// <summary>
-		/// Clears the cookies for the provided URL. If the URL is an empty string then all cookies will be cleared.
-		/// </summary>
-		/// <param name="url"> The URL of the cookies to remove. Empty string removes all cookies. </param>
-		/// <exception cref="ArgumentNullException"> The URL parameter cannot be null. </exception>
-		public static void ClearCookies(string url = "")
-		{
-			if (url == null)
-			{
-				throw new ArgumentNullException(nameof(url));
-			}
-
-			var path = Environment.GetFolderPath(Environment.SpecialFolder.Cookies);
-			var files = Directory.GetFiles(path)
-				.Union(Directory.GetFiles(path + "\\low"))
-				.ToList();
-
-			if (string.IsNullOrWhiteSpace(url))
-			{
-				files.ForEach(File.Delete);
-				return;
-			}
-
-			foreach (var file in files)
-			{
-				var text = File.ReadAllText(file);
-				if (!text.Contains(url))
-				{
-					continue;
-				}
-
-				File.Delete(file);
-			}
-		}
-
+		
 		/// <summary>
 		/// Creates a new instance of an Internet Explorer browser.
 		/// </summary>
 		/// <returns> An instance of an Internet Explorer browser. </returns>
-		public static InternetExplorer Create()
+		public static Browser Create()
 		{
 			return new InternetExplorer(CreateInternetExplorerClass());
 		}

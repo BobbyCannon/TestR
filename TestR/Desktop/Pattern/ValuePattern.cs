@@ -1,5 +1,6 @@
 ﻿#region References
 
+using System;
 using UIAutomationClient;
 
 #endregion
@@ -7,15 +8,21 @@ using UIAutomationClient;
 namespace TestR.Desktop.Pattern
 {
 	/// <summary>
-	/// Represents the value pattern.
+	/// Represents the Windows value pattern.
 	/// </summary>
-	public class ValuePattern : BasePattern
+	public class ValuePattern
 	{
+		#region Fields
+
+		private readonly IUIAutomationValuePattern _pattern;
+
+		#endregion
+
 		#region Constructors
 
-		private ValuePattern(Element element)
-			: base(element)
+		private ValuePattern(IUIAutomationValuePattern pattern)
 		{
+			_pattern = pattern;
 		}
 
 		#endregion
@@ -23,36 +30,42 @@ namespace TestR.Desktop.Pattern
 		#region Properties
 
 		/// <summary>
-		/// Gets a value indicating if the element is read only.
+		/// Gets a value determining if the pattern is read only.
 		/// </summary>
-		public bool IsReadOnly => GetPattern<IUIAutomationValuePattern>()?.CurrentIsReadOnly == 1;
+		public bool IsReadOnly => _pattern.CurrentIsReadOnly == 1;
 
 		/// <summary>
-		/// Gets the current value of the element.
+		/// Gets the value of the pattern.
 		/// </summary>
-		public string Value => GetPattern<IUIAutomationValuePattern>()?.CurrentValue ?? string.Empty;
+		public string Value => _pattern.CurrentValue;
 
 		#endregion
 
 		#region Methods
 
 		/// <summary>
-		/// Creates a new instance of this pattern.
+		/// Create a new pattern for the provided element.
 		/// </summary>
-		/// <param name="element"> The element this pattern is for. </param>
-		/// <returns> The instance of the pattern. </returns>
-		public static ValuePattern New(Element element)
+		/// <param name="element"> The element that supports the pattern. </param>
+		/// <returns> The pattern if we could find one else null will be returned. </returns>
+		public static ValuePattern Create(Element element)
 		{
-			return new ValuePattern(element);
+			var pattern = element.NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_ValuePatternId) as IUIAutomationValuePattern;
+			if (pattern == null)
+			{
+				throw new NotSupportedException("This element does not support the value pattern.");
+			}
+
+			return new ValuePattern(pattern);
 		}
 
 		/// <summary>
-		/// Sets the value of the element.
+		/// Set the value of the pattern.
 		/// </summary>
-		/// <param name="value"> </param>
+		/// <param name="value"></param>
 		public void SetValue(string value)
 		{
-			GetPattern<IUIAutomationValuePattern>()?.SetValue(value);
+			_pattern.SetValue(value);
 		}
 
 		#endregion
