@@ -2,7 +2,9 @@
 
 using System;
 using System.Windows;
+using System.Windows.Controls;
 using Microsoft.Win32;
+using TestR.Desktop;
 
 #endregion
 
@@ -37,11 +39,11 @@ namespace TestR.Extension
 
 		private void ApplicationOnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
 		{
-			var element = e.NewValue as Desktop.Element;
+			var element = e.NewValue as Element;
 			if (element == null)
 			{
 				_project.ElementDetails = string.Empty;
-				_project.Highlight((Desktop.Element) null);
+				_project.Highlight((Element) null);
 				return;
 			}
 
@@ -63,6 +65,11 @@ namespace TestR.Extension
 			_project.Highlight(element);
 		}
 
+		private void CloseApplication(object sender, RoutedEventArgs e)
+		{
+			_project.Close();
+		}
+
 		private void RefreshChildren(object sender, RoutedEventArgs e)
 		{
 			_project.Refresh();
@@ -70,10 +77,16 @@ namespace TestR.Extension
 
 		private void RefreshDesktopElement(object sender, RoutedEventArgs e)
 		{
+			var menuItem = sender as MenuItem;
+			var element = menuItem?.DataContext as Element;
+			element?.UpdateChildren();
 		}
 
 		private void RefreshWebElement(object sender, RoutedEventArgs e)
 		{
+			var menuItem = sender as MenuItem;
+			var element = menuItem?.DataContext as Web.Element;
+			element?.Browser.Refresh();
 		}
 
 		private void SelectApplication(object sender, RoutedEventArgs e)

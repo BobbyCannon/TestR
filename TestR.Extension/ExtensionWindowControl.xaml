@@ -76,7 +76,8 @@
                         </HierarchicalDataTemplate>
                     </TreeView.ItemTemplate>
                 </TreeView>
-                <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" IsEnabled="{Binding IsLoaded}" Click="RefreshChildren">Refresh</Button>
+                <Button Grid.Row="2" Grid.Column="0" IsEnabled="{Binding IsLoaded}" Click="RefreshChildren">Refresh</Button>
+                <Button Grid.Row="2" Grid.Column="1" IsEnabled="{Binding IsLoaded}" Click="CloseApplication">Close</Button>
             </Grid>
         </Border>
         <ScrollViewer Grid.Row="1">
