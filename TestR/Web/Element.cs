@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 using TestR.Logging;
@@ -155,10 +156,7 @@ namespace TestR.Web
 		/// <remarks>
 		/// Specifies a unique id for an element.
 		/// </remarks>
-		public string Id
-		{
-			get { return _element.id; }
-		}
+		public string Id => _element.id;
 
 		/// <summary>
 		/// Gets or sets the language (lang) attribute.
@@ -200,10 +198,7 @@ namespace TestR.Web
 		/// <summary>
 		/// Gets the ID of the element's parent.
 		/// </summary>
-		public string ParentId
-		{
-			get { return _element.parentId; }
-		}
+		public string ParentId => _element.parentId;
 
 		/// <summary>
 		/// Gets or sets the spell check (spellcheck) attribute.
@@ -244,10 +239,7 @@ namespace TestR.Web
 		/// <summary>
 		/// Gets the tag element name.
 		/// </summary>
-		public string TagName
-		{
-			get { return _element.tagName; }
-		}
+		public string TagName => _element.tagName;
 
 		/// <summary>
 		/// Gets or sets the text content.
@@ -497,6 +489,27 @@ namespace TestR.Web
 
 			styleValue = string.Join(";", styleValues.Select(x => x.Key + ":" + x.Value));
 			SetAttributeValue("style", styleValue);
+		}
+
+		/// <summary>
+		/// Provides a string of details for the element.
+		/// </summary>
+		/// <returns> The string of element details. </returns>
+		public string ToDetailString()
+		{
+			var builder = new StringBuilder();
+
+			builder.AppendLine("id : " + Id);
+			builder.AppendLine("name : " + Name);
+			builder.AppendLine("type : " + GetType().Name);
+
+			for (var i = 0; i < _element.attributes.Count; i++)
+			{
+				string attributeName = _element.attributes[i++].ToString();
+				builder.AppendLine($"{attributeName} : {_element.attributes[i]}");
+			}
+
+			return builder.ToString();
 		}
 
 		/// <summary>

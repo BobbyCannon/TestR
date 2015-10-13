@@ -18,7 +18,7 @@ namespace TestR.IntegrationTests.Desktop
 	{
 		#region Fields
 
-		public static string NotepadApplicationPath = "C:\\Windows\\Notepad.exe";
+		private static string _applicationPath = "C:\\Windows\\Notepad.exe";
 
 		#endregion
 
@@ -27,7 +27,7 @@ namespace TestR.IntegrationTests.Desktop
 		[TestMethod]
 		public void AddTextToDocument()
 		{
-			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
+			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.First();
 				TestHelper.PrintChildren(window);
@@ -39,7 +39,7 @@ namespace TestR.IntegrationTests.Desktop
 		[TestMethod]
 		public void AddTextToDocumentUsingFinder()
 		{
-			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
+			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows.First();
 				var document = window.Get<Edit>("15");
@@ -50,25 +50,24 @@ namespace TestR.IntegrationTests.Desktop
 		[TestMethod]
 		public void AddTextToDocumentUsingIndexer()
 		{
-			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
+			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows.First();
 				var document = (Edit) window["15"];
 				document.Text = "Hello World : Indexer";
-				//window.Close();
 			}
 		}
 
 		[TestMethod]
 		public void ApplicationAttachShouldSucceed()
 		{
-			Application.CloseAll(NotepadApplicationPath);
+			Application.CloseAll(_applicationPath);
 
-			using (var application1 = Application.Create(NotepadApplicationPath))
+			using (var application1 = Application.Create(_applicationPath))
 			{
 				Assert.IsNotNull(application1);
 
-				using (var application2 = Application.Attach(NotepadApplicationPath))
+				using (var application2 = Application.Attach(_applicationPath))
 				{
 					Assert.IsNotNull(application2);
 					Assert.AreEqual(application1.Handle, application2.Handle);
@@ -79,7 +78,7 @@ namespace TestR.IntegrationTests.Desktop
 		[TestMethod]
 		public void ApplicationBringToFrontShouldSucceed()
 		{
-			using (var application2 = Application.AttachOrCreate(NotepadApplicationPath))
+			using (var application2 = Application.AttachOrCreate(_applicationPath))
 			{
 				Assert.IsNotNull(application2);
 				application2.BringToFront();
@@ -90,9 +89,9 @@ namespace TestR.IntegrationTests.Desktop
 		[TestMethod]
 		public void ApplicationCreateShouldSucceed()
 		{
-			Application.CloseAll(NotepadApplicationPath);
+			Application.CloseAll(_applicationPath);
 
-			using (var application = Application.Create(NotepadApplicationPath))
+			using (var application = Application.Create(_applicationPath))
 			{
 				Assert.IsNotNull(application);
 			}
@@ -101,7 +100,7 @@ namespace TestR.IntegrationTests.Desktop
 		[TestMethod]
 		public void ApplicationListElements()
 		{
-			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
+			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				foreach (var window in application.Children.Windows)
 				{
@@ -113,7 +112,7 @@ namespace TestR.IntegrationTests.Desktop
 		[TestMethod]
 		public void ClickMenu()
 		{
-			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
+			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				application.BringToFront();
 				var window = application.Children.Windows.First();
@@ -132,8 +131,8 @@ namespace TestR.IntegrationTests.Desktop
 		public void Screenshot()
 		{
 			var filePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Test.png";
-			Application.CloseAll(NotepadApplicationPath);
-			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
+			Application.CloseAll(_applicationPath);
+			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Get<Window>(x => x.Name == "Untitled - Notepad");
 				window.TitleBar.TakeScreenshot(filePath);
@@ -143,8 +142,8 @@ namespace TestR.IntegrationTests.Desktop
 		[TestMethod]
 		public void WaitForButtons()
 		{
-			Application.CloseAll(NotepadApplicationPath);
-			using (var application = Application.AttachOrCreate(NotepadApplicationPath))
+			Application.CloseAll(_applicationPath);
+			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var bar = application.Get("NonClientVerticalScrollBar");
 				var button = bar.Get<Button>(x => x.Id == "UpButton");

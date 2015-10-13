@@ -2,6 +2,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using System.Windows;
 using Microsoft.VisualStudio.Shell;
 
 #endregion
@@ -36,6 +37,23 @@ namespace TestR.Extension
 			// we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
 			// the object returned by the Content property.
 			Content = new ExtensionWindowControl();
+		}
+
+		#endregion
+
+		#region Methods
+
+		public static void TestWindow()
+		{
+			var window = new Window();
+			var control = new ExtensionWindowControl();
+			control.HorizontalContentAlignment = HorizontalAlignment.Stretch;
+			control.VerticalContentAlignment = VerticalAlignment.Stretch;
+			window.Content = control;
+			window.Width = 450;
+			window.Height = 600;
+			window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+			window.ShowDialog();
 		}
 
 		#endregion

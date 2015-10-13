@@ -18,12 +18,22 @@
             <Setter Property="BorderBrush" Value="#999" />
             <Setter Property="Foreground" Value="#fff" />
         </Style>
+        <Style x:Key="ChildTreeViewItemStyle" TargetType="TreeViewItem">
+            <Setter Property="IsExpanded" Value="False" />
+            <Style.Resources>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="Grid.ColumnSpan" Value="2" />
+                </Style>
+            </Style.Resources>
+        </Style>
+        <Style x:Key="RootTreeViewItemStyle" TargetType="TreeViewItem" BasedOn="{StaticResource ChildTreeViewItemStyle}">
+            <Setter Property="IsExpanded" Value="True"/>
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Border Grid.Row="0" BorderBrush="LightGray" BorderThickness="1" Margin="0">
             <Grid>
@@ -38,13 +48,39 @@
                 </Grid.RowDefinitions>
                 <Button Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="10" Click="SelectApplication" Background="Transparent" Foreground="#555555" FontFamily="Segoe UI Symbol" FontSize="28" ToolTip="Select Application"></Button>
                 <Button Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="10"  Click="SelectProcess" Background="Transparent" Foreground="#555555" FontFamily="Segoe UI Symbol" FontSize="28" ToolTip="Select Process"></Button>
-                <Button Grid.Row="1" Grid.Column="0" Click="SelectParentElement" Padding="4" IsEnabled="{Binding FocusedElementHasParent}" BorderBrush="#555555">Go To Parent</Button>
-                <Button Grid.Row="1" Grid.Column="1" Click="UpdateFocusedElementChildren" Padding="4" IsEnabled="{Binding IsElementFocused}"  BorderBrush="#555555">Update Children</Button>
-                <ComboBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" IsEnabled="{Binding IsElementFocused}" ItemsSource="{Binding FocusedElement.Children}" Visibility="{Binding FocusedElement.Children, Converter={StaticResource CollectionToVisibilityConverter}}" Text="Select Children" DisplayMemberPath="ApplicationId" SelectedValuePath="ApplicationId" SelectionChanged="FocusChildrenSelectionChanged"></ComboBox>
+                <TreeView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Height="175" ItemsSource="{Binding Path=Application.Children}" Visibility="{Binding IsApplicationLoaded, Converter={StaticResource BoolToVisibilityConverter}}" ItemContainerStyle="{StaticResource RootTreeViewItemStyle}" BorderBrush="LightGray" SelectedItemChanged="ApplicationOnSelectedItemChanged">
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding Children}" ItemContainerStyle="{StaticResource ChildTreeViewItemStyle}">
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Refresh" Click="RefreshDesktopElement" />
+                                    </ContextMenu>
+                                </StackPanel.ContextMenu>
+                                <TextBlock Text="{Binding ApplicationId}" />
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+				<TreeView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Height="175" ItemsSource="{Binding Path=Browser.Elements}" Visibility="{Binding IsBrowserLoaded, Converter={StaticResource BoolToVisibilityConverter}}" ItemContainerStyle="{StaticResource RootTreeViewItemStyle}" BorderBrush="LightGray" SelectedItemChanged="BrowserOnSelectedItemChanged">
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding Children}" ItemContainerStyle="{StaticResource ChildTreeViewItemStyle}">
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Refresh" Click="RefreshWebElement" />
+                                    </ContextMenu>
+                                </StackPanel.ContextMenu>
+                                <TextBlock Text="{Binding Id}" />
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+                <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" IsEnabled="{Binding IsLoaded}" Click="RefreshChildren">Refresh</Button>
             </Grid>
         </Border>
         <ScrollViewer Grid.Row="1">
-            <TextBox Padding="10" Text="{Binding FocusedElementDetails, Mode=OneWay}" Background="Transparent" IsReadOnly="true" />
+            <TextBox Padding="10" Text="{Binding ElementDetails, Mode=OneWay}" Background="Transparent" IsReadOnly="true" />
         </ScrollViewer>
     </Grid>
 </UserControl>

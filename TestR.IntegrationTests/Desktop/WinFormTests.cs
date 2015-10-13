@@ -21,7 +21,7 @@ namespace TestR.IntegrationTests.Desktop
 	{
 		#region Fields
 
-		private static string _applicationPath;
+		private string _applicationPath;
 
 		#endregion
 

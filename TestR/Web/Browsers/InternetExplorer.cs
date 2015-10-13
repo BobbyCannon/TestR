@@ -74,7 +74,6 @@ namespace TestR.Web.Browsers
 
 			var browser = new InternetExplorer(foundBrowser);
 			browser.Refresh();
-
 			return browser;
 		}
 
@@ -97,7 +96,6 @@ namespace TestR.Web.Browsers
 
 			var browser = new InternetExplorer(foundBrowser);
 			browser.Refresh();
-
 			return browser;
 		}
 
@@ -116,7 +114,9 @@ namespace TestR.Web.Browsers
 		/// <returns> An instance of an Internet Explorer browser. </returns>
 		public static Browser Create()
 		{
-			return new InternetExplorer(CreateInternetExplorerClass());
+			var browser = new InternetExplorer(CreateInternetExplorerClass());
+			browser.Refresh();
+			return browser;
 		}
 
 		/// <summary>

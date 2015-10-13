@@ -85,15 +85,15 @@ namespace TestR.Web.Browsers
 		/// <returns> The browser instance or null if not found. </returns>
 		public static Browser Attach()
 		{
-			var window = Application.Attach(Name, null, false);
-			if (window == null)
+			var application = Application.Attach(Name, null, false);
+			if (application == null)
 			{
 				return null;
 			}
 
-			var browser = new Firefox(window);
+			var browser = new Firefox(application);
 			browser.Connect();
-
+			browser.Refresh();
 			return browser;
 		}
 
@@ -116,6 +116,7 @@ namespace TestR.Web.Browsers
 			var application = Application.Attach(process, false);
 			var browser = new Firefox(application);
 			browser.Connect();
+			browser.Refresh();
 			return browser;
 		}
 
@@ -142,6 +143,7 @@ namespace TestR.Web.Browsers
 			var application = Application.Create($"{Name}.exe", DebugArgument, false);
 			var browser = new Firefox(application);
 			browser.Connect();
+			browser.Refresh();
 			return browser;
 		}
 

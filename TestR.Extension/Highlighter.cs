@@ -194,8 +194,11 @@ namespace TestR.Extension
 		{
 			Stop();
 			_element = element;
-			Layout();
-			Start();
+			if (_element != null)
+			{
+				Layout();
+				Start();
+			}
 		}
 
 		protected virtual void Dispose(bool disposing)

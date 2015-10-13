@@ -1,13 +1,10 @@
 ﻿#region References
 
 using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Windows.Threading;
-using Newtonsoft.Json;
 using TestR.Desktop;
-using Application = TestR.Desktop.Application;
+using TestR.Web;
 
 #endregion
 
@@ -17,93 +14,76 @@ namespace TestR.Extension
 	{
 		#region Fields
 
-		private ObservableCollection<ElementAction> _actions;
 		private Application _application;
-		private string _applicationFilePath;
-		private readonly Dispatcher _dispatcher;
-		private Element _focusedElement;
+		private Browser _browser;
+		private Web.Element _highlightedElement;
 		private readonly Highlighter _highlighter;
+		private string _elementDetails;
 
 		#endregion
 
 		#region Constructors
 
-		public Project(Dispatcher dispatcher)
+		public Project()
 		{
-			_actions = new ObservableCollection<ElementAction>();
 			_application = null;
-			_dispatcher = dispatcher;
+			_browser = null;
 			_highlighter = new Highlighter();
-			ApplicationFilePath = string.Empty;
 		}
 
 		#endregion
 
 		#region Properties
 
-		[JsonIgnore]
 		public Application Application
 		{
-			get { return _application; }
+			get { return _browser?.Application ?? _application; }
 			private set
 			{
 				_application = value;
 				OnPropertyChanged(nameof(Application));
+				OnPropertyChanged(nameof(IsApplicationLoaded));
 				OnPropertyChanged(nameof(IsLoaded));
 			}
 		}
 
-		public string ApplicationFilePath
+		public Browser Browser
 		{
-			get { return _applicationFilePath; }
+			get { return _browser; }
+			private set
+			{
+				_browser = value;
+				OnPropertyChanged(nameof(Browser));
+				OnPropertyChanged(nameof(IsBrowserLoaded));
+				OnPropertyChanged(nameof(IsLoaded));
+			}
+		}
+
+		public string ElementDetails
+		{
+			get { return _elementDetails; }
 			set
 			{
-				_applicationFilePath = value;
-				OnPropertyChanged(nameof(ApplicationFilePath));
+				_elementDetails = value;
+				OnPropertyChanged(nameof(ElementDetails));
 			}
 		}
-
-		public ObservableCollection<ElementAction> ElementActions
-		{
-			get { return _actions; }
-			set
-			{
-				_actions = value;
-				OnPropertyChanged(nameof(ElementActions));
-			}
-		}
-
-		[JsonIgnore]
-		public Element FocusedElement
-		{
-			get { return _focusedElement; }
-			internal set
-			{
-				_focusedElement = value;
-				_highlighter.SetElement(value);
-				OnPropertyChanged(nameof(FocusedElement));
-				OnPropertyChanged(nameof(FocusedElementHasParent));
-				OnPropertyChanged(nameof(FocusedElementHasChildren));
-				OnPropertyChanged(nameof(IsElementFocused));
-				OnPropertyChanged(nameof(FocusedElementDetails));
-			}
-		}
-
-		public string FocusedElementDetails => FocusedElement?.ToDetailString() ?? string.Empty;
-
-		public bool FocusedElementHasChildren => FocusedElement?.Children?.Count > 0;
-
-		public bool FocusedElementHasParent => FocusedElement?.Parent != null;
-
-		public bool IsElementFocused => FocusedElement != null;
 
 		/// <summary>
-		/// Returns true if the application is loaded.
+		/// Returns true if the application or browser is loaded.
 		/// </summary>
-		public bool IsLoaded => Application != null;
+		public bool IsApplicationLoaded => _application != null;
 
-		public int ProcessId => Application?.Process?.Id ?? 0;
-		
+		/// <summary>
+		/// Returns true if the application or browser is loaded.
+		/// </summary>
+		public bool IsBrowserLoaded => _browser != null;
+
+		/// <summary>
+		/// Returns true if an application or browser is loaded.
+		/// </summary>
+		public bool IsLoaded => IsApplicationLoaded || IsBrowserLoaded;
+
 		#endregion
 
 		#region Methods
@@ -112,21 +92,21 @@ namespace TestR.Extension
 		{
 			OnClosed();
 
+			Highlight((Web.Element) null);
+
+			if (Browser != null)
+			{
+				Browser.Application.Closed -= Close;
+				Browser.Dispose();
+				Browser = null;
+			}
+
 			if (Application != null)
 			{
-				_dispatcher.Invoke(() =>
-				{
-					ElementActions.Clear();
-					FocusedElement = null;
-				});
-
-				ApplicationFilePath = string.Empty;
 				Application.Closed -= Close;
 				Application.Dispose();
 				Application = null;
 			}
-
-			OnPropertyChanged(nameof(IsLoaded));
 		}
 
 		public void Dispose()
@@ -135,30 +115,50 @@ namespace TestR.Extension
 			GC.SuppressFinalize(this);
 		}
 
+		public void Highlight(Desktop.Element element)
+		{
+			_highlighter.SetElement(element);
+		}
+
+		public void Highlight(Web.Element element)
+		{
+			_highlightedElement?.Highlight(false);
+			_highlightedElement = element;
+			_highlightedElement?.Highlight(true);
+		}
+
 		public void Initialize(string applicationPath)
 		{
 			Close();
 
-			ApplicationFilePath = applicationPath;
-			Application = Application.AttachOrCreate(ApplicationFilePath);
+			Application = Application.AttachOrCreate(applicationPath);
 			Application.Closed += Close;
 			Application.Timeout = TimeSpan.FromSeconds(5);
-
-			OnPropertyChanged(nameof(Application));
-			OnPropertyChanged(nameof(IsLoaded));
 		}
 
 		public void Initialize(Process process)
 		{
 			Close();
 
-			ApplicationFilePath = process.Modules[0].FileName;
-			Application = Application.Attach(process.MainWindowHandle);
-			Application.Closed += Close;
-			Application.Timeout = TimeSpan.FromSeconds(5);
+			var browser = Browser.AttachToBrowser(process);
+			if (browser != null)
+			{
+				Browser = browser;
+				Browser.Application.Closed += Close;
+				Browser.Timeout = TimeSpan.FromSeconds(5);
+			}
+			else
+			{
+				Application = Application.Attach(process);
+				Application.Closed += Close;
+				Application.Timeout = TimeSpan.FromSeconds(5);
+			}
+		}
 
-			OnPropertyChanged(nameof(Application));
-			OnPropertyChanged(nameof(IsLoaded));
+		public void Refresh()
+		{
+			_application?.Refresh();
+			_browser?.Refresh();
 		}
 
 		private void Dispose(bool disposing)
@@ -168,7 +168,7 @@ namespace TestR.Extension
 				return;
 			}
 
-			if (Application != null)
+			if (Application != null || Browser != null)
 			{
 				Close();
 			}

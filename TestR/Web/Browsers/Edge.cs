@@ -67,14 +67,17 @@ namespace TestR.Web.Browsers
 		public static Browser Attach()
 		{
 			InitializeDriver();
-			var session = GetSession();
+			var application = Application.Attach(Name, null, false);
+			var session = GetSession() ?? StartSession();
+
 			if (string.IsNullOrWhiteSpace(session))
 			{
 				return null;
 			}
 
-			var application = Application.Attach(Name, null, false);
-			return new Edge(application, session);
+			var browser = new Edge(application, session);
+			browser.Refresh();
+			return browser;
 		}
 
 		/// <summary>
@@ -89,8 +92,10 @@ namespace TestR.Web.Browsers
 			}
 
 			var application = Application.Attach(process, false);
-			var session = GetSession();
-			return new Edge(application, session);
+			var session = GetSession() ?? StartSession();
+			var browser = new Edge(application, session);
+			browser.Refresh();
+			return browser;
 		}
 
 		/// <summary>
@@ -109,9 +114,11 @@ namespace TestR.Web.Browsers
 		public static Browser Create()
 		{
 			InitializeDriver();
-			var session = StartSession();
+			var session = GetSession() ?? StartSession();
 			var application = Application.Attach(Name, null, false);
-			return new Edge(application, session);
+			var browser = new Edge(application, session);
+			browser.Refresh();
+			return browser;
 		}
 
 		public static void EndSession(string sessionId)

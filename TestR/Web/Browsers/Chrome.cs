@@ -85,7 +85,15 @@ namespace TestR.Web.Browsers
 		public static Browser Attach()
 		{
 			var application = Application.Attach(Name, DebugArgument, false);
-			return application == null ? null : Attach(application.Process);
+			if (application == null)
+			{
+				return null;
+			}
+
+			var browser = new Chrome(application);
+			browser.Connect();
+			browser.Refresh();
+			return browser;
 		}
 		
 		/// <summary>
@@ -107,6 +115,7 @@ namespace TestR.Web.Browsers
 			var application = Application.Attach(process, false);
 			var browser = new Chrome(application);
 			browser.Connect();
+			browser.Refresh();
 			return browser;
 		}
 
@@ -135,6 +144,7 @@ namespace TestR.Web.Browsers
 			var application = Application.Create($"{Name}.exe", DebugArgument, false);
             var browser = new Chrome(application);
 			browser.Connect();
+			browser.Refresh();
 			return browser;
 		}
 
