@@ -95,7 +95,7 @@ namespace TestR.Web
 		/// <summary>
 		/// Gets the ID of the browser.
 		/// </summary>
-		public int Id => Application.Handle.ToInt32();
+		public int Id => Application?.Handle.ToInt32() ?? 0;
 
 		/// <summary>
 		/// Gets a list of JavaScript libraries that were detected on the page.
@@ -515,7 +515,7 @@ namespace TestR.Web
 		protected virtual void WaitForComplete()
 		{
 			Utility.Wait(() => ExecuteJavaScript("document.readyState === 'complete'").Equals("true", StringComparison.OrdinalIgnoreCase));
-			Application.WaitWhileBusy();
+			Application?.WaitWhileBusy();
 		}
 
 		/// <summary>

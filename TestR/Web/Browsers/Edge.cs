@@ -67,14 +67,13 @@ namespace TestR.Web.Browsers
 		public static Browser Attach()
 		{
 			InitializeDriver();
-			var application = Application.Attach(Name, null, false);
 			var session = GetSession() ?? StartSession();
-
 			if (string.IsNullOrWhiteSpace(session))
 			{
 				return null;
 			}
 
+			var application = Application.Attach(Name, null, false);
 			var browser = new Edge(application, session);
 			browser.Refresh();
 			return browser;
@@ -91,8 +90,8 @@ namespace TestR.Web.Browsers
 				return null;
 			}
 
-			var application = Application.Attach(process, false);
 			var session = GetSession() ?? StartSession();
+			var application = Application.Attach(process, false);
 			var browser = new Edge(application, session);
 			browser.Refresh();
 			return browser;

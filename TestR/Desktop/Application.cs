@@ -253,7 +253,7 @@ namespace TestR.Desktop
 			});
 
 			// Wait for the threads to sleep and child process to close.
-			Thread.Sleep(50);
+			Thread.Sleep(250);
 
 			// Find all the other processes.
 			Process.GetProcessesByName(processName).ForEachDisposable(process =>
