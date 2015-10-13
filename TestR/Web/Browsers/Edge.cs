@@ -120,39 +120,6 @@ namespace TestR.Web.Browsers
 			return browser;
 		}
 
-		public static void EndSession(string sessionId)
-		{
-			Request("DELETE", "http://localhost:17556/session/" + sessionId, null);
-		}
-
-		public static Process InitializeDriver()
-		{
-			var path = @"C:\Program Files (x86)\Microsoft Web Driver\MicrosoftWebDriver.exe";
-			if (!File.Exists(path))
-			{
-				throw new Exception("Please install the Microsoft web driver.");
-			}
-
-			var process = Process.GetProcessesByName("MicrosoftWebDriver").FirstOrDefault();
-			if (process != null)
-			{
-				return process;
-			}
-
-			var startInfo = new ProcessStartInfo
-			{
-				FileName = path,
-				CreateNoWindow = true,
-				UseShellExecute = false,
-				WindowStyle = ProcessWindowStyle.Hidden,
-				RedirectStandardError = true,
-				RedirectStandardInput = true,
-				RedirectStandardOutput = true
-			};
-
-			return Process.Start(startInfo);
-		}
-
 		/// <summary>
 		/// Move the window and resize it.
 		/// </summary>
@@ -204,8 +171,6 @@ namespace TestR.Web.Browsers
 				return Request("POST", $"http://localhost:17556/session/{_sessionId}/execute", "{\"script\": \"" + script + "\", \"args\": []}", (int) Timeout.TotalMilliseconds);
 			}
 
-			//script = script.Replace("'", "\\'");
-
 			var postData = (new { script = "TestR.runScript(arguments[0])", args = new[] { script } }).ToJson();
 			var data = Request("POST", $"http://localhost:17556/session/{_sessionId}/execute", postData, (int) Timeout.TotalMilliseconds);
 			var response = JsonConvert.DeserializeObject<dynamic>(data);
@@ -220,6 +185,11 @@ namespace TestR.Web.Browsers
 		{
 			LogManager.Write("Get browser's URI.", LogLevel.Verbose);
 			return ExecuteScript("window.location.href");
+		}
+
+		private static void EndSession(string sessionId)
+		{
+			Request("DELETE", "http://localhost:17556/session/" + sessionId, null);
 		}
 
 		private string GetScriptResults()
@@ -243,6 +213,34 @@ namespace TestR.Web.Browsers
 			var data = Request("GET", "http://localhost:17556/sessions", null);
 			var response = JsonConvert.DeserializeObject<dynamic>(data);
 			return response.status.ToString() != "success" ? null : response.value[0].id.ToString();
+		}
+
+		private static Process InitializeDriver()
+		{
+			var path = @"C:\Program Files (x86)\Microsoft Web Driver\MicrosoftWebDriver.exe";
+			if (!File.Exists(path))
+			{
+				throw new Exception("Please install the Microsoft web driver.");
+			}
+
+			var process = Process.GetProcessesByName("MicrosoftWebDriver").FirstOrDefault();
+			if (process != null)
+			{
+				return process;
+			}
+
+			var startInfo = new ProcessStartInfo
+			{
+				FileName = path,
+				CreateNoWindow = true,
+				UseShellExecute = false,
+				WindowStyle = ProcessWindowStyle.Hidden,
+				RedirectStandardError = true,
+				RedirectStandardInput = true,
+				RedirectStandardOutput = true
+			};
+
+			return Process.Start(startInfo);
 		}
 
 		private static string Request(string method, string location, string data, int timeout = 1500)

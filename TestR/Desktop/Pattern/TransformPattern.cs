@@ -1,12 +1,14 @@
 ﻿#region References
 
-using System;
 using UIAutomationClient;
 
 #endregion
 
 namespace TestR.Desktop.Pattern
 {
+	/// <summary>
+	/// Represents the Windows transform pattern.
+	/// </summary>
 	public class TransformPattern
 	{
 		#region Fields

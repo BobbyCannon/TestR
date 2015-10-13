@@ -16,7 +16,7 @@ namespace TestR.Extensions
 	{
 		#region Fields
 
-		public static readonly JsonSerializerSettings DefaultSerializerSettings;
+		internal static readonly JsonSerializerSettings DefaultSerializerSettings;
 
 		#endregion
 
@@ -42,6 +42,13 @@ namespace TestR.Extensions
 			Console.WriteLine(string.IsNullOrWhiteSpace(label) ? value.ToString() : label + ":" + value);
 		}
 
+		/// <summary>
+		/// Serializes the object to JSON.
+		/// </summary>
+		/// <typeparam name="T"> The type of the item. </typeparam>
+		/// <param name="item"> The item to serialize. </param>
+		/// <param name="camelCase"> The flag to use camel case. If true then camel case else pascel case. </param>
+		/// <returns> The JSON data of the object. </returns>
 		public static string ToJson<T>(this T item, bool camelCase = true)
 		{
 			return JsonConvert.SerializeObject(item, Formatting.None, GetSerializerSettings(camelCase));
