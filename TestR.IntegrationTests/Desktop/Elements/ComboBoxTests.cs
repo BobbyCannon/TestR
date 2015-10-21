@@ -1,14 +1,11 @@
 ﻿#region References
 
-using System;
 using System.IO;
-using System.Linq;
 using System.Management.Automation;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop;
 using TestR.Desktop.Elements;
-using TestR.Desktop.Pattern;
 using TestR.Extensions;
 using TestR.PowerShell;
 
@@ -28,18 +25,6 @@ namespace TestR.IntegrationTests.Desktop.Elements
 
 		#region Methods
 
-		[TestMethod]
-		public void Text()
-		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
-			{
-				var comboBox = application.Get<ComboBox>("comboBox1");
-				Assert.IsNotNull(comboBox);
-				comboBox.TypeText("One");
-				Assert.AreEqual("One", comboBox.Text);
-			}
-		}
-
 		[TestInitialize]
 		public void Setup()
 		{
@@ -50,6 +35,18 @@ namespace TestR.IntegrationTests.Desktop.Elements
 			ApplicationPath = info.Parent?.Parent?.Parent?.FullName;
 			ApplicationPath += "\\TestR.TestWinForms\\Bin\\" + (assembly.IsAssemblyDebugBuild() ? "Debug" : "Release") + "\\TestR.TestWinForms.exe";
 			Application.CloseAll(ApplicationPath);
+		}
+
+		[TestMethod]
+		public void Text()
+		{
+			using (var application = Application.AttachOrCreate(ApplicationPath))
+			{
+				var comboBox = application.Get<ComboBox>("comboBox1");
+				Assert.IsNotNull(comboBox);
+				comboBox.TypeText("One");
+				Assert.AreEqual("One", comboBox.Text);
+			}
 		}
 
 		#endregion

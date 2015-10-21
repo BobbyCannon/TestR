@@ -18,7 +18,7 @@ namespace TestR.IntegrationTests.Desktop
 	{
 		#region Fields
 
-		private static string _applicationPath = "C:\\Windows\\Notepad.exe";
+		private static readonly string _applicationPath = "C:\\Windows\\Notepad.exe";
 
 		#endregion
 

@@ -1,5 +1,7 @@
 ﻿#region References
 
+using System;
+using System.Drawing;
 using System.Linq;
 using TestR.Desktop.Pattern;
 using TestR.Helpers;
@@ -25,6 +27,30 @@ namespace TestR.Desktop.Elements
 		#endregion
 
 		#region Properties
+
+		/// <summary>
+		/// Gets the location of the element.
+		/// </summary>
+		public override Point Location
+		{
+			get
+			{
+				NativeMethods.Rect parentRect;
+				var parentHandle = NativeMethods.GetParent(NativeElement.CurrentNativeWindowHandle);
+				if (parentHandle != IntPtr.Zero)
+				{
+					NativeMethods.GetWindowRect(parentHandle, out parentRect);
+				}
+				else
+				{
+					parentRect = new NativeMethods.Rect();
+				}
+
+				NativeMethods.Rect rect;
+				NativeMethods.GetWindowRect(NativeElement.CurrentNativeWindowHandle, out rect);
+				return new Point(rect.Left - parentRect.Left, rect.Top - parentRect.Top);
+			}
+		}
 
 		/// <summary>
 		/// Gets the status bar for the window. Returns null if the window does not have a status bar.
@@ -73,7 +99,7 @@ namespace TestR.Desktop.Elements
 		/// <param name="y"> The y value of the position to move to. </param>
 		public void Move(int x, int y)
 		{
-			TransformPattern.Create(this)?.Move(x, y);
+			NativeMethods.MoveWindow(NativeElement.CurrentNativeWindowHandle, x, y, Width, Height, true);
 		}
 
 		/// <summary>
@@ -83,7 +109,7 @@ namespace TestR.Desktop.Elements
 		/// <param name="height"> The height to set. </param>
 		public void Resize(int width, int height)
 		{
-			TransformPattern.Create(this)?.Resize(width, height);
+			NativeMethods.MoveWindow(NativeElement.CurrentNativeWindowHandle, Location.X, Location.Y, width, height, true);
 		}
 
 		/// <summary>

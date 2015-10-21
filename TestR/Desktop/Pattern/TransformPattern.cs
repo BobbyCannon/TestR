@@ -1,5 +1,6 @@
 ﻿#region References
 
+using System.Threading;
 using UIAutomationClient;
 
 #endregion
@@ -46,6 +47,11 @@ namespace TestR.Desktop.Pattern
 		/// <param name="y"> The y value of the position to move to. </param>
 		public void Move(int x, int y)
 		{
+			if (_pattern.CurrentCanMove != 1)
+			{
+				return;
+			}
+
 			_pattern.Move(x, y);
 		}
 
@@ -56,6 +62,11 @@ namespace TestR.Desktop.Pattern
 		/// <param name="height"> The height to set. </param>
 		public void Resize(int width, int height)
 		{
+			if (_pattern.CurrentCanResize != 1)
+			{
+				return;
+			}
+
 			_pattern.Resize(width, height);
 		}
 

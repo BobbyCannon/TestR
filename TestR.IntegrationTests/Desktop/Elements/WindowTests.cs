@@ -27,7 +27,28 @@ namespace TestR.IntegrationTests.Desktop.Elements
 		#region Methods
 
 		[TestMethod]
-		public void Move()
+		public void MoveChildWindow()
+		{
+			using (var application = Application.AttachOrCreate(ApplicationPath))
+			{
+				var window = application.Children.Windows.First();
+				var childWindow = window.Children.Panes.First().Children.Windows.First();
+				childWindow.Move(0, 0);
+				Assert.AreEqual(2, childWindow.Location.X);
+				Assert.AreEqual(2, childWindow.Location.Y);
+
+				childWindow.Move(10, 20);
+				Assert.AreEqual(12, childWindow.Location.X);
+				Assert.AreEqual(22, childWindow.Location.Y);
+
+				childWindow.Move(100, 110);
+				Assert.AreEqual(102, childWindow.Location.X);
+				Assert.AreEqual(112, childWindow.Location.Y);
+			}
+		}
+
+		[TestMethod]
+		public void MoveParentWindow()
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
@@ -43,15 +64,33 @@ namespace TestR.IntegrationTests.Desktop.Elements
 		}
 
 		[TestMethod]
-		public void Resize()
+		public void ResizeChildWindow()
+		{
+			using (var application = Application.AttachOrCreate(ApplicationPath))
+			{
+				var window = application.Children.Windows.First();
+				var childWindow = window.Children.Panes.First().Children.Windows.First();
+
+				childWindow.Resize(300, 200);
+				Assert.AreEqual(300, childWindow.Width);
+				Assert.AreEqual(200, childWindow.Height);
+
+				childWindow.Resize(400, 300);
+				Assert.AreEqual(400, childWindow.Width);
+				Assert.AreEqual(300, childWindow.Height);
+			}
+		}
+
+		[TestMethod]
+		public void ResizeParentWindow()
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
 				var window = application.Children.Windows.FirstOrDefault();
 				var random = new Random();
 				Assert.IsNotNull(window);
-				var width = random.Next(100, 300);
-				var height = random.Next(100, 300);
+				var width = random.Next(300, 600);
+				var height = random.Next(300, 600);
 				window.Resize(width, height);
 				Assert.AreEqual(width, window.Size.Width);
 				Assert.AreEqual(height, window.Size.Height);

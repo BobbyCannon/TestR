@@ -127,7 +127,14 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Gets the location of the element.
 		/// </summary>
-		public Point Location => new Point(BoundingRectangle.X, BoundingRectangle.Y);
+		public virtual Point Location
+		{
+			get
+			{
+				var rectangle = BoundingRectangle;
+				return new Point(rectangle.X, rectangle.Y);
+			}
+		}
 
 		/// <summary>
 		/// Gets the name of this element.
@@ -152,12 +159,12 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Gets the size of the element.
 		/// </summary>
-		public Size Size
+		public virtual Size Size
 		{
 			get
 			{
-				var test = NativeElement.CurrentBoundingRectangle;
-				return new Size(test.right - test.left, test.bottom - test.top);
+				var rectangle = BoundingRectangle;
+				return new Size(rectangle.Width, rectangle.Height);
 			}
 		}
 

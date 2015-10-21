@@ -42,6 +42,12 @@ namespace TestR.Native
 		internal static extern bool GetWindowRect(IntPtr hWnd, out Rect lpRect);
 
 		[DllImport("user32.dll", SetLastError = true)]
+		internal static extern IntPtr GetParent(IntPtr hWnd);
+
+		[DllImport("user32.dll", SetLastError = true)]
+		internal static extern bool GetClientRect(IntPtr hWnd, out Rect lpRect);
+
+		[DllImport("user32.dll", SetLastError = true)]
 		internal static extern bool IsWindowVisible(IntPtr hWnd);
 
 		[DllImport("user32.dll", SetLastError = true, EntryPoint = "mouse_event")]
