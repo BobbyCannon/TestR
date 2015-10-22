@@ -1,6 +1,5 @@
 ﻿#region References
 
-using System;
 using System.Linq;
 using TestR.Extensions;
 using UIAutomationClient;
@@ -14,7 +13,11 @@ namespace TestR.Desktop.Pattern
 	/// </summary>
 	public class ExpandCollapsePattern
 	{
+		#region Fields
+
 		private readonly IUIAutomationExpandCollapsePattern _pattern;
+
+		#endregion
 
 		#region Constructors
 
@@ -57,14 +60,6 @@ namespace TestR.Desktop.Pattern
 		}
 
 		/// <summary>
-		/// Expands the element.
-		/// </summary>
-		public void Expand()
-		{
-			_pattern.Expand();
-		}
-
-		/// <summary>
 		/// Create a new pattern for the provided element.
 		/// </summary>
 		/// <param name="element"> The element that supports the pattern. </param>
@@ -73,6 +68,14 @@ namespace TestR.Desktop.Pattern
 		{
 			var pattern = element.NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_ExpandCollapsePatternId) as IUIAutomationExpandCollapsePattern;
 			return pattern == null ? null : new ExpandCollapsePattern(pattern);
+		}
+
+		/// <summary>
+		/// Expands the element.
+		/// </summary>
+		public void Expand()
+		{
+			_pattern.Expand();
 		}
 
 		#endregion

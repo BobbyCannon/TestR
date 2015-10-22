@@ -203,8 +203,11 @@ namespace TestR.Desktop
 		/// </summary>
 		public Application BringToFront()
 		{
-			NativeMethods.SetForegroundWindow(Handle);
+			NativeMethods.SetFocus(Handle);
+			NativeMethods.ShowWindow(Handle);
 			NativeMethods.BringWindowToTop(Handle);
+			NativeMethods.SetForegroundWindow(Handle);
+			NativeMethods.BringToTop(Handle);
 			return this;
 		}
 

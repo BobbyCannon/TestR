@@ -423,7 +423,7 @@ namespace TestR.Desktop
 			Mouse.RightClick(point);
 			return this;
 		}
-	
+
 		/// <summary>
 		/// Sets the text value of the element.
 		/// </summary>
@@ -765,7 +765,7 @@ namespace TestR.Desktop
 			}
 			catch (Exception)
 			{
-				point = new Point(0,0);
+				point = new Point(0, 0);
 			}
 
 			return false;

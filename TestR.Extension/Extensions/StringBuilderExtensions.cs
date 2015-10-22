@@ -10,14 +10,6 @@ namespace TestR.Extension.Extensions
 	{
 		#region Methods
 
-		public static void AppendIf(this StringBuilder builder, string value, bool condition)
-		{
-			if (condition)
-			{
-				builder.Append(value);
-			}
-		}
-
 		public static void AppendFirst(this StringBuilder builder, params string[] values)
 		{
 			foreach (var value in values)
@@ -29,6 +21,14 @@ namespace TestR.Extension.Extensions
 
 				builder.Append(value);
 				return;
+			}
+		}
+
+		public static void AppendIf(this StringBuilder builder, string value, bool condition)
+		{
+			if (condition)
+			{
+				builder.Append(value);
 			}
 		}
 

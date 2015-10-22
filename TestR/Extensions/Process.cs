@@ -84,7 +84,11 @@ namespace TestR.Extensions
 
 			foreach (ProcessThread thread in Process.GetProcessById(processId).Threads)
 			{
-				NativeMethods.EnumThreadWindows(thread.Id, (hWnd, lParam) => { handles.Add(hWnd); return true; }, IntPtr.Zero);
+				NativeMethods.EnumThreadWindows(thread.Id, (hWnd, lParam) =>
+				{
+					handles.Add(hWnd);
+					return true;
+				}, IntPtr.Zero);
 			}
 
 			return handles;

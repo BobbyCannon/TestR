@@ -9,6 +9,7 @@ using SHDocVw;
 using TestR.Desktop;
 using TestR.Helpers;
 using TestR.Logging;
+using TestR.Native;
 
 #endregion
 
@@ -31,6 +32,7 @@ namespace TestR.Web.Browsers
 		#region Fields
 
 		private SHDocVw.InternetExplorer _browser;
+		private static int _zoneId;
 
 		#endregion
 
@@ -40,6 +42,7 @@ namespace TestR.Web.Browsers
 			: base(Application.Attach(new IntPtr(browser.HWND), false))
 		{
 			_browser = browser;
+			_zoneId = NativeMethods.GetZoneId(_browser.LocationURL);
 		}
 
 		#endregion
@@ -230,7 +233,8 @@ namespace TestR.Web.Browsers
 			{
 				if (ex.HResult == -2147352319)
 				{
-					throw new Exception("Invalid JavaScript request.", ex);
+					InjectTestScript();
+					return ExecuteScript(script, expectResponse);
 				}
 
 				throw;
@@ -244,7 +248,9 @@ namespace TestR.Web.Browsers
 		protected override string GetBrowserUri()
 		{
 			LogManager.Write("Get browser's URI.", LogLevel.Verbose);
-			return _browser.LocationURL;
+			var location = _browser.LocationURL;
+			var zone = NativeMethods.GetZoneId(location);
+			return zone != _zoneId ? ReinitializeBrowser() : location;
 		}
 
 		/// <summary>
@@ -314,7 +320,7 @@ namespace TestR.Web.Browsers
 					if (processId > 0)
 					{
 						uint foundProcessId;
-						if (!Native.NativeMethods.GetWindowThreadProcessId(new IntPtr(explorer.HWND), out foundProcessId) || foundProcessId != processId)
+						if (!NativeMethods.GetWindowThreadProcessId(new IntPtr(explorer.HWND), out foundProcessId) || foundProcessId != processId)
 						{
 							continue;
 						}
@@ -357,11 +363,13 @@ namespace TestR.Web.Browsers
 		/// <summary>
 		/// Disconnects from the current browser and finds the new instance.
 		/// </summary>
-		private void ReinitializeBrowser()
+		private string ReinitializeBrowser()
 		{
 			Application.Dispose();
 			_browser = GetBrowserToAttachTo() ?? CreateInternetExplorerClass();
 			Application = Application.Attach(new IntPtr(_browser.HWND), false);
+			_zoneId = NativeMethods.GetZoneId(_browser.LocationURL);
+			return _browser.LocationURL;
 		}
 
 		#endregion

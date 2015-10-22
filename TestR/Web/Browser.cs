@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TestR.Desktop;
@@ -127,16 +126,6 @@ namespace TestR.Web
 		#region Methods
 
 		/// <summary>
-		/// Attach process as a browser.
-		/// </summary>
-		/// <param name="process"> The process of the browser to attach to. </param>
-		/// <returns> The browser if successfully attached or otherwise null. </returns>
-		public static Browser AttachToBrowser(Process process)
-		{
-			return Chrome.Attach(process) ?? Edge.Attach(process) ?? InternetExplorer.Attach(process) ?? Firefox.Attach(process);
-		}
-
-		/// <summary>
 		/// Attach browsers for each type provided.
 		/// </summary>
 		/// <param name="type"> The type of the browser to attach to. </param>
@@ -200,6 +189,16 @@ namespace TestR.Web
 			}
 
 			return response;
+		}
+
+		/// <summary>
+		/// Attach process as a browser.
+		/// </summary>
+		/// <param name="process"> The process of the browser to attach to. </param>
+		/// <returns> The browser if successfully attached or otherwise null. </returns>
+		public static Browser AttachToBrowser(Process process)
+		{
+			return Chrome.Attach(process) ?? Edge.Attach(process) ?? InternetExplorer.Attach(process) ?? Firefox.Attach(process);
 		}
 
 		/// <summary>
@@ -351,7 +350,6 @@ namespace TestR.Web
 		/// <param name="y"> The y coordinate to move to. </param>
 		/// <param name="width"> The width of the window. </param>
 		/// <param name="height"> The height of the window. </param>
-
 		public virtual Browser MoveWindow(int x, int y, int width, int height)
 		{
 			Application.MoveWindow(x, y, width, height);
@@ -483,6 +481,20 @@ namespace TestR.Web
 		protected abstract string GetBrowserUri();
 
 		/// <summary>
+		/// Injects the test script into the browser.
+		/// </summary>
+		protected void InjectTestScript()
+		{
+			ExecuteJavaScript(GetTestScript());
+
+			var test = ExecuteJavaScript("typeof TestR");
+			if (test.Equals("undefined"))
+			{
+				throw new Exception("Failed to inject the TestR JavaScript.");
+			}
+		}
+
+		/// <summary>
 		/// Refreshes the element collection for the current page.
 		/// </summary>
 		protected void RefreshElements()
@@ -570,20 +582,6 @@ namespace TestR.Web
 			}
 
 			JavascriptLibraries = libraries;
-		}
-
-		/// <summary>
-		/// Injects the test script into the browser.
-		/// </summary>
-		private void InjectTestScript()
-		{
-			ExecuteJavaScript(GetTestScript());
-
-			var test = ExecuteJavaScript("typeof TestR");
-			if (test.Equals("undefined"))
-			{
-				throw new Exception("Failed to inject the TestR JavaScript.");
-			}
 		}
 
 		#endregion

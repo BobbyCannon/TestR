@@ -95,12 +95,6 @@ namespace TestR.IntegrationTests.Web
 			}
 		}
 
-		[TestCleanup]
-		public void Cleanup()
-		{
-			Browser.CloseBrowsers();
-		}
-
 		[TestMethod]
 		public void CloseAllBrowsers()
 		{

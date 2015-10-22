@@ -3,7 +3,6 @@
 using System;
 using System.Drawing;
 using System.Linq;
-using TestR.Desktop.Pattern;
 using TestR.Helpers;
 using TestR.Native;
 using UIAutomationClient;

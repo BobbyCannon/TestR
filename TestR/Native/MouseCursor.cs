@@ -151,6 +151,32 @@ namespace TestR.Native
 
 		#endregion
 
+		#region Structures
+
+		[StructLayout(LayoutKind.Sequential)]
+		private struct CursorInfo
+		{
+			#region Fields
+
+			public readonly uint flags;
+			public IntPtr handle;
+			public readonly Point point;
+			public uint size;
+
+			#endregion
+
+			#region Methods
+
+			public static CursorInfo Create()
+			{
+				return new CursorInfo { size = (uint) Marshal.SizeOf(typeof (CursorInfo)) };
+			}
+
+			#endregion
+		}
+
+		#endregion
+
 		#region Enumerations
 
 		private enum StandardCursors
@@ -174,27 +200,5 @@ namespace TestR.Native
 		}
 
 		#endregion
-
-		[StructLayout(LayoutKind.Sequential)]
-		private struct CursorInfo
-		{
-			#region Fields
-
-			public readonly uint flags;
-			public IntPtr handle;
-			public readonly Point point;
-			public uint size;
-
-			#endregion
-
-			#region Methods
-
-			public static CursorInfo Create()
-			{
-				return new CursorInfo { size = (uint) Marshal.SizeOf(typeof (CursorInfo)) };
-			}
-
-			#endregion
-		}
 	}
 }

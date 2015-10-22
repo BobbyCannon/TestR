@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using TestR.Desktop;
 using TestR.Web;
+using Element = TestR.Web.Element;
 
 #endregion
 
@@ -16,9 +17,9 @@ namespace TestR.Extension
 
 		private Application _application;
 		private Browser _browser;
-		private Web.Element _highlightedElement;
-		private readonly Highlighter _highlighter;
 		private string _elementDetails;
+		private Element _highlightedElement;
+		private readonly Highlighter _highlighter;
 
 		#endregion
 
@@ -92,7 +93,7 @@ namespace TestR.Extension
 		{
 			OnClosed();
 
-			Highlight((Web.Element) null);
+			Highlight((Element) null);
 
 			if (Browser != null)
 			{
@@ -120,7 +121,7 @@ namespace TestR.Extension
 			_highlighter.SetElement(element);
 		}
 
-		public void Highlight(Web.Element element)
+		public void Highlight(Element element)
 		{
 			_highlightedElement?.Highlight(false);
 			_highlightedElement = element;

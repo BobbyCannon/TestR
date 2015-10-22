@@ -1,6 +1,5 @@
 ﻿#region References
 
-using System;
 using TestR.Extensions;
 using UIAutomationClient;
 
@@ -13,7 +12,11 @@ namespace TestR.Desktop.Pattern
 	/// </summary>
 	public class TogglePattern
 	{
+		#region Fields
+
 		private readonly IUIAutomationTogglePattern _pattern;
+
+		#endregion
 
 		#region Constructors
 

@@ -180,7 +180,7 @@ namespace TestR.Extension
 			}
 			catch (Exception ex)
 			{
-				_currentLocation = new Rectangle(0,0,0,0);
+				_currentLocation = new Rectangle(0, 0, 0, 0);
 				Debug.WriteLine("Error trying to layout the element highlighter. " + ex.Message);
 			}
 

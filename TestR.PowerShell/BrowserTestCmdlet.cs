@@ -1,13 +1,11 @@
 ﻿#region References
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
 using System.Windows.Forms;
 using TestR.Extensions;
 using TestR.Web;
-using TestR.Web.Browsers;
 
 #endregion
 
@@ -47,7 +45,7 @@ namespace TestR.PowerShell
 			var screen = Screen.AllScreens.FirstOrDefault(x => x.Primary == false) ?? Screen.AllScreens.First(x => x.Primary);
 			var browserOffset = 0;
 			var browserWidth = screen.WorkingArea.Width / BrowserType.Count();
-			
+
 			Browser.ForEachBrowser(x =>
 			{
 				try
@@ -62,7 +60,7 @@ namespace TestR.PowerShell
 				}
 			}, BrowserType);
 		}
-		
+
 		#endregion
 	}
 }

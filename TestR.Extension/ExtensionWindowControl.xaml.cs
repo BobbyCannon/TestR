@@ -67,6 +67,8 @@ namespace TestR.Extension
 
 		private void CloseApplication(object sender, RoutedEventArgs e)
 		{
+			_project.Highlight((Web.Element) null);
+			_project.Highlight((Element) null);
 			_project.Close();
 		}
 

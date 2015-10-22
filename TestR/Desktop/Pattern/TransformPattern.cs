@@ -1,6 +1,5 @@
 ﻿#region References
 
-using System.Threading;
 using UIAutomationClient;
 
 #endregion

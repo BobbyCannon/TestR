@@ -1,6 +1,5 @@
 ﻿#region References
 
-using System;
 using UIAutomationClient;
 
 #endregion
@@ -57,7 +56,7 @@ namespace TestR.Desktop.Pattern
 		/// <summary>
 		/// Set the value of the pattern.
 		/// </summary>
-		/// <param name="value"></param>
+		/// <param name="value"> The value to set. </param>
 		public void SetValue(string value)
 		{
 			_pattern.SetValue(value);

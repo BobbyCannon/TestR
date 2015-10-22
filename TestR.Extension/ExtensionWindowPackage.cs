@@ -43,10 +43,6 @@ namespace TestR.Extension
 
 		#endregion
 
-		#region Constructors
-
-		#endregion
-
 		#region Methods
 
 		/// <summary>

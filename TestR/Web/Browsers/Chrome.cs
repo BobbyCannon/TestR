@@ -31,14 +31,14 @@ namespace TestR.Web.Browsers
 		#region Constants
 
 		/// <summary>
-		/// The name of the browser.
-		/// </summary>
-		public const string Name = "chrome";
-
-		/// <summary>
 		/// The debugging argument for starting the browser.
 		/// </summary>
 		public const string DebugArgument = "--remote-debugging-port=9222";
+
+		/// <summary>
+		/// The name of the browser.
+		/// </summary>
+		public const string Name = "chrome";
 
 		#endregion
 
@@ -95,7 +95,7 @@ namespace TestR.Web.Browsers
 			browser.Refresh();
 			return browser;
 		}
-		
+
 		/// <summary>
 		/// Attempts to attach to an existing browser.
 		/// </summary>
@@ -142,7 +142,7 @@ namespace TestR.Web.Browsers
 
 			// Create a new instance and return it.
 			var application = Application.Create($"{Name}.exe", DebugArgument, false);
-            var browser = new Chrome(application);
+			var browser = new Chrome(application);
 			browser.Connect();
 			browser.Refresh();
 			return browser;
@@ -363,6 +363,10 @@ namespace TestR.Web.Browsers
 				return false;
 			}
 			catch (AggregateException)
+			{
+				return false;
+			}
+			catch
 			{
 				return false;
 			}
