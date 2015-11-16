@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
 	<Metadata>
-		<Identity Id="TestR.Extension.Bobby Cannon.4b947f52-27f3-446c-9bf0-c3fecf015775" Version="0.8.5772.1178" Language="en-US" Publisher="Bobby Cannon" />
+		<Identity Id="TestR.Extension.Bobby Cannon.4b947f52-27f3-446c-9bf0-c3fecf015775" Version="0.8.5798.4595" Language="en-US" Publisher="Bobby Cannon" />
 		<DisplayName>TestR.Extension</DisplayName>
 		<Description xml:space="preserve">TestR extension to help create tests.</Description>
 		<License>LICENSE.md</License>

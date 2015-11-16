@@ -3,6 +3,7 @@
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 
 #endregion
 
@@ -265,7 +266,7 @@ namespace TestR.Native
 
 			[return: MarshalAs(UnmanagedType.I4)]
 			[PreserveSig]
-			int GetZoneMappings(uint dwZone, out UCOMIEnumString ppenumString, uint dwFlags);
+			int GetZoneMappings(uint dwZone, out IEnumString ppenumString, uint dwFlags);
 
 			#endregion
 		}
