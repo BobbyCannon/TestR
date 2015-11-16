@@ -33,6 +33,7 @@ namespace TestR.Web.Browsers
 		#region Fields
 
 		private readonly string _sessionId;
+		private readonly string _version;
 
 		#endregion
 
@@ -45,6 +46,7 @@ namespace TestR.Web.Browsers
 			: base(application)
 		{
 			_sessionId = sessionId;
+			_version = GetVersion();
 		}
 
 		#endregion
@@ -77,6 +79,12 @@ namespace TestR.Web.Browsers
 			var browser = new Edge(application, session);
 			browser.Refresh();
 			return browser;
+		}
+
+		private static string GetVersion()
+		{
+			var data = Request("GET", "http://localhost:17556/status", null);
+			return data;
 		}
 
 		/// <summary>
@@ -129,7 +137,6 @@ namespace TestR.Web.Browsers
 		/// <param name="height"> The height of the window. </param>
 		public override Browser MoveWindow(int x, int y, int width, int height)
 		{
-			// todo: figure out how to really move the window. Windows store apps do not play nice with old api.
 			return this;
 		}
 

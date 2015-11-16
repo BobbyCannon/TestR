@@ -110,16 +110,18 @@ namespace TestR.Web.Elements
 		public override string Text
 		{
 			get { return this["value"]; }
-			set { this["value"] = value; }
+			set
+			{
+				this["value"] = value;
+				Thread.Sleep(TypingDelay);
+				TriggerElement();
+			}
 		}
 
 		/// <summary>
 		/// Gets the delay (in milliseconds) between each character.
 		/// </summary>
-		public int TypingDelay
-		{
-			get { return Browser.SlowMotion ? 50 : 0; }
-		}
+		public int TypingDelay => Browser.SlowMotion ? 50 : 0;
 
 		/// <summary>
 		/// Gets or sets the value attribute.
@@ -130,7 +132,12 @@ namespace TestR.Web.Elements
 		public string Value
 		{
 			get { return this["value"]; }
-			set { this["value"] = value; }
+			set
+			{
+				this["value"] = value;
+				Thread.Sleep(TypingDelay);
+				TriggerElement();
+			}
 		}
 
 		#endregion
@@ -153,14 +160,14 @@ namespace TestR.Web.Elements
 			{
 				var eventProperty = GetKeyCodeEventProperty(character);
 				FireEvent("keyDown", eventProperty);
-				FireEvent("keyPress", eventProperty);
-				FireEvent("keyUp", eventProperty);
-
 				newValue += character;
 				SetAttributeValue("value", newValue);
+				FireEvent("keyPress", eventProperty);
+				FireEvent("keyUp", eventProperty);
 				Thread.Sleep(TypingDelay);
 			}
 
+			Thread.Sleep(TypingDelay);
 			Highlight(false);
 			TriggerElement();
 		}

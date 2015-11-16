@@ -50,7 +50,7 @@ namespace TestR.PowerShell
 			{
 				try
 				{
-					x.MoveWindow(screen.WorkingArea.Left + (browserOffset++ * browserWidth), 0, browserWidth, browserWidth * 2);
+					x.MoveWindow(screen.WorkingArea.Left + (browserOffset++ * browserWidth), 0, browserWidth, screen.WorkingArea.Height);
 					x.BringToFront();
 					action(x);
 				}
