@@ -40,7 +40,8 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Key.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accessibility" />
@@ -286,7 +287,6 @@
     <EmbeddedResource Include="TestR.js" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Key.pfx" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
