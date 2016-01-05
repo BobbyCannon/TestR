@@ -234,7 +234,7 @@ namespace TestR.Desktop
 		/// Closes all windows my name and closes them.
 		/// </summary>
 		/// <param name="executablePath"> The path to the executable. </param>
-		public static void CloseAll(string executablePath)
+		public static void CloseAll(string executablePath, int timeout = 1000)
 		{
 			var processName = Path.GetFileNameWithoutExtension(executablePath);
 
@@ -247,7 +247,7 @@ namespace TestR.Desktop
 				// Ask to close the process nicely.
 				process.CloseMainWindow();
 
-				if (!process.WaitForExit(1000))
+				if (!process.WaitForExit(timeout))
 				{
 					// The process did not close so now we are just going to kill it.
 					process.Kill();

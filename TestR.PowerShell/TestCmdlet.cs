@@ -34,15 +34,8 @@ namespace TestR.PowerShell
 				return;
 			}
 
-			try
-			{
-				Initialize();
-				GetType().GetMethod(Name).Invoke(this, null);
-			}
-			catch (TargetInvocationException ex)
-			{
-				throw ex.InnerException;
-			}
+			Initialize();
+			GetType().GetMethod(Name).Invoke(this, null);
 		}
 
 		/// <summary>
