@@ -77,42 +77,6 @@ function Convert-VersionArray
     return "{0}.{1}.{2}.{3}" -f $VersionArray[0], $VersionArray[1], $VersionArray[2], $VersionArray[3]
 }
 
-function Set-VsixManifest
-{
-    param($desiredPath, $versionNumber)
-
-    $foundFiles = Get-ChildItem $desiredPath\*.*.vsixmanifest -Recurse
-    if ($foundFiles.Length -le 0)
-    {
-        Write-Verbose "No files found"
-        return
-    }
-
-    foreach($file in $foundFiles)
-    {   
-        Write-Verbose $file.FullName
-
-        $content = (Get-Content $file -Raw)
-        $startKey = "<Identity Id=`"TestR.Extension.Bobby Cannon.4b947f52-27f3-446c-9bf0-c3fecf015775`" Version=`""
-        $startIndex = $content.IndexOf($startKey)
-        if ($startIndex -lt 0) 
-        {
-            Write-Error "Failed to find the identity of the package."
-            continue
-        } 
-
-        $startIndex += $startKey.Length
-        $endIndex = $content.IndexOf("`" Language=`"en-US`"")
-        
-        if (($startIndex -ge 0) -and ($endIndex -ge $startIndex)) {
-            $content = $content.Remove($startIndex, $endIndex - $startIndex)
-            $content = $content.Insert($startIndex, $versionNumber)
-            $content = $content.Trim()
-            $content | Set-Content $file.FullName -Encoding UTF8
-        }
-    }
-}
-
 function Set-BuildNumbers
 {
     param($desiredPath, $versionNumber)
@@ -199,8 +163,7 @@ try {
 
     Write-Host "Updating Assembly Infos to $newVersionNumber"
     Set-BuildNumbers $scriptPath $newVersionNumber
-    Set-VsixManifest $scriptPath $newVersionNumber
-
+    
     exit $LASTEXITCODE
 } 
 catch {

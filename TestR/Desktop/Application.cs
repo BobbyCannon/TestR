@@ -234,6 +234,7 @@ namespace TestR.Desktop
 		/// Closes all windows my name and closes them.
 		/// </summary>
 		/// <param name="executablePath"> The path to the executable. </param>
+		/// <param name="timeout"> The timeout to wait for the application to close. </param>
 		public static void CloseAll(string executablePath, int timeout = 1000)
 		{
 			var processName = Path.GetFileNameWithoutExtension(executablePath);
