@@ -13,8 +13,8 @@ using TestR.Web.Browsers;
 
 namespace TestR.IntegrationTests.Web
 {
-	[TestClass]
-	[Cmdlet(VerbsDiagnostic.Test, "Edge")]
+	//[TestClass]
+	//[Cmdlet(VerbsDiagnostic.Test, "Edge")]
 	public class EdgeTests : TestCmdlet
 	{
 		#region Methods

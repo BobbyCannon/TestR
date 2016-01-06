@@ -367,7 +367,9 @@ namespace TestR.Web.Browsers
 
 			lock (_responses)
 			{
-				return _responses.First(action);
+				var item = _responses.First(action);
+				_responses.Remove(item);
+				return item;
 			}
 		}
 
