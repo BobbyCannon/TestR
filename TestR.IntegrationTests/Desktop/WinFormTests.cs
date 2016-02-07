@@ -48,7 +48,6 @@ namespace TestR.IntegrationTests.Desktop
 
 				var expected = application.Children.Windows["ParentForm"];
 				expected.TitleBar.MaximizeButton.Click();
-				expected.Location.Dump();
 
 				var actual = application.Location;
 				Assert.AreEqual(new Point(0, 0), actual);
@@ -180,7 +179,6 @@ namespace TestR.IntegrationTests.Desktop
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.Windows["ParentForm"];
-				TestHelper.PrintChildren(window);
 				var mainMenu = window.Children["menuStrip"];
 				Assert.AreEqual("menuStrip", mainMenu.Id);
 				Assert.AreEqual("MenuStrip", mainMenu.Name);

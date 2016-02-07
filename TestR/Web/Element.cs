@@ -449,7 +449,9 @@ namespace TestR.Web
 		{
 			name = _propertiesToRename.ContainsKey(name) ? _propertiesToRename[name] : name;
 			value = value.Replace("\r", "\\r")
-				.Replace("\n", "\\n");
+				.Replace("\n", "\\n")
+				.Replace("\'", "\\\'")
+				.Replace("\"", "\\\"");
 
 			var script = "TestR.setElementValue('" + Id + "','" + name + "','" + value + "')";
 			Browser.ExecuteScript(script);

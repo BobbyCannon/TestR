@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Web;
 using mshtml;
 using SHDocVw;
 using TestR.Desktop;
@@ -223,8 +224,13 @@ namespace TestR.Web.Browsers
 					return "Injected TestR Script";
 				}
 
+				script = script
+					.Replace("\\\'", "\\\\\'")
+					.Replace("\\\"", "\\\\\"");
+
 				// Run the script using TestR.
-				var wrappedScript = $"TestR.runScript('{script.Replace("'", "\\'")}');";
+				script = HttpUtility.HtmlEncode(script);
+				var wrappedScript = $"TestR.runScript('{script}');";
 				document.parentWindow.execScript(wrappedScript, "javascript");
 
 				return GetJavascriptResult((IHTMLDocument3) document);

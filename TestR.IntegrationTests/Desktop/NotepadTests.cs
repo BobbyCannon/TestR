@@ -30,7 +30,6 @@ namespace TestR.IntegrationTests.Desktop
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.First();
-				TestHelper.PrintChildren(window);
 				var document = window.Children["15"];
 				document.SetText("Hello World : Sub Collection");
 			}
@@ -123,7 +122,6 @@ namespace TestR.IntegrationTests.Desktop
 				Assert.IsNotNull(menu);
 				Assert.IsTrue(menu.SupportsExpandingCollapsing);
 				menu.Click();
-				Console.WriteLine(menu.IsExpanded);
 			}
 		}
 

@@ -27,9 +27,10 @@
 	getElements: function () {
 		var response = [];
 		var allElements = document.body.getElementsByTagName('*');
+		var i;
 
 		// Add element IDs so we can build element hierarchy.
-		for (var i = 0; i < allElements.length; i++) {
+		for (i = 0; i < allElements.length; i++) {
 			if (allElements[i].id === undefined || allElements[i].id === '') {
 				allElements[i].id = 'testR-' + TestR.autoId++;
 			}
@@ -131,6 +132,14 @@
 		element.removeAttribute(name);
 	},
 	runScript: function (script) {
+		// decode the script.
+		script = script
+			.replace(/&quot;/g, '"')
+			.replace(/&#39;/g, "'")
+			.replace(/&lt;/g, '<')
+			.replace(/&gt;/g, '>')
+			.replace(/&amp;/g, '&');
+
 		// Attempt to find the result element.
 		var resultElement = document.getElementById(TestR.resultElementId);
 

@@ -601,6 +601,36 @@ namespace TestR.IntegrationTests.Web
 		}
 
 		[TestMethod]
+		public void SetTextAllInputs()
+		{
+			ForEachBrowser(browser =>
+			{
+				LogManager.UpdateReferenceId(browser, "SetTextAllInputs");
+				browser.NavigateTo(TestSite + "/inputs.html");
+
+				foreach (var input in browser.Elements.TextInputs)
+				{
+					if (input.Id == "number")
+					{
+						input.Text = "100";
+						Assert.AreEqual("100", input.Text);
+					}
+					else
+					{
+						input.Text = input.Id;
+						Assert.AreEqual(input.Id, input.Text);
+					}
+				}
+
+				foreach (var input in browser.Elements.TextArea)
+				{
+					input.Text = input.Id;
+					Assert.AreEqual(input.Id, input.Text);
+				}
+			});
+		}
+
+		[TestMethod]
 		public void TestContentForInputText()
 		{
 			ForEachBrowser(browser =>
@@ -622,7 +652,10 @@ namespace TestR.IntegrationTests.Web
 				browser.NavigateTo(TestSite + "/");
 
 				var element = browser.Elements.TextArea["textarea"];
-				Assert.AreEqual(element.Text, "Text Area Data");
+				Assert.AreEqual(element.Text, "Text Area's \"Quotes\" Data");
+
+				element.Text = "\"Text Area's \"Quote's\" Data\"";
+				Assert.AreEqual(element.Text, "\"Text Area's \"Quote's\" Data\"");
 			});
 		}
 
@@ -724,9 +757,8 @@ namespace TestR.IntegrationTests.Web
 			{
 				LogManager.UpdateReferenceId(browser, "TypeTextAllInputs");
 				browser.NavigateTo(TestSite + "/inputs.html");
-				var inputs = browser.Elements.TextInputs;
 
-				foreach (var input in inputs)
+				foreach (var input in browser.Elements.TextInputs)
 				{
 					if (input.Id == "number")
 					{
@@ -738,6 +770,12 @@ namespace TestR.IntegrationTests.Web
 						input.TypeText(input.Id);
 						Assert.AreEqual(input.Id, input.Text);
 					}
+				}
+
+				foreach (var input in browser.Elements.TextArea)
+				{
+					input.TypeText(input.Id);
+					Assert.AreEqual(input.Id, input.Text);
 				}
 			});
 		}
