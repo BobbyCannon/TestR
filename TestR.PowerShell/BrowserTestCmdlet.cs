@@ -42,7 +42,8 @@ namespace TestR.PowerShell
 		/// <seealso cref="BrowserType" />
 		public void ForEachBrowser(Action<Browser> action, bool useSecondaryMonitor = true)
 		{
-			var screen = Screen.AllScreens.FirstOrDefault(x => x.Primary == false) ?? Screen.AllScreens.First(x => x.Primary);
+			var screen = useSecondaryMonitor ? Screen.AllScreens.FirstOrDefault(x => x.Primary == false) ?? Screen.AllScreens.First(x => x.Primary) : Screen.AllScreens.First(x => x.Primary);
+			Screen.AllScreens.First(x => x.Primary);
 			var browserOffset = 0;
 			var browserWidth = screen.WorkingArea.Width / BrowserType.Count();
 

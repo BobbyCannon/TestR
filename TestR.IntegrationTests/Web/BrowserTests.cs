@@ -44,7 +44,7 @@ namespace TestR.IntegrationTests.Web
 				browser.NavigateTo(TestSite + "/Angular.html#/");
 
 				var email = browser.Elements.TextInputs["email"];
-				email.TypeText("user");
+				email.TypeText("user",true);
 
 				var expected = "ng-dirty ng-valid-required ng-invalid ng-invalid-email".Split(' ');
 				var actual = email.GetAttributeValue("class", true).Split(' ');
@@ -78,6 +78,20 @@ namespace TestR.IntegrationTests.Web
 				button.Click();
 				browser.Refresh();
 				Assert.AreEqual(elementCount + 1, browser.Elements.Count);
+			});
+		}
+
+		[TestMethod]
+		public void AngularSetTextInputs()
+		{
+			ForEachBrowser(browser =>
+			{
+				LogManager.UpdateReferenceId(browser, "AngularSetTextInputs");
+				browser.NavigateTo(TestSite + "/Angular.html#/form");
+				Assert.AreEqual("true", browser.Elements.Buttons["saveButton"].Disabled);
+				browser.Elements.TextInputs["pageTitle"].Text = "Hello World";
+				browser.Elements.TextArea["pageText"].Text = "The quick brown fox jumps over the lazy dog's back.";
+				Assert.AreEqual("false", browser.Elements.Buttons["saveButton"].Disabled);
 			});
 		}
 

@@ -146,16 +146,13 @@ namespace TestR.Web.Elements
 		public override string Text
 		{
 			get { return this["value"]; }
-			set { this["value"] = value; }
+			set { TypeText(value, true); }
 		}
 
 		/// <summary>
 		/// Gets the delay (in milliseconds) between each character.
 		/// </summary>
-		public int TypingDelay
-		{
-			get { return Browser.SlowMotion ? 50 : 0; }
-		}
+		public int TypingDelay => Browser.SlowMotion ? 50 : 0;
 
 		/// <summary>
 		/// Gets or sets the value attribute.
@@ -166,7 +163,7 @@ namespace TestR.Web.Elements
 		public string Value
 		{
 			get { return this["value"]; }
-			set { this["value"] = value; }
+			set { TypeText(value, true); }
 		}
 
 		/// <summary>

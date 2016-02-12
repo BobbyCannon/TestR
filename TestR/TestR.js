@@ -161,6 +161,7 @@
 			resultElement.value = String(eval(script));
 		} catch (error) {
 			// Something went wrong so update the result with the error.
+			console.log(error.message);
 			resultElement.value = error.message;
 		}
 	}

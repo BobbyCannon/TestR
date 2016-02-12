@@ -110,12 +110,7 @@ namespace TestR.Web.Elements
 		public override string Text
 		{
 			get { return this["value"]; }
-			set
-			{
-				this["value"] = value;
-				Thread.Sleep(TypingDelay);
-				TriggerElement();
-			}
+			set { TypeText(value, true); }
 		}
 
 		/// <summary>
@@ -132,12 +127,7 @@ namespace TestR.Web.Elements
 		public string Value
 		{
 			get { return this["value"]; }
-			set
-			{
-				this["value"] = value;
-				Thread.Sleep(TypingDelay);
-				TriggerElement();
-			}
+			set { TypeText(value, true); }
 		}
 
 		#endregion

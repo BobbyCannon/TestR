@@ -224,10 +224,11 @@ namespace TestR.Web.Browsers
 					return "Injected TestR Script";
 				}
 
-				script = script
-					.Replace("\\\'", "\\\\\'")
-					.Replace("\\\"", "\\\\\"");
-
+				script = script.Replace("\r", "\\r")
+					.Replace("\n", "\\n")
+					.Replace("\'", "\\\'")
+					.Replace("\"", "\\\"");
+				
 				// Run the script using TestR.
 				script = HttpUtility.HtmlEncode(script);
 				var wrappedScript = $"TestR.runScript('{script}');";

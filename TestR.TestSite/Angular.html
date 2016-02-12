@@ -25,7 +25,7 @@
 		</div>
 		<br />
 		<div class="ng-view ng-cloak"></div>
-		<script src="./Scripts/jquery-2.1.1.js"></script>
+		<script src="./Scripts/jquery-2.2.0.js"></script>
 		<script src="./Scripts/angular.js"></script>
 		<script src="./Scripts/angular-route.js"></script>
 		<script type="text/javascript" language="javascript">
@@ -37,16 +37,18 @@
 					'$httpProvider', '$routeProvider',
 					function ($httpProvider, $routeProvider) {
 						$routeProvider
-							.when('/', { templateUrl: 'Views/Page.html', controller: 'testController' })
+							.when('/', { templateUrl: 'Views/Page.html', controller: 'controller' })
+							.when('/form', { templateUrl: 'Views/Form.html', controller: 'controller' })
 							.when('/anotherPage', { templateUrl: 'Views/AnotherPage.html', controller: 'anotherPageController' })
-							.otherwise('/', { templateUrl: 'Views/Page.html', controller: 'testController' });
+							.otherwise('/', { templateUrl: 'Views/Page.html', controller: 'controller' });
 					}
 				]);
 
-			app.controller('testController', [
+			app.controller('controller', [
 				'$scope',
 				function ($scope) {
 					$scope.message = 'Hello World';
+					$scope.model = {};
 					$scope.items = [];
 					$scope.user = {
 						email: ''
