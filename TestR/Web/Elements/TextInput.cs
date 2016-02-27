@@ -116,7 +116,7 @@ namespace TestR.Web.Elements
 		/// <summary>
 		/// Gets the delay (in milliseconds) between each character.
 		/// </summary>
-		public int TypingDelay => Browser.SlowMotion ? 50 : 0;
+		public int TypingDelay => Browser.SlowMotion ? 50 : 10;
 
 		/// <summary>
 		/// Gets or sets the value attribute.
@@ -149,8 +149,8 @@ namespace TestR.Web.Elements
 			foreach (var character in value)
 			{
 				var eventProperty = GetKeyCodeEventProperty(character);
-				FireEvent("keyDown", eventProperty);
 				newValue += character;
+				FireEvent("keyDown", eventProperty);
 				SetAttributeValue("value", newValue);
 				FireEvent("keyPress", eventProperty);
 				FireEvent("keyUp", eventProperty);

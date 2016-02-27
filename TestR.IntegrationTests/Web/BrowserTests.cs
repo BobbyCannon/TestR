@@ -44,7 +44,7 @@ namespace TestR.IntegrationTests.Web
 				browser.NavigateTo(TestSite + "/Angular.html#/");
 
 				var email = browser.Elements.TextInputs["email"];
-				email.TypeText("user",true);
+				email.TypeText("user", true);
 
 				var expected = "ng-dirty ng-valid-required ng-invalid ng-invalid-email".Split(' ');
 				var actual = email.GetAttributeValue("class", true).Split(' ');

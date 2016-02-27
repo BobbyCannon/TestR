@@ -102,6 +102,7 @@ function Set-BuildNumbers
         $oldAssemblyVersion = ,($oldAssemblyVersionLine | Get-VersionArray) | Convert-VersionArray
         $newAssemblyVersionLine = $oldAssemblyVersionLine.Replace($oldAssemblyVersion, $newVersionNumber)
         Write-Verbose $newAssemblyVersionLine
+
         $versionPattern2 = $versionPattern1.Replace("AssemblyVersion","AssemblyFileVersion")
         $oldAssemblyFileVersionLine = Get-VersionLine $file $versionPattern2
         Write-Verbose $oldAssemblyFileVersionLine
@@ -109,19 +110,21 @@ function Set-BuildNumbers
         $newAssemblyFileVersionLine = $oldAssemblyFileVersionLine.Replace($oldAssemblyFileVersion, $newVersionNumber)
         Write-Verbose $newAssemblyFileVersionLine
     
-        (Get-Content $file -Raw).Trim() | % {
-            $_.Replace($oldAssemblyVersionLine, $newAssemblyVersionLine).Replace($oldAssemblyFileVersionLine, $newAssemblyFileVersionLine) 
-        } | Set-Content $file -Encoding UTF8
+        $content = [IO.File]::ReadAllText($file)
+        $content = $content.Replace($oldAssemblyVersionLine, $newAssemblyVersionLine).Replace($oldAssemblyFileVersionLine, $newAssemblyFileVersionLine) 
+        
+        [IO.File]::WriteAllText($file, $content)
     }
 }
 
 try {
+
     $scriptPath = Split-Path (Get-Variable MyInvocation).Value.MyCommand.Path 
     Set-Location $scriptPath
 
     $file = ([System.IO.FileInfo]"$scriptPath\TestR\Properties\AssemblyInfo.cs")
     $versionArray = Get-VersionLine $file $assemblyVersionPatternCs | Get-VersionArray
-    
+
     if ($Major -eq "+") {
         $versionArray[0] = ([int]$versionArray[0]) + 1
     } elseif ($Major.Length -gt 0) {
