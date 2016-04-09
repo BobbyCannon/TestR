@@ -1,8 +1,4 @@
-﻿#region References
-
-#endregion
-
-namespace TestR.Models
+﻿namespace TestR.Models
 {
 	/// <summary>
 	/// Represents a user in the TestR domain.

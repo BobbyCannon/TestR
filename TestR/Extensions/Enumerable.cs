@@ -17,20 +17,6 @@ namespace TestR.Extensions
 		#region Methods
 
 		/// <summary>
-		/// Clears the queue.
-		/// </summary>
-		/// <typeparam name="T"> The type of the item in the queue. </typeparam>
-		/// <param name="queue"> The queue to clear. </param>
-		public static void Clear<T>(this ConcurrentQueue<T> queue)
-		{
-			T item;
-			while (queue.TryDequeue(out item))
-			{
-				// do nothing
-			}
-		}
-
-		/// <summary>
 		/// Adds a range of items to the collection.
 		/// </summary>
 		/// <param name="collection"> The collection to add the items to. </param>
@@ -41,6 +27,20 @@ namespace TestR.Extensions
 			foreach (var item in items)
 			{
 				collection.Add(item);
+			}
+		}
+
+		/// <summary>
+		/// Clears the queue.
+		/// </summary>
+		/// <typeparam name="T"> The type of the item in the queue. </typeparam>
+		/// <param name="queue"> The queue to clear. </param>
+		public static void Clear<T>(this ConcurrentQueue<T> queue)
+		{
+			T item;
+			while (queue.TryDequeue(out item))
+			{
+				// do nothing
 			}
 		}
 

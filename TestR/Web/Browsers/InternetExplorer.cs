@@ -228,7 +228,7 @@ namespace TestR.Web.Browsers
 					.Replace("\n", "\\n")
 					.Replace("\'", "\\\'")
 					.Replace("\"", "\\\"");
-				
+
 				// Run the script using TestR.
 				script = HttpUtility.HtmlEncode(script);
 				var wrappedScript = $"TestR.runScript('{script}');";

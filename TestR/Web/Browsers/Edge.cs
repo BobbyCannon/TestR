@@ -81,12 +81,6 @@ namespace TestR.Web.Browsers
 			return browser;
 		}
 
-		private static string GetVersion()
-		{
-			var data = Request("GET", "http://localhost:17556/status", null);
-			return data;
-		}
-
 		/// <summary>
 		/// Attempts to attach to an existing browser.
 		/// </summary>
@@ -220,6 +214,12 @@ namespace TestR.Web.Browsers
 			var data = Request("GET", "http://localhost:17556/sessions", null);
 			var response = JsonConvert.DeserializeObject<dynamic>(data);
 			return response.status.ToString() != "success" ? null : response.value[0].id.ToString();
+		}
+
+		private static string GetVersion()
+		{
+			var data = Request("GET", "http://localhost:17556/status", null);
+			return data;
 		}
 
 		private static Process InitializeDriver()
