@@ -10,16 +10,16 @@
 		<projectUrl>http://bobbycannon.github.io/TestR/</projectUrl>
 		<tags>TestR Test UnitTest IntegrationTest Automation Testing Web InternetExplorer FireFox Chrome</tags>
 		<dependencies>
-			<dependency id="Newtonsoft.Json" version="8.0.2" />
+			<dependency id="Newtonsoft.Json" version="8.0.3" />
 		</dependencies>
 		<references>
 			<reference file="TestR.dll" />
-            <reference file="Interop.UIAutomationClient.dll" />
+			<reference file="Interop.UIAutomationClient.dll" />
 		</references>
 	</metadata>
 	<files>
-		<file src="C:\Binaries\TestR\bin\TestR.dll" target="lib\net40" />
-		<file src="C:\Binaries\TestR\bin\Interop.SHDocVw.dll" target="lib\net40" />
-		<file src="C:\Binaries\TestR\bin\Interop.UIAutomationClient.dll" target="lib\net40" />
+		<file src="C:\Binaries\TestR\bin\TestR.dll" target="lib\net452" />
+		<file src="C:\Binaries\TestR\bin\Interop.SHDocVw.dll" target="lib\net452" />
+		<file src="C:\Binaries\TestR\bin\Interop.UIAutomationClient.dll" target="lib\net452" />
 	</files>
 </package>
