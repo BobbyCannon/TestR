@@ -151,10 +151,30 @@ namespace TestR.Desktop
 		/// </summary>
 		public Element Parent { get; private set; }
 
-		/// <summary>
-		/// Gets the current process ID  of the element.
-		/// </summary>
-		public int ProcessId => NativeElement.CurrentProcessId;
+	    /// <summary>
+	    /// The all parent element of this element.
+	    /// </summary>
+	    public IEnumerable<Element> Parents
+	    {
+	        get
+	        {
+	            var parent = Parent;
+	            var response = new List<Element>();
+                
+	            while (parent != null)
+	            {
+	                response.Add(parent);
+	                parent = parent.Parent;
+                }
+
+                return response;
+	        }
+	    }
+
+        /// <summary>
+        /// Gets the current process ID  of the element.
+        /// </summary>
+        public int ProcessId => NativeElement.CurrentProcessId;
 
 		/// <summary>
 		/// Gets the size of the element.
@@ -540,13 +560,20 @@ namespace TestR.Desktop
 		/// </summary>
 		public Element UpdateParent()
 		{
-			var parent = NativeElement.GetCurrentParent();
+			var parent = NativeElement.GetCachedParent() ?? NativeElement.GetCurrentParent();
 			if (parent == null || parent.CurrentProcessId != NativeElement.CurrentProcessId)
 			{
+			    Parent = null;
 				return this;
 			}
 
 			Parent = new Element(parent, Application, null);
+			Debug.WriteLine("P: {0},{1},{2},{3}", 
+				Parent.ApplicationId, 
+				parent.CurrentName,
+				parent.CurrentAutomationId,
+				parent.CurrentFrameworkId);
+
 			return this;
 		}
 
