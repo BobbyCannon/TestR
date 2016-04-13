@@ -247,9 +247,6 @@
     <Compile Include="Web\Elements\Header.cs" />
     <Compile Include="Web\Elements\Select.cs" />
     <Compile Include="Web\Elements\TextArea.cs" />
-    <Compile Include="Models\Entity.cs" />
-    <Compile Include="Models\LogEntry.cs" />
-    <Compile Include="Models\User.cs" />
     <Compile Include="Helpers\Validate.cs" />
     <Compile Include="Web\Browser.cs" />
     <Compile Include="Web\Browsers\Chrome.cs" />

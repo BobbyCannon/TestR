@@ -21,6 +21,11 @@ namespace TestR.Desktop
 	/// </summary>
 	public class Application : IDisposable
 	{
+		/// <summary>
+		/// Gets the default timeout (in milliseconds).
+		/// </summary>
+		public const int DefaultTimeout = 5000;
+
 		#region Constructors
 
 		/// <summary>
@@ -33,7 +38,7 @@ namespace TestR.Desktop
 			Process = process;
 			Process.Exited += (sender, args) => OnClosed();
 			Process.EnableRaisingEvents = true;
-			Timeout = TimeSpan.FromSeconds(5);
+			Timeout = TimeSpan.FromMilliseconds(DefaultTimeout);
 		}
 
 		#endregion

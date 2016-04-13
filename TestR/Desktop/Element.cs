@@ -151,30 +151,30 @@ namespace TestR.Desktop
 		/// </summary>
 		public Element Parent { get; private set; }
 
-	    /// <summary>
-	    /// The all parent element of this element.
-	    /// </summary>
-	    public IEnumerable<Element> Parents
-	    {
-	        get
-	        {
-	            var parent = Parent;
-	            var response = new List<Element>();
-                
-	            while (parent != null)
-	            {
-	                response.Add(parent);
-	                parent = parent.Parent;
-                }
+		/// <summary>
+		/// The all parent element of this element.
+		/// </summary>
+		public IEnumerable<Element> Parents
+		{
+			get
+			{
+				var parent = Parent;
+				var response = new List<Element>();
 
-                return response;
-	        }
-	    }
+				while (parent != null)
+				{
+					response.Add(parent);
+					parent = parent.Parent;
+				}
 
-        /// <summary>
-        /// Gets the current process ID  of the element.
-        /// </summary>
-        public int ProcessId => NativeElement.CurrentProcessId;
+				return response;
+			}
+		}
+
+		/// <summary>
+		/// Gets the current process ID  of the element.
+		/// </summary>
+		public int ProcessId => NativeElement.CurrentProcessId;
 
 		/// <summary>
 		/// Gets the size of the element.
@@ -217,7 +217,10 @@ namespace TestR.Desktop
 		/// </summary>
 		public int Width => Size.Width;
 
-		internal Application Application { get; }
+		/// <summary>
+		/// Gets the application this element is hosted in.
+		/// </summary>
+		private Application Application { get; }
 
 		#endregion
 
@@ -391,7 +394,7 @@ namespace TestR.Desktop
 				{
 					return !wait;
 				}
-			}, Application.Timeout.TotalMilliseconds);
+			}, Application?.Timeout.TotalMilliseconds ?? Application.DefaultTimeout);
 
 			return response;
 		}
@@ -551,7 +554,6 @@ namespace TestR.Desktop
 		public Element UpdateChildren()
 		{
 			UpdateChildren(this);
-			OnChildrenUpdated();
 			return this;
 		}
 
@@ -563,13 +565,13 @@ namespace TestR.Desktop
 			var parent = NativeElement.GetCachedParent() ?? NativeElement.GetCurrentParent();
 			if (parent == null || parent.CurrentProcessId != NativeElement.CurrentProcessId)
 			{
-			    Parent = null;
+				Parent = null;
 				return this;
 			}
 
 			Parent = new Element(parent, Application, null);
-			Debug.WriteLine("P: {0},{1},{2},{3}", 
-				Parent.ApplicationId, 
+			Debug.WriteLine("P: {0},{1},{2},{3}",
+				Parent.ApplicationId,
 				parent.CurrentName,
 				parent.CurrentAutomationId,
 				parent.CurrentFrameworkId);
@@ -585,14 +587,6 @@ namespace TestR.Desktop
 			UpdateParent();
 			Parent?.UpdateParents();
 			return this;
-		}
-
-		/// <summary>
-		/// Handles the ChildrenUpdated event.
-		/// </summary>
-		protected void OnChildrenUpdated()
-		{
-			ChildrenUpdated?.Invoke();
 		}
 
 		/// <summary>
@@ -740,7 +734,7 @@ namespace TestR.Desktop
 		/// <returns> The list of children for the element. </returns>
 		private static IEnumerable<IUIAutomationElement> GetChildren(Element element)
 		{
-			var automation = new CUIAutomationClass();
+			var automation = new CUIAutomation8Class();
 			var walker = automation.CreateTreeWalker(automation.RawViewCondition);
 			var child = walker.GetFirstChildElement(element.NativeElement);
 
@@ -819,15 +813,6 @@ namespace TestR.Desktop
 		/// <param name="id"> The ID of the child. </param>
 		/// <returns> The child if found or null if otherwise. </returns>
 		public Element this[string id] => Get(id, false);
-
-		#endregion
-
-		#region Events
-
-		/// <summary>
-		/// Occurs when the children are updated.
-		/// </summary>
-		public event Action ChildrenUpdated;
 
 		#endregion
 	}

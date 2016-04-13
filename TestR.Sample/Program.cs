@@ -18,6 +18,11 @@ namespace TestR.Sample
 		[STAThread]
 		private static void Main(string[] args)
 		{
+			Monitor();
+		}
+
+		private static void Monitor()
+		{
 			Element lastAutoFocusedElement = null;
 			Element lastCtrlFocusedElement = null;
 			Application application = null;
@@ -53,13 +58,13 @@ namespace TestR.Sample
 
 						if (foundElement?.ApplicationId != lastAutoFocusedElement?.ApplicationId)
 						{
-							Console.WriteLine(foundElement.ApplicationId);
+							Console.WriteLine("?" + foundElement.ApplicationId);
 
 							lastAutoFocusedElement = foundElement;
 							var element = application.Get(foundElement.ApplicationId, wait: false);
 							if (element != null)
 							{
-								Console.WriteLine(element.ApplicationId);
+								Console.WriteLine("+" + element.ApplicationId);
 								//Console.WriteLine(element.Parent.ApplicationId);
 								//Console.WriteLine(element.NativeElement.CurrentNativeWindowHandle);
 							}
@@ -68,7 +73,7 @@ namespace TestR.Sample
 
 					if (!Keyboard.IsControlPressed())
 					{
-						Thread.Sleep(2000);
+						Thread.Sleep(150);
 						continue;
 					}
 
@@ -80,13 +85,13 @@ namespace TestR.Sample
 
 						if (foundElement?.ApplicationId != lastCtrlFocusedElement?.ApplicationId)
 						{
-							Console.WriteLine(foundElement.ApplicationId);
+							Console.WriteLine("?" + foundElement.ApplicationId);
 
 							lastCtrlFocusedElement = foundElement;
 							var element = application.Get(foundElement.ApplicationId, wait: false);
 							if (element != null)
 							{
-								Console.WriteLine(element.ApplicationId);
+								Console.WriteLine("+" + element.ApplicationId);
 								//Console.WriteLine(element.Parent.ApplicationId);
 								//Console.WriteLine(element.NativeElement.CurrentNativeWindowHandle);
 							}
