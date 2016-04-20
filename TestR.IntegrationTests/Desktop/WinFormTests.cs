@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Management.Automation;
 using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop;
 using TestR.Desktop.Elements;
@@ -248,6 +249,19 @@ namespace TestR.IntegrationTests.Desktop
 			{
 				var window = application.Get<Window>("TestR Test WinForm");
 				Assert.IsNotNull(window);
+			}
+		}
+
+		[TestMethod]
+		public void RefreshingApplicationWhileClosingWindowsShouldNotFail()
+		{
+			using (var application = Application.Create(_applicationPath))
+			{
+				var tempApplication = application;
+				var window = application.Get<Window>("TestR Test WinForm");
+				Assert.IsNotNull(window);
+				Task.Run(() => tempApplication.Refresh());
+				window.Close();
 			}
 		}
 

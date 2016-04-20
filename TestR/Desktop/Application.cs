@@ -7,7 +7,9 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Management;
+using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows.Automation;
 using TestR.Extensions;
 using TestR.Helpers;
 using TestR.Native;
@@ -496,7 +498,7 @@ namespace TestR.Desktop
 				WaitWhileBusy();
 				return this;
 			}
-			catch (Exception)
+			catch (COMException)
 			{
 				// A window close while trying to enumerate it. Wait for a second then try again.
 				Thread.Sleep(250);
