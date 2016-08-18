@@ -40,12 +40,13 @@ namespace TestR.Web.Browsers
 
 		#region Fields
 
-		private string _consoleActor;
 		private readonly JsonSerializerSettings _jsonSerializerSettings;
 		private readonly FirefoxBuffer _messageBuffer;
 		private readonly List<dynamic> _responses;
-		private Socket _socket;
 		private readonly byte[] _socketBuffer;
+
+		private string _consoleActor;
+		private Socket _socket;
 		private string _tabActor;
 
 		#endregion
@@ -275,7 +276,7 @@ namespace TestR.Web.Browsers
 			while (offset < length)
 			{
 				SendRequest(new { To = actor, Type = "substring", Start = offset, End = offset + chuckLength });
-				var subresult = WaitForResponse(x => x.@from == actor && x.substring != null);
+				var subresult = WaitForResponse(x => x.from == actor && x.substring != null);
 				builder.Append((string) subresult.substring);
 				offset += chuckLength;
 			}
@@ -318,6 +319,7 @@ namespace TestR.Web.Browsers
 						LogManager.Write("Invalid message! " + messages, LogLevel.Fatal);
 					}
 				}
+
 				return true;
 			}
 			catch (ObjectDisposedException)

@@ -38,6 +38,14 @@ namespace TestR.Desktop
 		#region Constructors
 
 		/// <summary>
+		/// Static constructor.
+		/// </summary>
+		static Element()
+		{
+			ExcludedProperties = new[] { "Parent", "Children", "NativeElement", "Item" };
+		}
+
+		/// <summary>
 		/// Creates an instance of an element.
 		/// </summary>
 		/// <param name="element"> The automation element for this element. </param>
@@ -51,17 +59,14 @@ namespace TestR.Desktop
 			Parent = parent;
 		}
 
-		/// <summary>
-		/// Static constructor.
-		/// </summary>
-		static Element()
-		{
-			ExcludedProperties = new[] { "Parent", "Children", "NativeElement", "Item" };
-		}
-
 		#endregion
 
 		#region Properties
+
+		/// <summary>
+		/// Gets the application this element is hosted in.
+		/// </summary>
+		private Application Application { get; }
 
 		/// <summary>
 		/// Gets the ID of this element in the application. Includes full application namespace.
@@ -77,6 +82,7 @@ namespace TestR.Desktop
 					builder.Insert(0, new[] { element.Id, element.Name, " " }.FirstValue() + ",");
 					element = element.Parent;
 				} while (element != null);
+
 				builder.Remove(builder.Length - 1, 1);
 				return builder.ToString();
 			}
@@ -217,10 +223,16 @@ namespace TestR.Desktop
 		/// </summary>
 		public int Width => Size.Width;
 
+		#endregion
+
+		#region Indexers
+
 		/// <summary>
-		/// Gets the application this element is hosted in.
+		/// Get a child using a provided key.
 		/// </summary>
-		private Application Application { get; }
+		/// <param name="id"> The ID of the child. </param>
+		/// <returns> The child if found or null if otherwise. </returns>
+		public Element this[string id] => Get(id, false);
 
 		#endregion
 
@@ -250,6 +262,7 @@ namespace TestR.Desktop
 			{
 				var node = nodes.Pop();
 				yield return node;
+
 				foreach (var n in node.Children)
 				{
 					nodes.Push(n);
@@ -741,6 +754,7 @@ namespace TestR.Desktop
 			while (child != null)
 			{
 				yield return child;
+
 				child = walker.GetNextSiblingElement(child);
 			}
 		}
@@ -802,17 +816,6 @@ namespace TestR.Desktop
 			GetChildren(element).ForEach(x => element.Children.Add(Create(x, element.Application, element)));
 			element.Children.ForEach(x => x.UpdateChildren());
 		}
-
-		#endregion
-
-		#region Indexers
-
-		/// <summary>
-		/// Get a child using a provided key.
-		/// </summary>
-		/// <param name="id"> The ID of the child. </param>
-		/// <returns> The child if found or null if otherwise. </returns>
-		public Element this[string id] => Get(id, false);
 
 		#endregion
 	}

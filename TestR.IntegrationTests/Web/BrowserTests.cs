@@ -2,6 +2,7 @@
 
 using System.Linq;
 using System.Management.Automation;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Helpers;
 using TestR.Logging;
@@ -569,6 +570,24 @@ namespace TestR.IntegrationTests.Web
 				expected = TestSite + "/inputs.html";
 				Assert.AreEqual(expected, browser.Uri.ToLower());
 				browser.Elements["submit"].Click();
+			});
+		}
+
+		[TestMethod]
+		public void Refresh()
+		{
+			ForEachBrowser(browser =>
+			{
+				LogManager.UpdateReferenceId(browser, "Refresh");
+				var expected = new[] { TestSite + "/index.html", TestSite + "/inputs.html" };
+
+				for (var i = 0; i < 10; i++)
+				{
+					browser.NavigateTo(expected[i % 2]);
+					Assert.AreEqual(expected[i % 2], browser.Uri.ToLower());
+					browser.Refresh();
+					Thread.Sleep(10);
+				}
 			});
 		}
 

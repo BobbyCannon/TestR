@@ -21,10 +21,7 @@ if (!(Test-Path $nugetDestination -PathType Container)){
     New-Item $nugetDestination -ItemType Directory | Out-Null
 }
 
-$build = [Math]::Floor([DateTime]::UtcNow.Subtract([DateTime]::Parse("01/01/2000").Date).TotalDays)
-$revision = [Math]::Floor([DateTime]::UtcNow.TimeOfDay.TotalSeconds / 2)
-
-.\IncrementVersion.ps1 -Build $build -Revision $revision
+.\IncrementVersion.ps1 -Build +
 
 $msbuild = "C:\Program Files (x86)\MSBuild\14.0\Bin\msbuild.exe"
 & $msbuild "$scriptPath\TestR.sln" /p:Configuration="$Configuration" /p:Platform="Any CPU" /t:Rebuild /p:VisualStudioVersion=14.0 /v:m /m
@@ -37,7 +34,9 @@ if ($LASTEXITCODE -ne 0) {
 Set-Location $scriptPath
 
 $versionInfo = [System.Diagnostics.FileVersionInfo]::GetVersionInfo("$scriptPath\TestR\bin\$Configuration\TestR.dll")
-$version = $versionInfo.FileVersion.ToString()
+$build = ([Version] $versionInfo.ProductVersion).Build
+$version = $versionInfo.FileVersion.Replace(".$build.0", ".$build")
+
 
 Copy-Item TestR\bin\$Configuration\TestR.dll $destination\bin\
 Copy-Item TestR\bin\$Configuration\Interop.SHDocVw.dll $destination\bin\

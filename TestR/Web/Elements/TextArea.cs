@@ -23,6 +23,7 @@ namespace TestR.Web.Elements
 		public TextArea(JToken element, Browser browser, ElementCollection collection)
 			: base(element, browser, collection)
 		{
+			TypingDelay = Browser.SlowMotion ? 50 : 15;
 		}
 
 		#endregion
@@ -152,7 +153,7 @@ namespace TestR.Web.Elements
 		/// <summary>
 		/// Gets the delay (in milliseconds) between each character.
 		/// </summary>
-		public int TypingDelay => Browser.SlowMotion ? 50 : 10;
+		public int TypingDelay { get; set; }
 
 		/// <summary>
 		/// Gets or sets the value attribute.
@@ -205,7 +206,7 @@ namespace TestR.Web.Elements
 				Thread.Sleep(TypingDelay);
 			}
 
-			Thread.Sleep(TypingDelay);
+			Thread.Sleep(50);
 			Highlight(false);
 			TriggerElement();
 		}

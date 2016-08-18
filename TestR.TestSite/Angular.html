@@ -30,7 +30,7 @@
 		</div>
 		<br />
 		<div class="ng-view ng-cloak"></div>
-		<script src="./Scripts/jquery-2.2.2.js"></script>
+		<script src="./Scripts/jquery-2.2.3.js"></script>
 		<script src="./Scripts/angular.js"></script>
 		<script src="./Scripts/angular-route.js"></script>
 		<script type="text/javascript" language="javascript">
@@ -49,24 +49,35 @@
 					}
 				]);
 
-			app.controller('controller', [
+			app.controller('controller',
+			[
 				'$scope',
 				function ($scope) {
 					$scope.message = 'Hello World';
 					$scope.model = {};
 					$scope.items = [];
 					$scope.user = {
-						email: ''
+						email: '',
+						userName: '',
+						password: ''
 					};
-
+					$scope.state = {
+						error: ''
+					};
 					$scope.addItem = function () {
 						var id = $scope.items.length + 1;
 						$scope.items.push({ id: id, text: id.toString() });
 					};
+
+					$scope.register = function () {
+
+						$scope.state.error = $scope.user.userName + ':' + $scope.user.password;
+					};
 				}
 			]);
 
-			app.controller('anotherPageController', [
+			app.controller('anotherPageController',
+			[
 				'$scope',
 				function ($scope) {
 					$scope.message = 'Hello World';
@@ -82,19 +93,32 @@
 				}
 			]);
 
-			$(document).ready(function () {
-				document.addEventListener('keydown', function (e) {
-					document.getElementById('log').innerHTML += 'keydown: ' + e.keyCode + '(' + String.fromCharCode(e.keyCode) + ')<br />';
-				});
+			$(document)
+				.ready(function () {
+					document.addEventListener('keydown',
+						function (e) {
+							var element = document.getElementById('log');
+							if (element) {
+								document.getElementById('log').innerHTML += 'keydown: ' + e.keyCode + '(' + String.fromCharCode(e.keyCode) + ')<br />';
+							}
+						});
 
-				document.addEventListener('keypress', function (e) {
-					document.getElementById('log').innerHTML += 'keypress: ' + e.keyCode + '(' + String.fromCharCode(e.keyCode) + ')<br />';
-				});
+					document.addEventListener('keypress',
+						function (e) {
+							var element = document.getElementById('log');
+							if (element) {
+								document.getElementById('log').innerHTML += 'keypress: ' + e.keyCode + '(' + String.fromCharCode(e.keyCode) + ')<br />';
+							}
+						});
 
-				document.addEventListener('keyup', function (e) {
-					document.getElementById('log').innerHTML += 'keyup: ' + e.keyCode + '(' + String.fromCharCode(e.keyCode) + ')<br />';
+					document.addEventListener('keyup',
+						function (e) {
+							var element = document.getElementById('log');
+							if (element) {
+								document.getElementById('log').innerHTML += 'keyup: ' + e.keyCode + '(' + String.fromCharCode(e.keyCode) + ')<br />';
+							}
+						});
 				});
-			});
 
 		</script>
 	</body>

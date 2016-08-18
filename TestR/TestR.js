@@ -1,4 +1,5 @@
-﻿var TestR = TestR || {
+﻿var TestR = TestR ||
+{
 	properties: [
 		'cellIndex', 'checked', 'className', 'disabled', 'href', 'id', 'multiple', 'name', 'nodeType', 'readOnly', 'rowIndex', 'selected',
 		'src', 'tagName', 'textContent', 'value'

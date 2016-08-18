@@ -17,6 +17,10 @@ namespace TestR.Native
 	{
 		#region Fields
 
+		private readonly int _value;
+
+		private static readonly List<MouseCursor> _waitCursors;
+
 		/// <summary>
 		/// Gets the cursor that represents default and wait.
 		/// </summary>
@@ -36,9 +40,6 @@ namespace TestR.Native
 		/// Gets the cursor that represents wait.
 		/// </summary>
 		public static readonly MouseCursor Wait;
-
-		private readonly int _value;
-		private static readonly List<MouseCursor> _waitCursors;
 
 		#endregion
 
@@ -112,10 +113,11 @@ namespace TestR.Native
 			{
 				return true;
 			}
-			if (obj.GetType() != typeof (MouseCursor))
+			if (obj.GetType() != typeof(MouseCursor))
 			{
 				return false;
 			}
+
 			return ((MouseCursor) obj)._value == _value;
 		}
 
@@ -169,7 +171,7 @@ namespace TestR.Native
 
 			public static CursorInfo Create()
 			{
-				return new CursorInfo { size = (uint) Marshal.SizeOf(typeof (CursorInfo)) };
+				return new CursorInfo { size = (uint) Marshal.SizeOf(typeof(CursorInfo)) };
 			}
 
 			#endregion

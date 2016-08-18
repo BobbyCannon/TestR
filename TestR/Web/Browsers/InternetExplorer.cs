@@ -33,6 +33,7 @@ namespace TestR.Web.Browsers
 		#region Fields
 
 		private SHDocVw.InternetExplorer _browser;
+
 		private static int _zoneId;
 
 		#endregion

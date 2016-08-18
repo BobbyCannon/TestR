@@ -23,6 +23,7 @@ namespace TestR.Web.Elements
 		public TextInput(JToken element, Browser browser, ElementCollection collection)
 			: base(element, browser, collection)
 		{
+			TypingDelay = Browser.SlowMotion ? 50 : 15;
 		}
 
 		#endregion
@@ -116,7 +117,7 @@ namespace TestR.Web.Elements
 		/// <summary>
 		/// Gets the delay (in milliseconds) between each character.
 		/// </summary>
-		public int TypingDelay => Browser.SlowMotion ? 50 : 10;
+		public int TypingDelay { get; set; }
 
 		/// <summary>
 		/// Gets or sets the value attribute.
@@ -141,6 +142,7 @@ namespace TestR.Web.Elements
 		/// <param name="reset"> Clear the input before typing the text. </param>
 		public void TypeText(string value, bool reset = false)
 		{
+			Click();
 			Focus();
 			Highlight(true);
 

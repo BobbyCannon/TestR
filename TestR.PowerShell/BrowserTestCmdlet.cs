@@ -39,11 +39,11 @@ namespace TestR.PowerShell
 		/// </summary>
 		/// <param name="action"> The action to run each browser against. </param>
 		/// <param name="useSecondaryMonitor"> The flag to determine to attempt to use secondary monitor. </param>
+		/// <param name="resizeBrowsers"> The flag to determine to resize the browsers. </param>
 		/// <seealso cref="BrowserType" />
-		public void ForEachBrowser(Action<Browser> action, bool useSecondaryMonitor = true)
+		public void ForEachBrowser(Action<Browser> action, bool useSecondaryMonitor = true, bool resizeBrowsers = true)
 		{
 			var screen = useSecondaryMonitor ? Screen.AllScreens.FirstOrDefault(x => x.Primary == false) ?? Screen.AllScreens.First(x => x.Primary) : Screen.AllScreens.First(x => x.Primary);
-			Screen.AllScreens.First(x => x.Primary);
 			var browserOffset = 0;
 			var browserWidth = screen.WorkingArea.Width / BrowserType.Count();
 
@@ -51,7 +51,11 @@ namespace TestR.PowerShell
 			{
 				try
 				{
-					x.MoveWindow(screen.WorkingArea.Left + (browserOffset++ * browserWidth), 0, browserWidth, screen.WorkingArea.Height);
+					if (resizeBrowsers)
+					{
+						x.MoveWindow(screen.WorkingArea.Left + (browserOffset++ * browserWidth), 0, browserWidth, screen.WorkingArea.Height);
+					}
+
 					x.BringToFront();
 					action(x);
 				}

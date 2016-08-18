@@ -32,6 +32,11 @@ namespace TestR.Web
 
 		#region Constructors
 
+		static Element()
+		{
+			_propertiesToRename = new Dictionary<string, string> { { "class", "className" } };
+		}
+
 		/// <summary>
 		/// Initializes an instance of a browser element.
 		/// </summary>
@@ -45,11 +50,6 @@ namespace TestR.Web
 			_collection = collection;
 			_orginalColor = GetStyleAttributeValue("backgroundColor", false) ?? "";
 			_highlightColor = "yellow";
-		}
-
-		static Element()
-		{
-			_propertiesToRename = new Dictionary<string, string> { { "class", "className" } };
 		}
 
 		#endregion
@@ -288,6 +288,20 @@ namespace TestR.Web
 
 		#endregion
 
+		#region Indexers
+
+		/// <summary>
+		/// Gets or sets an attribute or property by name.
+		/// </summary>
+		/// <param name="name"> The name of the attribute or property to read. </param>
+		public string this[string name]
+		{
+			get { return GetAttributeValue(name, Browser.AutoRefresh); }
+			set { SetAttributeValue(name, value); }
+		}
+
+		#endregion
+
 		#region Methods
 
 		/// <summary>
@@ -416,7 +430,7 @@ namespace TestR.Web
 		}
 
 		/// <summary>
-		/// Gets Raw Html.
+		/// Gets Raw HTML.
 		/// </summary>
 		public string Html()
 		{
@@ -601,20 +615,6 @@ namespace TestR.Web
 
 			_element.attributes.Add(name);
 			_element.attributes.Add(value);
-		}
-
-		#endregion
-
-		#region Indexers
-
-		/// <summary>
-		/// Gets or sets an attribute or property by name.
-		/// </summary>
-		/// <param name="name"> The name of the attribute or property to read. </param>
-		public string this[string name]
-		{
-			get { return GetAttributeValue(name, Browser.AutoRefresh); }
-			set { SetAttributeValue(name, value); }
 		}
 
 		#endregion

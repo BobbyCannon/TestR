@@ -370,6 +370,19 @@ namespace TestR.Web
 
 		#endregion
 
+		#region Indexers
+
+		/// <summary>
+		/// Access an element by the ID.
+		/// </summary>
+		/// <param name="id"> The ID of the element. </param>
+		public Element this[string id]
+		{
+			get { return this.FirstOrDefault(x => x.Id == id); }
+		}
+
+		#endregion
+
 		#region Methods
 
 		/// <summary>
@@ -915,20 +928,7 @@ namespace TestR.Web
 		/// <returns> The collection of elements of the provided type. </returns>
 		public ElementCollection<T> OfType<T>() where T : Element
 		{
-			return new ElementCollection<T>(this.Where(x => x.GetType() == typeof (T)).Cast<T>());
-		}
-
-		#endregion
-
-		#region Indexers
-
-		/// <summary>
-		/// Access an element by the ID.
-		/// </summary>
-		/// <param name="id"> The ID of the element. </param>
-		public Element this[string id]
-		{
-			get { return this.FirstOrDefault(x => x.Id == id); }
+			return new ElementCollection<T>(this.Where(x => x.GetType() == typeof(T)).Cast<T>());
 		}
 
 		#endregion

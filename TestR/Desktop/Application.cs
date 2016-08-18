@@ -9,7 +9,6 @@ using System.Linq;
 using System.Management;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Windows.Automation;
 using TestR.Extensions;
 using TestR.Helpers;
 using TestR.Native;
@@ -23,10 +22,14 @@ namespace TestR.Desktop
 	/// </summary>
 	public class Application : IDisposable
 	{
+		#region Constants
+
 		/// <summary>
 		/// Gets the default timeout (in milliseconds).
 		/// </summary>
 		public const int DefaultTimeout = 5000;
+
+		#endregion
 
 		#region Constructors
 
@@ -96,6 +99,17 @@ namespace TestR.Desktop
 		/// Gets or sets the time out for delay request. Defaults to 5 seconds.
 		/// </summary>
 		public TimeSpan Timeout { get; set; }
+
+		#endregion
+
+		#region Indexers
+
+		/// <summary>
+		/// Get a child using a provided key.
+		/// </summary>
+		/// <param name="id"> The ID of the child. </param>
+		/// <returns> The child if found or null if otherwise. </returns>
+		public Element this[string id] => Get(id, false);
 
 		#endregion
 
@@ -319,6 +333,7 @@ namespace TestR.Desktop
 			{
 				var node = nodes.Pop();
 				yield return node;
+
 				foreach (var n in node.Children)
 				{
 					nodes.Push(n);
@@ -609,17 +624,6 @@ namespace TestR.Desktop
 		{
 			Exited?.Invoke();
 		}
-
-		#endregion
-
-		#region Indexers
-
-		/// <summary>
-		/// Get a child using a provided key.
-		/// </summary>
-		/// <param name="id"> The ID of the child. </param>
-		/// <returns> The child if found or null if otherwise. </returns>
-		public Element this[string id] => Get(id, false);
 
 		#endregion
 

@@ -45,9 +45,9 @@ namespace TestR.Web.Browsers
 		#region Fields
 
 		private readonly JsonSerializerSettings _jsonSerializerSettings;
+		private readonly ConcurrentDictionary<string, dynamic> _socketResponses;
 		private int _requestId;
 		private ClientWebSocket _socket;
-		private readonly ConcurrentDictionary<string, dynamic> _socketResponses;
 
 		#endregion
 

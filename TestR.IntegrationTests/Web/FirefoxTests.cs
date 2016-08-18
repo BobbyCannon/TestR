@@ -65,7 +65,7 @@ namespace TestR.IntegrationTests.Web
 			using (var browser2 = Browser.AttachToBrowser(process))
 			{
 				Assert.IsNotNull(browser2);
-				Assert.AreEqual(typeof (Firefox), browser2.GetType());
+				Assert.AreEqual(typeof(Firefox), browser2.GetType());
 			}
 		}
 
