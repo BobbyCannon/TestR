@@ -91,7 +91,9 @@ namespace TestR.IntegrationTests.Web
 				browser.NavigateTo(TestSite + "/Angular.html#/form");
 				Assert.AreEqual("true", browser.Elements.Buttons["saveButton"].Disabled);
 				browser.Elements.TextInputs["pageTitle"].Text = "Hello World";
+				Assert.AreEqual("Hello World", browser.Elements.TextInputs["pageTitle"].Text);
 				browser.Elements.TextArea["pageText"].Text = "The quick brown fox jumps over the lazy dog's back.";
+				Assert.AreEqual("The quick brown fox jumps over the lazy dog's back.", browser.Elements.TextArea["pageText"].Text);
 				Assert.AreEqual("false", browser.Elements.Buttons["saveButton"].Disabled);
 			});
 		}

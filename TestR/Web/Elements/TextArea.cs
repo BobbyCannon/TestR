@@ -190,6 +190,7 @@ namespace TestR.Web.Elements
 		/// <param name="reset"> Resets the text in the element before typing the text. </param>
 		public void TypeText(string value, bool reset = false)
 		{
+			Click();
 			Focus();
 			Highlight(true);
 
@@ -206,8 +207,9 @@ namespace TestR.Web.Elements
 				Thread.Sleep(TypingDelay);
 			}
 
-			Thread.Sleep(50);
+			Thread.Sleep(TypingDelay);
 			Highlight(false);
+			TriggerElement();
 			TriggerElement();
 		}
 

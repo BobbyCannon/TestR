@@ -162,6 +162,7 @@ namespace TestR.Web.Elements
 			Thread.Sleep(TypingDelay);
 			Highlight(false);
 			TriggerElement();
+			TriggerElement();
 		}
 
 		#endregion
