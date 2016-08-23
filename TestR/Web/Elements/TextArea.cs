@@ -207,9 +207,7 @@ namespace TestR.Web.Elements
 				Thread.Sleep(TypingDelay);
 			}
 
-			Thread.Sleep(TypingDelay);
 			Highlight(false);
-			TriggerElement();
 			TriggerElement();
 		}
 

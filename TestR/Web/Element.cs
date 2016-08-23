@@ -551,6 +551,8 @@ namespace TestR.Web
 			if (Browser.JavascriptLibraries.Contains(JavaScriptLibrary.Angular))
 			{
 				Browser.ExecuteScript("angular.element(document.querySelector('#" + Id + "')).triggerHandler('input');", false);
+				Browser.ExecuteScript("angular.element(document.querySelector('#" + Id + "')).trigger('input');", false);
+				Browser.ExecuteScript("angular.element(document.querySelector('#" + Id + "')).trigger('change');", false);
 			}
 		}
 

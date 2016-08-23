@@ -9,15 +9,16 @@ using System.Threading;
 namespace TestR.Helpers
 {
 	/// <summary>
-	/// Represents the Utility class.
+	///     Represents the Utility class.
 	/// </summary>
 	public static class Utility
 	{
 		#region Methods
 
 		/// <summary>
-		/// Runs the action until the action returns true or the timeout is reached. Will delay in between actions of the provided
-		/// time.
+		///     Runs the action until the action returns true or the timeout is reached. Will delay in between actions of the
+		///     provided
+		///     time.
 		/// </summary>
 		/// <param name="action"> The action to call. </param>
 		/// <param name="timeout"> The timeout to attempt the action. This value is in milliseconds. </param>
@@ -47,8 +48,9 @@ namespace TestR.Helpers
 		}
 
 		/// <summary>
-		/// Runs the action until the action returns true or the timeout is reached. Will delay in between actions of the provided
-		/// time.
+		///     Runs the action until the action returns true or the timeout is reached. Will delay in between actions of the
+		///     provided
+		///     time.
 		/// </summary>
 		/// <param name="input"> The input to pass to the action. </param>
 		/// <param name="action"> The action to call. </param>
@@ -76,6 +78,66 @@ namespace TestR.Helpers
 			}
 
 			return true;
+		}
+
+		/// <summary>
+		///     Continues to run the action until we hit the timeout. If an exception occurs then delay for the
+		///     provided delay time.
+		/// </summary>
+		/// <param name="action"> The action to attempt to retry. </param>
+		/// <param name="timeout"> The timeout to stop retrying. </param>
+		/// <param name="delay"> The delay between retries. </param>
+		/// <returns> The response from the action. </returns>
+		public static void Retry(Action action, int timeout, int delay)
+		{
+			var watch = Stopwatch.StartNew();
+
+			try
+			{
+				action();
+			}
+			catch (Exception)
+			{
+				Thread.Sleep(delay);
+
+				var remaining = (int) (timeout - watch.Elapsed.TotalMilliseconds);
+				if (remaining <= 0)
+				{
+					throw;
+				}
+
+				Retry(action, remaining, delay);
+			}
+		}
+
+		/// <summary>
+		///     Continues to run the action until we hit the timeout. If an exception occurs then delay for the
+		///     provided delay time.
+		/// </summary>
+		/// <param name="action"> The action to attempt to retry. </param>
+		/// <param name="timeout"> The timeout to stop retrying. </param>
+		/// <param name="delay"> The delay between retries. </param>
+		/// <returns> The response from the action. </returns>
+		public static T Retry<T>(Func<T> action, int timeout, int delay)
+		{
+			var watch = Stopwatch.StartNew();
+
+			try
+			{
+				return action();
+			}
+			catch (Exception)
+			{
+				Thread.Sleep(delay);
+
+				var remaining = (int) (timeout - watch.Elapsed.TotalMilliseconds);
+				if (remaining <= 0)
+				{
+					throw;
+				}
+
+				return Retry(action, remaining, delay);
+			}
 		}
 
 		#endregion

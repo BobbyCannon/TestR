@@ -21,6 +21,8 @@ if (!(Test-Path $nugetDestination -PathType Container)){
     New-Item $nugetDestination -ItemType Directory | Out-Null
 }
 
+& nuget.exe restore "$scriptPath\TestR.sln"
+
 .\IncrementVersion.ps1 -Build +
 
 $msbuild = "C:\Program Files (x86)\MSBuild\14.0\Bin\msbuild.exe"
