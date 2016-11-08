@@ -24,6 +24,15 @@ namespace TestR.Web
 	/// <exclude> </exclude>
 	public abstract class Browser : IDisposable
 	{
+		#region Constants
+
+		/// <summary>
+		/// Gets the default timeout (in milliseconds).
+		/// </summary>
+		public const int DefaultTimeout = 5000;
+
+		#endregion
+
 		#region Fields
 
 		private string _lastUri;
@@ -120,6 +129,17 @@ namespace TestR.Web
 		/// Gets the URI of the current page.
 		/// </summary>
 		public string Uri => GetBrowserUri();
+
+		#endregion
+
+		#region Indexers
+
+		/// <summary>
+		/// Get a child using a provided key.
+		/// </summary>
+		/// <param name="id"> The ID of the child. </param>
+		/// <returns> The child if found or null if otherwise. </returns>
+		public Element this[string id] => Get(id, true);
 
 		#endregion
 
@@ -467,6 +487,75 @@ namespace TestR.Web
 		}
 
 		/// <summary>
+		/// Get the child from the children.
+		/// </summary>
+		/// <param name="id"> An ID of the element to get. </param>
+		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <returns> The child element for the ID. </returns>
+		public Element Get(string id, bool recursive = true, bool wait = true)
+		{
+			return Get<Element>(id, recursive, wait);
+		}
+
+		/// <summary>
+		/// Get the child from the children.
+		/// </summary>
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <returns> The child element for the condition. </returns>
+		public Element Get(Func<Element, bool> condition, bool recursive = true, bool wait = true)
+		{
+			return Get<Element>(condition, recursive, wait);
+		}
+
+		/// <summary>
+		/// Get the child from the children.
+		/// </summary>
+		/// <param name="id"> An ID of the element to get. </param>
+		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <returns> The child element for the ID. </returns>
+		public T Get<T>(string id, bool recursive = true, bool wait = true) where T : Element
+		{
+			return Get<T>(x => (x.Id == id) || (x.Name == id), recursive, wait);
+		}
+
+		/// <summary>
+		/// Get the child from the children.
+		/// </summary>
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <returns> The child element for the condition. </returns>
+		public T Get<T>(Func<T, bool> condition, bool recursive = true, bool wait = true) where T : Element
+		{
+			T response = null;
+
+			Utility.Wait(() =>
+			{
+				try
+				{
+					response = Elements.Get(condition, recursive);
+					if ((response != null) || !wait)
+					{
+						return true;
+					}
+
+					RefreshElements();
+					return false;
+				}
+				catch (Exception)
+				{
+					return !wait;
+				}
+			}, Timeout.TotalMilliseconds);
+
+			return response;
+		}
+
+		/// <summary>
 		/// Execute JavaScript code in the current document.
 		/// </summary>
 		/// <param name="script"> The code script to execute. </param>
@@ -538,7 +627,7 @@ namespace TestR.Web
 			LogManager.Write("Detecting JavaScript libraries.", LogLevel.Verbose);
 
 			var uri = GetBrowserUri();
-			if (uri.Length <= 0 || uri.Equals("about:tabs"))
+			if ((uri.Length <= 0) || uri.Equals("about:tabs"))
 			{
 				return;
 			}

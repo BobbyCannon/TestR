@@ -1,11 +1,13 @@
 ﻿#region References
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using TestR.Extensions;
 using TestR.Web.Elements;
+using Object = TestR.Web.Elements.Object;
 
 #endregion
 
@@ -922,13 +924,94 @@ namespace TestR.Web
 		}
 
 		/// <summary>
+		/// Get the child from the children.
+		/// </summary>
+		/// <param name="id"> An ID of the element to get. </param>
+		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
+		/// <returns> The child element for the condition. </returns>
+		public T1 Get<T1>(string id, bool recursive = true) where T1 : Element
+		{
+			return Get<T1>(x => (x.Id == id) || (x.Name == id), recursive);
+		}
+
+		/// <summary>
+		/// Get the child from the children.
+		/// </summary>
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
+		/// <returns> The child element for the condition. </returns>
+		public T1 Get<T1>(Func<T1, bool> condition, bool recursive = true) where T1 : Element
+		{
+			var children = OfType<T1>().ToList();
+			var response = children.FirstOrDefault(condition);
+			if (!recursive)
+			{
+				return response;
+			}
+
+			if (response != null)
+			{
+				return response;
+			}
+
+			foreach (var child in this)
+			{
+				response = child.Get(condition, true, false);
+				if (response != null)
+				{
+					return response;
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
 		/// Gets a collection of element of the provided type.
 		/// </summary>
 		/// <typeparam name="T"> The type of the element for the collection. </typeparam>
 		/// <returns> The collection of elements of the provided type. </returns>
 		public ElementCollection<T> OfType<T>() where T : Element
 		{
-			return new ElementCollection<T>(this.Where(x => x.GetType() == typeof(T)).Cast<T>());
+			return new ElementCollection<T>(this.Where(x => (x.GetType() == typeof(T)) || x is T).Cast<T>());
+		}
+
+		/// <summary>
+		/// Prints out all children as a debug string.
+		/// </summary>
+		/// <param name="prefix"> Prefix to the debug information. </param>
+		/// <param name="verbose"> Option to print verbose information. </param>
+		public ElementCollection PrintDebug(string prefix = "", bool verbose = true)
+		{
+			foreach (var item in this)
+			{
+				if (verbose)
+				{
+					Console.WriteLine(prefix + item.ToDetailString().Replace(Environment.NewLine, ", "));
+				}
+				else
+				{
+					Console.WriteLine(prefix + item.Id);
+				}
+
+				item.Children.PrintDebug(prefix + "    ", verbose);
+			}
+
+			return this;
+		}
+
+		/// <summary>
+		/// Sets the element title to the element id of all elements.
+		/// </summary>
+		public ElementCollection ShowDebugTitle()
+		{
+			foreach (var item in this)
+			{
+				item["title"] = item.Id;
+				item.Children.ShowDebugTitle();
+			}
+
+			return this;
 		}
 
 		#endregion

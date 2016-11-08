@@ -1,10 +1,12 @@
 ﻿#region References
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using Newtonsoft.Json.Linq;
+using TestR.Helpers;
 using TestR.Logging;
 
 #endregion
@@ -21,7 +23,7 @@ namespace TestR.Web
 		private readonly ElementCollection _collection;
 		private readonly dynamic _element;
 		private readonly string _highlightColor;
-		private readonly string _orginalColor;
+		private readonly string _originalColor;
 
 		/// <summary>
 		/// Properties that need to be renamed when requested.
@@ -31,11 +33,6 @@ namespace TestR.Web
 		#endregion
 
 		#region Constructors
-
-		static Element()
-		{
-			_propertiesToRename = new Dictionary<string, string> { { "class", "className" } };
-		}
 
 		/// <summary>
 		/// Initializes an instance of a browser element.
@@ -48,8 +45,13 @@ namespace TestR.Web
 			_element = element;
 			Browser = browser;
 			_collection = collection;
-			_orginalColor = GetStyleAttributeValue("backgroundColor", false) ?? "";
+			_originalColor = GetStyleAttributeValue("backgroundColor", false) ?? "";
 			_highlightColor = "yellow";
+		}
+
+		static Element()
+		{
+			_propertiesToRename = new Dictionary<string, string> { { "class", "className" } };
 		}
 
 		#endregion
@@ -319,7 +321,7 @@ namespace TestR.Web
 		/// <param name="eventProperties"> The properties for the event. </param>
 		public void FireEvent(string eventName, Dictionary<string, string> eventProperties)
 		{
-			var values = eventProperties.Aggregate("", (current, item) => current + ("{ key: '" + item.Key + "', value: '" + item.Value + "'},"));
+			var values = eventProperties.Aggregate("", (current, item) => current + "{ key: '" + item.Key + "', value: '" + item.Value + "'},");
 			if (values.Length > 0)
 			{
 				values = values.Remove(values.Length - 1, 1);
@@ -335,6 +337,63 @@ namespace TestR.Web
 		public void Focus()
 		{
 			Browser.ExecuteScript("document.getElementById('" + Id + "').focus()");
+		}
+
+		/// <summary>
+		/// Get the child from the children.
+		/// </summary>
+		/// <param name="id"> An ID of the element to get. </param>
+		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <returns> The child element for the ID. </returns>
+		public Element Get(string id, bool recursive = true, bool wait = true)
+		{
+			return Get<Element>(id, recursive, wait);
+		}
+
+		/// <summary>
+		/// Get the child from the children.
+		/// </summary>
+		/// <param name="id"> An ID of the element to get. </param>
+		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <returns> The child element for the ID. </returns>
+		public T Get<T>(string id, bool recursive = true, bool wait = true) where T : Element
+		{
+			return Get<T>(x => (x.Id == id) || (x.Name == id), recursive, wait);
+		}
+
+		/// <summary>
+		/// Get the child from the children.
+		/// </summary>
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <returns> The child element for the condition. </returns>
+		public T Get<T>(Func<T, bool> condition, bool recursive = true, bool wait = true) where T : Element
+		{
+			T response = null;
+
+			Utility.Wait(() =>
+			{
+				try
+				{
+					response = Children.Get(condition, recursive);
+					if ((response != null) || !wait)
+					{
+						return true;
+					}
+
+					Browser.Refresh();
+					return false;
+				}
+				catch (Exception)
+				{
+					return !wait;
+				}
+			}, Browser?.Timeout.TotalMilliseconds ?? Browser.DefaultTimeout);
+
+			return response;
 		}
 
 		/// <summary>
@@ -421,7 +480,7 @@ namespace TestR.Web
 		public void Highlight(bool highlight)
 		{
 			LogManager.Write(highlight ? "Adding highlight to element " + Id + "." : "Removing highlight from element " + Id + ".", LogLevel.Verbose);
-			SetStyleAttributeValue("background-color", highlight ? _highlightColor : _orginalColor);
+			SetStyleAttributeValue("background-color", highlight ? _highlightColor : _originalColor);
 
 			if (Browser.SlowMotion && highlight)
 			{
