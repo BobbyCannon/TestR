@@ -8,7 +8,6 @@ using System.Web;
 using mshtml;
 using SHDocVw;
 using TestR.Desktop;
-using TestR.Helpers;
 using TestR.Logging;
 using TestR.Native;
 

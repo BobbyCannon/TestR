@@ -4,7 +4,6 @@ using System.Linq;
 using System.Management.Automation;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TestR.Helpers;
 using TestR.Logging;
 using TestR.PowerShell;
 using TestR.Web;
@@ -12,7 +11,7 @@ using TestR.Web.Elements;
 
 #endregion
 
-namespace TestR.IntegrationTests.Web
+namespace TestR.AutomationTests.Web
 {
 	[TestClass]
 	[Cmdlet(VerbsDiagnostic.Test, "Browsers")]
@@ -47,16 +46,16 @@ namespace TestR.IntegrationTests.Web
 				var email = browser.Elements.TextInputs["email"];
 				email.TypeText("user", true);
 
-				var expected = "ng-dirty ng-valid-required ng-invalid ng-invalid-email".Split(' ');
+				var expected = "ng-untouched ng-scope ng-invalid ng-not-empty ng-dirty ng-invalid-email ng-valid-required".Split(' ');
 				var actual = email.GetAttributeValue("class", true).Split(' ');
 				TestHelper.AreEqual("user", email.Text);
-				Validate.AllExists(expected, actual);
+				TestHelper.AreEqual(expected, actual);
 
 				email.TypeText("@domain.com");
-				expected = "ng-dirty ng-valid-required ng-valid ng-valid-email".Split(' ');
+				expected = "ng-untouched ng-scope ng-not-empty ng-dirty ng-valid-required ng-valid ng-valid-email".Split(' ');
 				actual = email.GetAttributeValue("class", true).Split(' ');
 				TestHelper.AreEqual("user@domain.com", email.Text);
-				Validate.AllExists(expected, actual);
+				TestHelper.AreEqual(expected, actual);
 			});
 		}
 
@@ -295,7 +294,7 @@ namespace TestR.IntegrationTests.Web
 
 				var expected = new[] { "child1div", "child2span", "child3br", "child4input" };
 				Assert.AreEqual(4, children.Count);
-				Validate.AllExists(expected, children.Select(x => x.Id).ToList());
+				TestHelper.AreEqual(expected.ToList(), children.Select(x => x.Id).ToList());
 			});
 		}
 

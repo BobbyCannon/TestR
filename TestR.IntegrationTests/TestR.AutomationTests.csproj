@@ -6,8 +6,8 @@
     <ProjectGuid>{DB2FA894-81F7-48A8-89DB-3902C372FE6B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestR.IntegrationTests</RootNamespace>
-    <AssemblyName>TestR.IntegrationTests</AssemblyName>
+    <RootNamespace>TestR.AutomationTests</RootNamespace>
+    <AssemblyName>TestR.AutomationTests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -42,10 +42,10 @@
       <HintPath>..\packages\CompareNETObjects.3.05.0.0\lib\net452\KellermanSoftware.Compare-NET-Objects.dll</HintPath>
       <Private>True</Private>
     </Reference>
-	<Reference Include="Interop.UIAutomationClient">
-	  <HintPath>..\..\..\..\Program Files (x86)\Windows Kits\10\bin\x86\UIAVerify\Interop.UIAutomationClient.dll</HintPath>
-	  <EmbedInteropTypes>False</EmbedInteropTypes>
-	</Reference>
+    <Reference Include="Interop.UIAutomationClient">
+      <HintPath>..\..\..\..\Program Files (x86)\Windows Kits\10\bin\x86\UIAVerify\Interop.UIAutomationClient.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>

@@ -10,7 +10,7 @@ using TestR.PowerShell;
 
 #endregion
 
-namespace TestR.IntegrationTests.Desktop
+namespace TestR.AutomationTests.Desktop
 {
 	[TestClass]
 	[Cmdlet(VerbsDiagnostic.Test, "Notepad")]

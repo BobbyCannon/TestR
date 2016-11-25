@@ -115,6 +115,8 @@
     <Compile Include="Desktop\Pattern\ToggleState.cs" />
     <Compile Include="Desktop\Pattern\TransformPattern.cs" />
     <Compile Include="Desktop\Pattern\ValuePattern.cs" />
+    <Compile Include="Element.cs" />
+    <Compile Include="ElementCollection.cs" />
     <Compile Include="Exceptions\NotKeyboardFocusableException.cs" />
     <Compile Include="Extensions\Assembly.cs" />
     <Compile Include="Extensions\BrowserType.cs" />
@@ -247,7 +249,6 @@
     <Compile Include="Web\Elements\Header.cs" />
     <Compile Include="Web\Elements\Select.cs" />
     <Compile Include="Web\Elements\TextArea.cs" />
-    <Compile Include="Helpers\Validate.cs" />
     <Compile Include="Web\Browser.cs" />
     <Compile Include="Web\Browsers\Chrome.cs" />
     <Compile Include="Web\Browsers\InternetExplorer.cs" />
@@ -259,7 +260,7 @@
     <Compile Include="Web\Elements\TextInput.cs" />
     <Compile Include="Extensions\Enumerable.cs" />
     <Compile Include="Extensions\String.cs" />
-    <Compile Include="Helpers\Utility.cs" />
+    <Compile Include="Utility.cs" />
     <Compile Include="Web\Element.cs" />
     <Compile Include="Web\Elements\Variable.cs" />
     <Compile Include="Web\Elements\Video.cs" />

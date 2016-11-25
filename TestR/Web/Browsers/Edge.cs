@@ -9,7 +9,6 @@ using System.Text;
 using Newtonsoft.Json;
 using TestR.Desktop;
 using TestR.Extensions;
-using TestR.Helpers;
 using TestR.Logging;
 
 #endregion

@@ -10,7 +10,6 @@ using System.Management;
 using System.Runtime.InteropServices;
 using System.Threading;
 using TestR.Extensions;
-using TestR.Helpers;
 using TestR.Native;
 
 #endregion

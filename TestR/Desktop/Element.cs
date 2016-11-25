@@ -12,7 +12,6 @@ using TestR.Desktop.Elements;
 using TestR.Desktop.Pattern;
 using TestR.Exceptions;
 using TestR.Extensions;
-using TestR.Helpers;
 using TestR.Native;
 using UIAutomationClient;
 using Image = TestR.Desktop.Elements.Image;

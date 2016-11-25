@@ -65,7 +65,7 @@ namespace TestR.Sample
 							if (element != null)
 							{
 								Console.WriteLine("+" + element.ApplicationId);
-								//Console.WriteLine(element.Parent.ApplicationId);
+								//Console.WriteLine(element.Parent.FullId);
 								//Console.WriteLine(element.NativeElement.CurrentNativeWindowHandle);
 							}
 						}
@@ -92,7 +92,7 @@ namespace TestR.Sample
 							if (element != null)
 							{
 								Console.WriteLine("+" + element.ApplicationId);
-								//Console.WriteLine(element.Parent.ApplicationId);
+								//Console.WriteLine(element.Parent.FullId);
 								//Console.WriteLine(element.NativeElement.CurrentNativeWindowHandle);
 							}
 						}

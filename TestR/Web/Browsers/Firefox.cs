@@ -12,7 +12,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using TestR.Desktop;
 using TestR.Extensions;
-using TestR.Helpers;
 using TestR.Logging;
 
 #endregion

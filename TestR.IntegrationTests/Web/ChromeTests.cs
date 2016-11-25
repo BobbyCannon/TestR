@@ -11,7 +11,7 @@ using TestR.Web.Browsers;
 
 #endregion
 
-namespace TestR.IntegrationTests.Web
+namespace TestR.AutomationTests.Web
 {
 	[TestClass]
 	[Cmdlet(VerbsDiagnostic.Test, "Chrome")]

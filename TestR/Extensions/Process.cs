@@ -56,7 +56,7 @@ namespace TestR.Extensions
 			foreach (var handle in EnumerateProcessWindowHandles(process.Id))
 			{
 				var automationElement = automation.ElementFromHandle(handle);
-				var element = Element.Create(automationElement, application, null) as Window;
+				var element = Desktop.Element.Create(automationElement, application, null) as Window;
 				if (element != null)
 				{
 					response.Add(element);

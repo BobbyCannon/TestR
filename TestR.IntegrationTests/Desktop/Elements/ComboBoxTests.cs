@@ -11,7 +11,7 @@ using TestR.PowerShell;
 
 #endregion
 
-namespace TestR.IntegrationTests.Desktop.Elements
+namespace TestR.AutomationTests.Desktop.Elements
 {
 	[TestClass]
 	[Cmdlet(VerbsDiagnostic.Test, "ComboBox")]

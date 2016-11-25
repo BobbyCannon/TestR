@@ -10,7 +10,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TestR.Desktop;
 using TestR.Extensions;
-using TestR.Helpers;
 using TestR.Logging;
 using TestR.Web.Browsers;
 
