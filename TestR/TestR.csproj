@@ -22,8 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>TestR.xml</DocumentationFile>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -33,7 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\TestR.XML</DocumentationFile>
+    <DocumentationFile>TestR.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -66,9 +65,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Desktop\Application.cs" />
-    <Compile Include="Desktop\Element.cs" />
-    <Compile Include="Desktop\ElementCollection.cs" />
+    <Compile Include="Application.cs" />
+    <Compile Include="Desktop\DesktopElement.cs" />
     <Compile Include="Desktop\Elements\Button.cs" />
     <Compile Include="Desktop\Elements\Calendar.cs" />
     <Compile Include="Desktop\Elements\CheckBox.cs" />
@@ -83,22 +81,22 @@
     <Compile Include="Desktop\Elements\HeaderItem.cs" />
     <Compile Include="Desktop\Elements\Hyperlink.cs" />
     <Compile Include="Desktop\Elements\Image.cs" />
+    <Compile Include="Desktop\Elements\List.cs" />
+    <Compile Include="Desktop\Elements\ListItem.cs" />
     <Compile Include="Desktop\Elements\Menu.cs" />
+    <Compile Include="Desktop\Elements\MenuBar.cs" />
+    <Compile Include="Desktop\Elements\MenuItem.cs" />
+    <Compile Include="Desktop\Elements\Pane.cs" />
     <Compile Include="Desktop\Elements\ProgressBar.cs" />
     <Compile Include="Desktop\Elements\RadioButton.cs" />
+    <Compile Include="Desktop\Elements\ScrollBar.cs" />
     <Compile Include="Desktop\Elements\SemanticZoom.cs" />
     <Compile Include="Desktop\Elements\Separator.cs" />
     <Compile Include="Desktop\Elements\Slider.cs" />
     <Compile Include="Desktop\Elements\Spinner.cs" />
-    <Compile Include="Desktop\Elements\TabControl.cs" />
-    <Compile Include="Desktop\Elements\List.cs" />
-    <Compile Include="Desktop\Elements\ListItem.cs" />
-    <Compile Include="Desktop\Elements\MenuBar.cs" />
-    <Compile Include="Desktop\Elements\MenuItem.cs" />
-    <Compile Include="Desktop\Elements\Pane.cs" />
-    <Compile Include="Desktop\Elements\ScrollBar.cs" />
     <Compile Include="Desktop\Elements\SplitButton.cs" />
     <Compile Include="Desktop\Elements\StatusBar.cs" />
+    <Compile Include="Desktop\Elements\TabControl.cs" />
     <Compile Include="Desktop\Elements\TabItem.cs" />
     <Compile Include="Desktop\Elements\Table.cs" />
     <Compile Include="Desktop\Elements\Text.cs" />
@@ -117,22 +115,21 @@
     <Compile Include="Desktop\Pattern\ValuePattern.cs" />
     <Compile Include="Element.cs" />
     <Compile Include="ElementCollection.cs" />
-    <Compile Include="Exceptions\NotKeyboardFocusableException.cs" />
-    <Compile Include="Extensions\Assembly.cs" />
-    <Compile Include="Extensions\BrowserType.cs" />
-    <Compile Include="Extensions\Exception.cs" />
-    <Compile Include="Extensions\Object.cs" />
-    <Compile Include="Extensions\PointExtensions.cs" />
-    <Compile Include="Extensions\Process.cs" />
-    <Compile Include="Extensions\Rect.cs" />
-    <Compile Include="Extensions\UIAutomation.cs" />
-    <Compile Include="Logging\FileLogger.cs" />
+    <Compile Include="ElementHost.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Native\Keyboard.cs" />
     <Compile Include="Native\Mouse.cs" />
     <Compile Include="Native\MouseCursor.cs" />
     <Compile Include="Native\MouseMessageFilter.cs" />
+    <Compile Include="Utility.cs" />
+    <Compile Include="Native\NativeMethods.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Web\Browser.cs" />
+    <Compile Include="Web\Browsers\Chrome.cs" />
     <Compile Include="Web\Browsers\Edge.cs" />
     <Compile Include="Web\Browsers\Firefox.cs" />
+    <Compile Include="Web\Browsers\InternetExplorer.cs" />
+    <Compile Include="Web\BrowserType.cs" />
     <Compile Include="Web\Elements\Abbreviation.cs" />
     <Compile Include="Web\Elements\Acronym.cs" />
     <Compile Include="Web\Elements\Address.cs" />
@@ -149,10 +146,13 @@
     <Compile Include="Web\Elements\BlockQuote.cs" />
     <Compile Include="Web\Elements\Body.cs" />
     <Compile Include="Web\Elements\Bold.cs" />
+    <Compile Include="Web\Elements\Button.cs" />
     <Compile Include="Web\Elements\Canvas.cs" />
     <Compile Include="Web\Elements\Caption.cs" />
     <Compile Include="Web\Elements\Center.cs" />
+    <Compile Include="Web\Elements\Checkbox.cs" />
     <Compile Include="Web\Elements\Cite.cs" />
+    <Compile Include="Web\Elements\Code.cs" />
     <Compile Include="Web\Elements\Column.cs" />
     <Compile Include="Web\Elements\ColumnGroup.cs" />
     <Compile Include="Web\Elements\DataList.cs" />
@@ -164,22 +164,33 @@
     <Compile Include="Web\Elements\Details.cs" />
     <Compile Include="Web\Elements\Dialog.cs" />
     <Compile Include="Web\Elements\Directory.cs" />
+    <Compile Include="Web\Elements\Division.cs" />
     <Compile Include="Web\Elements\Embed.cs" />
     <Compile Include="Web\Elements\Emphasis.cs" />
+    <Compile Include="Web\Elements\FieldSet.cs" />
     <Compile Include="Web\Elements\Figure.cs" />
     <Compile Include="Web\Elements\FigureCaption.cs" />
     <Compile Include="Web\Elements\Font.cs" />
     <Compile Include="Web\Elements\Footer.cs" />
+    <Compile Include="Web\Elements\Form.cs" />
     <Compile Include="Web\Elements\Frame.cs" />
     <Compile Include="Web\Elements\FrameSet.cs" />
     <Compile Include="Web\Elements\Head.cs" />
+    <Compile Include="Web\Elements\Header.cs" />
     <Compile Include="Web\Elements\HeadingGroup.cs" />
+    <Compile Include="Web\Elements\HorizontalRule.cs" />
     <Compile Include="Web\Elements\Html.cs" />
+    <Compile Include="Web\Elements\Image.cs" />
     <Compile Include="Web\Elements\InlineFrame.cs" />
     <Compile Include="Web\Elements\Insert.cs" />
     <Compile Include="Web\Elements\Italic.cs" />
     <Compile Include="Web\Elements\Keyboard.cs" />
     <Compile Include="Web\Elements\KeyGenerator.cs" />
+    <Compile Include="Web\Elements\Label.cs" />
+    <Compile Include="Web\Elements\Legend.cs" />
+    <Compile Include="Web\Elements\LineBreak.cs" />
+    <Compile Include="Web\Elements\Link.cs" />
+    <Compile Include="Web\Elements\ListItem.cs" />
     <Compile Include="Web\Elements\Main.cs" />
     <Compile Include="Web\Elements\Map.cs" />
     <Compile Include="Web\Elements\Mark.cs" />
@@ -191,28 +202,26 @@
     <Compile Include="Web\Elements\NoFrames.cs" />
     <Compile Include="Web\Elements\NoScript.cs" />
     <Compile Include="Web\Elements\Object.cs" />
+    <Compile Include="Web\Elements\Option.cs" />
     <Compile Include="Web\Elements\OptionGroup.cs" />
+    <Compile Include="Web\Elements\OrderedList.cs" />
     <Compile Include="Web\Elements\Output.cs" />
+    <Compile Include="Web\Elements\Paragraph.cs" />
     <Compile Include="Web\Elements\Parameter.cs" />
     <Compile Include="Web\Elements\PreformattedText.cs" />
     <Compile Include="Web\Elements\Progress.cs" />
     <Compile Include="Web\Elements\Quotation.cs" />
     <Compile Include="Web\Elements\RadioButton.cs" />
-    <Compile Include="Web\Elements\CheckBox.cs" />
-    <Compile Include="Web\Elements\Code.cs" />
-    <Compile Include="Web\Elements\FieldSet.cs" />
-    <Compile Include="Web\Elements\HorizontalRule.cs" />
-    <Compile Include="Web\Elements\Label.cs" />
-    <Compile Include="Web\Elements\Legend.cs" />
-    <Compile Include="Web\Elements\LineBreak.cs" />
     <Compile Include="Web\Elements\Ruby.cs" />
     <Compile Include="Web\Elements\RubyExplanation.cs" />
     <Compile Include="Web\Elements\RubyTag.cs" />
     <Compile Include="Web\Elements\Sample.cs" />
     <Compile Include="Web\Elements\Script.cs" />
     <Compile Include="Web\Elements\Section.cs" />
+    <Compile Include="Web\Elements\Select.cs" />
     <Compile Include="Web\Elements\Small.cs" />
     <Compile Include="Web\Elements\Source.cs" />
+    <Compile Include="Web\Elements\Span.cs" />
     <Compile Include="Web\Elements\Strike.cs" />
     <Compile Include="Web\Elements\StrikeThrough.cs" />
     <Compile Include="Web\Elements\Strong.cs" />
@@ -220,54 +229,27 @@
     <Compile Include="Web\Elements\StyleSheetLink.cs" />
     <Compile Include="Web\Elements\SubScript.cs" />
     <Compile Include="Web\Elements\Summary.cs" />
-    <Compile Include="Web\Elements\SuperScriptText.cs" />
+    <Compile Include="Web\Elements\SuperscriptText.cs" />
+    <Compile Include="Web\Elements\Table.cs" />
     <Compile Include="Web\Elements\TableBody.cs" />
     <Compile Include="Web\Elements\TableColumn.cs" />
     <Compile Include="Web\Elements\TableFooter.cs" />
     <Compile Include="Web\Elements\TableHead.cs" />
     <Compile Include="Web\Elements\TableHeaderColumn.cs" />
     <Compile Include="Web\Elements\TableRow.cs" />
-    <Compile Include="Web\Elements\Table.cs" />
-    <Compile Include="Web\Elements\Paragraph.cs" />
-    <Compile Include="Web\Elements\ListItem.cs" />
-    <Compile Include="Web\Elements\OrderedList.cs" />
-    <Compile Include="Web\Elements\Option.cs" />
     <Compile Include="Web\Elements\TeletypeText.cs" />
+    <Compile Include="Web\Elements\TextArea.cs" />
+    <Compile Include="Web\Elements\TextInput.cs" />
     <Compile Include="Web\Elements\Time.cs" />
     <Compile Include="Web\Elements\Title.cs" />
     <Compile Include="Web\Elements\Track.cs" />
     <Compile Include="Web\Elements\Underline.cs" />
     <Compile Include="Web\Elements\UnorderedList.cs" />
-    <Compile Include="Extensions\DateTime.cs" />
-    <Compile Include="Logging\ConsoleLogger.cs" />
-    <Compile Include="Logging\ILogger.cs" />
-    <Compile Include="Logging\LogLevel.cs" />
-    <Compile Include="Logging\LogManager.cs" />
-    <Compile Include="Web\Elements\Form.cs" />
-    <Compile Include="Web\Elements\Division.cs" />
-    <Compile Include="Web\Elements\Image.cs" />
-    <Compile Include="Web\Elements\Header.cs" />
-    <Compile Include="Web\Elements\Select.cs" />
-    <Compile Include="Web\Elements\TextArea.cs" />
-    <Compile Include="Web\Browser.cs" />
-    <Compile Include="Web\Browsers\Chrome.cs" />
-    <Compile Include="Web\Browsers\InternetExplorer.cs" />
-    <Compile Include="Web\BrowserType.cs" />
-    <Compile Include="Web\ElementCollection.cs" />
-    <Compile Include="Web\Elements\Button.cs" />
-    <Compile Include="Web\Elements\Link.cs" />
-    <Compile Include="Web\Elements\Span.cs" />
-    <Compile Include="Web\Elements\TextInput.cs" />
-    <Compile Include="Extensions\Enumerable.cs" />
-    <Compile Include="Extensions\String.cs" />
-    <Compile Include="Utility.cs" />
-    <Compile Include="Web\Element.cs" />
     <Compile Include="Web\Elements\Variable.cs" />
     <Compile Include="Web\Elements\Video.cs" />
     <Compile Include="Web\Elements\WordBreakOpportunity.cs" />
     <Compile Include="Web\JavascriptLibrary.cs" />
-    <Compile Include="Native\NativeMethods.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Web\WebElement.cs" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="SHDocVw">
@@ -286,11 +268,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="TestR.ico" />
+    <Content Include="TestR.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />
     <None Include="packages.config" />
+    <None Include="TestR.md" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

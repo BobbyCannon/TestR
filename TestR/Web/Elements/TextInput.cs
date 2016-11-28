@@ -10,7 +10,7 @@ namespace TestR.Web.Elements
 	/// <summary>
 	/// Represents a browser text input element.
 	/// </summary>
-	public class TextInput : Element
+	public class TextInput : WebElement
 	{
 		#region Constructors
 
@@ -19,11 +19,11 @@ namespace TestR.Web.Elements
 		/// </summary>
 		/// <param name="element"> The browser element this is for. </param>
 		/// <param name="browser"> The browser this element is associated with. </param>
-		/// <param name="collection"> The collection this element is associated with. </param>
-		public TextInput(JToken element, Browser browser, ElementCollection collection)
-			: base(element, browser, collection)
+		/// <param name="parent"> The parent host for this element. </param>
+		public TextInput(JToken element, Browser browser, ElementHost parent)
+			: base(element, browser, parent)
 		{
-			TypingDelay = Browser.SlowMotion ? 50 : 15;
+			TypingDelay = Browser.Application.SlowMotion ? 50 : 15;
 		}
 
 		#endregion

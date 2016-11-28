@@ -9,7 +9,7 @@ namespace TestR.Web.Elements
 	/// <summary>
 	/// Represent a browser link element.
 	/// </summary>
-	public class Link : Element
+	public class Link : WebElement
 	{
 		#region Constructors
 
@@ -18,9 +18,9 @@ namespace TestR.Web.Elements
 		/// </summary>
 		/// <param name="element"> The browser element this is for. </param>
 		/// <param name="browser"> The browser this element is associated with. </param>
-		/// <param name="collection"> The collection this element is associated with. </param>
-		public Link(JToken element, Browser browser, ElementCollection collection)
-			: base(element, browser, collection)
+		/// <param name="parent"> The parent host for this element. </param>
+		public Link(JToken element, Browser browser, ElementHost parent)
+			: base(element, browser, parent)
 		{
 		}
 

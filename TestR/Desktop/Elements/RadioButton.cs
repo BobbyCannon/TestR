@@ -9,11 +9,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents a radio button element.
 	/// </summary>
-	public class RadioButton : Element
+	public class RadioButton : DesktopElement
 	{
 		#region Constructors
 
-		internal RadioButton(IUIAutomationElement element, Application application, Element parent)
+		internal RadioButton(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}

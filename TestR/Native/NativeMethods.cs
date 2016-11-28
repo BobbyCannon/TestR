@@ -134,6 +134,52 @@ namespace TestR.Native
 
 		#endregion
 
+		#region Interfaces
+
+		[ComImport]
+		[Guid("79EAC9EE-BAF9-11CE-8C82-00AA004BA90B")]
+		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+		private interface IInternetSecurityManager
+		{
+			#region Methods
+
+			[return: MarshalAs(UnmanagedType.I4)]
+			[PreserveSig]
+			int SetSecuritySite([In] IntPtr pSite);
+
+			[return: MarshalAs(UnmanagedType.I4)]
+			[PreserveSig]
+			int GetSecuritySite([Out] IntPtr pSite);
+
+			[return: MarshalAs(UnmanagedType.I4)]
+			[PreserveSig]
+			int MapUrlToZone([In] [MarshalAs(UnmanagedType.LPWStr)] string pwszUrl, out uint pdwZone, uint dwFlags);
+
+			[return: MarshalAs(UnmanagedType.I4)]
+			[PreserveSig]
+			int GetSecurityId([MarshalAs(UnmanagedType.LPWStr)] string pwszUrl, [MarshalAs(UnmanagedType.LPArray)] byte[] pbSecurityId, ref uint pcbSecurityId, uint dwReserved);
+
+			[return: MarshalAs(UnmanagedType.I4)]
+			[PreserveSig]
+			int ProcessUrlAction([In] [MarshalAs(UnmanagedType.LPWStr)] string pwszUrl, uint dwAction, out byte pPolicy, uint cbPolicy, byte pContext, uint cbContext, uint dwFlags, uint dwReserved);
+
+			[return: MarshalAs(UnmanagedType.I4)]
+			[PreserveSig]
+			int QueryCustomPolicy([In] [MarshalAs(UnmanagedType.LPWStr)] string pwszUrl, ref Guid guidKey, ref byte ppPolicy, ref uint pcbPolicy, ref byte pContext, uint cbContext, uint dwReserved);
+
+			[return: MarshalAs(UnmanagedType.I4)]
+			[PreserveSig]
+			int SetZoneMapping(uint dwZone, [In] [MarshalAs(UnmanagedType.LPWStr)] string lpszPattern, uint dwFlags);
+
+			[return: MarshalAs(UnmanagedType.I4)]
+			[PreserveSig]
+			int GetZoneMappings(uint dwZone, out IEnumString ppenumString, uint dwFlags);
+
+			#endregion
+		}
+
+		#endregion
+
 		#region Delegates
 
 		internal delegate bool EnumThreadDelegate(IntPtr hWnd, IntPtr lParam);
@@ -223,52 +269,6 @@ namespace TestR.Native
 			VK_RSHIFT = 0xA1,
 			VK_LCONTROL = 0xA2,
 			VK_RCONTROL = 0xA3
-		}
-
-		#endregion
-
-		#region Interfaces
-
-		[ComImport]
-		[Guid("79EAC9EE-BAF9-11CE-8C82-00AA004BA90B")]
-		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-		private interface IInternetSecurityManager
-		{
-			#region Methods
-
-			[return: MarshalAs(UnmanagedType.I4)]
-			[PreserveSig]
-			int SetSecuritySite([In] IntPtr pSite);
-
-			[return: MarshalAs(UnmanagedType.I4)]
-			[PreserveSig]
-			int GetSecuritySite([Out] IntPtr pSite);
-
-			[return: MarshalAs(UnmanagedType.I4)]
-			[PreserveSig]
-			int MapUrlToZone([In] [MarshalAs(UnmanagedType.LPWStr)] string pwszUrl, out uint pdwZone, uint dwFlags);
-
-			[return: MarshalAs(UnmanagedType.I4)]
-			[PreserveSig]
-			int GetSecurityId([MarshalAs(UnmanagedType.LPWStr)] string pwszUrl, [MarshalAs(UnmanagedType.LPArray)] byte[] pbSecurityId, ref uint pcbSecurityId, uint dwReserved);
-
-			[return: MarshalAs(UnmanagedType.I4)]
-			[PreserveSig]
-			int ProcessUrlAction([In] [MarshalAs(UnmanagedType.LPWStr)] string pwszUrl, uint dwAction, out byte pPolicy, uint cbPolicy, byte pContext, uint cbContext, uint dwFlags, uint dwReserved);
-
-			[return: MarshalAs(UnmanagedType.I4)]
-			[PreserveSig]
-			int QueryCustomPolicy([In] [MarshalAs(UnmanagedType.LPWStr)] string pwszUrl, ref Guid guidKey, ref byte ppPolicy, ref uint pcbPolicy, ref byte pContext, uint cbContext, uint dwReserved);
-
-			[return: MarshalAs(UnmanagedType.I4)]
-			[PreserveSig]
-			int SetZoneMapping(uint dwZone, [In] [MarshalAs(UnmanagedType.LPWStr)] string lpszPattern, uint dwFlags);
-
-			[return: MarshalAs(UnmanagedType.I4)]
-			[PreserveSig]
-			int GetZoneMappings(uint dwZone, out IEnumString ppenumString, uint dwFlags);
-
-			#endregion
 		}
 
 		#endregion

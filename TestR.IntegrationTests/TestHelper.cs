@@ -1,15 +1,11 @@
 ﻿#region References
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using KellermanSoftware.CompareNetObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop;
-using TestR.Logging;
 
 #endregion
 
@@ -29,10 +25,10 @@ namespace TestR.AutomationTests
 
 		public static void AddConsoleLogger()
 		{
-			if (LogManager.Loggers.Count <= 0)
-			{
-				LogManager.Loggers.Add(new ConsoleLogger { Level = LogLevel.Verbose });
-			}
+			//if (LogManager.Loggers.Count <= 0)
+			//{
+			//	LogManager.Loggers.Add(new ConsoleLogger { Level = LogLevel.Verbose });
+			//}
 		}
 
 		public static void AreEqual<T>(T expected, T actual)
@@ -41,6 +37,16 @@ namespace TestR.AutomationTests
 
 			var result = compareObjects.Compare(expected, actual);
 			Assert.IsTrue(result.AreEqual, result.DifferencesString);
+		}
+
+		/// <summary>
+		/// Dumps the object to Console.WriteLine.
+		/// </summary>
+		/// <param name="value"> The value to dump to the console. </param>
+		/// <param name="label"> The label to prefix the value. </param>
+		public static void Dump(this object value, string label = "")
+		{
+			Console.WriteLine(string.IsNullOrWhiteSpace(label) ? value.ToString() : label + ":" + value);
 		}
 
 		public static void PrintChildren(Element parent, string prefix = "")

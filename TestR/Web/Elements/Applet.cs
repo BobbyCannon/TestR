@@ -9,7 +9,7 @@ namespace TestR.Web.Elements
 	/// <summary>
 	/// Represents a browser Applet element.
 	/// </summary>
-	public class Applet : Element
+	public class Applet : WebElement
 	{
 		#region Constructors
 
@@ -18,9 +18,9 @@ namespace TestR.Web.Elements
 		/// </summary>
 		/// <param name="element"> The browser element this is for. </param>
 		/// <param name="browser"> The browser this element is associated with. </param>
-		/// <param name="collection"> The collection this element is associated with. </param>
-		public Applet(JToken element, Browser browser, ElementCollection collection)
-			: base(element, browser, collection)
+		/// <param name="parent"> The parent host for this element. </param>
+		public Applet(JToken element, Browser browser, ElementHost parent)
+			: base(element, browser, parent)
 		{
 		}
 
@@ -43,11 +43,7 @@ namespace TestR.Web.Elements
 		/// <summary>
 		/// Gets or sets the height attribute.
 		/// </summary>
-		public string Height
-		{
-			get { return this["height"]; }
-			set { this["height"] = value; }
-		}
+		public override int Height => this["height"].ToInt();
 
 		/// <summary>
 		/// Gets or sets the object attribute.
@@ -64,11 +60,7 @@ namespace TestR.Web.Elements
 		/// <summary>
 		/// Gets or sets the width attribute.
 		/// </summary>
-		public string Width
-		{
-			get { return this["width"]; }
-			set { this["width"] = value; }
-		}
+		public override int Width => this["width"].ToInt();
 
 		#endregion
 	}

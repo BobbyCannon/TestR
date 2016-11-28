@@ -10,11 +10,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents a edit element.
 	/// </summary>
-	public class Edit : Element
+	public class Edit : DesktopElement
 	{
 		#region Constructors
 
-		internal Edit(IUIAutomationElement element, Application application, Element parent)
+		internal Edit(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}

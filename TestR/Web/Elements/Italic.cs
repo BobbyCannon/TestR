@@ -9,7 +9,7 @@ namespace TestR.Web.Elements
 	/// <summary>
 	/// Represents a browser Italic element.
 	/// </summary>
-	public class Italic : Element
+	public class Italic : WebElement
 	{
 		#region Constructors
 
@@ -18,9 +18,9 @@ namespace TestR.Web.Elements
 		/// </summary>
 		/// <param name="element"> The browser element this is for. </param>
 		/// <param name="browser"> The browser this element is associated with. </param>
-		/// <param name="collection"> The collection this element is associated with. </param>
-		public Italic(JToken element, Browser browser, ElementCollection collection)
-			: base(element, browser, collection)
+		/// <param name="parent"> The parent host for this element. </param>
+		public Italic(JToken element, Browser browser, ElementHost parent)
+			: base(element, browser, parent)
 		{
 		}
 

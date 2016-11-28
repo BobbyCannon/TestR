@@ -9,7 +9,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop;
 using TestR.Desktop.Elements;
 using TestR.Desktop.Pattern;
-using TestR.Extensions;
 using TestR.PowerShell;
 
 #endregion
@@ -225,7 +224,7 @@ namespace TestR.AutomationTests.Desktop
 				checkbox = window.Get<CheckBox>("checkBox1");
 			}
 
-			var element = Element.FromPoint(checkbox.Location);
+			var element = DesktopElement.FromPoint(checkbox.Location);
 			Assert.AreEqual("checkBox1", element.ApplicationId);
 
 			element.UpdateParents();

@@ -11,11 +11,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents a check box element.
 	/// </summary>
-	public class CheckBox : Element
+	public class CheckBox : DesktopElement
 	{
 		#region Constructors
 
-		internal CheckBox(IUIAutomationElement element, Application application, Element parent)
+		internal CheckBox(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}

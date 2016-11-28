@@ -22,7 +22,7 @@ namespace TestR.TestWinForms
 
 		#region Methods
 
-		private static string GetParentWindowsTitle(Element element)
+		private static string GetParentWindowsTitle(DesktopElement element)
 		{
 			var parent = element;
 
@@ -51,7 +51,7 @@ namespace TestR.TestWinForms
 		private static void MouseClick(object sender, MouseEventArgs e)
 		{
 			var point = new Point(e.X, e.Y);
-			var element = Element.FromPoint(point);
+			var element = DesktopElement.FromPoint(point);
 			element.UpdateParents();
 
 			var message = $"{element.ApplicationId} : {element.TypeName} @ {point.X}:{point.Y} on {GetParentWindowsTitle(element)} with {e.Button} button";

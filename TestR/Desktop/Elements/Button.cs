@@ -11,11 +11,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents a button element.
 	/// </summary>
-	public class Button : Element
+	public class Button : DesktopElement
 	{
 		#region Constructors
 
-		internal Button(IUIAutomationElement element, Application application, Element parent)
+		internal Button(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}

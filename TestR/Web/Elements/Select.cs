@@ -10,7 +10,7 @@ namespace TestR.Web.Elements
 	/// <summary>
 	/// Represents a browser select element.
 	/// </summary>
-	public class Select : Element
+	public class Select : WebElement
 	{
 		#region Constructors
 
@@ -19,9 +19,9 @@ namespace TestR.Web.Elements
 		/// </summary>
 		/// <param name="element"> The browser element this is for. </param>
 		/// <param name="browser"> The browser this element is associated with. </param>
-		/// <param name="collection"> The collection this element is associated with. </param>
-		public Select(JToken element, Browser browser, ElementCollection collection)
-			: base(element, browser, collection)
+		/// <param name="parent"> The parent host for this element. </param>
+		public Select(JToken element, Browser browser, ElementHost parent)
+			: base(element, browser, parent)
 		{
 		}
 
@@ -78,6 +78,18 @@ namespace TestR.Web.Elements
 		}
 
 		/// <summary>
+		/// Gets or sets the size attribute.
+		/// </summary>
+		/// <remarks>
+		/// Defines the number of visible options in a drop-down list.
+		/// </remarks>
+		public string OptionCount
+		{
+			get { return this["size"]; }
+			set { this["size"] = value; }
+		}
+
+		/// <summary>
 		/// Gets or sets the required attribute.
 		/// </summary>
 		/// <remarks>
@@ -94,19 +106,7 @@ namespace TestR.Web.Elements
 		/// </summary>
 		public Option SelectedOption
 		{
-			get { return Children.Options.FirstOrDefault(x => x.Value == Value); }
-		}
-
-		/// <summary>
-		/// Gets or sets the size attribute.
-		/// </summary>
-		/// <remarks>
-		/// Defines the number of visible options in a drop-down list.
-		/// </remarks>
-		public string Size
-		{
-			get { return this["size"]; }
-			set { this["size"] = value; }
+			get { return Children.OfType<Option>().FirstOrDefault(x => x.Value == Value); }
 		}
 
 		/// <summary>

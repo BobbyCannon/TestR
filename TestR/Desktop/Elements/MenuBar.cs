@@ -9,11 +9,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents the menu bar for a window.
 	/// </summary>
-	public class MenuBar : Element
+	public class MenuBar : DesktopElement
 	{
 		#region Constructors
 
-		internal MenuBar(IUIAutomationElement element, Application application, Element parent)
+		internal MenuBar(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}

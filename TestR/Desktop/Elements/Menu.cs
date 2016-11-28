@@ -9,11 +9,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents a menu element.
 	/// </summary>
-	public class Menu : Element
+	public class Menu : DesktopElement
 	{
 		#region Constructors
 
-		internal Menu(IUIAutomationElement element, Application application, Element parent)
+		internal Menu(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}

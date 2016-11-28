@@ -1,8 +1,6 @@
 ﻿#region References
 
-using System;
 using System.Diagnostics;
-using System.Runtime.Remoting.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.UnitTests.TestTypes;
 
@@ -55,8 +53,9 @@ namespace TestR.UnitTests
 		[TestMethod]
 		public void WaitWithProvidedInput()
 		{
-			var expected = new ElementOne("1", "1", TimeSpan.MinValue, null);
-			ElementOne actualInput = null;
+			var host = TestHelper.CreateHost();
+			var expected = new ElementOne("1", "1", host);
+			Element actualInput = null;
 
 			var actual = Utility.Wait(expected, x =>
 			{

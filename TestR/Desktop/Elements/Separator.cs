@@ -9,11 +9,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents the separator element.
 	/// </summary>
-	public class Separator : Element
+	public class Separator : DesktopElement
 	{
 		#region Constructors
 
-		internal Separator(IUIAutomationElement element, Application application, Element parent)
+		internal Separator(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}

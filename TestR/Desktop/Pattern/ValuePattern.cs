@@ -47,7 +47,7 @@ namespace TestR.Desktop.Pattern
 		/// </summary>
 		/// <param name="element"> The element that supports the pattern. </param>
 		/// <returns> The pattern if we could find one else null will be returned. </returns>
-		public static ValuePattern Create(Element element)
+		public static ValuePattern Create(DesktopElement element)
 		{
 			var pattern = element.NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_ValuePatternId) as IUIAutomationValuePattern;
 			return pattern == null ? null : new ValuePattern(pattern);

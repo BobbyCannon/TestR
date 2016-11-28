@@ -3,7 +3,6 @@
 using System;
 using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TestR.Extensions;
 using TestR.PowerShell;
 using TestR.Web;
 using TestR.Web.Browsers;

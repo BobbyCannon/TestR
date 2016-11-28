@@ -1,8 +1,8 @@
 ﻿#region References
 
-using System;
+using System.Drawing;
 using System.Text;
-using TestR.Extensions;
+using TestR.Native;
 
 #endregion
 
@@ -11,24 +11,18 @@ namespace TestR
 	/// <summary>
 	/// Represents an automation element.
 	/// </summary>
-	public abstract class BaseElement
+	public abstract class Element : ElementHost
 	{
 		#region Constructors
 
 		/// <summary>
 		/// Instantiates an instance of an element.
 		/// </summary>
-		/// <param name="id"> </param>
-		/// <param name="name"> </param>
-		/// <param name="timeout"> </param>
+		/// <param name="application"> </param>
 		/// <param name="parent"> </param>
-		protected BaseElement(string id, string name, TimeSpan timeout, BaseElement parent)
+		protected Element(Application application, ElementHost parent)
+			: base(application, parent)
 		{
-			Children = new ElementCollection<BaseElement>();
-			Id = id;
-			Name = name;
-			Timeout = timeout;
-			Parent = parent;
 		}
 
 		#endregion
@@ -36,21 +30,27 @@ namespace TestR
 		#region Properties
 
 		/// <summary>
+		/// Gets the area of the element.
 		/// </summary>
-		public ElementCollection<BaseElement> Children { get; set; }
+		public Rectangle BoundingRectangle => new Rectangle(Location.X, Location.Y, Width, Height);
 
 		/// <summary>
-		/// The full id of the element which include all parent ids prefixed to the id.
+		/// Gets a value that indicates whether the element is focused.
+		/// </summary>
+		public abstract bool Focused { get; }
+
+		/// <summary>
+		/// Gets the full id of the element which include all parent IDs prefixed to this element ID.
 		/// </summary>
 		/// <summary>
-		/// Gets the ID of this element in the application. Includes full application namespace.
+		/// Gets the ID of this element in the element host. Includes full host namespace. Ex. GrandParent\Parent\Element
 		/// </summary>
 		public string FullId
 		{
 			get
 			{
 				var builder = new StringBuilder();
-				var element = this;
+				var element = (ElementHost) this;
 				do
 				{
 					builder.Insert(0, new[] { element.Id, element.Name, " " }.FirstValue() + ",");
@@ -63,105 +63,82 @@ namespace TestR
 		}
 
 		/// <summary>
-		/// The id of the element.
+		/// Gets the width of the element.
 		/// </summary>
-		public string Id { get; set; }
+		public abstract int Height { get; }
 
 		/// <summary>
-		/// The name of the element.
+		/// Gets or sets an attribute or property by name.
 		/// </summary>
-		public string Name { get; set; }
+		/// <param name="id"> The ID of the attribute or property to read. </param>
+		public abstract string this[string id] { get; set; }
 
 		/// <summary>
-		/// The parent element of this element.
+		/// Gets the location of the element.
 		/// </summary>
-		public BaseElement Parent { get; private set; }
+		public abstract Point Location { get; }
 
 		/// <summary>
-		/// The timeout of the element.
+		/// Gets the size of the element.
 		/// </summary>
-		public TimeSpan Timeout { get; set; }
+		public Size Size => new Size(Width, Height);
+
+		/// <summary>
+		/// Gets the width of the element.
+		/// </summary>
+		public abstract int Width { get; }
 
 		#endregion
 
 		#region Methods
 
 		/// <summary>
-		/// Get the child from the children.
+		/// Takes a snippet of the element.
 		/// </summary>
-		/// <param name="id"> An ID of the element to get. </param>
-		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
-		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
-		/// <returns> The child element for the ID. </returns>
-		public BaseElement Get(string id, bool recursive = true, bool wait = true)
-		{
-			return Get<BaseElement>(id, recursive, wait);
-		}
+		public abstract Element CaptureSnippet(string filePath);
 
 		/// <summary>
-		/// Get the child from the children.
+		/// Performs mouse click at the center of the element.
 		/// </summary>
-		/// <param name="id"> An ID of the element to get. </param>
-		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
-		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
-		/// <returns> The child element for the ID. </returns>
-		public T Get<T>(string id, bool recursive = true, bool wait = true) where T : BaseElement
-		{
-			return Get<T>(x => (x.FullId == id) || (x.Id == id) || (x.Name == id), recursive, wait);
-		}
+		/// <param name="x"> Optional X offset when clicking. </param>
+		/// <param name="y"> Optional Y offset when clicking. </param>
+		public abstract Element Click(int x = 0, int y = 0);
 
 		/// <summary>
-		/// Get the child from the children.
+		/// Set focus on the element.
 		/// </summary>
-		/// <param name="condition"> A function to test each element for a condition. </param>
-		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
-		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
-		/// <returns> The child element for the condition. </returns>
-		public BaseElement Get(Func<BaseElement, bool> condition, bool recursive = true, bool wait = true)
-		{
-			return Get<BaseElement>(condition, recursive, wait);
-		}
+		public abstract Element Focus();
 
 		/// <summary>
-		/// Get the child from the children.
+		/// Moves mouse cursor to the center of the element.
 		/// </summary>
-		/// <param name="condition"> A function to test each element for a condition. </param>
-		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
-		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
-		/// <returns> The child element for the condition. </returns>
-		public T Get<T>(Func<T, bool> condition, bool recursive = true, bool wait = true) where T : BaseElement
+		/// <param name="x"> Optional X offset when clicking. </param>
+		/// <param name="y"> Optional Y offset when clicking. </param>
+		public abstract Element MoveMouseTo(int x = 0, int y = 0);
+
+		/// <summary>
+		/// Performs mouse right click at the center of the element.
+		/// </summary>
+		/// <param name="x"> Optional X offset when clicking. </param>
+		/// <param name="y"> Optional Y offset when clicking. </param>
+		public abstract Element RightClick(int x = 0, int y = 0);
+
+		/// <summary>
+		/// Provides a string of details for the element.
+		/// </summary>
+		/// <returns> The string of element details. </returns>
+		public abstract string ToDetailString();
+
+		/// <summary>
+		/// Focus the element then type the text via the keyboard.
+		/// </summary>
+		/// <param name="value"> The value to type. </param>
+		public Element TypeText(string value)
 		{
-			T response = null;
-
-			Utility.Wait(() =>
-			{
-				try
-				{
-					response = Children.Get(condition, recursive);
-					if ((response != null) || !wait)
-					{
-						return true;
-					}
-
-					UpdateChildren();
-					return false;
-				}
-				catch (Exception)
-				{
-					return !wait;
-				}
-			}, Timeout.TotalMilliseconds);
-
-			return response;
-		}
-
-		public string ToDetailString()
-		{
-			return string.Empty;
-		}
-
-		public void UpdateChildren()
-		{
+			Application.BringToFront();
+			Focus();
+			Keyboard.TypeText(value);
+			return this;
 		}
 
 		#endregion

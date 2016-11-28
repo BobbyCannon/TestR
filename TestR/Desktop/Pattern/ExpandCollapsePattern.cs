@@ -1,7 +1,6 @@
 ﻿#region References
 
 using System.Linq;
-using TestR.Extensions;
 using UIAutomationClient;
 
 #endregion
@@ -64,7 +63,7 @@ namespace TestR.Desktop.Pattern
 		/// </summary>
 		/// <param name="element"> The element that supports the pattern. </param>
 		/// <returns> The pattern if we could find one else null will be returned. </returns>
-		public static ExpandCollapsePattern Create(Element element)
+		public static ExpandCollapsePattern Create(DesktopElement element)
 		{
 			var pattern = element.NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_ExpandCollapsePatternId) as IUIAutomationExpandCollapsePattern;
 			return pattern == null ? null : new ExpandCollapsePattern(pattern);

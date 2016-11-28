@@ -4,9 +4,7 @@ using System.IO;
 using System.Management.Automation;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TestR.Desktop;
 using TestR.Desktop.Elements;
-using TestR.Extensions;
 using TestR.PowerShell;
 
 #endregion

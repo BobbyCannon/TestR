@@ -13,11 +13,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents a window for an application.
 	/// </summary>
-	public class Window : Element
+	public class Window : DesktopElement
 	{
 		#region Constructors
 
-		internal Window(IUIAutomationElement element, Application application, Element parent)
+		internal Window(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}
@@ -53,12 +53,12 @@ namespace TestR.Desktop.Elements
 		/// <summary>
 		/// Gets the status bar for the window. Returns null if the window does not have a status bar.
 		/// </summary>
-		public StatusBar StatusBar => Children.StatusBars.FirstOrDefault();
+		public StatusBar StatusBar => Children.OfType<StatusBar>().FirstOrDefault();
 
 		/// <summary>
 		/// Gets the title bar for the window. Returns null if the window does not have a title bar.
 		/// </summary>
-		public TitleBar TitleBar => Children.TitleBars.FirstOrDefault();
+		public TitleBar TitleBar => Children.OfType<TitleBar>().FirstOrDefault();
 
 		#endregion
 

@@ -9,11 +9,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents the tab item.
 	/// </summary>
-	public class TabItem : Element
+	public class TabItem : DesktopElement
 	{
 		#region Constructors
 
-		internal TabItem(IUIAutomationElement element, Application application, Element parent)
+		internal TabItem(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}

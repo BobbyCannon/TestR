@@ -1,12 +1,11 @@
 ﻿#region References
 
-using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using Newtonsoft.Json.Linq;
-using TestR.Logging;
 
 #endregion
 
@@ -15,11 +14,10 @@ namespace TestR.Web
 	/// <summary>
 	/// Represents an element for a browser.
 	/// </summary>
-	public class Element
+	public class WebElement : Element
 	{
 		#region Fields
 
-		private readonly ElementCollection _collection;
 		private readonly dynamic _element;
 		private readonly string _highlightColor;
 		private readonly string _originalColor;
@@ -38,17 +36,17 @@ namespace TestR.Web
 		/// </summary>
 		/// <param name="element"> The browser element this is for. </param>
 		/// <param name="browser"> The browser this element is associated with. </param>
-		/// <param name="collection"> The collection this element is associated with. </param>
-		public Element(JToken element, Browser browser, ElementCollection collection)
+		/// <param name="parent"> </param>
+		public WebElement(JToken element, Browser browser, ElementHost parent)
+			: base(browser.Application, parent)
 		{
-			_element = element;
 			Browser = browser;
-			_collection = collection;
+			_element = element;
 			_originalColor = GetStyleAttributeValue("backgroundColor", false) ?? "";
 			_highlightColor = "yellow";
 		}
 
-		static Element()
+		static WebElement()
 		{
 			_propertiesToRename = new Dictionary<string, string> { { "class", "className" } };
 		}
@@ -58,184 +56,34 @@ namespace TestR.Web
 		#region Properties
 
 		/// <summary>
-		/// Gets or sets the access key attribute.
-		/// </summary>
-		/// <remarks>
-		/// Specifies a shortcut key to activate/focus an element.
-		/// </remarks>
-		public string AccessKey
-		{
-			get { return this["accesskey"]; }
-			set { this["accesskey"] = value; }
-		}
-
-		/// <summary>
 		/// Gets the browser this element is currently associated with.
 		/// </summary>
 		public Browser Browser { get; }
 
-		/// <summary>
-		/// Gets the children for this element.
-		/// </summary>
-		public ElementCollection Children => new ElementCollection(_collection.Where(x => x.ParentId == Id));
+		/// <inheritdoc />
+		public override bool Focused => false;
 
-		/// <summary>
-		/// Gets or sets the class attribute.
-		/// </summary>
-		/// <remarks>
-		/// Specifies one or more class names for an element (refers to a class in a style sheet).
-		/// </remarks>
-		public string Class
+		/// <inheritdoc />
+		public override Element FocusedElement => null;
+
+		/// <inheritdoc />
+		public override int Height => this["offsetHeight"].ToInt();
+
+		/// <inheritdoc />
+		public override string Id => _element.id;
+
+		/// <inheritdoc />
+		public override string this[string name]
 		{
-			get { return this["class"]; }
-			set { this["class"] = value; }
+			get { return GetAttributeValue(name, Browser.AutoRefresh); }
+			set { SetAttributeValue(name, value); }
 		}
 
-		/// <summary>
-		/// Gets the content editable (contenteditable) attribute.
-		/// </summary>
-		/// <remarks>
-		/// HTML5: Specifies whether the content of an element is editable or not.
-		/// </remarks>
-		public string ContentEditable
-		{
-			get { return this["contenteditable"]; }
-			set { this["contenteditable"] = value; }
-		}
+		/// <inheritdoc />
+		public override Point Location => new Point(this["offsetLeft"].ToInt(), this["offsetTop"].ToInt());
 
-		/// <summary>
-		/// Gets or sets the context menu attribute.
-		/// </summary>
-		/// <remarks>
-		/// HTML5: Specifies a context menu for an element. The context menu appears when a user Right-clicks on the element.
-		/// </remarks>
-		public string ContextMenu
-		{
-			get { return this["contextmenu"]; }
-			set { this["contextmenu"] = value; }
-		}
-
-		/// <summary>
-		/// Gets or sets the draggable attribute.
-		/// </summary>
-		/// <remarks>
-		/// HTML5: Specifies whether an element is draggable or not.
-		/// </remarks>
-		public string Draggable
-		{
-			get { return this["draggable"]; }
-			set { this["draggable"] = value; }
-		}
-
-		/// <summary>
-		/// Gets or sets the drop zone (dropzone) attribute.
-		/// </summary>
-		/// <remarks>
-		/// HTML5: Specifies whether the dragged data is copied, moved, or linked, when dropped.
-		/// </remarks>
-		public string DropZone
-		{
-			get { return this["dropzone"]; }
-			set { this["dropzone"] = value; }
-		}
-
-		/// <summary>
-		/// Gets or sets the hidden attribute.
-		/// </summary>
-		/// <remarks>
-		/// HTML5: Specifies that an element is not yet, or is no longer, relevant.
-		/// </remarks>
-		public string Hidden
-		{
-			get { return this["hidden"]; }
-			set { this["hidden"] = value; }
-		}
-
-		/// <summary>
-		/// Gets the ID attribute.
-		/// </summary>
-		/// <remarks>
-		/// Specifies a unique id for an element.
-		/// </remarks>
-		public string Id => _element.id;
-
-		/// <summary>
-		/// Gets or sets the language (lang) attribute.
-		/// </summary>
-		/// <remarks>
-		/// Specifies the language of the element's content.
-		/// </remarks>
-		public string Language
-		{
-			get { return this["lang"]; }
-			set { this["lang"] = value; }
-		}
-
-		/// <summary>
-		/// Gets or sets the name attribute.
-		/// </summary>
-		public string Name
-		{
-			get { return _element.name; }
-			set { _element.name = value; }
-		}
-
-		/// <summary>
-		/// The parent element of this element. Returns null if there is no parent.
-		/// </summary>
-		public Element Parent
-		{
-			get
-			{
-				if (string.IsNullOrWhiteSpace(ParentId) || !_collection.ContainsKey(ParentId))
-				{
-					return null;
-				}
-
-				return _collection[ParentId];
-			}
-		}
-
-		/// <summary>
-		/// Gets the ID of the element's parent.
-		/// </summary>
-		public string ParentId => _element.parentId;
-
-		/// <summary>
-		/// Gets or sets the spell check (spellcheck) attribute.
-		/// </summary>
-		/// <remarks>
-		/// HTML5: Specifies whether the element is to have its spelling and grammar checked or not.
-		/// </remarks>
-		public string SpellCheck
-		{
-			get { return this["spellcheck"]; }
-			set { this["spellcheck"] = value; }
-		}
-
-		/// <summary>
-		/// Gets or sets the style attribute.
-		/// </summary>
-		/// <remarks>
-		/// Specifies an inline CSS style for an element.
-		/// </remarks>
-		public string Style
-		{
-			get { return this["style"]; }
-			set { this["style"] = value; }
-		}
-
-		/// <summary>
-		/// Gets or sets the tab index (tabindex) attribute.
-		/// </summary>
-		/// <remarks>
-		/// Specifies the tabbing order of the element.
-		/// </remarks>
-		public string TabIndex
-		{
-			get { return this["tabindex"]; }
-			set { this["tabindex"] = value; }
-		}
+		/// <inheritdoc />
+		public override string Name => _element.name;
 
 		/// <summary>
 		/// Gets the tag element name.
@@ -252,18 +100,6 @@ namespace TestR.Web
 		}
 
 		/// <summary>
-		/// Gets the text direction (dir) attribute.
-		/// </summary>
-		/// <remarks>
-		/// Specifies the text direction for the content in an element.
-		/// </remarks>
-		public string TextDirection
-		{
-			get { return this["dir"]; }
-			set { this["dir"] = value; }
-		}
-
-		/// <summary>
 		/// Gets or sets the title attribute.
 		/// </summary>
 		/// <remarks>
@@ -275,42 +111,25 @@ namespace TestR.Web
 			set { this["title"] = value; }
 		}
 
-		/// <summary>
-		/// Gets or sets the translate attribute.
-		/// </summary>
-		/// <remarks>
-		/// HTML5: Specifies whether the content of an element should be translated or not.
-		/// </remarks>
-		public string Translate
-		{
-			get { return this["translate"]; }
-			set { this["translate"] = value; }
-		}
-
-		#endregion
-
-		#region Indexers
-
-		/// <summary>
-		/// Gets or sets an attribute or property by name.
-		/// </summary>
-		/// <param name="name"> The name of the attribute or property to read. </param>
-		public string this[string name]
-		{
-			get { return GetAttributeValue(name, Browser.AutoRefresh); }
-			set { SetAttributeValue(name, value); }
-		}
+		/// <inheritdoc />
+		public override int Width => this["offsetWidth"].ToInt();
 
 		#endregion
 
 		#region Methods
 
-		/// <summary>
-		/// Clicks the element.
-		/// </summary>
-		public void Click()
+		/// <inheritdoc />
+		public override Element CaptureSnippet(string filePath)
+		{
+			// todo: Implement this :)
+			return this;
+		}
+
+		/// <inheritdoc />
+		public override Element Click(int x = 0, int y = 0)
 		{
 			Browser.ExecuteScript("document.getElementById('" + Id + "').click()");
+			return this;
 		}
 
 		/// <summary>
@@ -333,66 +152,10 @@ namespace TestR.Web
 		/// <summary>
 		/// Focuses on the element.
 		/// </summary>
-		public void Focus()
+		public override Element Focus()
 		{
 			Browser.ExecuteScript("document.getElementById('" + Id + "').focus()");
-		}
-
-		/// <summary>
-		/// Get the child from the children.
-		/// </summary>
-		/// <param name="id"> An ID of the element to get. </param>
-		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
-		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
-		/// <returns> The child element for the ID. </returns>
-		public Element Get(string id, bool recursive = true, bool wait = true)
-		{
-			return Get<Element>(id, recursive, wait);
-		}
-
-		/// <summary>
-		/// Get the child from the children.
-		/// </summary>
-		/// <param name="id"> An ID of the element to get. </param>
-		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
-		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
-		/// <returns> The child element for the ID. </returns>
-		public T Get<T>(string id, bool recursive = true, bool wait = true) where T : Element
-		{
-			return Get<T>(x => (x.Id == id) || (x.Name == id), recursive, wait);
-		}
-
-		/// <summary>
-		/// Get the child from the children.
-		/// </summary>
-		/// <param name="condition"> A function to test each element for a condition. </param>
-		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
-		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
-		/// <returns> The child element for the condition. </returns>
-		public T Get<T>(Func<T, bool> condition, bool recursive = true, bool wait = true) where T : Element
-		{
-			T response = null;
-
-			Utility.Wait(() =>
-			{
-				try
-				{
-					response = Children.Get(condition, recursive);
-					if ((response != null) || !wait)
-					{
-						return true;
-					}
-
-					Browser.Refresh();
-					return false;
-				}
-				catch (Exception)
-				{
-					return !wait;
-				}
-			}, Browser?.Timeout.TotalMilliseconds ?? Browser.DefaultTimeout);
-
-			return response;
+			return this;
 		}
 
 		/// <summary>
@@ -478,38 +241,31 @@ namespace TestR.Web
 		/// </param>
 		public void Highlight(bool highlight)
 		{
-			LogManager.Write(highlight ? "Adding highlight to element " + Id + "." : "Removing highlight from element " + Id + ".", LogLevel.Verbose);
+			//LogManager.Write(highlight ? "Adding highlight to element " + Id + "." : "Removing highlight from element " + Id + ".", LogLevel.Verbose);
 			SetStyleAttributeValue("background-color", highlight ? _highlightColor : _originalColor);
 
-			if (Browser.SlowMotion && highlight)
+			if (Browser.Application.SlowMotion && highlight)
 			{
 				Thread.Sleep(150);
 			}
 		}
 
-		/// <summary>
-		/// Gets Raw HTML.
-		/// </summary>
-		public string Html()
+		/// <inheritdoc />
+		public override Element MoveMouseTo(int x = 0, int y = 0)
 		{
-			return Browser.ExecuteScript("document.getElementById('" + Id + "').innerHTML");
+			return this;
 		}
 
-		/// <summary>
-		/// Remove the element. * Experimental
-		/// </summary>
-		public void Remove()
+		/// <inheritdoc />
+		public override ElementHost Refresh()
 		{
-			Browser.RemoveElement(this);
+			return this;
 		}
 
-		/// <summary>
-		/// Remove the element attribute. * Experimental
-		/// </summary>
-		/// <param name="name"> The name of the attribute. </param>
-		public void RemoveAttribute(string name)
+		/// <inheritdoc />
+		public override Element RightClick(int x = 0, int y = 0)
 		{
-			Browser.RemoveElementAttribute(this, name);
+			return this;
 		}
 
 		/// <summary>
@@ -569,7 +325,7 @@ namespace TestR.Web
 		/// Provides a string of details for the element.
 		/// </summary>
 		/// <returns> The string of element details. </returns>
-		public string ToDetailString()
+		public override string ToDetailString()
 		{
 			var builder = new StringBuilder();
 
@@ -586,8 +342,19 @@ namespace TestR.Web
 			return builder.ToString();
 		}
 
+		/// <inheritdoc />
+		public override ElementHost WaitForComplete(int minimumDelay = 0)
+		{
+			return Browser.WaitForComplete(minimumDelay);
+		}
+
+		/// <inheritdoc />
+		protected override void Dispose(bool disposing)
+		{
+		}
+
 		/// <summary>
-		/// Get the key code event properties for the character.
+		/// First the key code event properties for the character.
 		/// </summary>
 		/// <param name="character"> The character to get the event properties for. </param>
 		/// <returns> An event properties for the character. </returns>

@@ -9,11 +9,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents a list item element.
 	/// </summary>
-	public class ListItem : Element
+	public class ListItem : DesktopElement
 	{
 		#region Constructors
 
-		internal ListItem(IUIAutomationElement element, Application application, Element parent)
+		internal ListItem(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}

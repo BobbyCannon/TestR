@@ -9,11 +9,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents the scroll bar for a window.
 	/// </summary>
-	public class ScrollBar : Element
+	public class ScrollBar : DesktopElement
 	{
 		#region Constructors
 
-		internal ScrollBar(IUIAutomationElement element, Application application, Element parent)
+		internal ScrollBar(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}

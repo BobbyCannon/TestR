@@ -9,11 +9,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents a calendar element.
 	/// </summary>
-	public class Calendar : Element
+	public class Calendar : DesktopElement
 	{
 		#region Constructors
 
-		internal Calendar(IUIAutomationElement element, Application application, Element parent)
+		internal Calendar(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}

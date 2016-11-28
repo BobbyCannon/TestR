@@ -9,7 +9,7 @@ namespace TestR.Web.Elements
 	/// <summary>
 	/// Represent a browser form element.
 	/// </summary>
-	public class Form : Element
+	public class Form : WebElement
 	{
 		#region Constructors
 
@@ -18,9 +18,9 @@ namespace TestR.Web.Elements
 		/// </summary>
 		/// <param name="element"> The browser element this is for. </param>
 		/// <param name="browser"> The browser this element is associated with. </param>
-		/// <param name="collection"> The collection this element is associated with. </param>
-		public Form(JToken element, Browser browser, ElementCollection collection)
-			: base(element, browser, collection)
+		/// <param name="parent"> The parent host for this element. </param>
+		public Form(JToken element, Browser browser, ElementHost parent)
+			: base(element, browser, parent)
 		{
 		}
 

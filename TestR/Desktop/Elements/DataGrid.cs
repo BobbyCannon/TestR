@@ -9,11 +9,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents a datagrid element.
 	/// </summary>
-	public class DataGrid : Element
+	public class DataGrid : DesktopElement
 	{
 		#region Constructors
 
-		internal DataGrid(IUIAutomationElement element, Application application, Element parent)
+		internal DataGrid(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}

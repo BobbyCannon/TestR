@@ -9,11 +9,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents a split button element.
 	/// </summary>
-	public class SplitButton : Element
+	public class SplitButton : DesktopElement
 	{
 		#region Constructors
 
-		internal SplitButton(IUIAutomationElement element, Application application, Element parent)
+		internal SplitButton(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}

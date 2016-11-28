@@ -11,11 +11,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents a combo box element.
 	/// </summary>
-	public class ComboBox : Element
+	public class ComboBox : DesktopElement
 	{
 		#region Constructors
 
-		internal ComboBox(IUIAutomationElement element, Application application, Element parent)
+		internal ComboBox(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}

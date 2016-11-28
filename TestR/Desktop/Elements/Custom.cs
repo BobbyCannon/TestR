@@ -9,11 +9,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents a custom element.
 	/// </summary>
-	public class Custom : Element
+	public class Custom : DesktopElement
 	{
 		#region Constructors
 
-		internal Custom(IUIAutomationElement element, Application application, Element parent)
+		internal Custom(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}

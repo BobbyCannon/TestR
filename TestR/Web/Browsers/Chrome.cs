@@ -14,9 +14,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using TestR.Desktop;
-using TestR.Extensions;
-using TestR.Logging;
 
 #endregion
 
@@ -30,23 +27,23 @@ namespace TestR.Web.Browsers
 		#region Constants
 
 		/// <summary>
+		/// The name of the browser.
+		/// </summary>
+		public const string BrowserName = "chrome";
+
+		/// <summary>
 		/// The debugging argument for starting the browser.
 		/// </summary>
 		public const string DebugArgument = "--remote-debugging-port=9222";
-
-		/// <summary>
-		/// The name of the browser.
-		/// </summary>
-		public const string Name = "chrome";
 
 		#endregion
 
 		#region Fields
 
 		private readonly JsonSerializerSettings _jsonSerializerSettings;
-		private readonly ConcurrentDictionary<string, dynamic> _socketResponses;
 		private int _requestId;
 		private ClientWebSocket _socket;
+		private readonly ConcurrentDictionary<string, dynamic> _socketResponses;
 
 		#endregion
 
@@ -83,7 +80,7 @@ namespace TestR.Web.Browsers
 		/// <returns> The browser instance or null if not found. </returns>
 		public static Browser Attach()
 		{
-			var application = Application.Attach(Name, DebugArgument, false);
+			var application = Application.Attach(BrowserName, DebugArgument, false);
 			if (application == null)
 			{
 				return null;
@@ -101,12 +98,12 @@ namespace TestR.Web.Browsers
 		/// <returns> The browser instance or null if not found. </returns>
 		public static Browser Attach(Process process)
 		{
-			if (process.ProcessName != Name)
+			if (process.ProcessName != BrowserName)
 			{
 				return null;
 			}
 
-			if (!Application.Exists(Name, DebugArgument))
+			if (!Application.Exists(BrowserName, DebugArgument))
 			{
 				throw new ArgumentException("The process was not started with the debug arguments.", nameof(process));
 			}
@@ -134,13 +131,13 @@ namespace TestR.Web.Browsers
 		/// <returns> The browser instance. </returns>
 		public static Browser Create()
 		{
-			if (Application.Exists(Name) && !Application.Exists(Name, DebugArgument))
+			if (Application.Exists(BrowserName) && !Application.Exists(BrowserName, DebugArgument))
 			{
 				throw new Exception("The first instance of Chrome was not started with the remote debugger enabled.");
 			}
 
 			// Create a new instance and return it.
-			var application = Application.Create($"{Name}.exe", DebugArgument, false);
+			var application = Application.Create($"{BrowserName}.exe", DebugArgument, false);
 			var browser = new Chrome(application);
 			browser.Connect();
 			browser.Refresh();
@@ -175,7 +172,7 @@ namespace TestR.Web.Browsers
 		/// <param name="disposing"> True if disposing and false if otherwise. </param>
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing && _socket != null)
+			if (disposing && (_socket != null))
 			{
 				_socket.Dispose();
 				_socket = null;
@@ -208,7 +205,7 @@ namespace TestR.Web.Browsers
 
 			var data = SendRequestAndReadResponse(request, x => x.id == request.Id);
 			var response = data.AsJToken() as dynamic;
-			if (response == null || response.result == null || response.result.result == null)
+			if ((response == null) || (response.result == null) || (response.result.result == null))
 			{
 				return data;
 			}
@@ -219,7 +216,7 @@ namespace TestR.Web.Browsers
 				return string.Empty;
 			}
 
-			var typeName = value.GetType().Name;
+			var typeName = value.GetType().BrowserName;
 			return typeName != "JValue"
 				? JsonConvert.SerializeObject(value)
 				: (string) value;
@@ -231,7 +228,7 @@ namespace TestR.Web.Browsers
 		/// <returns> The current URI that was read from the browser. </returns>
 		protected override string GetBrowserUri()
 		{
-			LogManager.Write("Get browser's URI.", LogLevel.Verbose);
+			//LogManager.Write("First browser's URI.", LogLevel.Verbose);
 
 			var request = new Request
 			{
@@ -241,7 +238,7 @@ namespace TestR.Web.Browsers
 
 			var response = SendRequestAndReadResponse(request, x => x.id == request.Id);
 			var document = response.AsJToken() as dynamic;
-			if (document == null || document.result == null || document.result.root == null || document.result.root.documentURL == null)
+			if ((document == null) || (document.result == null) || (document.result.root == null) || (document.result.root.documentURL == null))
 			{
 				throw new Exception("Failed to get the URI.");
 			}
@@ -268,7 +265,7 @@ namespace TestR.Web.Browsers
 				{
 					return false;
 				}
-			}, Timeout.TotalMilliseconds, 250);
+			}, Application.Timeout.TotalMilliseconds, 250);
 
 			if (sessions.Count == 0)
 			{
@@ -284,7 +281,7 @@ namespace TestR.Web.Browsers
 			var sessionWsEndpoint = new Uri(session.WebSocketDebuggerUrl);
 			_socket = new ClientWebSocket();
 
-			if (!_socket.ConnectAsync(sessionWsEndpoint, CancellationToken.None).Wait(Timeout))
+			if (!_socket.ConnectAsync(sessionWsEndpoint, CancellationToken.None).Wait(Application.Timeout))
 			{
 				throw new Exception("Failed to connect to the server.");
 			}
@@ -322,7 +319,7 @@ namespace TestR.Web.Browsers
 
 		private bool ReadResponse(int id)
 		{
-			return Utility.Wait(() => _socketResponses.ContainsKey(id.ToString()), Timeout.TotalMilliseconds, 1);
+			return Utility.Wait(() => _socketResponses.ContainsKey(id.ToString()), Application.Timeout.TotalMilliseconds, 1);
 		}
 
 		private bool ReadResponseAsync()
@@ -334,7 +331,7 @@ namespace TestR.Web.Browsers
 			{
 				WebSocketReceiveResult result;
 
-				if (_socket.State == WebSocketState.Aborted || _socket.State == WebSocketState.Closed)
+				if ((_socket.State == WebSocketState.Aborted) || (_socket.State == WebSocketState.Closed))
 				{
 					return false;
 				}
@@ -348,7 +345,7 @@ namespace TestR.Web.Browsers
 				} while (!result.EndOfMessage);
 
 				var response = (dynamic) builder.ToString().AsJToken();
-				LogManager.Write("Debugger Response: " + response, LogLevel.Verbose);
+				//LogManager.Write("Debugger Response: " + response, LogLevel.Verbose);
 
 				if (response.id != null)
 				{
@@ -374,9 +371,9 @@ namespace TestR.Web.Browsers
 		private bool SendRequest<T>(T request)
 		{
 			var json = JsonConvert.SerializeObject(request, _jsonSerializerSettings);
-			LogManager.Write("Debugger Request: " + json, LogLevel.Verbose);
+			//LogManager.Write("Debugger Request: " + json, LogLevel.Verbose);
 			var jsonBuffer = new ArraySegment<byte>(Encoding.UTF8.GetBytes(json));
-			return _socket.SendAsync(jsonBuffer, WebSocketMessageType.Text, true, CancellationToken.None).Wait(Timeout);
+			return _socket.SendAsync(jsonBuffer, WebSocketMessageType.Text, true, CancellationToken.None).Wait(Application.Timeout);
 		}
 
 		private string SendRequestAndReadResponse(Request request, Func<dynamic, bool> action)

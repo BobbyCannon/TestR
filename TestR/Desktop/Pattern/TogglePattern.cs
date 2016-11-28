@@ -1,6 +1,5 @@
 ﻿#region References
 
-using TestR.Extensions;
 using UIAutomationClient;
 
 #endregion
@@ -48,7 +47,7 @@ namespace TestR.Desktop.Pattern
 		/// </summary>
 		/// <param name="element"> The element that supports the pattern. </param>
 		/// <returns> The pattern if we could find one else null will be returned. </returns>
-		public static TogglePattern Create(Element element)
+		public static TogglePattern Create(DesktopElement element)
 		{
 			var pattern = element.NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_TogglePatternId) as IUIAutomationTogglePattern;
 			return pattern == null ? null : new TogglePattern(pattern);

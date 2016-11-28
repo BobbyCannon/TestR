@@ -9,11 +9,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents a progress bar element.
 	/// </summary>
-	public class ProgressBar : Element
+	public class ProgressBar : DesktopElement
 	{
 		#region Constructors
 
-		internal ProgressBar(IUIAutomationElement element, Application application, Element parent)
+		internal ProgressBar(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}

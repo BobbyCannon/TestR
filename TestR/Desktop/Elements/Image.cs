@@ -9,11 +9,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents a image element.
 	/// </summary>
-	public class Image : Element
+	public class Image : DesktopElement
 	{
 		#region Constructors
 
-		internal Image(IUIAutomationElement element, Application application, Element parent)
+		internal Image(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}

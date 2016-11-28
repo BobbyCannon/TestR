@@ -9,11 +9,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents a document element.
 	/// </summary>
-	public class Document : Element
+	public class Document : DesktopElement
 	{
 		#region Constructors
 
-		internal Document(IUIAutomationElement element, Application application, Element parent)
+		internal Document(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}

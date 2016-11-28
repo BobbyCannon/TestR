@@ -8,9 +8,6 @@ using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using TestR.Desktop;
-using TestR.Extensions;
-using TestR.Logging;
 using TestR.Web.Browsers;
 
 #endregion
@@ -21,7 +18,7 @@ namespace TestR.Web
 	/// This is the base class for browsers.
 	/// </summary>
 	/// <exclude> </exclude>
-	public abstract class Browser : IDisposable
+	public abstract class Browser : ElementHost
 	{
 		#region Constants
 
@@ -44,13 +41,10 @@ namespace TestR.Web
 		/// Initializes a new instance of the Browser class.
 		/// </summary>
 		protected Browser(Application application)
+			: base(application, application)
 		{
-			Application = application;
-			AutoClose = false;
 			AutoRefresh = true;
-			Elements = new ElementCollection();
 			JavascriptLibraries = new JavaScriptLibrary[0];
-			Timeout = TimeSpan.FromSeconds(10);
 		}
 
 		#endregion
@@ -65,24 +59,14 @@ namespace TestR.Web
 			get
 			{
 				var id = ExecuteScript("document.activeElement.id");
-				if (string.IsNullOrWhiteSpace(id) || !Elements.ContainsKey(id))
-				{
-					return null;
-				}
-
-				return Elements[id];
+				return First(id, true, false);
 			}
 		}
 
 		/// <summary>
-		/// Gets or sets the application for this browser.
-		/// </summary>
-		public Application Application { get; protected set; }
-
-		/// <summary>
 		/// Gets or sets a flag to auto close the browser when disposed of. Defaults to false.
 		/// </summary>
-		public bool AutoClose { get; set; }
+		public bool AutoClose => Application.AutoClose;
 
 		/// <summary>
 		/// Gets or sets a flag that allows elements to refresh when reading properties. Defaults to true.
@@ -94,15 +78,13 @@ namespace TestR.Web
 		/// </summary>
 		public abstract BrowserType BrowserType { get; }
 
-		/// <summary>
-		/// Gets a list of all elements on the current page.
-		/// </summary>
-		public ElementCollection Elements { get; }
+		/// <inheritdoc />
+		public override Element FocusedElement => ActiveElement;
 
 		/// <summary>
 		/// Gets the ID of the browser.
 		/// </summary>
-		public int Id => Application?.Handle.ToInt32() ?? 0;
+		public override string Id => (Application?.Handle.ToInt32() ?? 0).ToString();
 
 		/// <summary>
 		/// Gets a list of JavaScript libraries that were detected on the page.
@@ -115,30 +97,9 @@ namespace TestR.Web
 		public virtual string RawHtml => ExecuteScript("document.getElementsByTagName('body')[0].innerHTML");
 
 		/// <summary>
-		/// Gets or sets a flag to tell the browser to act slower. Defaults to false.
-		/// </summary>
-		public bool SlowMotion { get; set; }
-
-		/// <summary>
-		/// Gets or sets the time out for delay request. Defaults to 5 seconds.
-		/// </summary>
-		public TimeSpan Timeout { get; set; }
-
-		/// <summary>
 		/// Gets the URI of the current page.
 		/// </summary>
 		public string Uri => GetBrowserUri();
-
-		#endregion
-
-		#region Indexers
-
-		/// <summary>
-		/// Get a child using a provided key.
-		/// </summary>
-		/// <param name="id"> The ID of the child. </param>
-		/// <returns> The child if found or null if otherwise. </returns>
-		public Element this[string id] => Get(id, true);
 
 		#endregion
 
@@ -237,7 +198,7 @@ namespace TestR.Web
 		{
 			if ((type & BrowserType.Chrome) == BrowserType.Chrome)
 			{
-				Application.CloseAll(Chrome.Name);
+				Application.CloseAll(Chrome.BrowserName);
 			}
 
 			//if ((type & BrowserType.Edge) == BrowserType.Edge)
@@ -247,12 +208,12 @@ namespace TestR.Web
 
 			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)
 			{
-				Application.CloseAll(InternetExplorer.Name);
+				Application.CloseAll(InternetExplorer.BrowserName);
 			}
 
 			if ((type & BrowserType.Firefox) == BrowserType.Firefox)
 			{
-				Application.CloseAll(Firefox.Name);
+				Application.CloseAll(Firefox.BrowserName);
 			}
 		}
 
@@ -285,15 +246,6 @@ namespace TestR.Web
 			}
 
 			return response;
-		}
-
-		/// <summary>
-		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-		/// </summary>
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
 		}
 
 		/// <summary>
@@ -387,7 +339,7 @@ namespace TestR.Web
 				throw new ArgumentNullException(nameof(uri));
 			}
 
-			LogManager.Write("Navigating to " + uri + ".", LogLevel.Verbose);
+			//LogManager.Write("Navigating to " + uri + ".", LogLevel.Verbose);
 			BrowserNavigateTo(uri);
 			WaitForNavigation(expectedUri);
 		}
@@ -395,22 +347,23 @@ namespace TestR.Web
 		/// <summary>
 		/// Refresh the state because the browser page may have changed state.
 		/// </summary>
-		public void Refresh()
+		public override ElementHost Refresh()
 		{
-			LogManager.Write("Refreshing the page.", LogLevel.Verbose);
+			//LogManager.Write("Refreshing the page.", LogLevel.Verbose);
 			WaitForComplete();
 			InjectTestScript();
 			DetectJavascriptLibraries();
 			RefreshElements();
+			return this;
 		}
 
 		/// <summary>
 		/// Removes the element from the page. * Experimental
 		/// </summary>
 		/// <param name="element"> The element to remove. </param>
-		public void RemoveElement(Element element)
+		public void RemoveElement(WebElement element)
 		{
-			LogManager.Write("Removing element with ID of " + element.Id + ".", LogLevel.Verbose);
+			//LogManager.Write("Removing element with ID of " + element.Id + ".", LogLevel.Verbose);
 			ExecuteJavaScript("TestR.removeElement('" + element.Id + "');", false);
 			Elements.Remove(element);
 		}
@@ -420,10 +373,18 @@ namespace TestR.Web
 		/// </summary>
 		/// <param name="element"> The element to remove the attribute from. </param>
 		/// <param name="name"> The name of the attribute to remove. </param>
-		public void RemoveElementAttribute(Element element, string name)
+		public void RemoveElementAttribute(WebElement element, string name)
 		{
-			LogManager.Write("Removing element attribute with ID of " + element.Id + ".", LogLevel.Verbose);
+			//LogManager.Write("Removing element attribute with ID of " + element.Id + ".", LogLevel.Verbose);
 			ExecuteJavaScript("TestR.removeElementAttribute('" + element.Id + "', '" + name + "');", false);
+		}
+
+		/// <inheritdoc />
+		public override ElementHost WaitForComplete(int minimumDelay = 0)
+		{
+			Utility.Wait(() => ExecuteJavaScript("document.readyState === 'complete'").Equals("true", StringComparison.OrdinalIgnoreCase));
+			Application?.WaitForComplete(minimumDelay);
+			return this;
 		}
 
 		/// <summary>
@@ -435,12 +396,12 @@ namespace TestR.Web
 		{
 			if (timeout == null)
 			{
-				timeout = Timeout;
+				timeout = Application.Timeout;
 			}
 
 			if (uri == null)
 			{
-				LogManager.Write("Waiting for navigation with timeout of " + timeout.Value + ".", LogLevel.Verbose);
+				//LogManager.Write("Waiting for navigation with timeout of " + timeout.Value + ".", LogLevel.Verbose);
 				if (!Utility.Wait(() => Uri != _lastUri, (int) timeout.Value.TotalMilliseconds))
 				{
 					throw new Exception("Browser never completed navigated away from " + _lastUri + ".");
@@ -448,7 +409,7 @@ namespace TestR.Web
 			}
 			else
 			{
-				LogManager.Write("Waiting for navigation to " + uri + " with timeout of " + timeout.Value + ".", LogLevel.Verbose);
+				//LogManager.Write("Waiting for navigation to " + uri + " with timeout of " + timeout.Value + ".", LogLevel.Verbose);
 				if (!Utility.Wait(() => Uri.Contains(uri, StringComparison.OrdinalIgnoreCase), (int) timeout.Value.TotalMilliseconds))
 				{
 					throw new Exception("Browser never completed navigation to " + uri + ". Current URI is " + Uri + ".");
@@ -469,7 +430,7 @@ namespace TestR.Web
 		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
 		/// </summary>
 		/// <param name="disposing"> True if disposing and false if otherwise. </param>
-		protected virtual void Dispose(bool disposing)
+		protected override void Dispose(bool disposing)
 		{
 			if (!disposing)
 			{
@@ -482,76 +443,6 @@ namespace TestR.Web
 			}
 
 			Application?.Dispose();
-			Application = null;
-		}
-
-		/// <summary>
-		/// Get the child from the children.
-		/// </summary>
-		/// <param name="id"> An ID of the element to get. </param>
-		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
-		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
-		/// <returns> The child element for the ID. </returns>
-		public Element Get(string id, bool recursive = true, bool wait = true)
-		{
-			return Get<Element>(id, recursive, wait);
-		}
-
-		/// <summary>
-		/// Get the child from the children.
-		/// </summary>
-		/// <param name="condition"> A function to test each element for a condition. </param>
-		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
-		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
-		/// <returns> The child element for the condition. </returns>
-		public Element Get(Func<Element, bool> condition, bool recursive = true, bool wait = true)
-		{
-			return Get<Element>(condition, recursive, wait);
-		}
-
-		/// <summary>
-		/// Get the child from the children.
-		/// </summary>
-		/// <param name="id"> An ID of the element to get. </param>
-		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
-		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
-		/// <returns> The child element for the ID. </returns>
-		public T Get<T>(string id, bool recursive = true, bool wait = true) where T : Element
-		{
-			return Get<T>(x => (x.Id == id) || (x.Name == id), recursive, wait);
-		}
-
-		/// <summary>
-		/// Get the child from the children.
-		/// </summary>
-		/// <param name="condition"> A function to test each element for a condition. </param>
-		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
-		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
-		/// <returns> The child element for the condition. </returns>
-		public T Get<T>(Func<T, bool> condition, bool recursive = true, bool wait = true) where T : Element
-		{
-			T response = null;
-
-			Utility.Wait(() =>
-			{
-				try
-				{
-					response = Elements.Get(condition, recursive);
-					if ((response != null) || !wait)
-					{
-						return true;
-					}
-
-					RefreshElements();
-					return false;
-				}
-				catch (Exception)
-				{
-					return !wait;
-				}
-			}, Timeout.TotalMilliseconds);
-
-			return response;
 		}
 
 		/// <summary>
@@ -587,7 +478,7 @@ namespace TestR.Web
 		/// </summary>
 		protected void RefreshElements()
 		{
-			LogManager.Write("Refresh the elements.", LogLevel.Verbose);
+			//LogManager.Write("Refresh the elements.", LogLevel.Verbose);
 
 			Elements.Clear();
 
@@ -603,19 +494,8 @@ namespace TestR.Web
 				return;
 			}
 
-			Elements.AddRange(elements, this);
-		}
-
-		/// <summary>
-		/// Waits until the browser to complete any outstanding operations.
-		/// </summary>
-		/// <summary>
-		/// Waits until the browser to complete any outstanding operations.
-		/// </summary>
-		protected virtual void WaitForComplete()
-		{
-			Utility.Wait(() => ExecuteJavaScript("document.readyState === 'complete'").Equals("true", StringComparison.OrdinalIgnoreCase));
-			Application?.WaitWhileBusy();
+			// todo: need to build this hierarchically.
+			Elements.AddRange(elements.Select(x => new WebElement(x, this, this)));
 		}
 
 		/// <summary>
@@ -623,7 +503,7 @@ namespace TestR.Web
 		/// </summary>
 		private void DetectJavascriptLibraries()
 		{
-			LogManager.Write("Detecting JavaScript libraries.", LogLevel.Verbose);
+			//LogManager.Write("Detecting JavaScript libraries.", LogLevel.Verbose);
 
 			var uri = GetBrowserUri();
 			if ((uri.Length <= 0) || uri.Equals("about:tabs"))

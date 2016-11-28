@@ -7,8 +7,6 @@ using System.Threading;
 using System.Web;
 using mshtml;
 using SHDocVw;
-using TestR.Desktop;
-using TestR.Logging;
 using TestR.Native;
 
 #endregion
@@ -25,7 +23,7 @@ namespace TestR.Web.Browsers
 		/// <summary>
 		/// The name of the browser.
 		/// </summary>
-		public const string Name = "iexplore";
+		public const string BrowserName = "iexplore";
 
 		#endregion
 
@@ -87,7 +85,7 @@ namespace TestR.Web.Browsers
 		/// <returns> The browser instance or null if not found. </returns>
 		public static Browser Attach(Process process)
 		{
-			if (process.ProcessName != Name)
+			if (process.ProcessName != BrowserName)
 			{
 				return null;
 			}
@@ -123,6 +121,41 @@ namespace TestR.Web.Browsers
 			return browser;
 		}
 
+		/// <inheritdoc />
+		public override ElementHost WaitForComplete(int minimumDelay = 0)
+		{
+			//LogManager.Write("InterenetExploreBrowser.WaitForComplete", LogLevel.Verbose);
+
+			// If the URL is empty and is not initialized means browser is no page is loaded.
+			if ((_browser.LocationURL == string.Empty) && (_browser.ReadyState == tagREADYSTATE.READYSTATE_UNINITIALIZED))
+			{
+				return this;
+			}
+
+			var states = new[] { tagREADYSTATE.READYSTATE_COMPLETE, tagREADYSTATE.READYSTATE_INTERACTIVE };
+			var readyStates = new[] { "complete", "interactive" };
+
+			// Wait for browser to completely load or become interactive.
+			if (!Utility.Wait(() => states.Contains(_browser.ReadyState), Application.Timeout.TotalMilliseconds))
+			{
+				throw new Exception("The browser never finished loading...");
+			}
+
+			// Wait for browser document to completely load or become interactive.
+			if (!Utility.Wait(() => readyStates.Contains(((IHTMLDocument2) _browser.Document).readyState), Application.Timeout.TotalMilliseconds))
+			{
+				throw new Exception("The browser document never finished loading...");
+			}
+
+			// Wait while the browser is busy and not complete.
+			if (!Utility.Wait(() => !(_browser.Busy && (_browser.ReadyState != tagREADYSTATE.READYSTATE_COMPLETE)), Application.Timeout.TotalMilliseconds))
+			{
+				throw new Exception("The browser is currently busy.");
+			}
+
+			return this;
+		}
+
 		/// <summary>
 		/// Navigates the browser to the provided URI.
 		/// </summary>
@@ -131,7 +164,7 @@ namespace TestR.Web.Browsers
 		{
 			try
 			{
-				LogManager.Write("InternetExplorer navigated to " + uri + ".", LogLevel.Verbose);
+				//LogManager.Write("InternetExplorer navigated to " + uri + ".", LogLevel.Verbose);
 
 				object nil = null;
 				object absoluteUri = uri;
@@ -168,7 +201,7 @@ namespace TestR.Web.Browsers
 
 			try
 			{
-				if (_browser == null || !AutoClose)
+				if ((_browser == null) || !AutoClose)
 				{
 					return;
 				}
@@ -201,10 +234,10 @@ namespace TestR.Web.Browsers
 		/// <returns> The response from the execution. </returns>
 		protected override string ExecuteJavaScript(string script, bool expectResponse = true)
 		{
-			LogManager.Write("Request: " + script, LogLevel.Verbose);
+			//LogManager.Write("Request: " + script, LogLevel.Verbose);
 
 			// If the URL is empty and is not initialized means browser is no page is loaded.
-			if (!_browser.LocationURL.StartsWith("http", StringComparison.OrdinalIgnoreCase) || _browser.ReadyState == tagREADYSTATE.READYSTATE_UNINITIALIZED)
+			if (!_browser.LocationURL.StartsWith("http", StringComparison.OrdinalIgnoreCase) || (_browser.ReadyState == tagREADYSTATE.READYSTATE_UNINITIALIZED))
 			{
 				return string.Empty;
 			}
@@ -254,45 +287,10 @@ namespace TestR.Web.Browsers
 		/// <returns> The current URI that was read from the browser. </returns>
 		protected override string GetBrowserUri()
 		{
-			LogManager.Write("Get browser's URI.", LogLevel.Verbose);
+			//LogManager.Write("First browser's URI.", LogLevel.Verbose);
 			var location = _browser.LocationURL;
 			var zone = NativeMethods.GetZoneId(location);
 			return zone != _zoneId ? ReinitializeBrowser() : location;
-		}
-
-		/// <summary>
-		/// Waits until the browser to complete any outstanding operations.
-		/// </summary>
-		protected override void WaitForComplete()
-		{
-			LogManager.Write("InterenetExploreBrowser.WaitForComplete", LogLevel.Verbose);
-
-			// If the URL is empty and is not initialized means browser is no page is loaded.
-			if (_browser.LocationURL == string.Empty && _browser.ReadyState == tagREADYSTATE.READYSTATE_UNINITIALIZED)
-			{
-				return;
-			}
-
-			var states = new[] { tagREADYSTATE.READYSTATE_COMPLETE, tagREADYSTATE.READYSTATE_INTERACTIVE };
-			var readyStates = new[] { "complete", "interactive" };
-
-			// Wait for browser to completely load or become interactive.
-			if (!Utility.Wait(() => states.Contains(_browser.ReadyState), Timeout.TotalMilliseconds))
-			{
-				throw new Exception("The browser never finished loading...");
-			}
-
-			// Wait for browser document to completely load or become interactive.
-			if (!Utility.Wait(() => readyStates.Contains(((IHTMLDocument2) _browser.Document).readyState), Timeout.TotalMilliseconds))
-			{
-				throw new Exception("The browser document never finished loading...");
-			}
-
-			// Wait while the browser is busy and not complete.
-			if (!Utility.Wait(() => !(_browser.Busy && _browser.ReadyState != tagREADYSTATE.READYSTATE_COMPLETE), Timeout.TotalMilliseconds))
-			{
-				throw new Exception("The browser is currently busy.");
-			}
 		}
 
 		/// <summary>
@@ -327,7 +325,7 @@ namespace TestR.Web.Browsers
 					if (processId > 0)
 					{
 						uint foundProcessId;
-						if (!NativeMethods.GetWindowThreadProcessId(new IntPtr(explorer.HWND), out foundProcessId) || foundProcessId != processId)
+						if (!NativeMethods.GetWindowThreadProcessId(new IntPtr(explorer.HWND), out foundProcessId) || (foundProcessId != processId))
 						{
 							continue;
 						}
@@ -335,15 +333,15 @@ namespace TestR.Web.Browsers
 
 					using (var browser = new InternetExplorer(explorer))
 					{
-						LogManager.Write($"Found browser with id of {browser.Id} at location {browser.Uri}.", LogLevel.Verbose);
+						//LogManager.Write($"Found browser with id of {browser.Id} at location {browser.Uri}.", LogLevel.Verbose);
 					}
 
 					return explorer;
 				}
-				catch (Exception ex)
+				catch (Exception)
 				{
 					// Ignore this browser and move to the next one.
-					LogManager.Write($"Error with finding browser to attach to. Exception: {ex.Message}.", LogLevel.Verbose);
+					//LogManager.Write($"Error with finding browser to attach to. Exception: {ex.Message}.", LogLevel.Verbose);
 				}
 			}
 
@@ -357,7 +355,7 @@ namespace TestR.Web.Browsers
 				var resultElement = document.getElementById("testrResult");
 				var result = resultElement.getAttribute("value");
 
-				LogManager.Write("Response: " + result, LogLevel.Verbose);
+				//LogManager.Write("Response: " + result, LogLevel.Verbose);
 				return result ?? string.Empty;
 			}
 			catch

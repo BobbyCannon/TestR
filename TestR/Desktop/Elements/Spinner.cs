@@ -9,11 +9,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents a spinner element.
 	/// </summary>
-	public class Spinner : Element
+	public class Spinner : DesktopElement
 	{
 		#region Constructors
 
-		internal Spinner(IUIAutomationElement element, Application application, Element parent)
+		internal Spinner(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}

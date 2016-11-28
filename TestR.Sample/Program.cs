@@ -23,19 +23,19 @@ namespace TestR.Sample
 
 		private static void Monitor()
 		{
-			Element lastAutoFocusedElement = null;
-			Element lastCtrlFocusedElement = null;
+			DesktopElement lastAutoFocusedElement = null;
+			DesktopElement lastCtrlFocusedElement = null;
 			Application application = null;
 
 			while (!Console.KeyAvailable)
 			{
 				try
 				{
-					Element foundElement;
+					DesktopElement foundElement;
 
 					if (Keyboard.IsControlPressed() && application == null)
 					{
-						foundElement = Element.FromCursor();
+						foundElement = DesktopElement.FromCursor();
 						var process = Process.GetProcessById(foundElement.ProcessId);
 						application = Application.Attach(process);
 						Console.WriteLine("Attached to " + process.Id);
@@ -49,7 +49,7 @@ namespace TestR.Sample
 						continue;
 					}
 
-					foundElement = Element.FromFocusElement();
+					foundElement = DesktopElement.FromFocusElement();
 
 					if (foundElement?.ProcessId == application.Process.Id)
 					{
@@ -77,7 +77,7 @@ namespace TestR.Sample
 						continue;
 					}
 
-					foundElement = Element.FromCursor();
+					foundElement = DesktopElement.FromCursor();
 
 					if (foundElement?.ProcessId == application.Process.Id)
 					{

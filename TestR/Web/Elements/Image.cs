@@ -9,7 +9,7 @@ namespace TestR.Web.Elements
 	/// <summary>
 	/// Represents a browser text input["image"] element.
 	/// </summary>
-	public class Image : Element
+	public class Image : WebElement
 	{
 		#region Constructors
 
@@ -18,9 +18,9 @@ namespace TestR.Web.Elements
 		/// </summary>
 		/// <param name="element"> The browser element this is for. </param>
 		/// <param name="browser"> The browser this element is associated with. </param>
-		/// <param name="collection"> The collection this element is associated with. </param>
-		public Image(JToken element, Browser browser, ElementCollection collection)
-			: base(element, browser, collection)
+		/// <param name="parent"> The parent host for this element. </param>
+		public Image(JToken element, Browser browser, ElementHost parent)
+			: base(element, browser, parent)
 		{
 		}
 
@@ -46,11 +46,7 @@ namespace TestR.Web.Elements
 		/// <remarks>
 		/// HTML5: Specifies the height of an input element.
 		/// </remarks>
-		public string Height
-		{
-			get { return this["height"]; }
-			set { this["height"] = value; }
-		}
+		public override int Height => this["height"].ToInt();
 
 		/// <summary>
 		/// Gets or sets the value attribute.
@@ -82,11 +78,7 @@ namespace TestR.Web.Elements
 		/// <remarks>
 		/// HTML5: Specifies the width of an input element.
 		/// </remarks>
-		public string Width
-		{
-			get { return this["width"]; }
-			set { this["width"] = value; }
-		}
+		public override int Width => this["width"].ToInt();
 
 		#endregion
 	}

@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using System.Management.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TestR.Desktop;
 using TestR.Desktop.Elements;
 using TestR.PowerShell;
 
@@ -30,30 +29,30 @@ namespace TestR.AutomationTests.Desktop
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.First();
-				var document = window.Children["15"];
+				var document = window.Children.Get("15");
 				document.SetText("Hello World : Sub Collection");
 			}
 		}
 
 		[TestMethod]
-		public void AddTextToDocumentUsingFinder()
+		public void AddTextToDocumentUsingGetWithGeneric()
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows.First();
-				var document = window.Get<Edit>("15");
-				document.Text = "Hello World : GetChild";
+				var window = application.GetAll<Window>().First();
+				var document = window.Children.First<Edit>("15");
+				document.Text = "Hello World : GetChild Generic";
 			}
 		}
 
 		[TestMethod]
-		public void AddTextToDocumentUsingIndexer()
+		public void AddTextToDocumentUsingGetWithType()
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows.First();
-				var document = (Edit) window["15"];
-				document.Text = "Hello World : Indexer";
+				var window = application.GetAll<Window>().First();
+				var document = (Edit) window.Get("15");
+				document.Text = "Hello World : GetChild Non Generic";
 			}
 		}
 
@@ -101,7 +100,7 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				foreach (var window in application.Children.Windows)
+				foreach (var window in application.GetAll<Window>())
 				{
 					window.UpdateChildren();
 				}
@@ -114,8 +113,8 @@ namespace TestR.AutomationTests.Desktop
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				application.BringToFront();
-				var window = application.Children.Windows.First();
-				var menuBar = window.Children.MenuBars.First();
+				var window = application.GetAll<Window>().First();
+				var menuBar = window.GetAll<MenuBar>().First();
 				TestHelper.PrintChildren(menuBar);
 
 				var menu = menuBar.Get<MenuItem>(x => x.Name == "File");
@@ -133,7 +132,7 @@ namespace TestR.AutomationTests.Desktop
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Get<Window>(x => x.Name == "Untitled - Notepad");
-				window.TitleBar.TakeScreenshot(filePath);
+				window.TitleBar.CaptureSnippet(filePath);
 			}
 		}
 

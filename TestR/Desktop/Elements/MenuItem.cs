@@ -10,11 +10,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents the menu item for a window.
 	/// </summary>
-	public class MenuItem : Element
+	public class MenuItem : DesktopElement
 	{
 		#region Constructors
 
-		internal MenuItem(IUIAutomationElement element, Application application, Element parent)
+		internal MenuItem(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}

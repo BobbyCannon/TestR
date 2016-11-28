@@ -17,10 +17,6 @@ namespace TestR.Native
 	{
 		#region Fields
 
-		private readonly int _value;
-
-		private static readonly List<MouseCursor> _waitCursors;
-
 		/// <summary>
 		/// Gets the cursor that represents default and wait.
 		/// </summary>
@@ -40,6 +36,10 @@ namespace TestR.Native
 		/// Gets the cursor that represents wait.
 		/// </summary>
 		public static readonly MouseCursor Wait;
+
+		private readonly int _value;
+
+		private static readonly List<MouseCursor> _waitCursors;
 
 		#endregion
 

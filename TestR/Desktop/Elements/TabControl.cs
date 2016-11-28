@@ -9,11 +9,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents the tab control.
 	/// </summary>
-	public class TabControl : Element
+	public class TabControl : DesktopElement
 	{
 		#region Constructors
 
-		internal TabControl(IUIAutomationElement element, Application application, Element parent)
+		internal TabControl(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}

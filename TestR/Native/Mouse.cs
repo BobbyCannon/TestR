@@ -58,7 +58,7 @@ namespace TestR.Native
 			var watch = Stopwatch.StartNew();
 			var currentPosition = GetCursorPosition();
 
-			while (currentPosition.X != point.X || currentPosition.Y != point.Y)
+			while ((currentPosition.X != point.X) || (currentPosition.Y != point.Y))
 			{
 				NativeMethods.SetCursorPosition(point.X, point.Y);
 				currentPosition = GetCursorPosition();

@@ -1,7 +1,6 @@
 ﻿#region References
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -9,17 +8,17 @@ using System.Linq;
 using System.Management;
 using System.Runtime.InteropServices;
 using System.Threading;
-using TestR.Extensions;
+using TestR.Desktop;
 using TestR.Native;
 
 #endregion
 
-namespace TestR.Desktop
+namespace TestR
 {
 	/// <summary>
 	/// Represents an application that can be automated.
 	/// </summary>
-	public class Application : IDisposable
+	public class Application : ElementHost
 	{
 		#region Constants
 
@@ -36,12 +35,18 @@ namespace TestR.Desktop
 		/// Creates an instance of the application.
 		/// </summary>
 		/// <param name="process"> The process for the application. </param>
-		internal Application(Process process)
+		public Application(Process process)
+			: base(null, null)
 		{
-			Children = new ElementCollection<Element>();
+			Application = this;
 			Process = process;
-			Process.Exited += (sender, args) => OnClosed();
-			Process.EnableRaisingEvents = true;
+
+			if (Process != null)
+			{
+				Process.Exited += (sender, args) => OnClosed();
+				Process.EnableRaisingEvents = true;
+			}
+
 			Timeout = TimeSpan.FromMilliseconds(DefaultTimeout);
 		}
 
@@ -54,35 +59,29 @@ namespace TestR.Desktop
 		/// </summary>
 		public bool AutoClose { get; set; }
 
-		/// <summary>
-		/// Gets the children for this element.
-		/// </summary>
-		public ElementCollection<Element> Children { get; }
+		/// <inheritdoc />
+		public override Element FocusedElement => Elements.FirstOrDefault(x => x.Focused);
 
 		/// <summary>
 		/// Gets the handle for this window.
 		/// </summary>
 		public IntPtr Handle => Process.MainWindowHandle;
 
-		/// <summary>
-		/// Gets the ID of this application.
-		/// </summary>
-		public string Id => Process.Id.ToString();
+		/// <inheritdoc />
+		public override string Id => Process.Id.ToString();
 
 		/// <summary>
 		/// Gets the value indicating that the process is running.
 		/// </summary>
-		public bool IsRunning => Process != null && !Process.HasExited;
+		public bool IsRunning => (Process != null) && !Process.HasExited;
 
 		/// <summary>
 		/// Gets the location of the application.
 		/// </summary>
 		public Point Location => Process.GetWindowLocation();
 
-		/// <summary>
-		/// Gets the name of this element.
-		/// </summary>
-		public string Name => Handle.ToString();
+		/// <inheritdoc />
+		public override string Name => Handle.ToString();
 
 		/// <summary>
 		/// Gets the underlying process for this application.
@@ -95,20 +94,14 @@ namespace TestR.Desktop
 		public Size Size => Process.GetWindowSize();
 
 		/// <summary>
+		/// Gets or sets a flag to tell the browser to act slower. Defaults to false.
+		/// </summary>
+		public bool SlowMotion { get; set; }
+
+		/// <summary>
 		/// Gets or sets the time out for delay request. Defaults to 5 seconds.
 		/// </summary>
 		public TimeSpan Timeout { get; set; }
-
-		#endregion
-
-		#region Indexers
-
-		/// <summary>
-		/// Get a child using a provided key.
-		/// </summary>
-		/// <param name="id"> The ID of the child. </param>
-		/// <returns> The child if found or null if otherwise. </returns>
-		public Element this[string id] => Get(id, false);
 
 		#endregion
 
@@ -124,7 +117,7 @@ namespace TestR.Desktop
 		public static Application Attach(string executablePath, string arguments = null, bool refresh = true)
 		{
 			var fileName = Path.GetFileName(executablePath);
-			if (fileName != null && !fileName.Contains("."))
+			if ((fileName != null) && !fileName.Contains("."))
 			{
 				fileName += ".exe";
 			}
@@ -141,7 +134,7 @@ namespace TestR.Desktop
 					if (!string.IsNullOrWhiteSpace(arguments))
 					{
 						var data = managementObject["CommandLine"];
-						if (data == null || !data.ToString().Contains(arguments))
+						if ((data == null) || !data.ToString().Contains(arguments))
 						{
 							continue;
 						}
@@ -153,7 +146,7 @@ namespace TestR.Desktop
 						continue;
 					}
 
-					if (process.MainWindowHandle == IntPtr.Zero || !NativeMethods.IsWindowVisible(process.MainWindowHandle))
+					if ((process.MainWindowHandle == IntPtr.Zero) || !NativeMethods.IsWindowVisible(process.MainWindowHandle))
 					{
 						continue;
 					}
@@ -165,7 +158,7 @@ namespace TestR.Desktop
 					}
 
 					application.Refresh();
-					application.WaitWhileBusy();
+					application.WaitForComplete();
 
 					return application;
 				}
@@ -201,7 +194,7 @@ namespace TestR.Desktop
 			}
 
 			application.Refresh();
-			application.WaitWhileBusy();
+			application.WaitForComplete();
 
 			return application;
 		}
@@ -315,38 +308,10 @@ namespace TestR.Desktop
 			if (refresh)
 			{
 				application.Refresh();
-				application.WaitWhileBusy();
+				application.WaitForComplete();
 			}
 
 			return application;
-		}
-
-		/// <summary>
-		/// Gets a list of structure elements into a single collection.
-		/// </summary>
-		/// <returns> A collection of the items. </returns>
-		public IEnumerable<Element> Descendants()
-		{
-			var nodes = new Stack<Element>(Children);
-			while (nodes.Any())
-			{
-				var node = nodes.Pop();
-				yield return node;
-
-				foreach (var n in node.Children)
-				{
-					nodes.Push(n);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-		/// </summary>
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
 		}
 
 		/// <summary>
@@ -375,7 +340,7 @@ namespace TestR.Desktop
 					if (!string.IsNullOrWhiteSpace(arguments))
 					{
 						var data = managementObject["CommandLine"];
-						if (data == null || !data.ToString().Contains(arguments))
+						if ((data == null) || !data.ToString().Contains(arguments))
 						{
 							continue;
 						}
@@ -388,7 +353,7 @@ namespace TestR.Desktop
 							continue;
 						}
 
-						if (process.MainWindowHandle == IntPtr.Zero || !NativeMethods.IsWindowVisible(process.MainWindowHandle))
+						if ((process.MainWindowHandle == IntPtr.Zero) || !NativeMethods.IsWindowVisible(process.MainWindowHandle))
 						{
 							continue;
 						}
@@ -399,75 +364,6 @@ namespace TestR.Desktop
 			}
 
 			return false;
-		}
-
-		/// <summary>
-		/// Get the child from the children.
-		/// </summary>
-		/// <param name="id"> An ID of the element to get. </param>
-		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
-		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
-		/// <returns> The child element for the ID. </returns>
-		public Element Get(string id, bool recursive = true, bool wait = true)
-		{
-			return Get<Element>(id, recursive, wait);
-		}
-
-		/// <summary>
-		/// Get the child from the children.
-		/// </summary>
-		/// <param name="condition"> A function to test each element for a condition. </param>
-		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
-		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
-		/// <returns> The child element for the condition. </returns>
-		public Element Get(Func<Element, bool> condition, bool recursive = true, bool wait = true)
-		{
-			return Get<Element>(condition, recursive, wait);
-		}
-
-		/// <summary>
-		/// Get the child from the children.
-		/// </summary>
-		/// <param name="id"> An ID of the element to get. </param>
-		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
-		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
-		/// <returns> The child element for the ID. </returns>
-		public T Get<T>(string id, bool recursive = true, bool wait = true) where T : Element
-		{
-			return Get<T>(x => x.ApplicationId == id || x.Id == id || x.Name == id, recursive, wait);
-		}
-
-		/// <summary>
-		/// Get the child from the children.
-		/// </summary>
-		/// <param name="condition"> A function to test each element for a condition. </param>
-		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
-		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
-		/// <returns> The child element for the condition. </returns>
-		public T Get<T>(Func<T, bool> condition, bool recursive = true, bool wait = true) where T : Element
-		{
-			T response = null;
-
-			Utility.Wait(() =>
-			{
-				try
-				{
-					response = Children.Get(condition, recursive);
-					if (response != null || !wait)
-					{
-						return true;
-					}
-
-					UpdateChildren();
-					return false;
-				}
-				catch (Exception)
-				{
-					return !wait;
-				}
-			}, Timeout.TotalMilliseconds);
-
-			return response;
 		}
 
 		/// <summary>
@@ -496,7 +392,7 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Refresh the list of items for the application.
 		/// </summary>
-		public Application Refresh()
+		public override ElementHost Refresh()
 		{
 			try
 			{
@@ -507,9 +403,9 @@ namespace TestR.Desktop
 					return Children.Any();
 				}, Timeout.TotalMilliseconds, 10);
 
-				WaitWhileBusy();
+				WaitForComplete();
 				Children.ForEach(x => x.UpdateChildren());
-				WaitWhileBusy();
+				WaitForComplete();
 				return this;
 			}
 			catch (COMException)
@@ -521,25 +417,15 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
-		/// Update the children for this element.
-		/// </summary>
-		public Application UpdateChildren()
-		{
-			Refresh();
-			OnChildrenUpdated();
-			return this;
-		}
-
-		/// <summary>
 		/// Waits for the Process to not be busy.
 		/// </summary>
 		/// <param name="minimumDelay"> The minimum delay in milliseconds to wait. Defaults to 0 milliseconds. </param>
-		public Application WaitWhileBusy(int minimumDelay = 0)
+		public override ElementHost WaitForComplete(int minimumDelay = 0)
 		{
 			var watch = Stopwatch.StartNew();
 			Process.WaitForInputIdle(Timeout.Milliseconds);
 
-			while (watch.Elapsed.TotalMilliseconds < minimumDelay && minimumDelay > 0)
+			while ((watch.Elapsed.TotalMilliseconds < minimumDelay) && (minimumDelay > 0))
 			{
 				Thread.Sleep(10);
 			}
@@ -551,14 +437,14 @@ namespace TestR.Desktop
 		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
 		/// </summary>
 		/// <param name="disposing"> True if disposing and false if otherwise. </param>
-		protected virtual void Dispose(bool disposing)
+		protected override void Dispose(bool disposing)
 		{
 			if (!disposing)
 			{
 				return;
 			}
 
-			if (AutoClose && Process != null && Process.HasExited)
+			if (AutoClose && (Process != null) && Process.HasExited)
 			{
 				Close();
 			}
@@ -568,29 +454,13 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
-		/// Handles the children updated event.
-		/// </summary>
-		protected virtual void OnChildrenUpdated()
-		{
-			ChildrenUpdated?.Invoke();
-		}
-
-		/// <summary>
-		/// Handles the closed event.
-		/// </summary>
-		protected virtual void OnClosed()
-		{
-			Closed?.Invoke();
-		}
-
-		/// <summary>
 		/// Triggers th element clicked event.
 		/// </summary>
 		/// <param name="element"> The element that was clicked. </param>
 		/// <param name="point"> The point that was clicked. </param>
-		protected virtual void OnElementClicked(Element element, Point point)
+		protected virtual void OnElementClicked(DesktopElement element, Point point)
 		{
-			if (element.ProcessId != Process.Id)
+			if (element.Application.Process.Id != Process.Id)
 			{
 				return;
 			}
@@ -600,13 +470,13 @@ namespace TestR.Desktop
 
 		private void MouseMonitorOnMouseChanged(Mouse.MouseEvent mouseEvent, Point point)
 		{
-			if (mouseEvent != Mouse.MouseEvent.LeftButtonDown && mouseEvent != Mouse.MouseEvent.RightButtonDown)
+			if ((mouseEvent != Mouse.MouseEvent.LeftButtonDown) && (mouseEvent != Mouse.MouseEvent.RightButtonDown))
 			{
 				return;
 			}
 
-			var element = Element.FromPoint(point);
-			if (element.ProcessId != Process.Id)
+			var element = DesktopElement.FromPoint(point);
+			if (element.Application.Process.Id != Process.Id)
 			{
 				return;
 			}
@@ -614,39 +484,14 @@ namespace TestR.Desktop
 			OnElementClicked(element, point);
 		}
 
-		/// <summary>
-		/// Handles the excited event.
-		/// </summary>
-		/// <param name="sender"> </param>
-		/// <param name="e"> </param>
-		private void OnExited(object sender, EventArgs e)
-		{
-			Exited?.Invoke();
-		}
-
 		#endregion
 
 		#region Events
 
 		/// <summary>
-		/// Occurs when the children are updated.
-		/// </summary>
-		public event Action ChildrenUpdated;
-
-		/// <summary>
-		/// Event called when the application process closes.
-		/// </summary>
-		public event Action Closed;
-
-		/// <summary>
 		/// An element was clicked.
 		/// </summary>
-		public event Action<Element, Point> ElementClicked;
-
-		/// <summary>
-		/// Occurs when the application exits.
-		/// </summary>
-		public event Action Exited;
+		public event Action<DesktopElement, Point> ElementClicked;
 
 		#endregion
 	}

@@ -7,9 +7,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using Newtonsoft.Json;
-using TestR.Desktop;
-using TestR.Extensions;
-using TestR.Logging;
 
 #endregion
 
@@ -25,7 +22,7 @@ namespace TestR.Web.Browsers
 		/// <summary>
 		/// The name of the browser.
 		/// </summary>
-		public const string Name = "MicrosoftEdge";
+		public const string BrowserName = "MicrosoftEdge";
 
 		#endregion
 
@@ -74,7 +71,7 @@ namespace TestR.Web.Browsers
 				return null;
 			}
 
-			var application = Application.Attach(Name, null, false);
+			var application = Application.Attach(BrowserName, null, false);
 			var browser = new Edge(application, session);
 			browser.Refresh();
 			return browser;
@@ -86,7 +83,7 @@ namespace TestR.Web.Browsers
 		/// <returns> The browser instance or null if not found. </returns>
 		public static Browser Attach(Process process)
 		{
-			if (process.ProcessName != Name)
+			if (process.ProcessName != BrowserName)
 			{
 				return null;
 			}
@@ -115,7 +112,7 @@ namespace TestR.Web.Browsers
 		{
 			InitializeDriver();
 			var session = GetSession() ?? StartSession();
-			var application = Application.Attach(Name, null, false);
+			var application = Application.Attach(BrowserName, null, false);
 			var browser = new Edge(application, session);
 			browser.Refresh();
 			return browser;
@@ -139,8 +136,8 @@ namespace TestR.Web.Browsers
 		/// <param name="uri"> The URI to navigate to. </param>
 		protected override void BrowserNavigateTo(string uri)
 		{
-			var postData = (new { url = uri }).ToJson();
-			Request("POST", $"http://localhost:17556/session/{_sessionId}/url", postData, (int) Timeout.TotalMilliseconds);
+			var postData = new { url = uri }.ToJson();
+			Request("POST", $"http://localhost:17556/session/{_sessionId}/url", postData, (int) Application.Timeout.TotalMilliseconds);
 		}
 
 		/// <summary>
@@ -168,11 +165,11 @@ namespace TestR.Web.Browsers
 			if (script.Contains("var TestR=TestR") || script.Contains("var TestR = TestR"))
 			{
 				script = script.Replace("var TestR = TestR || {", "TestR = {");
-				return Request("POST", $"http://localhost:17556/session/{_sessionId}/execute", "{\"script\": \"" + script + "\", \"args\": []}", (int) Timeout.TotalMilliseconds);
+				return Request("POST", $"http://localhost:17556/session/{_sessionId}/execute", "{\"script\": \"" + script + "\", \"args\": []}", (int) Application.Timeout.TotalMilliseconds);
 			}
 
-			var postData = (new { script = "TestR.runScript(arguments[0])", args = new[] { script } }).ToJson();
-			var data = Request("POST", $"http://localhost:17556/session/{_sessionId}/execute", postData, (int) Timeout.TotalMilliseconds);
+			var postData = new { script = "TestR.runScript(arguments[0])", args = new[] { script } }.ToJson();
+			var data = Request("POST", $"http://localhost:17556/session/{_sessionId}/execute", postData, (int) Application.Timeout.TotalMilliseconds);
 			var response = JsonConvert.DeserializeObject<dynamic>(data);
 			return response.status != 0 ? "TestR is not defined" : GetScriptResults();
 		}
@@ -183,7 +180,7 @@ namespace TestR.Web.Browsers
 		/// <returns> The current URI that was read from the browser. </returns>
 		protected override string GetBrowserUri()
 		{
-			LogManager.Write("Get browser's URI.", LogLevel.Verbose);
+			//LogManager.Write("First browser's URI.", LogLevel.Verbose);
 			return ExecuteScript("window.location.href");
 		}
 
@@ -194,8 +191,8 @@ namespace TestR.Web.Browsers
 
 		private string GetScriptResults()
 		{
-			var postData = (new { Using = "id", Value = "testrResult" }).ToJson();
-			var data = Request("POST", $"http://localhost:17556/session/{_sessionId}/element", postData, (int) Timeout.TotalMilliseconds);
+			var postData = new { Using = "id", Value = "testrResult" }.ToJson();
+			var data = Request("POST", $"http://localhost:17556/session/{_sessionId}/element", postData, (int) Application.Timeout.TotalMilliseconds);
 			var response = JsonConvert.DeserializeObject<dynamic>(data);
 			if (response.status == 7)
 			{
@@ -203,7 +200,7 @@ namespace TestR.Web.Browsers
 			}
 
 			var elementId = ((object) response.value.ELEMENT).ToString();
-			data = Request("GET", $"http://localhost:17556/session/{_sessionId}/element/{elementId}/attribute/value", null, (int) Timeout.TotalMilliseconds);
+			data = Request("GET", $"http://localhost:17556/session/{_sessionId}/element/{elementId}/attribute/value", null, (int) Application.Timeout.TotalMilliseconds);
 			response = JsonConvert.DeserializeObject<dynamic>(data);
 			return ((object) response.value).ToString();
 		}

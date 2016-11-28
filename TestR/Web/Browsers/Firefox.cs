@@ -10,9 +10,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using TestR.Desktop;
-using TestR.Extensions;
-using TestR.Logging;
 
 #endregion
 
@@ -26,26 +23,26 @@ namespace TestR.Web.Browsers
 		#region Constants
 
 		/// <summary>
+		/// The name of the browser.
+		/// </summary>
+		public const string BrowserName = "firefox";
+
+		/// <summary>
 		/// The debugging argument for starting the browser.
 		/// </summary>
 		public const string DebugArgument = "-start-debugger-server 6000";
-
-		/// <summary>
-		/// The name of the browser.
-		/// </summary>
-		public const string Name = "firefox";
 
 		#endregion
 
 		#region Fields
 
+		private string _consoleActor;
+
 		private readonly JsonSerializerSettings _jsonSerializerSettings;
 		private readonly FirefoxBuffer _messageBuffer;
 		private readonly List<dynamic> _responses;
-		private readonly byte[] _socketBuffer;
-
-		private string _consoleActor;
 		private Socket _socket;
+		private readonly byte[] _socketBuffer;
 		private string _tabActor;
 
 		#endregion
@@ -85,7 +82,7 @@ namespace TestR.Web.Browsers
 		/// <returns> The browser instance or null if not found. </returns>
 		public static Browser Attach()
 		{
-			var application = Application.Attach(Name, null, false);
+			var application = Application.Attach(BrowserName, null, false);
 			if (application == null)
 			{
 				return null;
@@ -103,12 +100,12 @@ namespace TestR.Web.Browsers
 		/// <returns> The browser instance or null if not found. </returns>
 		public static Browser Attach(Process process)
 		{
-			if (process.ProcessName != Name)
+			if (process.ProcessName != BrowserName)
 			{
 				return null;
 			}
 
-			if (!Application.Exists(Name, DebugArgument))
+			if (!Application.Exists(BrowserName, DebugArgument))
 			{
 				throw new ArgumentException("The process was not started with the debug arguments.", nameof(process));
 			}
@@ -140,7 +137,7 @@ namespace TestR.Web.Browsers
 		public static Browser Create()
 		{
 			// Create a new instance and return it.
-			var application = Application.Create($"{Name}.exe", DebugArgument, false);
+			var application = Application.Create($"{BrowserName}.exe", DebugArgument, false);
 			var browser = new Firefox(application);
 			browser.Connect();
 			browser.Refresh();
@@ -168,7 +165,7 @@ namespace TestR.Web.Browsers
 		/// <param name="disposing"> True if disposing and false if otherwise. </param>
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing && _socket != null)
+			if (disposing && (_socket != null))
 			{
 				_socket.Dispose();
 				_socket = null;
@@ -192,7 +189,7 @@ namespace TestR.Web.Browsers
 				Text = script
 			};
 
-			var response = SendRequestAndReadResponse(request, x => x.from == _consoleActor && x.input == script);
+			var response = SendRequestAndReadResponse(request, x => (x.from == _consoleActor) && (x.input == script));
 			var result = ((object) response.result).ToString();
 			return result.Contains("\"type\": \"longString\"") ? ReadLongResponse(result) : result;
 		}
@@ -203,7 +200,7 @@ namespace TestR.Web.Browsers
 		/// <returns> The current URI that was read from the browser. </returns>
 		protected override string GetBrowserUri()
 		{
-			LogManager.Write("Get browser's URI.", LogLevel.Verbose);
+			//LogManager.Write("First browser's URI.", LogLevel.Verbose);
 			return ExecuteJavaScript("window.location.href");
 		}
 
@@ -225,22 +222,22 @@ namespace TestR.Web.Browsers
 				{
 					return false;
 				}
-			}, Timeout.TotalMilliseconds, 250);
+			}, Application.Timeout.TotalMilliseconds, 250);
 
 			Task.Run(() =>
 			{
-				LogManager.Write("Firefox: Read thread is starting...", LogLevel.Verbose);
+				//LogManager.Write("Firefox: Read thread is starting...", LogLevel.Verbose);
 
 				while (ReadResponseAsync())
 				{
 					Thread.Sleep(1);
 				}
 
-				LogManager.Write("Firefox: Read thread is closing...", LogLevel.Verbose);
+				//LogManager.Write("Firefox: Read thread is closing...", LogLevel.Verbose);
 			});
 
 			// Wait for the connect response.
-			WaitForResponse(x => x.from == "root" && x.applicationType == "browser");
+			WaitForResponse(x => (x.from == "root") && (x.applicationType == "browser"));
 
 			// Initialize the actor references.
 			InitializeActors();
@@ -249,13 +246,13 @@ namespace TestR.Web.Browsers
 		private void InitializeActors()
 		{
 			var listTabRequest = new { To = "root", Type = "listTabs" };
-			var listTabResponse = SendRequestAndReadResponse(listTabRequest, x => x.from == "root" && x.tabs != null);
+			var listTabResponse = SendRequestAndReadResponse(listTabRequest, x => (x.from == "root") && (x.tabs != null));
 			var selected = listTabResponse.tabs[(int) listTabResponse.selected];
 			_consoleActor = selected.consoleActor;
 			_tabActor = selected.actor;
 
 			var attachTabRequest = new { To = _tabActor, Type = "attach" };
-			SendRequestAndReadResponse(attachTabRequest, x => x.from == _tabActor && x.type == "tabAttached");
+			SendRequestAndReadResponse(attachTabRequest, x => (x.from == _tabActor) && (x.type == "tabAttached"));
 		}
 
 		private string ReadLongResponse(string response)
@@ -275,7 +272,7 @@ namespace TestR.Web.Browsers
 			while (offset < length)
 			{
 				SendRequest(new { To = actor, Type = "substring", Start = offset, End = offset + chuckLength });
-				var subresult = WaitForResponse(x => x.from == actor && x.substring != null);
+				var subresult = WaitForResponse(x => (x.from == actor) && (x.substring != null));
 				builder.Append((string) subresult.substring);
 				offset += chuckLength;
 			}
@@ -301,7 +298,7 @@ namespace TestR.Web.Browsers
 					try
 					{
 						var token = message.AsJToken() as dynamic;
-						LogManager.Write("Debugger Response: " + message, LogLevel.Verbose);
+						//LogManager.Write("Debugger Response: " + message, LogLevel.Verbose);
 
 						if (message.Contains("\"type\":\"tabNavigated\""))
 						{
@@ -315,7 +312,7 @@ namespace TestR.Web.Browsers
 					}
 					catch
 					{
-						LogManager.Write("Invalid message! " + messages, LogLevel.Fatal);
+						//LogManager.Write("Invalid message! " + messages, LogLevel.Fatal);
 					}
 				}
 
@@ -329,9 +326,9 @@ namespace TestR.Web.Browsers
 			{
 				return false;
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
-				LogManager.Write(ex.Message, LogLevel.Fatal);
+				//LogManager.Write(ex.Message, LogLevel.Fatal);
 				return false;
 			}
 		}
@@ -340,7 +337,7 @@ namespace TestR.Web.Browsers
 		{
 			var json = JsonConvert.SerializeObject(request, _jsonSerializerSettings);
 			var data = json.Length + ":" + json;
-			LogManager.Write("Debugger Request: " + data, LogLevel.Verbose);
+			//LogManager.Write("Debugger Request: " + data, LogLevel.Verbose);
 			var jsonBuffer = Encoding.UTF8.GetBytes(data);
 			_socket.Send(jsonBuffer);
 		}
@@ -364,7 +361,7 @@ namespace TestR.Web.Browsers
 				{
 					return _responses.Any(action);
 				}
-			}, Timeout.TotalMilliseconds, 1);
+			}, Application.Timeout.TotalMilliseconds, 1);
 
 			lock (_responses)
 			{

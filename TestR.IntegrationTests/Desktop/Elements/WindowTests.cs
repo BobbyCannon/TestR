@@ -6,8 +6,7 @@ using System.Linq;
 using System.Management.Automation;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TestR.Desktop;
-using TestR.Extensions;
+using TestR.Desktop.Elements;
 using TestR.PowerShell;
 
 #endregion
@@ -31,8 +30,8 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var window = application.Children.Windows.First();
-				var childWindow = window.Children.Panes.First().Children.Windows.First();
+				var window = application.Get<Window>();
+				var childWindow = window.Get<Window>();
 				childWindow.Move(0, 0);
 				Assert.AreEqual(2, childWindow.Location.X);
 				Assert.AreEqual(2, childWindow.Location.Y);
@@ -52,11 +51,13 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var window = application.Children.Windows.FirstOrDefault();
-				var random = new Random();
+				var window = application.Get<Window>();
 				Assert.IsNotNull(window);
+
+				var random = new Random();
 				var x = random.Next(0, 200);
 				var y = random.Next(0, 200);
+
 				window.Move(x, y);
 				Assert.AreEqual(x, window.Location.X);
 				Assert.AreEqual(y, window.Location.Y);
@@ -68,8 +69,8 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var window = application.Children.Windows.First();
-				var childWindow = window.Children.Panes.First().Children.Windows.First();
+				var window = application.Get<Window>();
+				var childWindow = window.Get<Window>();
 
 				childWindow.Resize(300, 200);
 				Assert.AreEqual(300, childWindow.Width);
@@ -86,7 +87,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var window = application.Children.Windows.FirstOrDefault();
+				var window = application.GetAll<Window>().FirstOrDefault();
 				var random = new Random();
 				Assert.IsNotNull(window);
 				var width = random.Next(300, 600);

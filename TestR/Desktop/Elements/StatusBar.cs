@@ -9,11 +9,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents the status bar for a window.
 	/// </summary>
-	public class StatusBar : Element
+	public class StatusBar : DesktopElement
 	{
 		#region Constructors
 
-		internal StatusBar(IUIAutomationElement element, Application application, Element parent)
+		internal StatusBar(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}

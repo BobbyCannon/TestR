@@ -9,11 +9,11 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents the list for a window.
 	/// </summary>
-	public class List : Element
+	public class List : DesktopElement
 	{
 		#region Constructors
 
-		internal List(IUIAutomationElement element, Application application, Element parent)
+		internal List(IUIAutomationElement element, Application application, DesktopElement parent)
 			: base(element, application, parent)
 		{
 		}

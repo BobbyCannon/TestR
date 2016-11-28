@@ -13,15 +13,22 @@ namespace TestR
 	/// </summary>
 	public static class Utility
 	{
-		#region Fields
+		#region Constants
 
-		public const double DefaultWaitTimeout = 1000;
+		/// <summary>
+		/// The detail wait delay.
+		/// </summary>
 		public const int DefaultWaitDelay = 50;
+
+		/// <summary>
+		/// The default wait timeout.
+		/// </summary>
+		public const double DefaultWaitTimeout = 1000;
 
 		#endregion
 
 		#region Methods
-		
+
 		/// <summary>
 		/// Runs the action until the action returns true or the timeout is reached. Will delay in between actions of the
 		/// provided

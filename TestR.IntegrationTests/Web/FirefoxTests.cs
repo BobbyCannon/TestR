@@ -4,7 +4,6 @@ using System;
 using System.Diagnostics;
 using System.Management.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TestR.Extensions;
 using TestR.PowerShell;
 using TestR.Web;
 using TestR.Web.Browsers;

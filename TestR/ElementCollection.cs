@@ -2,168 +2,196 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using TestR.Extensions;
 
 #endregion
 
 namespace TestR
 {
-    /// <summary>
-    /// Represents a collection of elements.
-    /// </summary>
-    public class ElementCollection<T> : ObservableCollection<T>
-        where T : BaseElement
-    {
-        #region Constructors
+	/// <summary>
+	/// Represents a collection of elements.
+	/// </summary>
+	public class ElementCollection : List<Element>
+	{
+		#region Constructors
 
-        /// <summary>
-        /// Initializes an instance of the ElementCollection class.
-        /// </summary>
-        public ElementCollection()
-        {
-        }
+		/// <summary>
+		/// Initializes an instance of the ElementCollection class.
+		/// </summary>
+		/// <param name="parent"> </param>
+		internal ElementCollection(ElementHost parent)
+		{
+			Parent = parent;
+		}
 
-        /// <summary>
-        /// Initializes an instance of the ElementCollection class.
-        /// </summary>
-        /// <param name="collection"> The collection of elements to add to the new collection. </param>
-        public ElementCollection(IEnumerable<T> collection)
-        {
-            this.AddRange(collection);
-        }
+		#endregion
 
-        #endregion
+		#region Properties
 
-        #region Properties
+		/// <summary>
+		/// Access an element by the Full ID, ID, or Name.
+		/// </summary>
+		/// <param name="id"> The ID of the element. </param>
+		/// <returns> The element if found or null if not found. </returns>
+		public Element this[string id] => First<Element>(id, false);
 
-        /// <summary>
-        /// Access an element by the Application ID, ID, or Name.
-        /// </summary>
-        /// <param name="id"> The ID of the element. </param>
-        /// <returns> The element if found or null if not found. </returns>
-        public T this[string id] => Get<T>(id, false);
+		/// <summary>
+		/// Gets the parent element of this element collection.
+		/// </summary>
+		public ElementHost Parent { get; }
 
-        /// <summary>
-        /// Gets the parent for this collection of elements.
-        /// </summary>
-        public BaseElement Parent { get; }
+		#endregion
 
-        #endregion
+		#region Methods
 
-        #region Methods
+		/// <summary>
+		/// Adds items to the <see cref="ICollection{T}" />.
+		/// </summary>
+		/// <param name="items"> The objects to add to the <see cref="ICollection{T}" />. </param>
+		/// <exception cref="NotSupportedException">
+		/// The <see cref="ICollection{T}" /> is
+		/// read-only.
+		/// </exception>
+		public void Add(params Element[] items)
+		{
+			items.ForEach(Add);
+		}
 
-        /// <summary>
-        /// Check to see if this collection contains an element.
-        /// </summary>
-        /// <param name="id"> The id to search for. </param>
-        /// <returns> True if the id is found, false if otherwise. </returns>
-        public bool Contains(string id)
-        {
-            return this[id] != null;
-        }
+		/// <summary>
+		/// Check to see if this collection contains an element.
+		/// </summary>
+		/// <param name="id"> The id to search for. </param>
+		/// <returns> True if the id is found, false if otherwise. </returns>
+		public bool Contains(string id)
+		{
+			return this[id] != null;
+		}
 
-        /// <summary>
-        /// Get an element from the collection using the provided condition.
-        /// </summary>
-        /// <param name="condition"> A function to test each element for a condition. </param>
-        /// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
-        /// <returns> The element matching the condition. </returns>
-        public BaseElement Get(Func<BaseElement, bool> condition, bool includeDescendants = true)
-        {
-            return Get<BaseElement>(condition, includeDescendants);
-        }
+		/// <summary>
+		/// First an element from the collection using the provided condition.
+		/// </summary>
+		/// <param name="id"> An ID of the element to get. </param>
+		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
+		/// <returns> The element matching the condition. </returns>
+		public Element First(string id, bool includeDescendants = true)
+		{
+			return First<Element>(id, includeDescendants);
+		}
 
-        /// <summary>
-        /// Get an element from the collection using the provided ID.
-        /// </summary>
-        /// <param name="id"> An ID of the element to get. </param>
-        /// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
-        /// <returns> The child element for the condition. </returns>
-        public T1 Get<T1>(string id, bool includeDescendants = true) where T1 : BaseElement
-        {
-            return Get<T1>(x => (x.FullId == id) || (x.Id == id) || (x.Name == id), includeDescendants);
-        }
+		/// <summary>
+		/// First an element from the collection using the provided condition.
+		/// </summary>
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
+		/// <returns> The element matching the condition. </returns>
+		public Element First(Func<Element, bool> condition, bool includeDescendants = true)
+		{
+			return First<Element>(condition, includeDescendants);
+		}
 
-        /// <summary>
-        /// Get an element from the collection using the provided condition.
-        /// </summary>
-        /// <param name="condition"> A function to test each element for a condition. </param>
-        /// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
-        /// <returns> The child element for the condition. </returns>
-        public T1 Get<T1>(Func<T1, bool> condition, bool includeDescendants = true) where T1 : BaseElement
-        {
-            var children = OfType<T1>().ToList();
-            var response = children.FirstOrDefault(condition);
+		/// <summary>
+		/// First an element from the collection using the provided ID.
+		/// </summary>
+		/// <param name="id"> An ID of the element to get. </param>
+		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
+		/// <returns> The child element for the condition. </returns>
+		public T First<T>(string id, bool includeDescendants = true) where T : Element
+		{
+			return First<T>(x => (x.FullId == id) || (x.Id == id) || (x.Name == id), includeDescendants);
+		}
 
-            if (!includeDescendants)
-            {
-                return response;
-            }
+		/// <summary>
+		/// First an element from the collection using the provided condition.
+		/// </summary>
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
+		/// <returns> The child element for the condition. </returns>
+		public T First<T>(Func<T, bool> condition, bool includeDescendants = true) where T : Element
+		{
+			var children = OfType<T>().ToList();
+			var response = children.FirstOrDefault(condition);
 
-            if (response != null)
-            {
-                return response;
-            }
+			if (!includeDescendants)
+			{
+				return response;
+			}
 
-            foreach (var child in this)
-            {
-                response = child.Get(condition, true, false);
-                if (response != null)
-                {
-                    return response;
-                }
-            }
+			if (response != null)
+			{
+				return response;
+			}
 
-            return null;
-        }
+			foreach (var child in this)
+			{
+				response = child.First(condition, true, false);
+				if (response != null)
+				{
+					return response;
+				}
+			}
 
-        /// <summary>
-        /// Gets a collection of element of the provided type.
-        /// </summary>
-        /// <typeparam name="T1"> The type of the element for the collection. </typeparam>
-        /// <returns> The collection of elements of the provided type. </returns>
-        public ElementCollection<T1> OfType<T1>() where T1 : BaseElement
-        {
-            return new ElementCollection<T1>(this.Where(x => (x.GetType() == typeof(T1)) || x is T1).Cast<T1>());
-        }
+			return null;
+		}
 
-        /// <summary>
-        /// Prints out all children as a debug string.
-        /// </summary>
-        /// <param name="prefix"> Prefix to the debug information. </param>
-        /// <param name="verbose"> Option to print verbose information. </param>
-        public ElementCollection<T> PrintDebug(string prefix = "", bool verbose = true)
-        {
-            foreach (var item in this)
-            {
-                if (verbose)
-                {
-                    Console.WriteLine(prefix + item.ToDetailString().Replace(Environment.NewLine, ", "));
-                }
-                else
-                {
-                    Console.WriteLine(prefix + item.FullId);
-                }
+		/// <summary>
+		/// First a collection of element from the collection.
+		/// </summary>
+		/// <returns> The child elements for the condition. </returns>
+		public IEnumerable<Element> Descendants()
+		{
+			return Descendants<Element>(x => true);
+		}
 
-                item.Children.PrintDebug(prefix + "    ", verbose);
-            }
+		/// <summary>
+		/// First a collection of element from the collection using the provided condition.
+		/// </summary>
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <returns> The child elements for the condition. </returns>
+		public IEnumerable<Element> Descendants(Func<Element, bool> condition)
+		{
+			return Descendants<Element>(condition);
+		}
 
-            return this;
-        }
+		/// <summary>
+		/// First a collection of element of a specific type from the collection.
+		/// </summary>
+		/// <returns> The child elements for the condition. </returns>
+		public IEnumerable<T> Descendants<T>() where T : Element
+		{
+			return Descendants<T>(x => true);
+		}
 
-        /// <summary>
-        /// Add the element to the collection.
-        /// </summary>
-        /// <param name="element"> The type of the element. </param>
-        /// <returns> Returns the element that was added. </returns>
-        private T AddElement(T element)
-        {
-            Add(element);
-            return element;
-        }
+		/// <summary>
+		/// First a collection of element of a specific type from the collection using the provided condition.
+		/// </summary>
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <returns> The child elements for the condition. </returns>
+		public IEnumerable<T> Descendants<T>(Func<T, bool> condition) where T : Element
+		{
+			foreach (var child in OfType<T>().Where(condition))
+			{
+				yield return child;
+			}
 
-        #endregion
-    }
+			foreach (var child in this)
+			{
+				foreach (var grandChild in child.Descendants(condition))
+				{
+					yield return grandChild;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets a collection of element of the provided type.
+		/// </summary>
+		/// <typeparam name="T"> The type of the element for the collection. </typeparam>
+		/// <returns> The collection of elements of the provided type. </returns>
+		private IEnumerable<T> OfType<T>() where T : Element
+		{
+			return this.Where(x => (x.GetType() == typeof(T)) || x is T).Cast<T>();
+		}
+
+		#endregion
+	}
 }

@@ -12,7 +12,7 @@ namespace TestR.Web.Elements
 	/// <remarks>
 	/// Not supported in HTML5 so use CSS instead.
 	/// </remarks>
-	public class Directory : Element
+	public class Directory : WebElement
 	{
 		#region Constructors
 
@@ -21,9 +21,9 @@ namespace TestR.Web.Elements
 		/// </summary>
 		/// <param name="element"> The browser element this is for. </param>
 		/// <param name="browser"> The browser this element is associated with. </param>
-		/// <param name="collection"> The collection this element is associated with. </param>
-		public Directory(JToken element, Browser browser, ElementCollection collection)
-			: base(element, browser, collection)
+		/// <param name="parent"> The parent host for this element. </param>
+		public Directory(JToken element, Browser browser, ElementHost parent)
+			: base(element, browser, parent)
 		{
 		}
 
