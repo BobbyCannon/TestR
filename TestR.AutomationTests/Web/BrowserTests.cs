@@ -2,7 +2,6 @@
 
 using System.Linq;
 using System.Management.Automation;
-using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.PowerShell;
 using TestR.Web;
@@ -42,7 +41,7 @@ namespace TestR.AutomationTests.Web
 				//LogManager.UpdateReferenceId(browser, "AngularInputTrigger");
 				browser.NavigateTo(TestSite + "/Angular.html#/");
 
-				var email = browser.Get<TextInput>("email");
+				var email = browser.First<TextInput>("email");
 				email.TypeText("user", true);
 
 				var expected = "ng-untouched ng-scope ng-invalid ng-not-empty ng-dirty ng-invalid-email ng-valid-required".Split(' ');
@@ -65,18 +64,18 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "AngularNewElements");
 				browser.NavigateTo(TestSite + "/Angular.html#/");
-				var elementCount = browser.Elements.Count;
+				var elementCount = browser.Descendants().Count();
 
-				var button = browser.Get<Button>("addItem"];
+				var button = browser.First<Button>("addItem");
 				button.Click();
 				browser.Refresh();
 
-				Assert.AreEqual(elementCount + 1, browser.Elements.Count);
-				elementCount = browser.Elements.Count;
+				Assert.AreEqual(elementCount + 1, browser.Descendants().Count());
+				elementCount = browser.Descendants().Count();
 
 				button.Click();
 				browser.Refresh();
-				Assert.AreEqual(elementCount + 1, browser.Elements.Count);
+				Assert.AreEqual(elementCount + 1, browser.Descendants().Count());
 			});
 		}
 
@@ -87,12 +86,12 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "AngularSetTextInputs");
 				browser.NavigateTo(TestSite + "/Angular.html#/form");
-				Assert.AreEqual("true", browser.Get<Button>("saveButton").Disabled);
-				browser.Get<TextInput>("pageTitle"].Text = "Hello World";
-				Assert.AreEqual("Hello World", browser.Get<TextInput>("pageTitle"].Text);
-				browser.Elements.TextArea["pageText"].Text = "The quick brown fox jumps over the lazy dog's back.";
-				Assert.AreEqual("The quick brown fox jumps over the lazy dog's back.", browser.Elements.TextArea["pageText"].Text);
-				Assert.AreEqual("false", browser.Get<Button>("saveButton"].Disabled);
+				Assert.AreEqual("true", browser.First<Button>("saveButton").Disabled);
+				browser.First<TextInput>("pageTitle").Text = "Hello World";
+				Assert.AreEqual("Hello World", browser.First<TextInput>("pageTitle").Text);
+				browser.First<TextArea>("pageText").Text = "The quick brown fox jumps over the lazy dog's back.";
+				Assert.AreEqual("The quick brown fox jumps over the lazy dog's back.", browser.First<TextArea>("pageText").Text);
+				Assert.AreEqual("false", browser.First<Button>("saveButton").Disabled);
 			});
 		}
 
@@ -105,20 +104,20 @@ namespace TestR.AutomationTests.Web
 				browser.NavigateTo(TestSite + "/Angular.html#/");
 				Assert.AreEqual(TestSite + "/Angular.html#/", browser.Uri);
 
-				Assert.IsTrue(browser.Elements.ContainsKey("addItem"));
-				Assert.IsTrue(browser.Elements.ContainsKey("anotherPageLink"));
+				Assert.IsTrue(browser.Contains("addItem"));
+				Assert.IsTrue(browser.Contains("anotherPageLink"));
 
 				browser.NavigateTo(TestSite + "/Angular.html#/anotherPage");
 				Assert.AreEqual(TestSite + "/Angular.html#/anotherPage", browser.Uri);
 
-				Assert.IsFalse(browser.Elements.ContainsKey("addItem"));
-				Assert.IsTrue(browser.Elements.ContainsKey("pageLink"));
+				Assert.IsFalse(browser.Contains("addItem"));
+				Assert.IsTrue(browser.Contains("pageLink"));
 
 				browser.NavigateTo(TestSite + "/Angular.html#/");
 				Assert.AreEqual(TestSite + "/Angular.html#/", browser.Uri);
 
-				Assert.IsTrue(browser.Elements.ContainsKey("addItem"));
-				Assert.IsTrue(browser.Elements.ContainsKey("anotherPageLink"));
+				Assert.IsTrue(browser.Contains("addItem"));
+				Assert.IsTrue(browser.Contains("anotherPageLink"));
 			});
 		}
 
@@ -129,9 +128,9 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "ClickButton");
 				browser.NavigateTo(TestSite + "/index.html");
-				browser.Elements["button"].Click();
+				browser.First("button").Click();
 
-				var actual = browser.Elements.TextArea["textarea"].Text;
+				var actual = browser.First<TextArea>("textarea").Text;
 				Assert.AreEqual("button", actual);
 			});
 		}
@@ -143,9 +142,9 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "ClickButtonByName");
 				browser.NavigateTo(TestSite + "/index.html");
-				browser.Elements.First(x => x.Name == "buttonByName").Click();
+				browser.First(x => x.Name == "buttonByName").Click();
 
-				var textArea = browser.Elements.TextArea["textarea"];
+				var textArea = browser.First<TextArea>("textarea");
 				Assert.AreEqual("buttonByName", textArea.Text);
 			});
 		}
@@ -158,7 +157,7 @@ namespace TestR.AutomationTests.Web
 				//LogManager.UpdateReferenceId(browser, "ClickCheckbox");
 				browser.NavigateTo(TestSite + "/inputs.html");
 
-				foreach (var element in browser.Elements.Checkboxes)
+				foreach (var element in browser.Descendants<CheckBox>())
 				{
 					element.Click();
 					Assert.IsTrue(element.Checked);
@@ -175,9 +174,9 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "ClickInputButton");
 				browser.NavigateTo(TestSite + "/index.html");
-				browser.Get<Button>("inputButton"].Click();
+				browser.First<Button>("inputButton").Click();
 
-				var textArea = browser.Elements.TextArea["textarea"];
+				var textArea = browser.First<TextArea>("textarea");
 				Assert.AreEqual("inputButton", textArea.Text);
 			});
 		}
@@ -189,9 +188,9 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "ClickLink");
 				browser.NavigateTo(TestSite + "/index.html");
-				browser.Elements["link"].Click();
+				browser.First("link").Click();
 
-				var textArea = browser.Elements.TextArea["textarea"];
+				var textArea = browser.First<TextArea>("textarea");
 				Assert.AreEqual("link", textArea.Text);
 			});
 		}
@@ -204,14 +203,14 @@ namespace TestR.AutomationTests.Web
 				//LogManager.UpdateReferenceId(browser, "ClickCheckbox");
 				browser.NavigateTo(TestSite + "/inputs.html");
 
-				Assert.IsFalse(browser.Elements.RadioButtons.Any(x => x.Checked));
+				Assert.IsFalse(browser.Descendants<RadioButton>().Any(x => x.Checked));
 
-				foreach (var element in browser.Elements.RadioButtons)
+				foreach (var element in browser.Descendants<RadioButton>())
 				{
 					element.Click();
 					Assert.IsTrue(element.Checked);
-					Assert.IsTrue(browser.Elements.RadioButtons.Where(x => x.Id == element.Id).All(x => x.Checked));
-					Assert.IsTrue(browser.Elements.RadioButtons.Where(x => x.Id != element.Id).All(x => !x.Checked));
+					Assert.IsTrue(browser.Descendants<RadioButton>().Where(x => x.Id == element.Id).All(x => x.Checked));
+					Assert.IsTrue(browser.Descendants<RadioButton>().Where(x => x.Id != element.Id).All(x => !x.Checked));
 				}
 			});
 		}
@@ -289,7 +288,7 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "ElementChildren");
 				browser.NavigateTo(TestSite + "/relationships.html");
-				var children = browser.Elements["parent1div"].Children;
+				var children = browser.First("parent1div").Children;
 
 				var expected = new[] { "child1div", "child2span", "child3br", "child4input" };
 				Assert.AreEqual(4, children.Count);
@@ -304,7 +303,7 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "ElementParent");
 				browser.NavigateTo(TestSite + "/relationships.html");
-				var element = browser.Elements["child1div"].Parent;
+				var element = browser.First("child1div").Parent;
 				Assert.AreEqual("parent1div", element.Id);
 			});
 		}
@@ -316,7 +315,7 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "EnumerateDivisions");
 				browser.NavigateTo(TestSite + "/index.html");
-				var elements = browser.Elements.Divisions;
+				var elements = browser.Descendants<Division>().ToList();
 				Assert.AreEqual(2, elements.Count());
 
 				foreach (var division in elements)
@@ -333,7 +332,7 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "EnumerateHeaders");
 				browser.NavigateTo(TestSite + "/index.html");
-				var elements = browser.Elements.Headers;
+				var elements = browser.Descendants<Header>().ToList();
 				Assert.AreEqual(6, elements.Count());
 
 				foreach (var header in elements)
@@ -350,7 +349,7 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "FilterElementByTextElements");
 				browser.NavigateTo(TestSite + "/inputs.html");
-				var inputs = browser.Elements.TextInputs.ToList();
+				var inputs = browser.Descendants<TextInput>().ToList();
 				// Old IE treats input types of Date, Month, Week as "Text" which increases input count.
 				//var expected = browser.BrowserType == BrowserType.InternetExplorer ? 11 : 8;
 				Assert.AreEqual(8, inputs.Count);
@@ -364,7 +363,9 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "FindElementByClass");
 				browser.NavigateTo(TestSite + "/index.html");
-				var elements = browser.Elements.Where(x => x.Class.Contains("red"));
+				var elements = browser.Descendants()
+					.Cast<WebElement>()
+					.Where(x => x.Class.Contains("red"));
 				Assert.AreEqual(1, elements.Count());
 			});
 		}
@@ -376,7 +377,8 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "FindElementByClassByValueAccessor");
 				browser.NavigateTo(TestSite + "/index.html");
-				var elements = browser.Elements.Where(x => x["class"].Contains("red"));
+				var elements = browser.Descendants()
+					.Cast<WebElement>().Where(x => x["class"].Contains("red"));
 				Assert.AreEqual(1, elements.Count());
 			});
 		}
@@ -388,7 +390,7 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "FindElementByClassProperty");
 				browser.NavigateTo(TestSite + "/index.html");
-				var elements = browser.Elements.Links.Where(x => x.Class == "bold");
+				var elements = browser.Descendants<Link>().Where(x => x.Class == "bold");
 				Assert.AreEqual(1, elements.Count());
 			});
 		}
@@ -401,7 +403,7 @@ namespace TestR.AutomationTests.Web
 				//LogManager.UpdateReferenceId(browser, "FindElementByDataAttribute");
 				browser.NavigateTo(TestSite + "/Index.html");
 
-				var link = browser.Elements.FirstOrDefault(x => x["data-test"] == "testAnchor");
+				var link = browser.Descendants(x => x["data-test"] == "testAnchor").FirstOrDefault();
 
 				Assert.IsNotNull(link, "Failed to find the link by data attribute.");
 				Assert.AreEqual(link.Id, "a1");
@@ -415,7 +417,7 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "FindHeadersByText");
 				browser.NavigateTo(TestSite + "/index.html");
-				var elements = browser.Elements.OfType<Header>().Where(x => x.Text.Contains("Header"));
+				var elements = browser.OfType<Header>().Where(x => x.Text.Contains("Header"));
 				Assert.AreEqual(6, elements.Count());
 			});
 		}
@@ -427,7 +429,7 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "FindSpanElementByText");
 				browser.NavigateTo(TestSite + "/index.html");
-				var elements = browser.Elements.Spans.Where(x => x.Text == "SPAN with ID of 1");
+				var elements = browser.Descendants<Span>(x => x.Text == "SPAN with ID of 1");
 				Assert.AreEqual(1, elements.Count());
 			});
 		}
@@ -439,7 +441,7 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "FindTextInputsByText");
 				browser.NavigateTo(TestSite + "/index.html");
-				var elements = browser.Elements.OfType<TextInput>().Where(x => x.Text == "Hello World");
+				var elements = browser.OfType<TextInput>().Where(x => x.Text == "Hello World");
 				Assert.AreEqual(1, elements.Count());
 			});
 		}
@@ -452,8 +454,9 @@ namespace TestR.AutomationTests.Web
 				//LogManager.UpdateReferenceId(browser, "Focus");
 				browser.NavigateTo(TestSite + "/inputs.html");
 
-				var expected = browser.Elements.TextInputs.Last();
-				Assert.IsNull(browser.ActiveElement, "There should not be an active element.");
+				var expected = browser.Descendants<TextInput>().Last();
+				var actual = browser.ActiveElement;
+				Assert.IsNull(actual, "There should not be an active element.");
 
 				expected.Focus();
 				Assert.IsNotNull(browser.ActiveElement, "There should be an active element.");
@@ -468,7 +471,7 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "GetElementByNameIndex");
 				browser.NavigateTo(TestSite + "/index.html");
-				var actual = browser.Elements.First(x => x.Name == "inputName").Name;
+				var actual = browser.First(x => x.Name == "inputName").Name;
 				Assert.AreEqual("inputName", actual);
 			});
 		}
@@ -480,7 +483,7 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "HighlightAllElements");
 				browser.NavigateTo(TestSite + "/index.html");
-				var elements = browser.Elements;
+				var elements = browser.OfType<WebElement>();
 
 				foreach (var element in elements)
 				{
@@ -498,7 +501,7 @@ namespace TestR.AutomationTests.Web
 				//LogManager.UpdateReferenceId(browser, "HighlightElement");
 				browser.NavigateTo(TestSite + "/inputs.html");
 
-				var inputElements = browser.Elements.Where(t => t.TagName == "input").ToList();
+				var inputElements = browser.Descendants<WebElement>(t => t.TagName == "input").ToList();
 				foreach (var element in inputElements)
 				{
 					var originalColor = element.GetStyleAttributeValue("background-color");
@@ -543,12 +546,12 @@ namespace TestR.AutomationTests.Web
 				Assert.AreEqual(expected, browser.Uri.ToLower());
 
 				// Redirect by the link.
-				browser.Elements.Links["redirectLink"].Click();
+				browser.First<Link>("redirectLink").Click();
 				browser.WaitForNavigation(TestSite + "/Inputs.html");
 
 				expected = TestSite + "/inputs.html";
 				Assert.AreEqual(expected, browser.Uri.ToLower());
-				browser.Elements["submit"].Click();
+				browser.First("submit").Click();
 			});
 		}
 
@@ -561,7 +564,7 @@ namespace TestR.AutomationTests.Web
 				var expected = TestSite + "/index.html";
 				browser.NavigateTo(expected);
 				Assert.AreEqual(expected, browser.Uri.ToLower());
-				Assert.IsNotNull(browser.Elements["link"], "Failed to find the link element.");
+				Assert.IsNotNull(browser.First("link"), "Failed to find the link element.");
 
 				// Redirect by a script.
 				browser.ExecuteScript("window.location.href = 'inputs.html'");
@@ -569,7 +572,7 @@ namespace TestR.AutomationTests.Web
 
 				expected = TestSite + "/inputs.html";
 				Assert.AreEqual(expected, browser.Uri.ToLower());
-				browser.Elements["submit"].Click();
+				browser.First("submit").Click();
 			});
 		}
 
@@ -579,15 +582,15 @@ namespace TestR.AutomationTests.Web
 			ForEachBrowser(browser =>
 			{
 				//LogManager.UpdateReferenceId(browser, "Refresh");
-				var expected = new[] { TestSite + "/index.html", TestSite + "/inputs.html" };
+				var expected = TestSite + "/angular.html";
+				browser.NavigateTo(expected);
+				Assert.AreEqual(24, browser.Descendants().Count());
 
-				for (var i = 0; i < 10; i++)
-				{
-					browser.NavigateTo(expected[i % 2]);
-					Assert.AreEqual(expected[i % 2], browser.Uri.ToLower());
-					browser.Refresh();
-					Thread.Sleep(10);
-				}
+				browser.First("addItem").Click();
+				Assert.AreEqual(24, browser.Descendants().Count());
+
+				browser.Refresh();
+				Assert.AreEqual(25, browser.Descendants().Count());
 			});
 		}
 
@@ -598,7 +601,7 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "SelectSelectedOption");
 				browser.NavigateTo(TestSite + "/index.html");
-				var select = browser.Elements.Selects["select"];
+				var select = browser.First<Select>("select");
 				Assert.AreEqual("2", select.Value);
 				Assert.AreEqual("2", select.SelectedOption.Value);
 				Assert.AreEqual("Two", select.SelectedOption.Text);
@@ -612,9 +615,9 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "SetButtonText");
 				browser.NavigateTo(TestSite + "/index.html");
-				browser.Elements["button"].Text = "Hello";
+				browser.First<Button>("button").Text = "Hello";
 
-				var actual = browser.Elements["button"].GetAttributeValue("textContent", true);
+				var actual = browser.First<Button>("button").GetAttributeValue("textContent", true);
 				Assert.AreEqual("Hello", actual);
 			});
 		}
@@ -626,9 +629,9 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "SetButtonText");
 				browser.NavigateTo(TestSite + "/index.html");
-				browser.Elements["inputButton"].Text = "Hello";
+				browser.First<Button>("inputButton").Text = "Hello";
 
-				var actual = browser.Elements["inputButton"].GetAttributeValue("value", true);
+				var actual = browser.First<Button>("inputButton").GetAttributeValue("value", true);
 				Assert.AreEqual("Hello", actual);
 			});
 		}
@@ -641,7 +644,7 @@ namespace TestR.AutomationTests.Web
 				//LogManager.UpdateReferenceId(browser, "SetTextAllInputs");
 				browser.NavigateTo(TestSite + "/inputs.html");
 
-				foreach (var input in browser.Elements.TextInputs)
+				foreach (var input in browser.Descendants<TextInput>())
 				{
 					if (input.Id == "number")
 					{
@@ -655,7 +658,7 @@ namespace TestR.AutomationTests.Web
 					}
 				}
 
-				foreach (var input in browser.Elements.TextArea)
+				foreach (var input in browser.Descendants<TextArea>())
 				{
 					input.Text = input.Id;
 					Assert.AreEqual(input.Id, input.Text);
@@ -671,7 +674,7 @@ namespace TestR.AutomationTests.Web
 				//LogManager.UpdateReferenceId(browser, "TestContentForInputText");
 				browser.NavigateTo(TestSite + "/TextContent.html");
 
-				var element = browser.Get<TextInput>("inputText1"];
+				var element = browser.First<TextInput>("inputText1");
 				Assert.AreEqual(element.Text, "inputText1");
 			});
 		}
@@ -684,7 +687,7 @@ namespace TestR.AutomationTests.Web
 				//LogManager.UpdateReferenceId(browser, "TextAreaValue");
 				browser.NavigateTo(TestSite + "/");
 
-				var element = browser.Elements.TextArea["textarea"];
+				var element = browser.First<TextArea>("textarea");
 				Assert.AreEqual(element.Text, "Text Area's \"Quotes\" Data");
 
 				element.Text = "\"Text Area's \"Quote's\" Data\"";
@@ -700,7 +703,7 @@ namespace TestR.AutomationTests.Web
 				//LogManager.UpdateReferenceId(browser, "TestContentForDiv");
 				browser.NavigateTo(TestSite + "/TextContent.html");
 
-				var element = browser.Elements.Divisions["div1"];
+				var element = browser.First<Division>("div1");
 				Assert.AreEqual(element.Text, "\n\t\t\tDiv - Span\n\t\t\tOther Text\n\t\t");
 			});
 		}
@@ -713,7 +716,7 @@ namespace TestR.AutomationTests.Web
 				//LogManager.UpdateReferenceId(browser, "TestContentForHeader1");
 				browser.NavigateTo(TestSite + "/TextContent.html");
 
-				var element = browser.Elements.Divisions["div2"];
+				var element = browser.First<Division>("div2");
 				Assert.AreEqual(element.Text, "\n\t\t\tHeader One\n\t\t\tHeader Two\n\t\t\tHeader Three\n\t\t\tHeader Four\n\t\t\tHeader Five\n\t\t");
 			});
 		}
@@ -726,7 +729,7 @@ namespace TestR.AutomationTests.Web
 				//LogManager.UpdateReferenceId(browser, "TestContentForHeader1");
 				browser.NavigateTo(TestSite + "/TextContent.html");
 
-				var element = browser.Elements.Headers["h1"];
+				var element = browser.First<Header>("h1");
 				Assert.AreEqual(element.Text, "Header One");
 			});
 		}
@@ -739,7 +742,7 @@ namespace TestR.AutomationTests.Web
 				//LogManager.UpdateReferenceId(browser, "TestContentForHeader2");
 				browser.NavigateTo(TestSite + "/TextContent.html");
 
-				var element = browser.Elements.Headers["h2"];
+				var element = browser.First<Header>("h2");
 				Assert.AreEqual(element.Text, "Header Two");
 			});
 		}
@@ -752,7 +755,7 @@ namespace TestR.AutomationTests.Web
 				//LogManager.UpdateReferenceId(browser, "TestContentForHeader3");
 				browser.NavigateTo(TestSite + "/TextContent.html");
 
-				var element = browser.Elements.Headers["h3"];
+				var element = browser.First<Header>("h3");
 				Assert.AreEqual(element.Text, "Header Three");
 			});
 		}
@@ -765,7 +768,7 @@ namespace TestR.AutomationTests.Web
 				//LogManager.UpdateReferenceId(browser, "TestContentForHeader4");
 				browser.NavigateTo(TestSite + "/TextContent.html");
 
-				var element = browser.Elements.Headers["h4"];
+				var element = browser.First<Header>("h4");
 				Assert.AreEqual(element.Text, "Header Four");
 			});
 		}
@@ -778,7 +781,7 @@ namespace TestR.AutomationTests.Web
 				//LogManager.UpdateReferenceId(browser, "TestContentForHeader5");
 				browser.NavigateTo(TestSite + "/TextContent.html");
 
-				var element = browser.Elements.Headers["h5"];
+				var element = browser.First<Header>("h5");
 				Assert.AreEqual(element.Text, "Header Five");
 			});
 		}
@@ -791,7 +794,7 @@ namespace TestR.AutomationTests.Web
 				//LogManager.UpdateReferenceId(browser, "TypeTextAllInputs");
 				browser.NavigateTo(TestSite + "/inputs.html");
 
-				foreach (var input in browser.Elements.TextInputs)
+				foreach (var input in browser.Descendants<TextInput>())
 				{
 					if (input.Id == "number")
 					{
@@ -805,7 +808,7 @@ namespace TestR.AutomationTests.Web
 					}
 				}
 
-				foreach (var input in browser.Elements.TextArea)
+				foreach (var input in browser.Descendants<TextArea>())
 				{
 					input.TypeText(input.Id);
 					Assert.AreEqual(input.Id, input.Text);
@@ -820,7 +823,7 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "TypeTextAppendInput");
 				browser.NavigateTo(TestSite + "/inputs.html");
-				var input = browser.Get<TextInput>("text"];
+				var input = browser.First<TextInput>("text");
 				input.Value = "foo";
 				input.TypeText("bar");
 				Assert.AreEqual("foobar", input.Value);
@@ -834,7 +837,7 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "TypeTextPasswordInput");
 				browser.NavigateTo(TestSite + "/inputs.html");
-				var input = browser.Get<TextInput>("password"];
+				var input = browser.First<TextInput>("password");
 				input.TypeText("password", true);
 				Assert.AreEqual("password", input.Value);
 			});
@@ -847,7 +850,7 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "TypeTextSetInput");
 				browser.NavigateTo(TestSite + "/inputs.html");
-				var input = browser.Get<TextInput>("text"];
+				var input = browser.First<TextInput>("text");
 				input.Value = "foo";
 				input.TypeText("bar", true);
 				Assert.AreEqual("bar", input.Value);

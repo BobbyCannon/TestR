@@ -20,7 +20,7 @@ namespace TestR
 		protected internal ElementHost(Application application, ElementHost parent)
 		{
 			Application = application;
-			Children = new ElementCollection(this);
+			Children = new ElementCollection(parent);
 			Parent = parent;
 		}
 
@@ -56,110 +56,20 @@ namespace TestR
 		/// <summary>
 		/// Gets the parent element of this element.
 		/// </summary>
-		public ElementHost Parent { get; }
+		public ElementHost Parent { get; internal set; }
 
 		#endregion
 
 		#region Methods
 
 		/// <summary>
-		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+		/// Check to see if this element host contains an element.
 		/// </summary>
-		public void Dispose()
+		/// <param name="id"> The id to search for. </param>
+		/// <returns> True if the id is found, false if otherwise. </returns>
+		public bool Contains(string id)
 		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
-
-		/// <summary>
-		/// First the first child of the specified type.
-		/// </summary>
-		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
-		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
-		/// <returns> The first child element of the type or null if no child found. </returns>
-		public T First<T>(bool recursive = true, bool wait = true) where T : Element
-		{
-			return First<T>(x => true, recursive, wait);
-		}
-
-		/// <summary>
-		/// First the first child from the children.
-		/// </summary>
-		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
-		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
-		/// <returns> The first child element or null if no child found. </returns>
-		public Element First(bool recursive = true, bool wait = true)
-		{
-			return First<Element>(x => true, recursive, wait);
-		}
-
-		/// <summary>
-		/// First the child from the children.
-		/// </summary>
-		/// <param name="id"> An ID of the element to get. </param>
-		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
-		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
-		/// <returns> The child element for the ID or null if no child found. </returns>
-		public Element First(string id, bool recursive = true, bool wait = true)
-		{
-			return First<Element>(id, recursive, wait);
-		}
-
-		/// <summary>
-		/// First the child from the children.
-		/// </summary>
-		/// <param name="condition"> A function to test each element for a condition. </param>
-		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
-		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
-		/// <returns> The child element for the condition or null if no child found. </returns>
-		public Element First(Func<Element, bool> condition, bool recursive = true, bool wait = true)
-		{
-			return First<Element>(condition, recursive, wait);
-		}
-
-		/// <summary>
-		/// First the child from the children.
-		/// </summary>
-		/// <param name="id"> An ID of the element to get. </param>
-		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
-		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
-		/// <returns> The child element for the ID or null if no child found. </returns>
-		public T First<T>(string id, bool recursive = true, bool wait = true) where T : Element
-		{
-			return First<T>(x => (x.FullId == id) || (x.Id == id) || (x.Name == id), recursive, wait);
-		}
-
-		/// <summary>
-		/// First the child from the children.
-		/// </summary>
-		/// <param name="condition"> A function to test each element for a condition. </param>
-		/// <param name="recursive"> Flag to determine to include descendants or not. </param>
-		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
-		/// <returns> The child element for the condition or null if no child found. </returns>
-		public T First<T>(Func<T, bool> condition, bool recursive = true, bool wait = true) where T : Element
-		{
-			T response = null;
-
-			Utility.Wait(() =>
-			{
-				try
-				{
-					response = Children.First(condition, recursive);
-					if ((response != null) || !wait)
-					{
-						return true;
-					}
-
-					UpdateChildren();
-					return false;
-				}
-				catch (Exception)
-				{
-					return !wait;
-				}
-			}, Application.Timeout.TotalMilliseconds);
-
-			return response;
+			return FirstOrDefault(id, true, false) != null;
 		}
 
 		/// <summary>
@@ -170,7 +80,7 @@ namespace TestR
 		{
 			return Children.Descendants(x => true);
 		}
-		
+
 		/// <summary>
 		/// Get all the children that match the optional condition. If a condition is not provided
 		/// then all children of the type will be returned.
@@ -202,18 +112,194 @@ namespace TestR
 		}
 
 		/// <summary>
-		/// Refresh the list of children for this host.
+		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+		/// </summary>
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		/// <summary>
+		/// Get the child from the children.
+		/// </summary>
+		/// <param name="id"> An ID of the element to get. </param>
+		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <remarks>
+		/// The First method throws an exception if source contains no elements. To instead return a default value
+		/// when the source sequence is empty, use the FirstOrDefault method.
+		/// </remarks>
+		/// <returns> The child element for the ID. </returns>
+		public Element First(string id, bool includeDescendants = true, bool wait = true)
+		{
+			return First<Element>(id, includeDescendants, wait);
+		}
+
+		/// <summary>
+		/// Get the child from the children.
+		/// </summary>
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <remarks>
+		/// The First method throws an exception if source contains no elements. To instead return a default value
+		/// when the source sequence is empty, use the FirstOrDefault method.
+		/// </remarks>
+		/// <returns> The child element for the condition or null if no child found. </returns>
+		public Element First(Func<Element, bool> condition, bool includeDescendants = true, bool wait = true)
+		{
+			return First<Element>(condition, includeDescendants, wait);
+		}
+
+		/// <summary>
+		/// Get the child from the children.
+		/// </summary>
+		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <remarks>
+		/// The First method throws an exception if source contains no elements. To instead return a default value
+		/// when the source sequence is empty, use the FirstOrDefault method.
+		/// </remarks>
+		/// <returns> The child element for the ID. </returns>
+		public T First<T>(bool includeDescendants = true, bool wait = true) where T : Element
+		{
+			return First<T>(x => true, includeDescendants, wait);
+		}
+
+		/// <summary>
+		/// Get the child from the children.
+		/// </summary>
+		/// <param name="id"> An ID of the element to get. </param>
+		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <remarks>
+		/// The First method throws an exception if source contains no elements. To instead return a default value
+		/// when the source sequence is empty, use the FirstOrDefault method.
+		/// </remarks>
+		/// <returns> The child element for the ID. </returns>
+		public T First<T>(string id, bool includeDescendants = true, bool wait = true) where T : Element
+		{
+			return First<T>(x => (x.FullId == id) || (x.Id == id) || (x.Name == id), includeDescendants, wait);
+		}
+
+		/// <summary>
+		/// Get the child from the children.
+		/// </summary>
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <remarks>
+		/// The First method throws an exception if source contains no elements. To instead return a default value
+		/// when the source sequence is empty, use the FirstOrDefault method.
+		/// </remarks>
+		/// <exception cref="InvalidOperationException"> The source sequence is empty. </exception>
+		/// <returns> The child element for the condition. </returns>
+		public T First<T>(Func<T, bool> condition, bool includeDescendants = true, bool wait = true) where T : Element
+		{
+			var response = FirstOrDefault(condition, includeDescendants, wait);
+
+			if (response == null)
+			{
+				throw new InvalidOperationException("The source sequence is empty.");
+			}
+
+			return response;
+		}
+
+		/// <summary>
+		/// Get the child from the children.
+		/// </summary>
+		/// <param name="id"> An ID of the element to get. </param>
+		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <returns> The child element for the ID or null if no child found. </returns>
+		public Element FirstOrDefault(string id, bool includeDescendants = true, bool wait = true)
+		{
+			return FirstOrDefault<Element>(x => (x.FullId == id) || (x.Id == id) || (x.Name == id), includeDescendants, wait);
+		}
+
+		/// <summary>
+		/// Get the child from the children.
+		/// </summary>
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <returns> The child element for the condition or null if no child found. </returns>
+		public Element FirstOrDefault(Func<Element, bool> condition, bool includeDescendants = true, bool wait = true)
+		{
+			return FirstOrDefault<Element>(condition, includeDescendants, wait);
+		}
+
+		/// <summary>
+		/// Get the child from the children.
+		/// </summary>
+		/// <param name="id"> An ID of the element to get. </param>
+		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <returns> The child element for the ID or null if no child found. </returns>
+		public T FirstOrDefault<T>(string id, bool includeDescendants = true, bool wait = true) where T : Element
+		{
+			return FirstOrDefault<T>(x => (x.FullId == id) || (x.Id == id) || (x.Name == id), includeDescendants, wait);
+		}
+
+		/// <summary>
+		/// Get the child from the children.
+		/// </summary>
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <returns> The child element for the condition or null if no child found. </returns>
+		public T FirstOrDefault<T>(Func<T, bool> condition, bool includeDescendants = true, bool wait = true) where T : Element
+		{
+			T response = null;
+
+			Utility.Wait(() =>
+			{
+				try
+				{
+					response = Children.FirstOrDefault(condition, includeDescendants);
+					if ((response != null) || !wait)
+					{
+						return true;
+					}
+
+					Refresh();
+					return false;
+				}
+				catch (Exception)
+				{
+					return !wait;
+				}
+			}, Application.Timeout.TotalMilliseconds);
+
+			return response;
+		}
+
+		/// <summary>
+		/// Gets a collection of element of the provided type.
+		/// </summary>
+		/// <typeparam name="T"> The type of the element for the collection. </typeparam>
+		/// <returns> The collection of elements of the provided type. </returns>
+		public IEnumerable<T> OfType<T>() where T : Element
+		{
+			return Children.OfType<T>();
+		}
+
+		/// <summary>
+		/// Refresh the children for this element host.
 		/// </summary>
 		public abstract ElementHost Refresh();
 
 		/// <summary>
-		/// Update the children for this element.
+		/// Removes an element from a collection.
 		/// </summary>
-		public ElementHost UpdateChildren()
+		/// <param name="element"> The element to be removed. </param>
+		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
+		/// <returns> true if item is successfully removed; otherwise, false. This method also returns false if item was not found. </returns>
+		public bool Remove<T>(T element, bool includeDescendants = true) where T : Element
 		{
-			Refresh();
-			OnChildrenUpdated();
-			return this;
+			return Children.Remove(element, includeDescendants);
 		}
 
 		/// <summary>
@@ -227,51 +313,6 @@ namespace TestR
 		/// </summary>
 		/// <param name="disposing"> True if disposing and false if otherwise. </param>
 		protected abstract void Dispose(bool disposing);
-
-		/// <summary>
-		/// Invoke this method when the children changes.
-		/// </summary>
-		protected void OnChildrenUpdated()
-		{
-			ChildrenUpdated?.Invoke();
-		}
-
-		/// <summary>
-		/// Invoke this method when the host is closing.
-		/// </summary>
-		protected virtual void OnClosed()
-		{
-			Closed?.Invoke();
-		}
-
-		/// <summary>
-		/// Handles the excited event.
-		/// </summary>
-		/// <param name="sender"> </param>
-		/// <param name="e"> </param>
-		private void OnExited(object sender, EventArgs e)
-		{
-			Exited?.Invoke();
-		}
-
-		#endregion
-
-		#region Events
-
-		/// <summary>
-		/// Occurs when the children are updated.
-		/// </summary>
-		public event Action ChildrenUpdated;
-
-		/// <summary>
-		/// Event called when the element host closes.
-		/// </summary>
-		public event Action Closed;
-
-		/// <summary>
-		/// Occurs when the element host exits.
-		/// </summary>
-		public event Action Exited;
 
 		#endregion
 	}

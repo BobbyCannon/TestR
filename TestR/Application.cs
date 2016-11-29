@@ -38,12 +38,12 @@ namespace TestR
 		public Application(Process process)
 			: base(null, null)
 		{
-			Application = this;
 			Process = process;
+			Application = this;
 
 			if (Process != null)
 			{
-				Process.Exited += (sender, args) => OnClosed();
+				//Process.Exited += (sender, args) => OnClosed();
 				Process.EnableRaisingEvents = true;
 			}
 
@@ -60,15 +60,15 @@ namespace TestR
 		public bool AutoClose { get; set; }
 
 		/// <inheritdoc />
-		public override Element FocusedElement => Elements.FirstOrDefault(x => x.Focused);
+		public override Element FocusedElement => First(x => x.Focused);
 
 		/// <summary>
 		/// Gets the handle for this window.
 		/// </summary>
-		public IntPtr Handle => Process.MainWindowHandle;
+		public IntPtr Handle => Process?.MainWindowHandle ?? IntPtr.Zero;
 
 		/// <inheritdoc />
-		public override string Id => Process.Id.ToString();
+		public override string Id => Process?.Id.ToString();
 
 		/// <summary>
 		/// Gets the value indicating that the process is running.
@@ -389,9 +389,7 @@ namespace TestR
 			return this;
 		}
 
-		/// <summary>
-		/// Refresh the list of items for the application.
-		/// </summary>
+		/// <inheritdoc />
 		public override ElementHost Refresh()
 		{
 			try
@@ -404,7 +402,7 @@ namespace TestR
 				}, Timeout.TotalMilliseconds, 10);
 
 				WaitForComplete();
-				Children.ForEach(x => x.UpdateChildren());
+				Children.ForEach(x => x.Refresh());
 				WaitForComplete();
 				return this;
 			}
@@ -454,7 +452,7 @@ namespace TestR
 		}
 
 		/// <summary>
-		/// Triggers th element clicked event.
+		/// Triggers the element clicked event.
 		/// </summary>
 		/// <param name="element"> The element that was clicked. </param>
 		/// <param name="point"> The point that was clicked. </param>

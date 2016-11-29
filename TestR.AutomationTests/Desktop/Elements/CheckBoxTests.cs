@@ -30,7 +30,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var checkbox = application.Get<CheckBox>("checkBox3");
+				var checkbox = application.First<CheckBox>("checkBox3");
 				checkbox.Click();
 				Assert.AreEqual(ToggleState.Off, checkbox.CheckedState);
 				checkbox.Click();
@@ -45,7 +45,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var checkbox = application.Get<CheckBox>("checkBox1");
+				var checkbox = application.First<CheckBox>("checkBox1");
 				checkbox.Click();
 				Assert.AreEqual(ToggleState.On, checkbox.CheckedState);
 				checkbox.Click();
@@ -58,7 +58,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var checkbox = application.Get<CheckBox>("checkBox4");
+				var checkbox = application.First<CheckBox>("checkBox4");
 				checkbox.Click();
 				Assert.AreEqual(ToggleState.Off, checkbox.CheckedState);
 			}
@@ -69,7 +69,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var checkbox = application.Get<CheckBox>("checkBox3");
+				var checkbox = application.First<CheckBox>("checkBox3");
 				checkbox.Toggle();
 				Assert.AreEqual(ToggleState.Off, checkbox.CheckedState);
 				checkbox.Toggle();
@@ -84,7 +84,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var checkbox = application.Get<CheckBox>("checkBox1");
+				var checkbox = application.First<CheckBox>("checkBox1");
 				checkbox.Toggle();
 				Assert.AreEqual(ToggleState.On, checkbox.CheckedState);
 				checkbox.Toggle();
@@ -97,7 +97,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var checkbox = application.Get<CheckBox>("checkBox2");
+				var checkbox = application.First<CheckBox>("checkBox2");
 				Assert.AreEqual(true, checkbox.Checked);
 				checkbox.Toggle();
 				Assert.AreEqual(false, checkbox.Checked);
@@ -109,7 +109,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var checkbox = application.Get<CheckBox>("checkBox2");
+				var checkbox = application.First<CheckBox>("checkBox2");
 				Assert.AreEqual(ToggleState.On, checkbox.CheckedState);
 			}
 		}
@@ -119,7 +119,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var checkbox = application.Get<CheckBox>("checkBox3");
+				var checkbox = application.First<CheckBox>("checkBox3");
 				Assert.AreEqual(ToggleState.Indeterminate, checkbox.CheckedState);
 			}
 		}
@@ -129,7 +129,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var checkbox = application.Get<CheckBox>("checkBox1");
+				var checkbox = application.First<CheckBox>("checkBox1");
 				Assert.AreEqual(ToggleState.Off, checkbox.CheckedState);
 			}
 		}
@@ -139,7 +139,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var checkbox = application.Get<CheckBox>("checkBox4");
+				var checkbox = application.First<CheckBox>("checkBox4");
 				Assert.AreEqual(false, checkbox.Enabled);
 			}
 		}
@@ -149,7 +149,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var checkbox = application.Get<CheckBox>("checkBox1");
+				var checkbox = application.First<CheckBox>("checkBox1");
 				Assert.AreEqual(true, checkbox.Enabled);
 			}
 		}
@@ -159,7 +159,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var checkbox = application.Get<CheckBox>("checkBox4");
+				var checkbox = application.First<CheckBox>("checkBox4");
 				Assert.AreEqual(false, checkbox.KeyboardFocusable);
 			}
 		}
@@ -169,7 +169,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var checkbox = application.Get<CheckBox>("checkBox1");
+				var checkbox = application.First<CheckBox>("checkBox1");
 				Assert.AreEqual(true, checkbox.KeyboardFocusable);
 			}
 		}
@@ -179,7 +179,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var checkbox = application.Get<CheckBox>("checkBox1");
+				var checkbox = application.First<CheckBox>("checkBox1");
 				Assert.AreEqual(new Point(737, 396), checkbox.Location);
 			}
 		}
@@ -201,7 +201,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var checkbox = application.Get<CheckBox>("checkBox1");
+				var checkbox = application.First<CheckBox>("checkBox1");
 				Assert.AreEqual(new Size(82, 17), checkbox.Size);
 			}
 		}
@@ -211,7 +211,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var checkbox = application.Get<CheckBox>("checkBox5", wait: false);
+				var checkbox = application.FirstOrDefault<CheckBox>("checkBox5", wait: false);
 				// Cannot be found because it's not visible.
 				Assert.IsNull(checkbox);
 			}
@@ -222,7 +222,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var checkbox = application.Get<CheckBox>("checkBox1");
+				var checkbox = application.First<CheckBox>("checkBox1");
 				Assert.AreEqual(true, checkbox.Visible);
 			}
 		}

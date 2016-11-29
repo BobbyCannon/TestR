@@ -2,6 +2,8 @@
 
 using System;
 using System.Diagnostics;
+using System.Linq;
+using System.Management.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.PowerShell;
 using TestR.Web;
@@ -11,26 +13,26 @@ using TestR.Web.Browsers;
 
 namespace TestR.AutomationTests.Web
 {
-	//[TestClass]
-	//[Cmdlet(VerbsDiagnostic.Test, "Edge")]
-	public class EdgeTests : TestCmdlet
+	[TestClass]
+	[Cmdlet(VerbsDiagnostic.Test, "Chrome")]
+	public class ChromeTests : TestCmdlet
 	{
 		#region Methods
 
 		[TestMethod]
 		public void Attach()
 		{
-			using (var browser = Edge.Create())
+			using (var browser = Chrome.Create())
 			{
 				Assert.IsNotNull(browser);
 			}
 
-			using (var browser = Edge.Attach())
+			using (var browser = Chrome.Attach())
 			{
 				Assert.IsNotNull(browser);
 				Console.WriteLine(browser.Id);
 				browser.NavigateTo("http://localhost:8080");
-				browser.Elements.Count.Dump();
+				browser.Descendants().Count().Dump();
 				browser.ExecuteScript("window.location.href").Dump();
 			}
 		}
@@ -38,12 +40,12 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void AttachOrCreate()
 		{
-			using (var browser = Edge.AttachOrCreate())
+			using (var browser = Chrome.AttachOrCreate())
 			{
 				Assert.IsNotNull(browser);
 				Console.WriteLine(browser.Id);
 				browser.NavigateTo("http://localhost:8080");
-				browser.Elements.Count.Dump();
+				browser.Descendants().Count().Dump();
 				browser.ExecuteScript("window.location.href").Dump();
 			}
 		}
@@ -53,7 +55,7 @@ namespace TestR.AutomationTests.Web
 		{
 			int processId;
 
-			using (var browser1 = Edge.Create())
+			using (var browser1 = Chrome.Create())
 			{
 				Assert.IsNotNull(browser1);
 				processId = browser1.Application.Process.Id;
@@ -63,7 +65,7 @@ namespace TestR.AutomationTests.Web
 			using (var browser2 = Browser.AttachToBrowser(process))
 			{
 				Assert.IsNotNull(browser2);
-				Assert.AreEqual(typeof(Edge), browser2.GetType());
+				Assert.AreEqual(typeof(Chrome), browser2.GetType());
 			}
 		}
 
@@ -76,12 +78,12 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void Create()
 		{
-			using (var browser = Edge.Create())
+			using (var browser = Chrome.Create())
 			{
 				Assert.IsNotNull(browser);
 				Console.WriteLine(browser.Id);
 				browser.NavigateTo("http://localhost:8080");
-				browser.Elements.Count.Dump();
+				browser.Descendants().Count().Dump();
 				browser.ExecuteScript("window.location.href").Dump();
 			}
 		}

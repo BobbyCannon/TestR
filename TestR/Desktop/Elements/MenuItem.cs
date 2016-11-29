@@ -45,7 +45,7 @@ namespace TestR.Desktop.Elements
 		public override Element Click(int x = 0, int y = 0)
 		{
 			base.Click(x, y);
-			UpdateChildren();
+			Refresh();
 			return this;
 		}
 

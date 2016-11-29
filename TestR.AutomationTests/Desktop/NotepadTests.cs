@@ -29,7 +29,7 @@ namespace TestR.AutomationTests.Desktop
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				var window = application.Children.First();
-				var document = window.Children.Get("15");
+				var document = (Edit) window.Children.First("15");
 				document.SetText("Hello World : Sub Collection");
 			}
 		}
@@ -39,8 +39,7 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.GetAll<Window>().First();
-				var document = window.Children.First<Edit>("15");
+				var document = application.First<Edit>("15");
 				document.Text = "Hello World : GetChild Generic";
 			}
 		}
@@ -50,8 +49,8 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.GetAll<Window>().First();
-				var document = (Edit) window.Get("15");
+				var window = application.First<Window>();
+				var document = (Edit) window.First("15");
 				document.Text = "Hello World : GetChild Non Generic";
 			}
 		}
@@ -100,9 +99,9 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				foreach (var window in application.GetAll<Window>())
+				foreach (var window in application.Descendants<Window>())
 				{
-					window.UpdateChildren();
+					window.Refresh();
 				}
 			}
 		}
@@ -113,11 +112,11 @@ namespace TestR.AutomationTests.Desktop
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				application.BringToFront();
-				var window = application.GetAll<Window>().First();
-				var menuBar = window.GetAll<MenuBar>().First();
+				var window = application.Descendants<Window>().First();
+				var menuBar = window.Descendants<MenuBar>().First();
 				TestHelper.PrintChildren(menuBar);
 
-				var menu = menuBar.Get<MenuItem>(x => x.Name == "File");
+				var menu = menuBar.First<MenuItem>(x => x.Name == "File");
 				Assert.IsNotNull(menu);
 				Assert.IsTrue(menu.SupportsExpandingCollapsing);
 				menu.Click();
@@ -131,7 +130,7 @@ namespace TestR.AutomationTests.Desktop
 			Application.CloseAll(_applicationPath);
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Get<Window>(x => x.Name == "Untitled - Notepad");
+				var window = application.First<Window>(x => x.Name == "Untitled - Notepad");
 				window.TitleBar.CaptureSnippet(filePath);
 			}
 		}
@@ -142,10 +141,10 @@ namespace TestR.AutomationTests.Desktop
 			Application.CloseAll(_applicationPath);
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var bar = application.Get("NonClientVerticalScrollBar");
-				var button = bar.Get<Button>(x => x.Id == "UpButton");
+				var bar = application.First("NonClientVerticalScrollBar");
+				var button = bar.First<Button>(x => x.Id == "UpButton");
 				button.MoveMouseTo();
-				button = bar.Get<Button>(x => x.Id == "DownButton");
+				button = bar.First<Button>(x => x.Id == "DownButton");
 				button.MoveMouseTo();
 			}
 		}

@@ -73,6 +73,11 @@ namespace TestR.UnitTests.TestTypes
 			throw new NotImplementedException();
 		}
 
+		public override string ToDetailString()
+		{
+			throw new NotImplementedException();
+		}
+
 		public override ElementHost WaitForComplete(int minimumDelay = 0)
 		{
 			return this;

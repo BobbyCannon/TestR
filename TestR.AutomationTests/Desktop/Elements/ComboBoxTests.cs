@@ -40,7 +40,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var comboBox = application.Get<ComboBox>("comboBox1");
+				var comboBox = application.First<ComboBox>("comboBox1");
 				Assert.IsNotNull(comboBox);
 				comboBox.TypeText("One");
 				Assert.AreEqual("One", comboBox.Text);

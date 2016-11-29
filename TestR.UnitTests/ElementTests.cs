@@ -1,11 +1,8 @@
 ﻿#region References
 
 using System;
-using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using TestR.UnitTests.TestTypes;
-using TestR.Web.Elements;
 
 #endregion
 
@@ -17,7 +14,39 @@ namespace TestR.UnitTests
 		#region Methods
 
 		[TestMethod]
-		public void GetWhileWaiting()
+		public void FirstNonGenericUsingFunction()
+		{
+			var host = TestHelper.CreateHost();
+			var element = TestHelper.CreateElement("Parent", "Parent", host);
+			element.Children.Add(TestHelper.CreateElement("Child", "Child", element));
+
+			var actual = element.First(x => x.Id == "Child");
+			Assert.AreEqual(element.Children[0], actual);
+			Assert.AreEqual(element, element.Children[0].Parent);
+		}
+
+		[TestMethod]
+		public void FirstOrDefaultWithException()
+		{
+			var application = new Application(null);
+			var host = TestHelper.CreateMock<ElementHost>(application, null);
+			var triggered = false;
+
+			host.Object.Application.Timeout = TimeSpan.Zero;
+			host.Setup(x => x.Refresh())
+				.Returns(() =>
+				{
+					triggered = true;
+					throw new Exception("Boom");
+				});
+
+			var actual = host.Object.FirstOrDefault("Expected");
+			Assert.IsNull(actual);
+			Assert.IsTrue(triggered);
+		}
+
+		[TestMethod]
+		public void FirstWhileWaiting()
 		{
 			var trigger = true;
 			var expected = TestHelper.CreateElement("Expected", "Expected");
@@ -42,39 +71,6 @@ namespace TestR.UnitTests
 			var actual = host.Object.First(expected.Id);
 			Assert.IsNotNull(actual);
 			Assert.AreEqual(expected, actual);
-		}
-
-		[TestMethod]
-		public void GetNonGenericUsingFunction()
-		{
-			var host = TestHelper.CreateHost();
-			var element = TestHelper.CreateElement("Parent", "Parent", host);
-			element.Children.Add(TestHelper.CreateElement("Child", "Child", element));
-
-			var actual = element.First(x => x.Id == "Child");
-			Assert.AreEqual(element.Children[0], actual);
-			Assert.AreEqual(element, element.Children[0].Parent);
-		}
-
-
-		[TestMethod]
-		public void GetWithException()
-		{
-			var application = new Application(null);
-			var host = TestHelper.CreateMock<ElementHost>(application, null);
-			var triggered = false;
-
-			host.Object.Application.Timeout = TimeSpan.Zero;
-			host.Setup(x => x.Refresh())
-				.Returns(() =>
-				{
-					triggered = true;
-					throw new Exception("Boom");
-				});
-
-			var actual = host.Object.First("Expected");
-			Assert.IsNull(actual);
-			Assert.IsTrue(triggered);
 		}
 
 		[TestMethod]

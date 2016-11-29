@@ -2,6 +2,7 @@
 
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Management.Automation;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -32,7 +33,7 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var expected = application.Children.Windows["ParentForm"];
+				var expected = application.First<Window>("ParentForm");
 				var actual = application.Location;
 				Assert.AreEqual(expected.Location, actual);
 				application.Close();
@@ -46,7 +47,7 @@ namespace TestR.AutomationTests.Desktop
 			{
 				application.BringToFront();
 
-				var expected = application.Children.Windows["ParentForm"];
+				var expected = application.First<Window>("ParentForm");
 				expected.TitleBar.MaximizeButton.Click();
 
 				var actual = application.Location;
@@ -60,7 +61,7 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var expected = application.Children.Windows["ParentForm"];
+				var expected = application.First<Window>("ParentForm");
 				var actual = application.Size;
 				Assert.AreEqual(expected.Size, actual);
 				application.Close();
@@ -72,8 +73,8 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows["ParentForm"];
-				var checkbox = window.Get<CheckBox>("checkBox3");
+				var window = application.First<Window>("ParentForm");
+				var checkbox = window.First<CheckBox>("checkBox3");
 				Assert.AreEqual(ToggleState.Indeterminate, checkbox.CheckedState);
 				application.Close();
 			}
@@ -84,8 +85,8 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows["ParentForm"];
-				var checkbox = window.Get<CheckBox>("checkBox1");
+				var window = application.First<Window>("ParentForm");
+				var checkbox = window.First<CheckBox>("checkBox1");
 				Assert.AreEqual(ToggleState.Off, checkbox.CheckedState);
 				application.Close();
 			}
@@ -96,8 +97,8 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows["ParentForm"];
-				var checkbox = window.Get<CheckBox>("checkBox2");
+				var window = application.First<Window>("ParentForm");
+				var checkbox = window.First<CheckBox>("checkBox2");
 				Assert.AreEqual(ToggleState.On, checkbox.CheckedState);
 				application.Close();
 			}
@@ -108,9 +109,10 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Get<Window>(x => x.Id == "FormMain");
-				var checkbox = window.Children.CheckBoxes;
-				Assert.AreEqual(4, checkbox.Count);
+				var window = application.First<Window>(x => x.Id == "FormMain");
+				var checkboxes = window.Descendants<CheckBox>();
+				// 4 outside list, 5 inside list
+				Assert.AreEqual(9, checkboxes.Count());
 				application.Close();
 			}
 		}
@@ -120,8 +122,8 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows["ParentForm"];
-				var checkbox = window.Get<CheckBox>("checkBox3");
+				var window = application.First<Window>("ParentForm");
+				var checkbox = window.First<CheckBox>("checkBox3");
 				Assert.IsTrue(checkbox.Checked);
 				application.Close();
 			}
@@ -132,8 +134,8 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows["ParentForm"];
-				var checkbox = window.Get<CheckBox>("checkBox1");
+				var window = application.First<Window>("ParentForm");
+				var checkbox = window.First<CheckBox>("checkBox1");
 				Assert.IsFalse(checkbox.Checked);
 				application.Close();
 			}
@@ -144,8 +146,8 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows["ParentForm"];
-				var checkbox = window.Get<CheckBox>("checkBox2");
+				var window = application.First<Window>("ParentForm");
+				var checkbox = window.First<CheckBox>("checkBox2");
 				Assert.IsTrue(checkbox.Checked);
 				application.Close();
 			}
@@ -156,7 +158,7 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows["ParentForm"];
+				var window = application.First<Window>("ParentForm");
 				Assert.AreEqual("ParentForm", window.Id);
 				application.Close();
 			}
@@ -167,7 +169,7 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows["ParentForm"];
+				var window = application.First<Window>("ParentForm");
 				Assert.AreEqual("ParentForm", window.Name);
 				application.Close();
 			}
@@ -178,7 +180,7 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows["ParentForm"];
+				var window = application.First<Window>("ParentForm");
 				var mainMenu = window.Children["menuStrip"];
 				Assert.AreEqual("menuStrip", mainMenu.Id);
 				Assert.AreEqual("MenuStrip", mainMenu.Name);
@@ -191,7 +193,7 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows["ParentForm"];
+				var window = application.First<Window>("ParentForm");
 				var statusBar = window.StatusBar;
 				Assert.IsNotNull(statusBar);
 				Assert.AreEqual("statusStrip", statusBar.Id);
@@ -205,7 +207,7 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows["ParentForm"];
+				var window = application.First<Window>("ParentForm");
 				var titleBar = window.TitleBar;
 				Assert.IsNotNull(titleBar);
 				Assert.AreEqual("", titleBar.Id);
@@ -220,15 +222,15 @@ namespace TestR.AutomationTests.Desktop
 			CheckBox checkbox;
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Children.Windows["ParentForm"];
-				checkbox = window.Get<CheckBox>("checkBox1");
+				var window = application.First<Window>("ParentForm");
+				checkbox = window.First<CheckBox>("checkBox1");
 			}
 
 			var element = DesktopElement.FromPoint(checkbox.Location);
-			Assert.AreEqual("checkBox1", element.ApplicationId);
+			Assert.AreEqual("checkBox1", element.FullId);
 
 			element.UpdateParents();
-			Assert.AreEqual(checkbox.ApplicationId, element.ApplicationId);
+			Assert.AreEqual(checkbox.FullId, element.FullId);
 		}
 
 		[TestMethod]
@@ -236,7 +238,7 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Get<Window>("FormMain");
+				var window = application.First<Window>("FormMain");
 				Assert.IsNotNull(window);
 			}
 		}
@@ -246,7 +248,7 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
-				var window = application.Get<Window>("TestR Test WinForm");
+				var window = application.First<Window>("TestR Test WinForm");
 				Assert.IsNotNull(window);
 			}
 		}
@@ -257,7 +259,7 @@ namespace TestR.AutomationTests.Desktop
 			using (var application = Application.Create(_applicationPath))
 			{
 				var tempApplication = application;
-				var window = application.Get<Window>("TestR Test WinForm");
+				var window = application.First<Window>("TestR Test WinForm");
 				Assert.IsNotNull(window);
 				Task.Run(() => tempApplication.Refresh());
 				window.Close();

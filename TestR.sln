@@ -34,12 +34,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestR.TestSite", "TestR.Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestR.TestWinForms", "TestR.TestWinForms\TestR.TestWinForms.csproj", "{E43D1F20-EDFA-43DA-9E72-0685082DF62B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestR.AutomationTests", "TestR.IntegrationTests\TestR.AutomationTests.csproj", "{DB2FA894-81F7-48A8-89DB-3902C372FE6B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestR.AutomationTests", "TestR.AutomationTests\TestR.AutomationTests.csproj", "{DB2FA894-81F7-48A8-89DB-3902C372FE6B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E43D1F20-EDFA-43DA-9E72-0685082DF62B} = {E43D1F20-EDFA-43DA-9E72-0685082DF62B}
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestR.Sample", "TestR.Sample\TestR.Sample.csproj", "{CD9E65DE-CA2E-4BBE-BA06-36AD9E48057D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestR.UnitTests", "TestR.UnitTests\TestR.UnitTests.csproj", "{0ED4605C-594E-4E63-9112-84141A30E189}"
 EndProject
@@ -69,10 +67,6 @@ Global
 		{DB2FA894-81F7-48A8-89DB-3902C372FE6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB2FA894-81F7-48A8-89DB-3902C372FE6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB2FA894-81F7-48A8-89DB-3902C372FE6B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CD9E65DE-CA2E-4BBE-BA06-36AD9E48057D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CD9E65DE-CA2E-4BBE-BA06-36AD9E48057D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CD9E65DE-CA2E-4BBE-BA06-36AD9E48057D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CD9E65DE-CA2E-4BBE-BA06-36AD9E48057D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0ED4605C-594E-4E63-9112-84141A30E189}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0ED4605C-594E-4E63-9112-84141A30E189}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0ED4605C-594E-4E63-9112-84141A30E189}.Release|Any CPU.ActiveCfg = Release|Any CPU

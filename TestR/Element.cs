@@ -51,6 +51,7 @@ namespace TestR
 			{
 				var builder = new StringBuilder();
 				var element = (ElementHost) this;
+
 				do
 				{
 					builder.Insert(0, new[] { element.Id, element.Name, " " }.FirstValue() + ",");

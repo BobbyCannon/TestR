@@ -6,7 +6,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using TestR.Desktop;
 using TestR.Native;
-using Application = System.Windows.Forms.Application;
 
 #endregion
 
@@ -26,9 +25,9 @@ namespace TestR.TestWinForms
 		{
 			var parent = element;
 
-			while (parent != null && parent.TypeId != 50032)
+			while ((parent != null) && (parent.TypeId != 50032))
 			{
-				parent = parent.Parent;
+				parent = parent.Parent as DesktopElement;
 			}
 
 			return parent == null ? string.Empty : parent.Name;
@@ -40,12 +39,12 @@ namespace TestR.TestWinForms
 		[STAThread]
 		private static void Main()
 		{
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
-			Application.AddMessageFilter(new MouseMessageFilter());
+			System.Windows.Forms.Application.EnableVisualStyles();
+			System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+			System.Windows.Forms.Application.AddMessageFilter(new MouseMessageFilter());
 			MouseMessageFilter.Click += MouseClick;
 			_parentForm = new ParentForm();
-			Application.Run(_parentForm);
+			System.Windows.Forms.Application.Run(_parentForm);
 		}
 
 		private static void MouseClick(object sender, MouseEventArgs e)
@@ -54,7 +53,7 @@ namespace TestR.TestWinForms
 			var element = DesktopElement.FromPoint(point);
 			element.UpdateParents();
 
-			var message = $"{element.ApplicationId} : {element.TypeName} @ {point.X}:{point.Y} on {GetParentWindowsTitle(element)} with {e.Button} button";
+			var message = $"{element.FullId} : {element.TypeName} @ {point.X}:{point.Y} on {GetParentWindowsTitle(element)} with {e.Button} button";
 			Debug.WriteLine(message);
 
 			if (_parentForm != null)

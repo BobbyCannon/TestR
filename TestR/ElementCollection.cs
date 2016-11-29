@@ -68,72 +68,6 @@ namespace TestR
 		}
 
 		/// <summary>
-		/// First an element from the collection using the provided condition.
-		/// </summary>
-		/// <param name="id"> An ID of the element to get. </param>
-		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
-		/// <returns> The element matching the condition. </returns>
-		public Element First(string id, bool includeDescendants = true)
-		{
-			return First<Element>(id, includeDescendants);
-		}
-
-		/// <summary>
-		/// First an element from the collection using the provided condition.
-		/// </summary>
-		/// <param name="condition"> A function to test each element for a condition. </param>
-		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
-		/// <returns> The element matching the condition. </returns>
-		public Element First(Func<Element, bool> condition, bool includeDescendants = true)
-		{
-			return First<Element>(condition, includeDescendants);
-		}
-
-		/// <summary>
-		/// First an element from the collection using the provided ID.
-		/// </summary>
-		/// <param name="id"> An ID of the element to get. </param>
-		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
-		/// <returns> The child element for the condition. </returns>
-		public T First<T>(string id, bool includeDescendants = true) where T : Element
-		{
-			return First<T>(x => (x.FullId == id) || (x.Id == id) || (x.Name == id), includeDescendants);
-		}
-
-		/// <summary>
-		/// First an element from the collection using the provided condition.
-		/// </summary>
-		/// <param name="condition"> A function to test each element for a condition. </param>
-		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
-		/// <returns> The child element for the condition. </returns>
-		public T First<T>(Func<T, bool> condition, bool includeDescendants = true) where T : Element
-		{
-			var children = OfType<T>().ToList();
-			var response = children.FirstOrDefault(condition);
-
-			if (!includeDescendants)
-			{
-				return response;
-			}
-
-			if (response != null)
-			{
-				return response;
-			}
-
-			foreach (var child in this)
-			{
-				response = child.First(condition, true, false);
-				if (response != null)
-				{
-					return response;
-				}
-			}
-
-			return null;
-		}
-
-		/// <summary>
 		/// First a collection of element from the collection.
 		/// </summary>
 		/// <returns> The child elements for the condition. </returns>
@@ -183,13 +117,155 @@ namespace TestR
 		}
 
 		/// <summary>
+		/// Get an element from the collection using the provided ID.
+		/// </summary>
+		/// <param name="id"> An ID of the element to get. </param>
+		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
+		/// <remarks>
+		/// The First method throws an exception if source contains no elements. To instead return a default value
+		/// when the source sequence is empty, use the FirstOrDefault method.
+		/// </remarks>
+		/// <returns> The child element for the ID. </returns>
+		public Element First(string id, bool includeDescendants = true)
+		{
+			return First<Element>(id, includeDescendants);
+		}
+
+		/// <summary>
+		/// Get an element from the collection using the provided condition.
+		/// </summary>
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
+		/// <remarks>
+		/// The First method throws an exception if source contains no elements. To instead return a default value
+		/// when the source sequence is empty, use the FirstOrDefault method.
+		/// </remarks>
+		/// <returns> The element matching the condition. </returns>
+		public Element First(Func<Element, bool> condition, bool includeDescendants = true)
+		{
+			return First<Element>(condition, includeDescendants);
+		}
+
+		/// <summary>
+		/// Get an element from the collection using the provided ID.
+		/// </summary>
+		/// <param name="id"> An ID of the element to get. </param>
+		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
+		/// <remarks>
+		/// The First method throws an exception if source contains no elements. To instead return a default value
+		/// when the source sequence is empty, use the FirstOrDefault method.
+		/// </remarks>
+		/// <returns> The child element for the ID. </returns>
+		public T First<T>(string id, bool includeDescendants = true) where T : Element
+		{
+			return First<T>(x => (x.FullId == id) || (x.Id == id) || (x.Name == id), includeDescendants);
+		}
+
+		/// <summary>
+		/// Get an element from the collection using the provided condition.
+		/// </summary>
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
+		/// <remarks>
+		/// The First method throws an exception if source contains no elements. To instead return a default value
+		/// when the source sequence is empty, use the FirstOrDefault method.
+		/// </remarks>
+		/// <returns> The child element for the condition. </returns>
+		public T First<T>(Func<T, bool> condition, bool includeDescendants = true) where T : Element
+		{
+			var response = FirstOrDefault(condition, includeDescendants);
+
+			if (response == null)
+			{
+				throw new InvalidOperationException("The source sequence is empty.");
+			}
+
+			return response;
+		}
+
+		/// <summary>
+		/// Get an element from the collection using the provided ID.
+		/// </summary>
+		/// <param name="id"> An ID of the element to get. </param>
+		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
+		/// <returns> The child element for the ID or null if otherwise. </returns>
+		public T FirstOrDefault<T>(string id, bool includeDescendants = true) where T : Element
+		{
+			return FirstOrDefault<T>(x => (x.FullId == id) || (x.Id == id) || (x.Name == id), includeDescendants);
+		}
+
+		/// <summary>
+		/// Get an element from the collection using the provided condition.
+		/// </summary>
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
+		/// <returns> The child element for the condition or null if otherwise. </returns>
+		public T FirstOrDefault<T>(Func<T, bool> condition, bool includeDescendants = true) where T : Element
+		{
+			var children = OfType<T>().ToList();
+			var response = children.FirstOrDefault(condition);
+
+			if (!includeDescendants)
+			{
+				return response;
+			}
+
+			if (response != null)
+			{
+				return response;
+			}
+
+			foreach (var child in this)
+			{
+				response = child.FirstOrDefault(condition, true, false);
+				if (response != null)
+				{
+					return response;
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
 		/// Gets a collection of element of the provided type.
 		/// </summary>
 		/// <typeparam name="T"> The type of the element for the collection. </typeparam>
 		/// <returns> The collection of elements of the provided type. </returns>
-		private IEnumerable<T> OfType<T>() where T : Element
+		public IEnumerable<T> OfType<T>() where T : Element
 		{
 			return this.Where(x => (x.GetType() == typeof(T)) || x is T).Cast<T>();
+		}
+
+		/// <summary>
+		/// Removes an element from a collection.
+		/// </summary>
+		/// <param name="element"> The element to be removed. </param>
+		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
+		/// <returns> true if item is successfully removed; otherwise, false. This method also returns false if item was not found. </returns>
+		public bool Remove<T>(T element, bool includeDescendants = true) where T : Element
+		{
+			var children = OfType<T>().ToList();
+			if (children.Contains(element))
+			{
+				children.Remove(element);
+				return true;
+			}
+
+			if (!includeDescendants)
+			{
+				return false;
+			}
+
+			foreach (var child in this)
+			{
+				if (child.Remove(element))
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		#endregion

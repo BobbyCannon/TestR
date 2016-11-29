@@ -13,6 +13,7 @@ using Newtonsoft.Json.Serialization;
 using TestR.Desktop;
 using TestR.Desktop.Elements;
 using TestR.Native;
+using TestR.Web;
 using UIAutomationClient;
 using ExpandCollapseState = TestR.Desktop.Pattern.ExpandCollapseState;
 using ToggleState = TestR.Desktop.Pattern.ToggleState;
@@ -63,6 +64,38 @@ namespace TestR
 		public static bool Contains(this string source, string value, StringComparison comparisonType)
 		{
 			return source.IndexOf(value, comparisonType) >= 0;
+		}
+
+		/// <summary>
+		/// Returns the number of browsers for this type.
+		/// </summary>
+		/// <param name="type"> The browser type that contains the configuration. </param>
+		/// <returns> The number of browsers configured in the type. </returns>
+		public static int Count(this BrowserType type)
+		{
+			var response = 0;
+
+			if ((type & BrowserType.Chrome) == BrowserType.Chrome)
+			{
+				response++;
+			}
+
+			//if ((type & BrowserType.Edge) == BrowserType.Edge)
+			//{
+			//	response++;
+			//}
+
+			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)
+			{
+				response++;
+			}
+
+			if ((type & BrowserType.Firefox) == BrowserType.Firefox)
+			{
+				response++;
+			}
+
+			return response;
 		}
 
 		/// <summary>

@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using System.Management.Automation;
 using System.Windows.Forms;
-using TestR.Extensions;
 using TestR.Web;
 
 #endregion
@@ -53,7 +52,7 @@ namespace TestR.PowerShell
 				{
 					if (resizeBrowsers)
 					{
-						x.MoveWindow(screen.WorkingArea.Left + (browserOffset++ * browserWidth), 0, browserWidth, screen.WorkingArea.Height);
+						x.MoveWindow(screen.WorkingArea.Left + browserOffset++ * browserWidth, 0, browserWidth, screen.WorkingArea.Height);
 					}
 
 					x.BringToFront();

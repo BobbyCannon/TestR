@@ -100,11 +100,11 @@ namespace TestR.AutomationTests.Web
 		{
 			using (var browser = InternetExplorer.Create())
 			{
-				browser.Application.WaitWhileBusy();
+				browser.Application.WaitForComplete();
 				Thread.Sleep(1000);
 
 				Browser.CloseBrowsers(BrowserType.InternetExplorer);
-				Assert.IsFalse(Process.GetProcessesByName(InternetExplorer.Name).Any());
+				Assert.IsFalse(Process.GetProcessesByName(InternetExplorer.BrowserName).Any());
 			}
 		}
 

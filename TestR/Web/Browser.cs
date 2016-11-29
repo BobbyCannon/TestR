@@ -59,7 +59,12 @@ namespace TestR.Web
 			get
 			{
 				var id = ExecuteScript("document.activeElement.id");
-				return First(id, true, false);
+				if (string.IsNullOrWhiteSpace(id) || !Contains(id))
+				{
+					return null;
+				}
+
+				return FirstOrDefault(id);
 			}
 		}
 
@@ -344,9 +349,7 @@ namespace TestR.Web
 			WaitForNavigation(expectedUri);
 		}
 
-		/// <summary>
-		/// Refresh the state because the browser page may have changed state.
-		/// </summary>
+		/// <inheritdoc />
 		public override ElementHost Refresh()
 		{
 			//LogManager.Write("Refreshing the page.", LogLevel.Verbose);
@@ -361,11 +364,11 @@ namespace TestR.Web
 		/// Removes the element from the page. * Experimental
 		/// </summary>
 		/// <param name="element"> The element to remove. </param>
-		public void RemoveElement(WebElement element)
+		public bool RemoveElement(WebElement element)
 		{
 			//LogManager.Write("Removing element with ID of " + element.Id + ".", LogLevel.Verbose);
 			ExecuteJavaScript("TestR.removeElement('" + element.Id + "');", false);
-			Elements.Remove(element);
+			return Children.Remove(element);
 		}
 
 		/// <summary>
@@ -473,29 +476,19 @@ namespace TestR.Web
 			}
 		}
 
-		/// <summary>
-		/// Refreshes the element collection for the current page.
-		/// </summary>
-		protected void RefreshElements()
+		private void AddChildren(ElementHost element, JArray elements)
 		{
-			//LogManager.Write("Refresh the elements.", LogLevel.Verbose);
+			element.Children.Clear();
 
-			Elements.Clear();
+			var children = elements.Where(x => x["parentId"]?.ToString() == element.Id)
+				.Select(x => WebElement.Create(x, this, element));
 
-			var data = ExecuteScript("JSON.stringify(TestR.getElements())");
-			if (JavascriptLibraries.Contains(JavaScriptLibrary.Angular) && data.Contains("ng-view ng-cloak"))
+			element.Children.AddRange(children);
+
+			foreach (var child in element.Children)
 			{
-				throw new Exception("JavaScript not completed?");
+				AddChildren(child, elements);
 			}
-
-			var elements = JsonConvert.DeserializeObject<JArray>(data);
-			if (elements == null)
-			{
-				return;
-			}
-
-			// todo: need to build this hierarchically.
-			Elements.AddRange(elements.Select(x => new WebElement(x, this, this)));
 		}
 
 		/// <summary>
@@ -550,6 +543,35 @@ namespace TestR.Web
 			}
 
 			JavascriptLibraries = libraries;
+		}
+
+		/// <summary>
+		/// Refreshes the element collection for the current page.
+		/// </summary>
+		private void RefreshElements()
+		{
+			//LogManager.Write("Refresh the elements.", LogLevel.Verbose);
+			Children.Clear();
+
+			var data = ExecuteScript("JSON.stringify(TestR.getElements())");
+			if (JavascriptLibraries.Contains(JavaScriptLibrary.Angular) && data.Contains("ng-view ng-cloak"))
+			{
+				throw new Exception("JavaScript not completed?");
+			}
+
+			var elements = JsonConvert.DeserializeObject<JArray>(data);
+			if (elements == null)
+			{
+				return;
+			}
+
+			elements.Where(x => x["parentId"]?.ToString() == "")
+				.ForEach(x => Children.Add(WebElement.Create(x, this, this)));
+
+			foreach (var element in Children)
+			{
+				AddChildren(element, elements);
+			}
 		}
 
 		#endregion

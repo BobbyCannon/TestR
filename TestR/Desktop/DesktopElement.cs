@@ -40,7 +40,7 @@ namespace TestR.Desktop
 		/// <param name="element"> The automation element for this element. </param>
 		/// <param name="application"> The application parent for this element. </param>
 		/// <param name="parent"> The parent element for this element. </param>
-		internal DesktopElement(IUIAutomationElement element, Application application, ElementHost parent)
+		protected DesktopElement(IUIAutomationElement element, Application application, ElementHost parent)
 			: base(application, parent)
 		{
 			NativeElement = element;
@@ -51,7 +51,7 @@ namespace TestR.Desktop
 		/// </summary>
 		static DesktopElement()
 		{
-			ExcludedProperties = new[] { "Parent", "Children", "NativeElement", "Item" };
+			ExcludedProperties = new[] { nameof(Parent), nameof(Children), nameof(NativeElement), "Item", nameof(FocusedElement) };
 		}
 
 		#endregion
@@ -67,7 +67,7 @@ namespace TestR.Desktop
 		public override bool Focused => NativeElement.CurrentHasKeyboardFocus == 1;
 
 		/// <inheritdoc />
-		public override Element FocusedElement => First(x => x.Focused);
+		public override Element FocusedElement => FirstOrDefault(x => x.Focused);
 
 		/// <inheritdoc />
 		public override int Height
@@ -117,6 +117,30 @@ namespace TestR.Desktop
 		/// </summary>
 		public int ProcessId => NativeElement.CurrentProcessId;
 
+		/// <summary>
+		/// Gets the type ID of this element.
+		/// </summary>
+		public int TypeId => NativeElement.CurrentControlType;
+
+		/// <summary>
+		/// Gets the name of the control type.
+		/// </summary>
+		public string TypeName => NativeElement.CurrentLocalizedControlType;
+
+		/// <summary>
+		/// Gets a value that indicates whether the element is visible.
+		/// </summary>
+		public bool Visible
+		{
+			get
+			{
+				Point point;
+				var clickable = TryGetClickablePoint(out point) && (point.Y != 0) && (point.Y != 0);
+				var focused = Focused || Children.Any(x => x.Focused);
+				return (NativeElement.CurrentIsOffscreen == 0) && (clickable || focused);
+			}
+		}
+
 		/// <inheritdoc />
 		public override int Width
 		{
@@ -154,9 +178,7 @@ namespace TestR.Desktop
 			return this;
 		}
 
-		/// <summary>
-		/// Set focus on the element.
-		/// </summary>
+		/// <inheritdoc />
 		public override Element Focus()
 		{
 			NativeElement.SetFocus();
@@ -222,7 +244,10 @@ namespace TestR.Desktop
 		/// <inheritdoc />
 		public override ElementHost Refresh()
 		{
-			UpdateChildren(this);
+			Children.Clear();
+			var test = GetChildren(this).Select(x => Create(x, Application, this)).ToList();
+			Children.AddRange(test);
+			Children.ForEach(x => x.Refresh());
 			return this;
 		}
 
@@ -307,6 +332,38 @@ namespace TestR.Desktop
 			builder.AppendLine("GetText() - " + GetText());
 
 			return builder.ToString();
+		}
+
+		/// <summary>
+		/// Update the parent for the provided element.
+		/// </summary>
+		public DesktopElement UpdateParent()
+		{
+			var parent = NativeElement.GetCachedParent() ?? NativeElement.GetCurrentParent();
+			if ((parent == null) || (parent.CurrentProcessId != NativeElement.CurrentProcessId))
+			{
+				Parent = null;
+				return this;
+			}
+
+			Parent = new DesktopElement(parent, Application, null);
+			Debug.WriteLine("P: {0},{1},{2},{3}",
+				Parent.Id,
+				parent.CurrentName,
+				parent.CurrentAutomationId,
+				parent.CurrentFrameworkId);
+
+			return this;
+		}
+
+		/// <summary>
+		/// Update the parents for this element.
+		/// </summary>
+		public DesktopElement UpdateParents()
+		{
+			UpdateParent();
+			((DesktopElement) Parent)?.UpdateParents();
+			return this;
 		}
 
 		/// <inheritdoc />
@@ -497,14 +554,31 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
-		/// Updates the children for the provided element.
+		/// Try to get a clickable point for the element.
 		/// </summary>
-		/// <param name="element"> The element to update. </param>
-		private void UpdateChildren(DesktopElement element)
+		/// <param name="point"> The point value if call was successful. </param>
+		/// <param name="x"> Optional X offset when calculating. </param>
+		/// <param name="y"> Optional Y offset when calculating. </param>
+		/// <returns> The clickable point for the element. </returns>
+		private bool TryGetClickablePoint(out Point point, int x = 0, int y = 0)
 		{
-			element.Children.Clear();
-			GetChildren(element).ForEach(x => element.Children.Add(new DesktopElement(x, element.Application, element)));
-			element.Children.ForEach(x => x.UpdateChildren());
+			try
+			{
+				tagPOINT point2;
+				if (NativeElement.GetClickablePoint(out point2) == 1)
+				{
+					point = new Point(point2.x + x, point2.y + y);
+					return true;
+				}
+
+				point = new Point(0, 0);
+			}
+			catch (Exception)
+			{
+				point = new Point(0, 0);
+			}
+
+			return false;
 		}
 
 		#endregion

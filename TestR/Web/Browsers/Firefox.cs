@@ -150,9 +150,17 @@ namespace TestR.Web.Browsers
 		/// <param name="uri"> The URI to navigate to. </param>
 		protected override void BrowserNavigateTo(string uri)
 		{
-			// First redirect then make a second request so we get back our "action->stop" message. I expected Firefox
-			// to just send us the stop but it doesn't happen unless we make another request to the browser. 
-			ExecuteJavaScript("window.location.href = \"" + uri + "\"");
+			if (Uri == uri)
+			{
+				ExecuteJavaScript("window.location.reload()");
+			}
+			else
+			{
+				// First redirect then make a second request so we get back our "action->stop" message. I expected Firefox
+				// to just send us the stop but it doesn't happen unless we make another request to the browser. 
+				ExecuteJavaScript("window.location.href = \"" + uri + "\"");
+			}
+
 			SendRequest("Wake up, Neo...");
 
 			// todo: There must be a better way to determine when Chrome and Firefox is done processing.

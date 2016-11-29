@@ -6,6 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Newtonsoft.Json.Linq;
+using TestR.Web.Elements;
+using Font = TestR.Web.Elements.Font;
+using Image = TestR.Web.Elements.Image;
 
 #endregion
 
@@ -37,7 +40,7 @@ namespace TestR.Web
 		/// <param name="element"> The browser element this is for. </param>
 		/// <param name="browser"> The browser this element is associated with. </param>
 		/// <param name="parent"> </param>
-		public WebElement(JToken element, Browser browser, ElementHost parent)
+		protected WebElement(JToken element, Browser browser, ElementHost parent)
 			: base(browser.Application, parent)
 		{
 			Browser = browser;
@@ -59,6 +62,18 @@ namespace TestR.Web
 		/// Gets the browser this element is currently associated with.
 		/// </summary>
 		public Browser Browser { get; }
+
+		/// <summary>
+		/// Gets or sets the class attribute.
+		/// </summary>
+		/// <remarks>
+		/// Specifies one or more class names for an element (refers to a class in a style sheet).
+		/// </remarks>
+		public string Class
+		{
+			get { return this["class"]; }
+			set { this["class"] = value; }
+		}
 
 		/// <inheritdoc />
 		public override bool Focused => false;
@@ -382,6 +397,402 @@ namespace TestR.Web
 		}
 
 		/// <summary>
+		/// Adds a collection of elements and initializes them as their specific element type.
+		/// </summary>
+		/// <param name="token"> The collection of elements to add. </param>
+		/// <param name="browser"> The browser the element is for. </param>
+		/// <param name="parent"> The parent for this element. </param>
+		internal static WebElement Create(JToken token, Browser browser, ElementHost parent)
+		{
+			var element = new WebElement(token, browser, parent);
+
+			switch (element.TagName)
+			{
+				case "a":
+					return new Link(token, browser, parent);
+
+				case "abbr":
+					return new Abbreviation(token, browser, parent);
+
+				case "acronym":
+					return new Acronym(token, browser, parent);
+
+				case "address":
+					return new Address(token, browser, parent);
+
+				case "applet":
+					return new Applet(token, browser, parent);
+
+				case "area":
+					return new Area(token, browser, parent);
+
+				case "article":
+					return new Article(token, browser, parent);
+
+				case "aside":
+					return new Aside(token, browser, parent);
+
+				case "audio":
+					return new Audio(token, browser, parent);
+
+				case "b":
+					return new Bold(token, browser, parent);
+
+				case "base":
+					return new Base(token, browser, parent);
+
+				case "basefont":
+					return new BaseFont(token, browser, parent);
+
+				case "bdi":
+					return new BiDirectionalIsolation(token, browser, parent);
+
+				case "bdo":
+					return new BiDirectionalOverride(token, browser, parent);
+
+				case "big":
+					return new Big(token, browser, parent);
+
+				case "blockquote":
+					return new BlockQuote(token, browser, parent);
+
+				case "body":
+					return new Body(token, browser, parent);
+
+				case "br":
+					return new LineBreak(token, browser, parent);
+
+				case "button":
+					return new Button(token, browser, parent);
+
+				case "canvas":
+					return new Canvas(token, browser, parent);
+
+				case "caption":
+					return new Caption(token, browser, parent);
+
+				case "center":
+					return new Center(token, browser, parent);
+
+				case "cite":
+					return new Cite(token, browser, parent);
+
+				case "code":
+					return new Code(token, browser, parent);
+
+				case "col":
+					return new Column(token, browser, parent);
+
+				case "colgroup":
+					return new ColumnGroup(token, browser, parent);
+
+				case "datalist":
+					return new DataList(token, browser, parent);
+
+				case "dd":
+					return new DescriptionListDefinition(token, browser, parent);
+
+				case "del":
+					return new Deleted(token, browser, parent);
+
+				case "details":
+					return new Details(token, browser, parent);
+
+				case "dfn":
+					return new Definition(token, browser, parent);
+
+				case "dialog":
+					return new Dialog(token, browser, parent);
+
+				case "dir":
+					return new Directory(token, browser, parent);
+
+				case "div":
+					return new Division(token, browser, parent);
+
+				case "dl":
+					return new DescriptionList(token, browser, parent);
+
+				case "dt":
+					return new DescriptionListTerm(token, browser, parent);
+
+				case "em":
+					return new Emphasis(token, browser, parent);
+
+				case "embed":
+					return new Embed(token, browser, parent);
+
+				case "fieldset":
+					return new FieldSet(token, browser, parent);
+
+				case "figcaption":
+					return new FigureCaption(token, browser, parent);
+
+				case "figure":
+					return new Figure(token, browser, parent);
+
+				case "font":
+					return new Font(token, browser, parent);
+
+				case "footer":
+					return new Footer(token, browser, parent);
+
+				case "form":
+					return new Form(token, browser, parent);
+
+				case "frame":
+					return new Frame(token, browser, parent);
+
+				case "frameset":
+					return new FrameSet(token, browser, parent);
+
+				case "head":
+					return new Head(token, browser, parent);
+
+				case "header":
+					return new Header(token, browser, parent);
+
+				case "hgroup":
+					return new HeadingGroup(token, browser, parent);
+
+				case "h1":
+				case "h2":
+				case "h3":
+				case "h4":
+				case "h5":
+				case "h6":
+					return new Header(token, browser, parent);
+
+				case "hr":
+					return new HorizontalRule(token, browser, parent);
+
+				case "html":
+					return new Html(token, browser, parent);
+
+				case "i":
+					return new Italic(token, browser, parent);
+
+				case "iframe":
+					return new InlineFrame(token, browser, parent);
+
+				case "img":
+					return new Image(token, browser, parent);
+
+				case "input":
+					var type = element.GetAttributeValue("type", false).ToLower();
+					switch (type)
+					{
+						case "checkbox":
+							return new CheckBox(token, browser, parent);
+
+						case "image":
+							return new Image(token, browser, parent);
+
+						case "button":
+						case "submit":
+						case "reset":
+							return new Button(token, browser, parent);
+
+						case "email":
+						case "hidden":
+						case "number":
+						case "password":
+						case "search":
+						case "tel":
+						case "text":
+						case "url":
+							return new TextInput(token, browser, parent);
+
+						case "radio":
+							return new RadioButton(token, browser, parent);
+
+						default:
+							return element;
+					}
+
+				case "ins":
+					return new Insert(token, browser, parent);
+
+				case "kbd":
+					return new Keyboard(token, browser, parent);
+
+				case "keygen":
+					return new KeyGenerator(token, browser, parent);
+
+				case "label":
+					return new Label(token, browser, parent);
+
+				case "legend":
+					return new Legend(token, browser, parent);
+
+				case "li":
+					return new ListItem(token, browser, parent);
+
+				case "link":
+					return new StyleSheetLink(token, browser, parent);
+
+				case "main":
+					return new Main(token, browser, parent);
+
+				case "map":
+					return new Map(token, browser, parent);
+
+				case "mark":
+					return new Mark(token, browser, parent);
+
+				case "menu":
+					return new Menu(token, browser, parent);
+
+				case "menuitem":
+					return new MenuItem(token, browser, parent);
+
+				case "meta":
+					return new Metadata(token, browser, parent);
+
+				case "meter":
+					return new Meter(token, browser, parent);
+
+				case "nav":
+					return new Navigation(token, browser, parent);
+
+				case "noframes":
+					return new NoFrames(token, browser, parent);
+
+				case "noscript":
+					return new NoScript(token, browser, parent);
+
+				case "object":
+					return new Object(token, browser, parent);
+
+				case "ol":
+					return new OrderedList(token, browser, parent);
+
+				case "optgroup":
+					return new OptionGroup(token, browser, parent);
+
+				case "option":
+					return new Option(token, browser, parent);
+
+				case "output":
+					return new Output(token, browser, parent);
+
+				case "p":
+					return new Paragraph(token, browser, parent);
+
+				case "param":
+					return new Parameter(token, browser, parent);
+
+				case "pre":
+					return new PreformattedText(token, browser, parent);
+
+				case "progress":
+					return new Progress(token, browser, parent);
+
+				case "q":
+					return new Quotation(token, browser, parent);
+
+				case "rp":
+					return new RubyExplanation(token, browser, parent);
+
+				case "rt":
+					return new RubyTag(token, browser, parent);
+
+				case "ruby":
+					return new Ruby(token, browser, parent);
+
+				case "s":
+					return new StrikeThrough(token, browser, parent);
+
+				case "samp":
+					return new Sample(token, browser, parent);
+
+				case "script":
+					return new Script(token, browser, parent);
+
+				case "section":
+					return new Section(token, browser, parent);
+
+				case "select":
+					return new Select(token, browser, parent);
+
+				case "small":
+					return new Small(token, browser, parent);
+
+				case "source":
+					return new Source(token, browser, parent);
+
+				case "span":
+					return new Span(token, browser, parent);
+
+				case "strike":
+					return new Strike(token, browser, parent);
+
+				case "strong":
+					return new Strong(token, browser, parent);
+
+				case "style":
+					return new Style(token, browser, parent);
+
+				case "sub":
+					return new SubScript(token, browser, parent);
+
+				case "table":
+					return new Table(token, browser, parent);
+
+				case "tbody":
+					return new TableBody(token, browser, parent);
+
+				case "td":
+					return new TableColumn(token, browser, parent);
+
+				case "textarea":
+					return new TextArea(token, browser, parent);
+
+				case "tfoot":
+					return new TableFooter(token, browser, parent);
+
+				case "th":
+					return new TableHeaderColumn(token, browser, parent);
+
+				case "thead":
+					return new TableHead(token, browser, parent);
+
+				case "time":
+					return new Time(token, browser, parent);
+
+				case "title":
+					return new Title(token, browser, parent);
+
+				case "tr":
+					return new TableRow(token, browser, parent);
+
+				case "track":
+					return new Track(token, browser, parent);
+
+				case "tt":
+					return new TeletypeText(token, browser, parent);
+
+				case "u":
+					return new Underline(token, browser, parent);
+
+				case "ul":
+					return new UnorderedList(token, browser, parent);
+
+				case "var":
+					return new Variable(token, browser, parent);
+
+				case "video":
+					return new Video(token, browser, parent);
+
+				case "wbr":
+					return new WordBreakOpportunity(token, browser, parent);
+
+				default:
+					return element;
+			}
+		}
+
+		/// <summary>
 		/// Add or updates the cached attributes for this element.
 		/// </summary>
 		/// <param name="name"> </param>
@@ -394,7 +805,6 @@ namespace TestR.Web
 				if (attributeName == name)
 				{
 					_element.attributes[i] = value;
-					return;
 				}
 			}
 

@@ -2,6 +2,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Management.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.PowerShell;
@@ -31,7 +32,7 @@ namespace TestR.AutomationTests.Web
 				Assert.IsNotNull(browser);
 				Console.WriteLine(browser.Id);
 				browser.NavigateTo("http://localhost:8080");
-				browser.Elements.Count.Dump();
+				browser.Descendants().Count().Dump();
 				browser.ExecuteScript("window.location.href").Dump();
 			}
 		}
@@ -44,7 +45,7 @@ namespace TestR.AutomationTests.Web
 				Assert.IsNotNull(browser);
 				Console.WriteLine(browser.Id);
 				browser.NavigateTo("http://localhost:8080");
-				browser.Elements.Count.Dump();
+				browser.Descendants().Count().Dump();
 				browser.ExecuteScript("window.location.href").Dump();
 			}
 		}
@@ -82,7 +83,7 @@ namespace TestR.AutomationTests.Web
 				Assert.IsNotNull(browser);
 				Console.WriteLine(browser.Id);
 				browser.NavigateTo("http://localhost:8080");
-				browser.Elements.Count.Dump();
+				browser.Descendants().Count().Dump();
 				browser.ExecuteScript("window.location.href").Dump();
 			}
 		}

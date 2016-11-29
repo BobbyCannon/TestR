@@ -30,8 +30,8 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var window = application.Get<Window>();
-				var childWindow = window.Get<Window>();
+				var window = application.First<Window>();
+				var childWindow = window.First<Window>();
 				childWindow.Move(0, 0);
 				Assert.AreEqual(2, childWindow.Location.X);
 				Assert.AreEqual(2, childWindow.Location.Y);
@@ -51,7 +51,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var window = application.Get<Window>();
+				var window = application.First<Window>();
 				Assert.IsNotNull(window);
 
 				var random = new Random();
@@ -69,8 +69,8 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var window = application.Get<Window>();
-				var childWindow = window.Get<Window>();
+				var window = application.First<Window>();
+				var childWindow = window.First<Window>();
 
 				childWindow.Resize(300, 200);
 				Assert.AreEqual(300, childWindow.Width);
@@ -87,7 +87,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
-				var window = application.GetAll<Window>().FirstOrDefault();
+				var window = application.Descendants<Window>().FirstOrDefault();
 				var random = new Random();
 				Assert.IsNotNull(window);
 				var width = random.Next(300, 600);

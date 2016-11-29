@@ -165,10 +165,17 @@ namespace TestR.Web.Browsers
 			try
 			{
 				//LogManager.Write("InternetExplorer navigated to " + uri + ".", LogLevel.Verbose);
+				if (_browser.LocationURL == uri)
+				{
+					_browser.Refresh();
+				}
+				else
+				{
+					object nil = null;
+					object absoluteUri = uri;
+					_browser.Navigate2(ref absoluteUri, ref nil, ref nil, ref nil, ref nil);
+				}
 
-				object nil = null;
-				object absoluteUri = uri;
-				_browser.Navigate2(ref absoluteUri, ref nil, ref nil, ref nil, ref nil);
 				WaitForComplete();
 
 				var htmlDocument = _browser.Document as IHTMLDocument2;

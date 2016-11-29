@@ -216,7 +216,7 @@ namespace TestR.Web.Browsers
 				return string.Empty;
 			}
 
-			var typeName = value.GetType().BrowserName;
+			var typeName = value.GetType().Name;
 			return typeName != "JValue"
 				? JsonConvert.SerializeObject(value)
 				: (string) value;
