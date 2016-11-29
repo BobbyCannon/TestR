@@ -167,18 +167,6 @@
             </summary>
             <param name="disposing"> True if disposing and false if otherwise. </param>
         </member>
-        <member name="M:TestR.Application.OnElementClicked(TestR.Desktop.DesktopElement,System.Drawing.Point)">
-            <summary>
-            Triggers the element clicked event.
-            </summary>
-            <param name="element"> The element that was clicked. </param>
-            <param name="point"> The point that was clicked. </param>
-        </member>
-        <member name="E:TestR.Application.ElementClicked">
-            <summary>
-            An element was clicked.
-            </summary>
-        </member>
         <member name="T:TestR.Desktop.DesktopElement">
             <summary>
             Base element for desktop automation.
@@ -238,11 +226,6 @@
             Gets the native element for the desktop element.
             </summary>
         </member>
-        <member name="P:TestR.Desktop.DesktopElement.ProcessId">
-            <summary>
-            First the current process ID;
-            </summary>
-        </member>
         <member name="P:TestR.Desktop.DesktopElement.TypeId">
             <summary>
             Gets the type ID of this element.
@@ -269,6 +252,12 @@
         </member>
         <member name="M:TestR.Desktop.DesktopElement.Focus">
             <inheritdoc />
+        </member>
+        <member name="M:TestR.Desktop.DesktopElement.FromCursor">
+            <summary>
+            Gets the element that is currently under the cursor.
+            </summary>
+            <returns> The element if found or null if not found. </returns>
         </member>
         <member name="M:TestR.Desktop.DesktopElement.FromFocus">
             <summary>
@@ -309,11 +298,6 @@
             Provides a string of details for the element.
             </summary>
             <returns> The string of element details. </returns>
-        </member>
-        <member name="M:TestR.Desktop.DesktopElement.UpdateParent">
-            <summary>
-            Update the parent for the provided element.
-            </summary>
         </member>
         <member name="M:TestR.Desktop.DesktopElement.UpdateParents">
             <summary>
@@ -357,6 +341,11 @@
             <param name="x"> Optional X offset when calculating. </param>
             <param name="y"> Optional Y offset when calculating. </param>
             <returns> The clickable point for the element. </returns>
+        </member>
+        <member name="M:TestR.Desktop.DesktopElement.UpdateParent">
+            <summary>
+            Update the parent for the provided element.
+            </summary>
         </member>
         <member name="T:TestR.Desktop.Elements.Button">
             <summary>
@@ -1156,6 +1145,11 @@
             Gets the parent element of this element.
             </summary>
         </member>
+        <member name="P:TestR.ElementHost.Parents">
+            <summary>
+            The all parent element of this element.
+            </summary>
+        </member>
         <member name="M:TestR.ElementHost.Contains(System.String)">
             <summary>
             Check to see if this element host contains an element.
@@ -1332,14 +1326,6 @@
             <summary>
             Container for all extension methods.
             </summary>
-        </member>
-        <member name="M:TestR.Extensions.AddRange``1(System.Collections.Generic.ICollection{``0},System.Collections.Generic.IEnumerable{``0})">
-            <summary>
-            Adds a range of items to the collection.
-            </summary>
-            <param name="collection"> The collection to add the items to. </param>
-            <param name="items"> The items to add to the collection. </param>
-            <typeparam name="T"> The type of the item in the collections. </typeparam>
         </member>
         <member name="M:TestR.Extensions.AsJToken(System.String)">
             <summary>
@@ -4497,6 +4483,14 @@
             <param name="browser"> The browser this element is associated with. </param>
             <param name="parent"> </param>
         </member>
+        <member name="P:TestR.Web.WebElement.AccessKey">
+            <summary>
+            Gets or sets the access key attribute.
+            </summary>
+            <remarks>
+            Specifies a shortcut key to activate/focus an element.
+            </remarks>
+        </member>
         <member name="P:TestR.Web.WebElement.Browser">
             <summary>
             Gets the browser this element is currently associated with.
@@ -4510,6 +4504,38 @@
             Specifies one or more class names for an element (refers to a class in a style sheet).
             </remarks>
         </member>
+        <member name="P:TestR.Web.WebElement.ContentEditable">
+            <summary>
+            Gets the content editable (contenteditable) attribute.
+            </summary>
+            <remarks>
+            HTML5: Specifies whether the content of an element is editable or not.
+            </remarks>
+        </member>
+        <member name="P:TestR.Web.WebElement.ContextMenu">
+            <summary>
+            Gets or sets the context menu attribute.
+            </summary>
+            <remarks>
+            HTML5: Specifies a context menu for an element. The context menu appears when a user Right-clicks on the element.
+            </remarks>
+        </member>
+        <member name="P:TestR.Web.WebElement.Draggable">
+            <summary>
+            Gets or sets the draggable attribute.
+            </summary>
+            <remarks>
+            HTML5: Specifies whether an element is draggable or not.
+            </remarks>
+        </member>
+        <member name="P:TestR.Web.WebElement.DropZone">
+            <summary>
+            Gets or sets the drop zone (dropzone) attribute.
+            </summary>
+            <remarks>
+            HTML5: Specifies whether the dragged data is copied, moved, or linked, when dropped.
+            </remarks>
+        </member>
         <member name="P:TestR.Web.WebElement.Focused">
             <inheritdoc />
         </member>
@@ -4519,17 +4545,57 @@
         <member name="P:TestR.Web.WebElement.Height">
             <inheritdoc />
         </member>
+        <member name="P:TestR.Web.WebElement.Hidden">
+            <summary>
+            Gets or sets the hidden attribute.
+            </summary>
+            <remarks>
+            HTML5: Specifies that an element is not yet, or is no longer, relevant.
+            </remarks>
+        </member>
         <member name="P:TestR.Web.WebElement.Id">
             <inheritdoc />
         </member>
         <member name="P:TestR.Web.WebElement.Item(System.String)">
             <inheritdoc />
         </member>
+        <member name="P:TestR.Web.WebElement.Language">
+            <summary>
+            Gets or sets the language (lang) attribute.
+            </summary>
+            <remarks>
+            Specifies the language of the element's content.
+            </remarks>
+        </member>
         <member name="P:TestR.Web.WebElement.Location">
             <inheritdoc />
         </member>
         <member name="P:TestR.Web.WebElement.Name">
             <inheritdoc />
+        </member>
+        <member name="P:TestR.Web.WebElement.SpellCheck">
+            <summary>
+            Gets or sets the spell check (spellcheck) attribute.
+            </summary>
+            <remarks>
+            HTML5: Specifies whether the element is to have its spelling and grammar checked or not.
+            </remarks>
+        </member>
+        <member name="P:TestR.Web.WebElement.Style">
+            <summary>
+            Gets or sets the style attribute.
+            </summary>
+            <remarks>
+            Specifies an inline CSS style for an element.
+            </remarks>
+        </member>
+        <member name="P:TestR.Web.WebElement.TabIndex">
+            <summary>
+            Gets or sets the tab index (tabindex) attribute.
+            </summary>
+            <remarks>
+            Specifies the tabbing order of the element.
+            </remarks>
         </member>
         <member name="P:TestR.Web.WebElement.TagName">
             <summary>
@@ -4541,12 +4607,28 @@
             Gets or sets the text content.
             </summary>
         </member>
+        <member name="P:TestR.Web.WebElement.TextDirection">
+            <summary>
+            Gets the text direction (dir) attribute.
+            </summary>
+            <remarks>
+            Specifies the text direction for the content in an element.
+            </remarks>
+        </member>
         <member name="P:TestR.Web.WebElement.Title">
             <summary>
             Gets or sets the title attribute.
             </summary>
             <remarks>
             Specifies extra information about an element.
+            </remarks>
+        </member>
+        <member name="P:TestR.Web.WebElement.Translate">
+            <summary>
+            Gets or sets the translate attribute.
+            </summary>
+            <remarks>
+            HTML5: Specifies whether the content of an element should be translated or not.
             </remarks>
         </member>
         <member name="P:TestR.Web.WebElement.Width">
@@ -4609,6 +4691,11 @@
             color.
             </param>
         </member>
+        <member name="M:TestR.Web.WebElement.Html">
+            <summary>
+            Gets Raw HTML.
+            </summary>
+        </member>
         <member name="M:TestR.Web.WebElement.MoveMouseTo(System.Int32,System.Int32)">
             <inheritdoc />
         </member>
@@ -4617,6 +4704,12 @@
         </member>
         <member name="M:TestR.Web.WebElement.RightClick(System.Int32,System.Int32)">
             <inheritdoc />
+        </member>
+        <member name="M:TestR.Web.WebElement.RemoveAttribute(System.String)">
+            <summary>
+            Remove the element attribute. * Experimental
+            </summary>
+            <param name="name"> The name of the attribute. </param>
         </member>
         <member name="M:TestR.Web.WebElement.SetAttributeValue(System.String,System.String)">
             <summary>

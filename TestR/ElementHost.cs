@@ -58,6 +58,26 @@ namespace TestR
 		/// </summary>
 		public ElementHost Parent { get; internal set; }
 
+		/// <summary>
+		/// The all parent element of this element.
+		/// </summary>
+		public IEnumerable<ElementHost> Parents
+		{
+			get
+			{
+				var parent = Parent;
+				var response = new List<ElementHost>();
+
+				while (parent != null)
+				{
+					response.Add(parent);
+					parent = parent.Parent;
+				}
+
+				return response;
+			}
+		}
+
 		#endregion
 
 		#region Methods

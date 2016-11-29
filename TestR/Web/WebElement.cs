@@ -59,6 +59,18 @@ namespace TestR.Web
 		#region Properties
 
 		/// <summary>
+		/// Gets or sets the access key attribute.
+		/// </summary>
+		/// <remarks>
+		/// Specifies a shortcut key to activate/focus an element.
+		/// </remarks>
+		public string AccessKey
+		{
+			get { return this["accesskey"]; }
+			set { this["accesskey"] = value; }
+		}
+
+		/// <summary>
 		/// Gets the browser this element is currently associated with.
 		/// </summary>
 		public Browser Browser { get; }
@@ -75,14 +87,74 @@ namespace TestR.Web
 			set { this["class"] = value; }
 		}
 
-		/// <inheritdoc />
-		public override bool Focused => false;
+		/// <summary>
+		/// Gets the content editable (contenteditable) attribute.
+		/// </summary>
+		/// <remarks>
+		/// HTML5: Specifies whether the content of an element is editable or not.
+		/// </remarks>
+		public string ContentEditable
+		{
+			get { return this["contenteditable"]; }
+			set { this["contenteditable"] = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the context menu attribute.
+		/// </summary>
+		/// <remarks>
+		/// HTML5: Specifies a context menu for an element. The context menu appears when a user Right-clicks on the element.
+		/// </remarks>
+		public string ContextMenu
+		{
+			get { return this["contextmenu"]; }
+			set { this["contextmenu"] = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the draggable attribute.
+		/// </summary>
+		/// <remarks>
+		/// HTML5: Specifies whether an element is draggable or not.
+		/// </remarks>
+		public string Draggable
+		{
+			get { return this["draggable"]; }
+			set { this["draggable"] = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the drop zone (dropzone) attribute.
+		/// </summary>
+		/// <remarks>
+		/// HTML5: Specifies whether the dragged data is copied, moved, or linked, when dropped.
+		/// </remarks>
+		public string DropZone
+		{
+			get { return this["dropzone"]; }
+			set { this["dropzone"] = value; }
+		}
 
 		/// <inheritdoc />
-		public override Element FocusedElement => null;
+		public override bool Focused => Browser.FocusedElement == this;
+
+		/// <inheritdoc />
+		public override Element FocusedElement => Browser.FocusedElement;
 
 		/// <inheritdoc />
 		public override int Height => this["offsetHeight"].ToInt();
+
+		/// <summary>
+		/// Gets or sets the hidden attribute.
+		/// </summary>
+		/// <remarks>
+		/// HTML5: Specifies that an element is not yet, or is no longer, relevant.
+		/// </remarks>
+		public string Hidden
+		{
+			get { return this["hidden"]; }
+			set { this["hidden"] = value; }
+		}
 
 		/// <inheritdoc />
 		public override string Id => _element.id;
@@ -94,11 +166,59 @@ namespace TestR.Web
 			set { SetAttributeValue(name, value); }
 		}
 
+		/// <summary>
+		/// Gets or sets the language (lang) attribute.
+		/// </summary>
+		/// <remarks>
+		/// Specifies the language of the element's content.
+		/// </remarks>
+		public string Language
+		{
+			get { return this["lang"]; }
+			set { this["lang"] = value; }
+		}
+
 		/// <inheritdoc />
 		public override Point Location => new Point(this["offsetLeft"].ToInt(), this["offsetTop"].ToInt());
 
 		/// <inheritdoc />
 		public override string Name => _element.name;
+
+		/// <summary>
+		/// Gets or sets the spell check (spellcheck) attribute.
+		/// </summary>
+		/// <remarks>
+		/// HTML5: Specifies whether the element is to have its spelling and grammar checked or not.
+		/// </remarks>
+		public string SpellCheck
+		{
+			get { return this["spellcheck"]; }
+			set { this["spellcheck"] = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the style attribute.
+		/// </summary>
+		/// <remarks>
+		/// Specifies an inline CSS style for an element.
+		/// </remarks>
+		public string Style
+		{
+			get { return this["style"]; }
+			set { this["style"] = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the tab index (tabindex) attribute.
+		/// </summary>
+		/// <remarks>
+		/// Specifies the tabbing order of the element.
+		/// </remarks>
+		public string TabIndex
+		{
+			get { return this["tabindex"]; }
+			set { this["tabindex"] = value; }
+		}
 
 		/// <summary>
 		/// Gets the tag element name.
@@ -115,6 +235,18 @@ namespace TestR.Web
 		}
 
 		/// <summary>
+		/// Gets the text direction (dir) attribute.
+		/// </summary>
+		/// <remarks>
+		/// Specifies the text direction for the content in an element.
+		/// </remarks>
+		public string TextDirection
+		{
+			get { return this["dir"]; }
+			set { this["dir"] = value; }
+		}
+
+		/// <summary>
 		/// Gets or sets the title attribute.
 		/// </summary>
 		/// <remarks>
@@ -124,6 +256,18 @@ namespace TestR.Web
 		{
 			get { return this["title"]; }
 			set { this["title"] = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the translate attribute.
+		/// </summary>
+		/// <remarks>
+		/// HTML5: Specifies whether the content of an element should be translated or not.
+		/// </remarks>
+		public string Translate
+		{
+			get { return this["translate"]; }
+			set { this["translate"] = value; }
 		}
 
 		/// <inheritdoc />
@@ -265,6 +409,14 @@ namespace TestR.Web
 			}
 		}
 
+		/// <summary>
+		/// Gets Raw HTML.
+		/// </summary>
+		public string Html()
+		{
+			return Browser.ExecuteScript("document.getElementById('" + Id + "').innerHTML");
+		}
+
 		/// <inheritdoc />
 		public override Element MoveMouseTo(int x = 0, int y = 0)
 		{
@@ -281,6 +433,15 @@ namespace TestR.Web
 		public override Element RightClick(int x = 0, int y = 0)
 		{
 			return this;
+		}
+
+		/// <summary>
+		/// Remove the element attribute. * Experimental
+		/// </summary>
+		/// <param name="name"> The name of the attribute. </param>
+		public void RemoveAttribute(string name)
+		{
+			Browser.RemoveElementAttribute(this, name);
 		}
 
 		/// <summary>

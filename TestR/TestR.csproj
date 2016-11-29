@@ -268,12 +268,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="TestR.ico" />
-    <Content Include="TestR.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />
     <None Include="packages.config" />
-    <None Include="TestR.md" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

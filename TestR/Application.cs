@@ -450,47 +450,7 @@ namespace TestR
 			Process?.Dispose();
 			Process = null;
 		}
-
-		/// <summary>
-		/// Triggers the element clicked event.
-		/// </summary>
-		/// <param name="element"> The element that was clicked. </param>
-		/// <param name="point"> The point that was clicked. </param>
-		protected virtual void OnElementClicked(DesktopElement element, Point point)
-		{
-			if (element.Application.Process.Id != Process.Id)
-			{
-				return;
-			}
-
-			ElementClicked?.Invoke(element, point);
-		}
-
-		private void MouseMonitorOnMouseChanged(Mouse.MouseEvent mouseEvent, Point point)
-		{
-			if ((mouseEvent != Mouse.MouseEvent.LeftButtonDown) && (mouseEvent != Mouse.MouseEvent.RightButtonDown))
-			{
-				return;
-			}
-
-			var element = DesktopElement.FromPoint(point);
-			if (element.Application.Process.Id != Process.Id)
-			{
-				return;
-			}
-
-			OnElementClicked(element, point);
-		}
-
-		#endregion
-
-		#region Events
-
-		/// <summary>
-		/// An element was clicked.
-		/// </summary>
-		public event Action<DesktopElement, Point> ElementClicked;
-
+		
 		#endregion
 	}
 }

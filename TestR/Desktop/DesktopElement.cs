@@ -113,11 +113,6 @@ namespace TestR.Desktop
 		public IUIAutomationElement NativeElement { get; }
 
 		/// <summary>
-		/// First the current process ID;
-		/// </summary>
-		public int ProcessId => NativeElement.CurrentProcessId;
-
-		/// <summary>
 		/// Gets the type ID of this element.
 		/// </summary>
 		public int TypeId => NativeElement.CurrentControlType;
@@ -183,6 +178,16 @@ namespace TestR.Desktop
 		{
 			NativeElement.SetFocus();
 			return this;
+		}
+
+		/// <summary>
+		/// Gets the element that is currently under the cursor.
+		/// </summary>
+		/// <returns> The element if found or null if not found. </returns>
+		public static Element FromCursor()
+		{
+			var point = Mouse.GetCursorPosition();
+			return FromPoint(point);
 		}
 
 		/// <summary>
@@ -332,28 +337,6 @@ namespace TestR.Desktop
 			builder.AppendLine("GetText() - " + GetText());
 
 			return builder.ToString();
-		}
-
-		/// <summary>
-		/// Update the parent for the provided element.
-		/// </summary>
-		public DesktopElement UpdateParent()
-		{
-			var parent = NativeElement.GetCachedParent() ?? NativeElement.GetCurrentParent();
-			if ((parent == null) || (parent.CurrentProcessId != NativeElement.CurrentProcessId))
-			{
-				Parent = null;
-				return this;
-			}
-
-			Parent = new DesktopElement(parent, Application, null);
-			Debug.WriteLine("P: {0},{1},{2},{3}",
-				Parent.Id,
-				parent.CurrentName,
-				parent.CurrentAutomationId,
-				parent.CurrentFrameworkId);
-
-			return this;
 		}
 
 		/// <summary>
@@ -579,6 +562,28 @@ namespace TestR.Desktop
 			}
 
 			return false;
+		}
+
+		/// <summary>
+		/// Update the parent for the provided element.
+		/// </summary>
+		private DesktopElement UpdateParent()
+		{
+			var parent = NativeElement.GetCachedParent() ?? NativeElement.GetCurrentParent();
+			if ((parent == null) || (parent.CurrentProcessId != NativeElement.CurrentProcessId))
+			{
+				Parent = null;
+				return this;
+			}
+
+			Parent = new DesktopElement(parent, Application, null);
+			Debug.WriteLine("P: {0},{1},{2},{3}",
+				Parent.Id,
+				parent.CurrentName,
+				parent.CurrentAutomationId,
+				parent.CurrentFrameworkId);
+
+			return this;
 		}
 
 		#endregion
