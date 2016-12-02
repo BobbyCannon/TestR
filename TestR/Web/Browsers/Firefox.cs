@@ -152,7 +152,7 @@ namespace TestR.Web.Browsers
 		{
 			if (Uri == uri)
 			{
-				ExecuteJavaScript("window.location.reload()");
+				ExecuteJavaScript("window.location.reload(true)");
 			}
 			else
 			{

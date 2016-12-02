@@ -167,7 +167,7 @@ namespace TestR.Web.Browsers
 				//LogManager.Write("InternetExplorer navigated to " + uri + ".", LogLevel.Verbose);
 				if (_browser.LocationURL == uri)
 				{
-					_browser.Refresh();
+					_browser.Refresh2(3);
 				}
 				else
 				{

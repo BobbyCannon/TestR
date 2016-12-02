@@ -657,7 +657,7 @@ namespace TestR.AutomationTests.Web
 
 				var location = button.Location;
 				Mouse.MoveTo(location.X + 60, location.Y + 20);
-				browser.WaitForComplete(100);
+				browser.WaitForComplete(250);
 
 				var element = DesktopElement.FromCursor();
 				Assert.AreEqual("menu item", element.TypeName);

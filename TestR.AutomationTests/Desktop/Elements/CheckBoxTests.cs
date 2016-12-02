@@ -28,6 +28,8 @@ namespace TestR.AutomationTests.Desktop.Elements
 		[TestMethod]
 		public void CheckByClickingForThreeStates()
 		{
+			Application.CloseAll(ApplicationPath);
+
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
 				var checkbox = application.First<CheckBox>("checkBox3");
@@ -195,6 +197,8 @@ namespace TestR.AutomationTests.Desktop.Elements
 		[TestMethod]
 		public void LocationShouldBeValid()
 		{
+			Application.CloseAll(ApplicationPath);
+
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
 				var checkbox = application.First<CheckBox>("checkBox1");
