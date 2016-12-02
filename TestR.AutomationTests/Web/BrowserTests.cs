@@ -7,6 +7,7 @@ using TestR.Desktop;
 using TestR.Native;
 using TestR.PowerShell;
 using TestR.Web;
+using TestR.Web.Browsers;
 using TestR.Web.Elements;
 
 #endregion

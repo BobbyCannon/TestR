@@ -52,10 +52,6 @@
     <Compile Include="BrowserTestCmdlet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestCmdlet.cs" />
-    <Compile Include="TestIsFalseCmdlet.cs" />
-    <Compile Include="TestIsTrueCmdlet.cs" />
-    <Compile Include="TestWaitForUriChangeCmdlet.cs" />
-    <Compile Include="TestWaitForUriToEqual.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TestR\TestR.csproj">
