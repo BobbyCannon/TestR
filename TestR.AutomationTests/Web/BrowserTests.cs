@@ -549,6 +549,7 @@ namespace TestR.AutomationTests.Web
 				browser.NavigateTo(TestSite + "/index.html");
 				var button = browser.First("button");
 				button.MiddleClick();
+				browser.WaitForComplete(100);
 
 				if (browser.BrowserType == BrowserType.Firefox)
 				{
@@ -658,7 +659,7 @@ namespace TestR.AutomationTests.Web
 
 				var location = button.Location;
 				Mouse.MoveTo(location.X + 60, location.Y + 20);
-				browser.WaitForComplete(250);
+				browser.WaitForComplete(500);
 
 				var element = DesktopElement.FromCursor();
 				Assert.AreEqual("menu item", element.TypeName);

@@ -150,16 +150,7 @@ namespace TestR
 						continue;
 					}
 
-					var application = new Application(process);
-					if (!refresh)
-					{
-						return application;
-					}
-
-					application.Refresh();
-					application.WaitForComplete();
-
-					return application;
+					return Attach(process, refresh);
 				}
 			}
 
@@ -187,13 +178,14 @@ namespace TestR
 		public static Application Attach(Process process, bool refresh = true)
 		{
 			var application = new Application(process);
-			if (!refresh)
+
+			if (refresh)
 			{
-				return application;
+				application.Refresh();
+				application.WaitForComplete();
 			}
 
-			application.Refresh();
-			application.WaitForComplete();
+			application.BringToFront();
 
 			return application;
 		}
@@ -234,6 +226,7 @@ namespace TestR
 			}
 
 			Process.CloseMainWindow();
+
 			if (!Process.WaitForExit(1500))
 			{
 				Process.Kill();
@@ -302,15 +295,8 @@ namespace TestR
 			}
 
 			process.WaitForInputIdle();
-			var application = new Application(process);
 
-			if (refresh)
-			{
-				application.Refresh();
-				application.WaitForComplete();
-			}
-
-			return application;
+			return Attach(process, refresh);
 		}
 
 		/// <summary>
