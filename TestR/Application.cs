@@ -8,7 +8,6 @@ using System.Linq;
 using System.Management;
 using System.Runtime.InteropServices;
 using System.Threading;
-using TestR.Desktop;
 using TestR.Native;
 
 #endregion
@@ -450,7 +449,7 @@ namespace TestR
 			Process?.Dispose();
 			Process = null;
 		}
-		
+
 		#endregion
 	}
 }

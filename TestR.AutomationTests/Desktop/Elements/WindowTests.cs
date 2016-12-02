@@ -25,6 +25,24 @@ namespace TestR.AutomationTests.Desktop.Elements
 
 		#region Methods
 
+		[ClassCleanup]
+		public static void ClassCleanup()
+		{
+			Application.CloseAll(ApplicationPath);
+		}
+
+		[ClassInitialize]
+		public static void ClassInitialize(TestContext context)
+		{
+			var assembly = Assembly.GetExecutingAssembly();
+			var path = Path.GetDirectoryName(assembly.Location);
+			var info = new DirectoryInfo(path ?? "/");
+
+			ApplicationPath = info.Parent?.Parent?.Parent?.FullName;
+			ApplicationPath += "\\TestR.TestWinForms\\Bin\\" + (assembly.IsAssemblyDebugBuild() ? "Debug" : "Release") + "\\TestR.TestWinForms.exe";
+			Application.CloseAll(ApplicationPath);
+		}
+
 		[TestMethod]
 		public void MoveChildWindow()
 		{
@@ -99,14 +117,8 @@ namespace TestR.AutomationTests.Desktop.Elements
 		}
 
 		[TestInitialize]
-		public void Setup()
+		public void TestInitialize()
 		{
-			var assembly = Assembly.GetExecutingAssembly();
-			var path = Path.GetDirectoryName(assembly.Location);
-			var info = new DirectoryInfo(path ?? "/");
-
-			ApplicationPath = info.Parent?.Parent?.Parent?.FullName;
-			ApplicationPath += "\\TestR.TestWinForms\\Bin\\" + (assembly.IsAssemblyDebugBuild() ? "Debug" : "Release") + "\\TestR.TestWinForms.exe";
 			Application.CloseAll(ApplicationPath);
 		}
 

@@ -3,6 +3,8 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Windows.Forms;
+using FormApplication = System.Windows.Forms.Application;
 
 #endregion
 
@@ -15,6 +17,7 @@ namespace TestR.Native
 	{
 		#region Fields
 
+		private static MouseMessageFilter _filter;
 		private static readonly TimeSpan _timeout;
 
 		#endregion
@@ -55,6 +58,48 @@ namespace TestR.Native
 		/// <param name="point"> The point in which to click. </param>
 		public static void LeftClick(Point point)
 		{
+			MoveTo(point);
+			ExecuteMouseEvent(MouseEventFlags.LeftDown, point);
+			ExecuteMouseEvent(MouseEventFlags.LeftUp, point);
+		}
+
+		/// <summary>
+		/// Middle click at the provided point.
+		/// </summary>
+		/// <param name="x"> The x point in which to click. </param>
+		/// <param name="y"> The y point in which to click. </param>
+		public static void MiddleClick(int x, int y)
+		{
+			MiddleClick(new Point(x, y));
+		}
+
+		/// <summary>
+		/// Middle click at the provided point.
+		/// </summary>
+		/// <param name="point"> The point in which to click. </param>
+		public static void MiddleClick(Point point)
+		{
+			MoveTo(point);
+			ExecuteMouseEvent(MouseEventFlags.MiddleDown, point);
+			ExecuteMouseEvent(MouseEventFlags.MiddleUp, point);
+		}
+
+		/// <summary>
+		/// Sets the mouse to the provide point.
+		/// </summary>
+		/// <param name="x"> The x point in which to move to. </param>
+		/// <param name="y"> The y point in which to move to. </param>
+		public static void MoveTo(int x, int y)
+		{
+			MoveTo(new Point(x, y));
+		}
+
+		/// <summary>
+		/// Sets the mouse to the provide point.
+		/// </summary>
+		/// <param name="point"> The point in which to move to. </param>
+		public static void MoveTo(Point point)
+		{
 			var watch = Stopwatch.StartNew();
 			var currentPosition = GetCursorPosition();
 
@@ -69,17 +114,17 @@ namespace TestR.Native
 				}
 			}
 
-			ExecuteMouseEvent(MouseEventFlags.LeftDown);
-			ExecuteMouseEvent(MouseEventFlags.LeftUp);
+			//ExecuteMouseEvent(MouseEventFlags.Move, point);
 		}
 
 		/// <summary>
-		/// Sets the mouse to the provide point.
+		/// Right click at the provided point.
 		/// </summary>
-		/// <param name="point"> The point in which to move to. </param>
-		public static void MoveTo(Point point)
+		/// <param name="x"> The x point in which to click. </param>
+		/// <param name="y"> The y point in which to click. </param>
+		public static void RightClick(int x, int y)
 		{
-			NativeMethods.SetCursorPosition(point.X, point.Y);
+			RightClick(new Point(x, y));
 		}
 
 		/// <summary>
@@ -88,43 +133,60 @@ namespace TestR.Native
 		/// <param name="point"> The point in which to click. </param>
 		public static void RightClick(Point point)
 		{
-			NativeMethods.SetCursorPosition(point.X, point.Y);
-			ExecuteMouseEvent(MouseEventFlags.RightDown);
-			ExecuteMouseEvent(MouseEventFlags.RightUp);
+			MoveTo(point);
+			ExecuteMouseEvent(MouseEventFlags.RightDown, point);
+			ExecuteMouseEvent(MouseEventFlags.RightUp, point);
 		}
 
-		internal static MouseEvent GetEvent(NativeMethods.MouseMessages message)
+		/// <summary>
+		/// Start monitoring the mouse for events.
+		/// </summary>
+		public static void StartMonitoring()
 		{
-			switch (message)
+			if (_filter != null)
 			{
-				case NativeMethods.MouseMessages.WM_LBUTTONDOWN:
-					return MouseEvent.LeftButtonDown;
-
-				case NativeMethods.MouseMessages.WM_LBUTTONUP:
-					return MouseEvent.LeftButtonUp;
-
-				case NativeMethods.MouseMessages.WM_MOUSEMOVE:
-					return MouseEvent.MouseMove;
-
-				case NativeMethods.MouseMessages.WM_MOUSEWHEEL:
-					return MouseEvent.MouseWheel;
-
-				case NativeMethods.MouseMessages.WM_RBUTTONDOWN:
-					return MouseEvent.RightButtonDown;
-
-				case NativeMethods.MouseMessages.WM_RBUTTONUP:
-					return MouseEvent.RightButtonUp;
-
-				default:
-					return MouseEvent.Unknown;
+				return;
 			}
+
+			_filter = new MouseMessageFilter();
+			_filter.Clicked += (sender, args) => Clicked?.Invoke(sender, args);
+			_filter.Moved += (sender, args) => Moved?.Invoke(sender, args);
+
+			FormApplication.AddMessageFilter(_filter);
 		}
 
-		private static void ExecuteMouseEvent(MouseEventFlags value)
+		/// <summary>
+		/// Stop monitoring the mouse for events.
+		/// </summary>
+		public static void StopMonitoring()
 		{
-			var position = GetCursorPosition();
+			if (_filter == null)
+			{
+				return;
+			}
+
+			FormApplication.RemoveMessageFilter(_filter);
+		}
+
+		private static void ExecuteMouseEvent(MouseEventFlags value, Point? point = null)
+		{
+			var position = point ?? GetCursorPosition();
 			NativeMethods.MouseEvent((int) value, position.X, position.Y, 0, 0);
 		}
+
+		#endregion
+
+		#region Events
+
+		/// <summary>
+		/// Event for key press events when monitoring the keyboard.
+		/// </summary>
+		public static event MouseEventHandler Clicked;
+
+		/// <summary>
+		/// The mouse was moved.
+		/// </summary>
+		public static event MouseEventHandler Moved;
 
 		#endregion
 
@@ -179,7 +241,6 @@ namespace TestR.Native
 			MiddleDown = 0x00000020,
 			MiddleUp = 0x00000040,
 			Move = 0x00000001,
-			Absolute = 0x00008000,
 			RightDown = 0x00000008,
 			RightUp = 0x00000010
 		}

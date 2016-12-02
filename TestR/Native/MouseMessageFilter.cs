@@ -10,7 +10,7 @@ namespace TestR.Native
 	/// <summary>
 	/// The filter to capture mouse messages.
 	/// </summary>
-	public class MouseMessageFilter : IMessageFilter
+	internal class MouseMessageFilter : IMessageFilter
 	{
 		#region Constants
 
@@ -51,12 +51,12 @@ namespace TestR.Native
 							break;
 					}
 
-					Click?.Invoke(null, new MouseEventArgs(buttons, 0, mousePosition.X, mousePosition.Y, 0));
+					Clicked?.Invoke(null, new MouseEventArgs(buttons, 0, mousePosition.X, mousePosition.Y, 0));
 					break;
 
 				case MouseMove:
 					mousePosition = Control.MousePosition;
-					Move?.Invoke(null, new MouseEventArgs(MouseButtons.None, 0, mousePosition.X, mousePosition.Y, 0));
+					Moved?.Invoke(null, new MouseEventArgs(MouseButtons.None, 0, mousePosition.X, mousePosition.Y, 0));
 					break;
 			}
 
@@ -70,12 +70,12 @@ namespace TestR.Native
 		/// <summary>
 		/// The mouse was clicked event.
 		/// </summary>
-		public static event MouseEventHandler Click;
+		public event MouseEventHandler Clicked;
 
 		/// <summary>
 		/// The mouse was moved.
 		/// </summary>
-		public static event MouseEventHandler Move;
+		public event MouseEventHandler Moved;
 
 		#endregion
 	}

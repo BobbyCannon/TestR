@@ -42,10 +42,10 @@ namespace TestR.Native
 		#region Methods
 
 		/// <summary>
-		/// Determinse if the control key is pressed.
+		/// Determines if the control key is pressed.
 		/// </summary>
 		/// <returns>
-		/// True if either control key is pressed.
+		/// True if either control key is pressed and false if otherwise.
 		/// </returns>
 		public static bool IsControlPressed()
 		{
@@ -94,17 +94,10 @@ namespace TestR.Native
 
 			var vkCode = Marshal.ReadInt32(lParam);
 			var keyPressed = KeyInterop.KeyFromVirtualKey(vkCode);
-			Trace.WriteLine(keyPressed);
 
-			OnKeyPressed(keyPressed);
+			KeyPressed?.Invoke(keyPressed);
 
 			return NativeMethods.CallNextHookEx(_hookId, nCode, wParam, lParam);
-		}
-
-		private static void OnKeyPressed(Key obj)
-		{
-			var handler = KeyPressed;
-			handler?.Invoke(obj);
 		}
 
 		#endregion

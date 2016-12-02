@@ -3,6 +3,8 @@
 using System.Linq;
 using System.Management.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TestR.Desktop;
+using TestR.Native;
 using TestR.PowerShell;
 using TestR.Web;
 using TestR.Web.Elements;
@@ -119,6 +121,18 @@ namespace TestR.AutomationTests.Web
 				Assert.IsTrue(browser.Contains("addItem"));
 				Assert.IsTrue(browser.Contains("anotherPageLink"));
 			});
+		}
+
+		[ClassCleanup]
+		public static void ClassCleanup()
+		{
+			//Browser.CloseBrowsers();
+		}
+
+		[ClassInitialize]
+		public static void ClassInitialize(TestContext context)
+		{
+			//Browser.CloseBrowsers();
 		}
 
 		[TestMethod]
@@ -305,6 +319,18 @@ namespace TestR.AutomationTests.Web
 				browser.NavigateTo(TestSite + "/relationships.html");
 				var element = browser.First("child1div").Parent;
 				Assert.AreEqual("parent1div", element.Id);
+			});
+		}
+
+		[TestMethod]
+		public void Enabled()
+		{
+			ForEachBrowser(browser =>
+			{
+				//LogManager.UpdateReferenceId(browser, "ClickInputButton");
+				browser.NavigateTo(TestSite + "/inputs.html");
+				Assert.AreEqual(true, browser.First<Button>("button").Enabled);
+				Assert.AreEqual(false, browser.First<Button>("button2").Enabled);
 			});
 		}
 
@@ -514,6 +540,28 @@ namespace TestR.AutomationTests.Web
 		}
 
 		[TestMethod]
+		public void MiddleClickButton()
+		{
+			ForEachBrowser(browser =>
+			{
+				//LogManager.UpdateReferenceId(browser, "ClickButton");
+				browser.NavigateTo(TestSite + "/index.html");
+				var button = browser.First("button");
+				button.MiddleClick();
+
+				if (browser.BrowserType == BrowserType.Firefox)
+				{
+					// Middle click does not click but does set focus.
+					Assert.IsTrue(button.Focused);
+					return;
+				}
+
+				var actual = browser.First<TextArea>("textarea").Text;
+				Assert.AreEqual("button", actual);
+			});
+		}
+
+		[TestMethod]
 		public void NavigateTo()
 		{
 			ForEachBrowser(browser =>
@@ -591,6 +639,28 @@ namespace TestR.AutomationTests.Web
 
 				browser.Refresh();
 				Assert.AreEqual(25, browser.Descendants().Count());
+			});
+		}
+
+		[TestMethod]
+		public void RightClickButton()
+		{
+			ForEachBrowser(browser =>
+			{
+				//LogManager.UpdateReferenceId(browser, "ClickButton");
+				browser.NavigateTo(TestSite + "/index.html");
+				var button = browser.First("button");
+				button.RightClick();
+
+				var actual = browser.First<TextArea>("textarea").Text;
+				Assert.AreEqual("Text Area's \"Quotes\" Data", actual);
+
+				var location = button.Location;
+				Mouse.MoveTo(location.X + 60, location.Y + 20);
+				browser.WaitForComplete(100);
+
+				var element = DesktopElement.FromCursor();
+				Assert.AreEqual("menu item", element.TypeName);
 			});
 		}
 

@@ -21,6 +21,8 @@ namespace TestR.UnitTests.TestTypes
 
 		#region Properties
 
+		public override bool Enabled { get; }
+
 		public override bool Focused { get; }
 
 		public override Element FocusedElement { get; }
@@ -54,6 +56,11 @@ namespace TestR.UnitTests.TestTypes
 		}
 
 		public override Element Focus()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override Element MiddleClick(int x = 0, int y = 0)
 		{
 			throw new NotImplementedException();
 		}

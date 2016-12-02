@@ -37,14 +37,14 @@ Set-Location $scriptPath
 
 $versionInfo = [System.Diagnostics.FileVersionInfo]::GetVersionInfo("$scriptPath\TestR\bin\$Configuration\TestR.dll")
 $build = ([Version] $versionInfo.ProductVersion).Build
-$version = $versionInfo.FileVersion.Replace(".$build.0", ".$build")
+$version = $versionInfo.FileVersion.Replace(".$build.0", ".$build-pre")
 
 
 Copy-Item TestR\bin\$Configuration\TestR.dll $destination\bin\
 Copy-Item TestR\bin\$Configuration\Interop.SHDocVw.dll $destination\bin\
 Copy-Item TestR\bin\$Configuration\Interop.UIAutomationClient.dll $destination\bin\
-Copy-Item TestR.IntegrationTests\bin\$configuration\*.ps1 $destination\tests\
-Copy-Item TestR.IntegrationTests\bin\$configuration\*.dll $destination\tests\
+Copy-Item TestR.AutomationTests\bin\$configuration\*.ps1 $destination\tests\
+Copy-Item TestR.AutomationTests\bin\$configuration\*.dll $destination\tests\
 Copy-Item TestR.PowerShell\bin\$Configuration\TestR.PowerShell.dll $destination\bin\
 
 & "nuget.exe" pack TestR.nuspec -Prop Configuration="$Configuration" -Version $version

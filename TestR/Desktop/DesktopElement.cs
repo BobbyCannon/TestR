@@ -26,16 +26,16 @@ namespace TestR.Desktop
 		#region Fields
 
 		/// <summary>
-		/// Properties that should not be included in UI elements or the detail string.
+		/// Properties that should not be included in <see cref="ToDetailString" />.
 		/// </summary>
-		public static readonly string[] ExcludedProperties;
+		private static readonly string[] _excludedProperties;
 
 		#endregion
 
 		#region Constructors
 
 		/// <summary>
-		/// Creates an instance of an element.
+		/// Creates an instance of a desktop element.
 		/// </summary>
 		/// <param name="element"> The automation element for this element. </param>
 		/// <param name="application"> The application parent for this element. </param>
@@ -51,7 +51,7 @@ namespace TestR.Desktop
 		/// </summary>
 		static DesktopElement()
 		{
-			ExcludedProperties = new[] { nameof(Parent), nameof(Children), nameof(NativeElement), "Item", nameof(FocusedElement) };
+			_excludedProperties = new[] { nameof(Parent), nameof(Children), nameof(NativeElement), "Item", nameof(FocusedElement) };
 		}
 
 		#endregion
@@ -61,7 +61,7 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Gets a value that indicates whether the element is enabled.
 		/// </summary>
-		public bool Enabled => NativeElement.CurrentIsEnabled == 1;
+		public override bool Enabled => NativeElement.CurrentIsEnabled == 1;
 
 		/// <inheritdoc />
 		public override bool Focused => NativeElement.CurrentHasKeyboardFocus == 1;
@@ -184,7 +184,7 @@ namespace TestR.Desktop
 		/// Gets the element that is currently under the cursor.
 		/// </summary>
 		/// <returns> The element if found or null if not found. </returns>
-		public static Element FromCursor()
+		public static DesktopElement FromCursor()
 		{
 			var point = Mouse.GetCursorPosition();
 			return FromPoint(point);
@@ -235,6 +235,15 @@ namespace TestR.Desktop
 		public string GetText()
 		{
 			return ValuePattern.Create(this)?.Value ?? string.Empty;
+		}
+
+		/// <inheritdoc />
+		public override Element MiddleClick(int x = 0, int y = 0)
+		{
+			var point = GetClickablePoint(x, y);
+			Mouse.MiddleClick(point);
+			Thread.Sleep(100);
+			return this;
 		}
 
 		/// <inheritdoc />
@@ -311,7 +320,7 @@ namespace TestR.Desktop
 		{
 			var type = GetType();
 			var properties = type.GetProperties()
-				.Where(x => !ExcludedProperties.Contains(x.Name))
+				.Where(x => !_excludedProperties.Contains(x.Name))
 				.OrderBy(x => x.Name).ToList();
 
 			var builder = new StringBuilder();

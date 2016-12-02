@@ -86,6 +86,7 @@ namespace TestR.Desktop.Elements
 			}
 
 			TitleBar.CloseButton.MoveMouseTo();
+			BringToFront();
 			TitleBar.CloseButton.Click();
 			return this;
 		}

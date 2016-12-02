@@ -23,8 +23,14 @@ namespace TestR.AutomationTests.Desktop.Elements
 
 		#region Methods
 
-		[TestInitialize]
-		public void Setup()
+		[ClassCleanup]
+		public static void ClassCleanup()
+		{
+			Application.CloseAll(ApplicationPath);
+		}
+
+		[ClassInitialize]
+		public static void ClassInitialize(TestContext context)
 		{
 			var assembly = Assembly.GetExecutingAssembly();
 			var path = Path.GetDirectoryName(assembly.Location);

@@ -25,6 +25,16 @@
 			? element.dispatchEvent(eventObj)
 			: element.fireEvent('on' + eventName, eventObj);
 	},
+	getElementLocation: function (id) {
+		var element = document.getElementById(id);
+		var box = element.getBoundingClientRect();
+		var borderWidth = (window.outerWidth - window.innerWidth) / 2;
+		var x = window.screenX + borderWidth;
+		var y = window.screenY + window.outerHeight - window.innerHeight - borderWidth;
+		var top = Math.round(y + box.top);
+		var left = Math.round(x + box.left);
+		return JSON.stringify({ x: left, y: top });
+	},
 	getElements: function () {
 		var response = [];
 		var allElements = document.body.getElementsByTagName('*');
@@ -56,6 +66,9 @@
 				tagName: tagName,
 				attributes: []
 			};
+
+			item.width = element.offsetWidth;
+			item.height = element.offsetHeight;
 
 			for (var j = 0; j < element.attributes.length; j++) {
 				var attribute = element.attributes[j];
@@ -131,6 +144,22 @@
 	removeElementAttribute: function (id, name) {
 		var element = document.getElementById(id);
 		element.removeAttribute(name);
+	},
+	rightClick: function (id) {
+		var element = document.getElementById(id);
+		var evt = element.ownerDocument.createEvent('MouseEvents');
+		var rightClickButtonCode = 2;
+
+		evt.initMouseEvent('contextmenu', true, true, element.ownerDocument.defaultView, 1,
+			0, 0, 0, 0, false, false, false, false, rightClickButtonCode, null);
+
+		if (document.createEventObject) {
+			// dispatch for IE
+			return element.fireEvent('onclick', evt);
+		} else {
+			// dispatch for firefox + others
+			return !element.dispatchEvent(evt);
+		}
 	},
 	runScript: function (script) {
 		// decode the script.

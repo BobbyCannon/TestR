@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using TestR.Desktop;
 using TestR.Native;
+using FormApplication = System.Windows.Forms.Application;
 
 #endregion
 
@@ -39,12 +40,12 @@ namespace TestR.TestWinForms
 		[STAThread]
 		private static void Main()
 		{
-			System.Windows.Forms.Application.EnableVisualStyles();
-			System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
-			System.Windows.Forms.Application.AddMessageFilter(new MouseMessageFilter());
-			MouseMessageFilter.Click += MouseClick;
-			_parentForm = new ParentForm();
-			System.Windows.Forms.Application.Run(_parentForm);
+			Mouse.Clicked += MouseClick;
+			Mouse.StartMonitoring();
+
+			FormApplication.EnableVisualStyles();
+			FormApplication.SetCompatibleTextRenderingDefault(false);
+			FormApplication.Run(_parentForm = new ParentForm());
 		}
 
 		private static void MouseClick(object sender, MouseEventArgs e)

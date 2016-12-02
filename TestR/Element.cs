@@ -9,7 +9,7 @@ using TestR.Native;
 namespace TestR
 {
 	/// <summary>
-	/// Represents an automation element.
+	/// Represents an element.
 	/// </summary>
 	public abstract class Element : ElementHost
 	{
@@ -18,8 +18,8 @@ namespace TestR
 		/// <summary>
 		/// Instantiates an instance of an element.
 		/// </summary>
-		/// <param name="application"> </param>
-		/// <param name="parent"> </param>
+		/// <param name="application"> The application this element exists in. </param>
+		/// <param name="parent"> The parent of this element. </param>
 		protected Element(Application application, ElementHost parent)
 			: base(application, parent)
 		{
@@ -30,9 +30,14 @@ namespace TestR
 		#region Properties
 
 		/// <summary>
-		/// Gets the area of the element.
+		/// Gets the coordinates of the rectangle that completely encloses the element.
 		/// </summary>
 		public Rectangle BoundingRectangle => new Rectangle(Location.X, Location.Y, Width, Height);
+
+		/// <summary>
+		/// Gets a value that indicates whether the element is enabled.
+		/// </summary>
+		public abstract bool Enabled { get; }
 
 		/// <summary>
 		/// Gets a value that indicates whether the element is focused.
@@ -43,7 +48,7 @@ namespace TestR
 		/// Gets the full id of the element which include all parent IDs prefixed to this element ID.
 		/// </summary>
 		/// <summary>
-		/// Gets the ID of this element in the element host. Includes full host namespace. Ex. GrandParent\Parent\Element
+		/// Gets the ID of this element in the element host. Includes full host namespace. Ex. GrandParent,Parent,Element
 		/// </summary>
 		public string FullId
 		{
@@ -109,6 +114,13 @@ namespace TestR
 		/// Set focus on the element.
 		/// </summary>
 		public abstract Element Focus();
+
+		/// <summary>
+		/// Performs mouse middle click at the center of the element.
+		/// </summary>
+		/// <param name="x"> Optional X offset when clicking. </param>
+		/// <param name="y"> Optional Y offset when clicking. </param>
+		public abstract Element MiddleClick(int x = 0, int y = 0);
 
 		/// <summary>
 		/// Moves mouse cursor to the center of the element.

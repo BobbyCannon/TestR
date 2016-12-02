@@ -5,10 +5,13 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TestR.Native;
 using TestR.Web.Elements;
 using Font = TestR.Web.Elements.Font;
 using Image = TestR.Web.Elements.Image;
+using Keyboard = TestR.Web.Elements.Keyboard;
 
 #endregion
 
@@ -136,13 +139,16 @@ namespace TestR.Web
 		}
 
 		/// <inheritdoc />
+		public override bool Enabled => this["disabled"] != "true";
+
+		/// <inheritdoc />
 		public override bool Focused => Browser.FocusedElement == this;
 
 		/// <inheritdoc />
 		public override Element FocusedElement => Browser.FocusedElement;
 
 		/// <inheritdoc />
-		public override int Height => this["offsetHeight"].ToInt();
+		public override int Height => (int) _element.height;
 
 		/// <summary>
 		/// Gets or sets the hidden attribute.
@@ -179,7 +185,15 @@ namespace TestR.Web
 		}
 
 		/// <inheritdoc />
-		public override Point Location => new Point(this["offsetLeft"].ToInt(), this["offsetTop"].ToInt());
+		public override Point Location
+		{
+			get
+			{
+				var data = Browser.ExecuteScript("TestR.getElementLocation('" + Id + "');");
+				var result = JsonConvert.DeserializeObject<dynamic>(data);
+				return new Point((int) result.x, (int) result.y);
+			}
+		}
 
 		/// <inheritdoc />
 		public override string Name => _element.name;
@@ -271,7 +285,7 @@ namespace TestR.Web
 		}
 
 		/// <inheritdoc />
-		public override int Width => this["offsetWidth"].ToInt();
+		public override int Width => (int) _element.width;
 
 		#endregion
 
@@ -418,19 +432,26 @@ namespace TestR.Web
 		}
 
 		/// <inheritdoc />
+		public override Element MiddleClick(int x = 0, int y = 0)
+		{
+			ScrollIntoView();
+
+			var clickX = Location.X + x + (Width > 0 ? Width / 2 : 0);
+			var clickY = Location.Y + y + (Height > 0 ? Height / 2 : 0);
+
+			Mouse.MiddleClick(clickX, clickY);
+			return this;
+		}
+
+		/// <inheritdoc />
 		public override Element MoveMouseTo(int x = 0, int y = 0)
 		{
+			Mouse.MoveTo(Location.X + x, Location.Y + y);
 			return this;
 		}
 
 		/// <inheritdoc />
 		public override ElementHost Refresh()
-		{
-			return this;
-		}
-
-		/// <inheritdoc />
-		public override Element RightClick(int x = 0, int y = 0)
 		{
 			return this;
 		}
@@ -442,6 +463,26 @@ namespace TestR.Web
 		public void RemoveAttribute(string name)
 		{
 			Browser.RemoveElementAttribute(this, name);
+		}
+
+		/// <inheritdoc />
+		public override Element RightClick(int x = 0, int y = 0)
+		{
+			ScrollIntoView();
+
+			var clickX = Location.X + x + (Width > 0 ? Width / 2 : 0);
+			var clickY = Location.Y + y + (Height > 0 ? Height / 2 : 0);
+
+			Mouse.RightClick(clickX, clickY);
+			return this;
+		}
+
+		/// <summary>
+		/// Scroll the element into view.
+		/// </summary>
+		public void ScrollIntoView()
+		{
+			Browser.ExecuteScript("$('#" + Id + "')[0].scrollIntoView()");
 		}
 
 		/// <summary>

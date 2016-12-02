@@ -34,7 +34,7 @@ namespace TestR.Web.Browsers
 		/// <summary>
 		/// The debugging argument for starting the browser.
 		/// </summary>
-		public const string DebugArgument = "--remote-debugging-port=9222";
+		public const string DebugArgument = "--remote-debugging-port=9222 --profile-directory=\"Default\"";
 
 		#endregion
 

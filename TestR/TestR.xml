@@ -172,14 +172,14 @@
             Base element for desktop automation.
             </summary>
         </member>
-        <member name="F:TestR.Desktop.DesktopElement.ExcludedProperties">
+        <member name="F:TestR.Desktop.DesktopElement._excludedProperties">
             <summary>
-            Properties that should not be included in UI elements or the detail string.
+            Properties that should not be included in <see cref="M:TestR.Desktop.DesktopElement.ToDetailString" />.
             </summary>
         </member>
         <member name="M:TestR.Desktop.DesktopElement.#ctor(UIAutomationClient.IUIAutomationElement,TestR.Application,TestR.ElementHost)">
             <summary>
-            Creates an instance of an element.
+            Creates an instance of a desktop element.
             </summary>
             <param name="element"> The automation element for this element. </param>
             <param name="application"> The application parent for this element. </param>
@@ -277,6 +277,9 @@
             Gets the text value of the element.
             </summary>
             <returns> The value of the element. </returns>
+        </member>
+        <member name="M:TestR.Desktop.DesktopElement.MiddleClick(System.Int32,System.Int32)">
+            <inheritdoc />
         </member>
         <member name="M:TestR.Desktop.DesktopElement.MoveMouseTo(System.Int32,System.Int32)">
             <inheritdoc />
@@ -863,19 +866,24 @@
         </member>
         <member name="T:TestR.Element">
             <summary>
-            Represents an automation element.
+            Represents an element.
             </summary>
         </member>
         <member name="M:TestR.Element.#ctor(TestR.Application,TestR.ElementHost)">
             <summary>
             Instantiates an instance of an element.
             </summary>
-            <param name="application"> </param>
-            <param name="parent"> </param>
+            <param name="application"> The application this element exists in. </param>
+            <param name="parent"> The parent of this element. </param>
         </member>
         <member name="P:TestR.Element.BoundingRectangle">
             <summary>
-            Gets the area of the element.
+            Gets the coordinates of the rectangle that completely encloses the element.
+            </summary>
+        </member>
+        <member name="P:TestR.Element.Enabled">
+            <summary>
+            Gets a value that indicates whether the element is enabled.
             </summary>
         </member>
         <member name="P:TestR.Element.Focused">
@@ -888,7 +896,7 @@
             Gets the full id of the element which include all parent IDs prefixed to this element ID.
             </summary>
             <summary>
-            Gets the ID of this element in the element host. Includes full host namespace. Ex. GrandParent\Parent\Element
+            Gets the ID of this element in the element host. Includes full host namespace. Ex. GrandParent,Parent,Element
             </summary>
         </member>
         <member name="P:TestR.Element.Height">
@@ -933,6 +941,13 @@
             <summary>
             Set focus on the element.
             </summary>
+        </member>
+        <member name="M:TestR.Element.MiddleClick(System.Int32,System.Int32)">
+            <summary>
+            Performs mouse middle click at the center of the element.
+            </summary>
+            <param name="x"> Optional X offset when clicking. </param>
+            <param name="y"> Optional Y offset when clicking. </param>
         </member>
         <member name="M:TestR.Element.MoveMouseTo(System.Int32,System.Int32)">
             <summary>
@@ -1433,10 +1448,10 @@
         </member>
         <member name="M:TestR.Native.Keyboard.IsControlPressed">
             <summary>
-            Determinse if the control key is pressed.
+            Determines if the control key is pressed.
             </summary>
             <returns>
-            True if either control key is pressed.
+            True if either control key is pressed and false if otherwise.
             </returns>
         </member>
         <member name="M:TestR.Native.Keyboard.StartMonitoring">
@@ -1482,17 +1497,64 @@
             </summary>
             <param name="point"> The point in which to click. </param>
         </member>
+        <member name="M:TestR.Native.Mouse.MiddleClick(System.Int32,System.Int32)">
+            <summary>
+            Middle click at the provided point.
+            </summary>
+            <param name="x"> The x point in which to click. </param>
+            <param name="y"> The y point in which to click. </param>
+        </member>
+        <member name="M:TestR.Native.Mouse.MiddleClick(System.Drawing.Point)">
+            <summary>
+            Middle click at the provided point.
+            </summary>
+            <param name="point"> The point in which to click. </param>
+        </member>
+        <member name="M:TestR.Native.Mouse.MoveTo(System.Int32,System.Int32)">
+            <summary>
+            Sets the mouse to the provide point.
+            </summary>
+            <param name="x"> The x point in which to move to. </param>
+            <param name="y"> The y point in which to move to. </param>
+        </member>
         <member name="M:TestR.Native.Mouse.MoveTo(System.Drawing.Point)">
             <summary>
             Sets the mouse to the provide point.
             </summary>
             <param name="point"> The point in which to move to. </param>
         </member>
+        <member name="M:TestR.Native.Mouse.RightClick(System.Int32,System.Int32)">
+            <summary>
+            Right click at the provided point.
+            </summary>
+            <param name="x"> The x point in which to click. </param>
+            <param name="y"> The y point in which to click. </param>
+        </member>
         <member name="M:TestR.Native.Mouse.RightClick(System.Drawing.Point)">
             <summary>
             Right click at the provided point.
             </summary>
             <param name="point"> The point in which to click. </param>
+        </member>
+        <member name="M:TestR.Native.Mouse.StartMonitoring">
+            <summary>
+            Start monitoring the mouse for events.
+            </summary>
+        </member>
+        <member name="M:TestR.Native.Mouse.StopMonitoring">
+            <summary>
+            Stop monitoring the mouse for events.
+            </summary>
+        </member>
+        <member name="E:TestR.Native.Mouse.Clicked">
+            <summary>
+            Event for key press events when monitoring the keyboard.
+            </summary>
+        </member>
+        <member name="E:TestR.Native.Mouse.Moved">
+            <summary>
+            The mouse was moved.
+            </summary>
         </member>
         <member name="T:TestR.Native.Mouse.MouseEvent">
             <summary>
@@ -1612,12 +1674,12 @@
             </returns>
             <param name="m"> The message to be dispatched. You cannot modify this message. </param>
         </member>
-        <member name="E:TestR.Native.MouseMessageFilter.Click">
+        <member name="E:TestR.Native.MouseMessageFilter.Clicked">
             <summary>
             The mouse was clicked event.
             </summary>
         </member>
-        <member name="E:TestR.Native.MouseMessageFilter.Move">
+        <member name="E:TestR.Native.MouseMessageFilter.Moved">
             <summary>
             The mouse was moved.
             </summary>
@@ -4536,6 +4598,9 @@
             HTML5: Specifies whether the dragged data is copied, moved, or linked, when dropped.
             </remarks>
         </member>
+        <member name="P:TestR.Web.WebElement.Enabled">
+            <inheritdoc />
+        </member>
         <member name="P:TestR.Web.WebElement.Focused">
             <inheritdoc />
         </member>
@@ -4696,13 +4761,13 @@
             Gets Raw HTML.
             </summary>
         </member>
+        <member name="M:TestR.Web.WebElement.MiddleClick(System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
         <member name="M:TestR.Web.WebElement.MoveMouseTo(System.Int32,System.Int32)">
             <inheritdoc />
         </member>
         <member name="M:TestR.Web.WebElement.Refresh">
-            <inheritdoc />
-        </member>
-        <member name="M:TestR.Web.WebElement.RightClick(System.Int32,System.Int32)">
             <inheritdoc />
         </member>
         <member name="M:TestR.Web.WebElement.RemoveAttribute(System.String)">
@@ -4710,6 +4775,14 @@
             Remove the element attribute. * Experimental
             </summary>
             <param name="name"> The name of the attribute. </param>
+        </member>
+        <member name="M:TestR.Web.WebElement.RightClick(System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:TestR.Web.WebElement.ScrollIntoView">
+            <summary>
+            Scroll the element into view.
+            </summary>
         </member>
         <member name="M:TestR.Web.WebElement.SetAttributeValue(System.String,System.String)">
             <summary>

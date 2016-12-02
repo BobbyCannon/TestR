@@ -22,7 +22,7 @@ namespace TestR.AutomationTests.Desktop
 	{
 		#region Fields
 
-		private string _applicationPath;
+		private static string _applicationPath;
 
 		#endregion
 
@@ -175,6 +175,23 @@ namespace TestR.AutomationTests.Desktop
 			}
 		}
 
+		[ClassCleanup]
+		public static void ClassCleanup()
+		{
+			Application.CloseAll(_applicationPath);
+		}
+
+		[ClassInitialize]
+		public static void ClassInitialize(TestContext context)
+		{
+			var assembly = Assembly.GetExecutingAssembly();
+			var path = Path.GetDirectoryName(assembly.Location);
+			var info = new DirectoryInfo(path ?? "/");
+
+			_applicationPath = info.Parent?.Parent?.Parent?.FullName;
+			_applicationPath += "\\TestR.TestWinForms\\Bin\\" + (assembly.IsAssemblyDebugBuild() ? "Debug" : "Release") + "\\TestR.TestWinForms.exe";
+		}
+
 		[TestMethod]
 		public void GetMainMenuBar()
 		{
@@ -264,17 +281,6 @@ namespace TestR.AutomationTests.Desktop
 				Task.Run(() => tempApplication.Refresh());
 				window.Close();
 			}
-		}
-
-		[TestInitialize]
-		public void Setup()
-		{
-			var assembly = Assembly.GetExecutingAssembly();
-			var path = Path.GetDirectoryName(assembly.Location);
-			var info = new DirectoryInfo(path ?? "/");
-
-			_applicationPath = info.Parent?.Parent?.Parent?.FullName;
-			_applicationPath += "\\TestR.TestWinForms\\Bin\\" + (assembly.IsAssemblyDebugBuild() ? "Debug" : "Release") + "\\TestR.TestWinForms.exe";
 		}
 
 		#endregion
