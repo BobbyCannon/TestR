@@ -7,7 +7,6 @@ using TestR.Desktop;
 using TestR.Native;
 using TestR.PowerShell;
 using TestR.Web;
-using TestR.Web.Browsers;
 using TestR.Web.Elements;
 
 #endregion
@@ -143,10 +142,9 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "ClickButton");
 				browser.NavigateTo(TestSite + "/index.html");
+				Assert.AreEqual("Text Area's \"Quotes\" Data", browser.First<TextArea>("textarea").Text);
 				browser.First("button").Click();
-
-				var actual = browser.First<TextArea>("textarea").Text;
-				Assert.AreEqual("button", actual);
+				Assert.AreEqual("button", browser.First<TextArea>("textarea").Text);
 			});
 		}
 
@@ -560,6 +558,28 @@ namespace TestR.AutomationTests.Web
 
 				var actual = browser.First<TextArea>("textarea").Text;
 				Assert.AreEqual("button", actual);
+			});
+		}
+
+		[TestMethod]
+		public void NavigateThenRunJavascript()
+		{
+			ForEachBrowser(browser =>
+			{
+				//LogManager.UpdateReferenceId(browser, "ClickLink");
+				browser.NavigateTo(TestSite + "/index.html");
+				browser.First("angularLink").Click();
+				browser.WaitForComplete(150);
+
+				var actual = browser.ExecuteScript("TestR.runScript('document.toString()')");
+				Assert.IsTrue(actual.Contains("undefined"));
+				//Assert.AreEqual("{\r\n  \"type\": \"undefined\"\r\n}", actual);
+
+				actual = browser.ExecuteScript("document.getElementById('testrResult').textContent");
+				Assert.AreEqual("", actual);
+
+				browser.First<TextInput>("email").TypeText("test");
+				Assert.AreEqual("test", browser.First<TextInput>("email").Text);
 			});
 		}
 

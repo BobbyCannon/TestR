@@ -1743,6 +1743,11 @@
             Gets the default timeout (in milliseconds).
             </summary>
         </member>
+        <member name="F:TestR.Web.Browser.TestrNotDefinedMessage">
+            <summary>
+            Gets the missing TestR error.
+            </summary>
+        </member>
         <member name="M:TestR.Web.Browser.#ctor(TestR.Application)">
             <summary>
             Initializes a new instance of the Browser class.
@@ -1915,10 +1920,11 @@
             </summary>
             <returns> The current URI that was read from the browser. </returns>
         </member>
-        <member name="M:TestR.Web.Browser.InjectTestScript">
+        <member name="M:TestR.Web.Browser.InjectTestScript(System.Int32)">
             <summary>
             Injects the test script into the browser.
             </summary>
+            <param name="count"> The count of how many times this method has been called. </param>
         </member>
         <member name="M:TestR.Web.Browser.DetectJavascriptLibraries">
             <summary>
@@ -4843,13 +4849,6 @@
             </summary>
             <param name="name"> The name of the attribute. </param>
             <returns> Returns the value or null if the attribute was not found. </returns>
-        </member>
-        <member name="M:TestR.Web.WebElement.SetElementAttributeValue(System.String,System.String)">
-            <summary>
-            Sets the element attribute value. If the attribute is not found we'll add it.
-            </summary>
-            <param name="name"> </param>
-            <param name="value"> </param>
         </member>
     </members>
 </doc>

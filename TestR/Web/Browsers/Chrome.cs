@@ -204,22 +204,27 @@ namespace TestR.Web.Browsers
 			};
 
 			var data = SendRequestAndReadResponse(request, x => x.id == request.Id);
+			if (data.Contains(TestrNotDefinedMessage))
+			{
+				return TestrNotDefinedMessage;
+			}
+
 			var response = data.AsJToken() as dynamic;
 			if ((response == null) || (response.result == null) || (response.result.result == null))
 			{
 				return data;
 			}
 
-			var value = response.result.result.value;
-			if (value == null)
+			var result = response.result.result;
+			if ((result.value != null) && (result.value.GetType().Name == "JValue"))
 			{
-				return string.Empty;
+				return result.value;
 			}
 
-			var typeName = value.GetType().Name;
+			var typeName = result.GetType().Name;
 			return typeName != "JValue"
-				? JsonConvert.SerializeObject(value)
-				: (string) value;
+				? JsonConvert.SerializeObject(result, Formatting.Indented)
+				: (string) result.value;
 		}
 
 		/// <summary>

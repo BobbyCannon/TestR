@@ -198,6 +198,11 @@ namespace TestR.Web.Browsers
 			};
 
 			var response = SendRequestAndReadResponse(request, x => (x.from == _consoleActor) && (x.input == script));
+			if (!string.IsNullOrEmpty(((object) response.exception).ToString()))
+			{
+				return TestrNotDefinedMessage;
+			}
+
 			var result = ((object) response.result).ToString();
 			return result.Contains("\"type\": \"longString\"") ? ReadLongResponse(result) : result;
 		}

@@ -27,6 +27,11 @@ namespace TestR.Web
 		/// </summary>
 		public const int DefaultTimeout = 5000;
 
+		/// <summary>
+		/// Gets the missing TestR error.
+		/// </summary>
+		public const string TestrNotDefinedMessage = "TestR is not defined";
+
 		#endregion
 
 		#region Fields
@@ -264,7 +269,7 @@ namespace TestR.Web
 			var response = ExecuteJavaScript(script, expectResponse);
 
 			// Check the response to see if the TestR script has been injected.
-			if (response.Contains("TestR is not defined"))
+			if (response.Contains(TestrNotDefinedMessage))
 			{
 				InjectTestScript();
 				return ExecuteJavaScript(script, expectResponse);
@@ -465,14 +470,20 @@ namespace TestR.Web
 		/// <summary>
 		/// Injects the test script into the browser.
 		/// </summary>
-		protected void InjectTestScript()
+		/// <param name="count"> The count of how many times this method has been called. </param>
+		protected void InjectTestScript(int count = 0)
 		{
+			if (count > 3)
+			{
+				throw new Exception("Failed to inject the TestR JavaScript.");
+			}
+
 			ExecuteJavaScript(GetTestScript());
 
 			var test = ExecuteJavaScript("typeof TestR");
 			if (test.Equals("undefined"))
 			{
-				throw new Exception("Failed to inject the TestR JavaScript.");
+				InjectTestScript(count + 1);
 			}
 		}
 

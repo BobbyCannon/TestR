@@ -280,8 +280,7 @@ namespace TestR.Web.Browsers
 			{
 				if (ex.HResult == -2147352319)
 				{
-					InjectTestScript();
-					return ExecuteScript(script, expectResponse);
+					return TestrNotDefinedMessage;
 				}
 
 				throw;

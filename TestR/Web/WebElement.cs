@@ -367,7 +367,7 @@ namespace TestR.Web
 				return string.Empty;
 			}
 
-			SetElementAttributeValue(name, value);
+			AddOrUpdateElementAttribute(name, value);
 			return value;
 		}
 
@@ -1031,29 +1031,6 @@ namespace TestR.Web
 			}
 
 			return null;
-		}
-
-		/// <summary>
-		/// Sets the element attribute value. If the attribute is not found we'll add it.
-		/// </summary>
-		/// <param name="name"> </param>
-		/// <param name="value"> </param>
-		private void SetElementAttributeValue(string name, string value)
-		{
-			for (var i = 0; i < _element.attributes.Count; i++)
-			{
-				string attributeName = _element.attributes[i++].ToString();
-				if (attributeName != name)
-				{
-					continue;
-				}
-
-				_element.attributes[i] = value;
-				return;
-			}
-
-			_element.attributes.Add(name);
-			_element.attributes.Add(value);
 		}
 
 		#endregion

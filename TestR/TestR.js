@@ -188,7 +188,7 @@
 		try {
 			// Clear the results first then set the new value.
 			resultElement.value = '';
-			resultElement.value = String(eval(script));
+			resultElement.value = eval(script);
 		} catch (error) {
 			// Something went wrong so update the result with the error.
 			console.log(error.message);
