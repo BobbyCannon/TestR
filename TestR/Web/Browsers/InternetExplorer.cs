@@ -124,7 +124,7 @@ namespace TestR.Web.Browsers
 		/// <inheritdoc />
 		public override ElementHost WaitForComplete(int minimumDelay = 0)
 		{
-			//LogManager.Write("InterenetExploreBrowser.WaitForComplete", LogLevel.Verbose);
+			//LogManager.Write("InternetExploreBrowser.WaitForComplete", LogLevel.Verbose);
 
 			// If the URL is empty and is not initialized means browser is no page is loaded.
 			if ((_browser.LocationURL == string.Empty) && (_browser.ReadyState == tagREADYSTATE.READYSTATE_UNINITIALIZED))
@@ -307,8 +307,7 @@ namespace TestR.Web.Browsers
 		{
 			try
 			{
-				var explorer = new InternetExplorerClass();
-				explorer.Visible = true;
+				var explorer = new InternetExplorerClass { Visible = true };
 				return explorer;
 			}
 			catch (Exception)

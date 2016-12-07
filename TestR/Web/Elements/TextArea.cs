@@ -23,7 +23,7 @@ namespace TestR.Web.Elements
 		public TextArea(JToken element, Browser browser, ElementHost parent)
 			: base(element, browser, parent)
 		{
-			TypingDelay = Browser.Application.SlowMotion ? 50 : 15;
+			TypingDelay = Browser.Application.SlowMotion ? 50 : 0;
 		}
 
 		#endregion

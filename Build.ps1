@@ -1,6 +1,8 @@
 param (
     [Parameter()]
-    [string] $Configuration = "Release"
+    [string] $Configuration = "Release",
+    [Parameter()]
+    [Switch] $PreRelease
 )
 
 $watch = [System.Diagnostics.Stopwatch]::StartNew()
@@ -34,11 +36,15 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Set-Location $scriptPath
+$pre = ""
+
+if ($PreRelease) {
+    $pre = "-pre"
+}
 
 $versionInfo = [System.Diagnostics.FileVersionInfo]::GetVersionInfo("$scriptPath\TestR\bin\$Configuration\TestR.dll")
 $build = ([Version] $versionInfo.ProductVersion).Build
-$version = $versionInfo.FileVersion.Replace(".$build.0", ".$build-pre")
-
+$version = $versionInfo.FileVersion.Replace(".$build.0", "." + $build + $pre)
 
 Copy-Item TestR\bin\$Configuration\TestR.dll $destination\bin\
 Copy-Item TestR\bin\$Configuration\Interop.SHDocVw.dll $destination\bin\

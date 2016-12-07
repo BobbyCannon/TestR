@@ -69,12 +69,6 @@ namespace TestR.AutomationTests.Web
 			}
 		}
 
-		[TestCleanup]
-		public void Cleanup()
-		{
-			Browser.CloseBrowsers();
-		}
-
 		[TestMethod]
 		public void Create()
 		{
@@ -88,8 +82,14 @@ namespace TestR.AutomationTests.Web
 			}
 		}
 
+		[ClassCleanup]
+		public static void ClassCleanup()
+		{
+			Browser.CloseBrowsers();
+		}
+
 		[TestInitialize]
-		public void Initialize()
+		public void TestInitialize()
 		{
 			Browser.CloseBrowsers();
 		}

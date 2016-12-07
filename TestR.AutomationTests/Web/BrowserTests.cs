@@ -1,5 +1,6 @@
 #region References
 
+using System.Diagnostics;
 using System.Linq;
 using System.Management.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -126,13 +127,13 @@ namespace TestR.AutomationTests.Web
 		[ClassCleanup]
 		public static void ClassCleanup()
 		{
-			//Browser.CloseBrowsers();
+			Browser.CloseBrowsers();
 		}
 
 		[ClassInitialize]
 		public static void ClassInitialize(TestContext context)
 		{
-			//Browser.CloseBrowsers();
+			Browser.CloseBrowsers();
 		}
 
 		[TestMethod]
@@ -667,6 +668,8 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void RightClickButton()
 		{
+			Browser.CloseBrowsers();
+
 			ForEachBrowser(browser =>
 			{
 				//LogManager.UpdateReferenceId(browser, "ClickButton");
@@ -678,11 +681,10 @@ namespace TestR.AutomationTests.Web
 				Assert.AreEqual("Text Area's \"Quotes\" Data", actual);
 
 				var location = button.Location;
-				Mouse.MoveTo(location.X + 60, location.Y + 20);
-				browser.WaitForComplete(500);
+				Mouse.MoveTo(location.X + 60, location.Y + 22);
 
-				var element = DesktopElement.FromCursor();
-				Assert.AreEqual("menu item", element.TypeName);
+				var result = Utility.Wait(() => DesktopElement.FromCursor()?.TypeName == "menu item");
+				Assert.IsTrue(result, "Failed to find menu.");
 			});
 		}
 
