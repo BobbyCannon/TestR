@@ -127,7 +127,7 @@ namespace TestR.AutomationTests.Web
 		[ClassCleanup]
 		public static void ClassCleanup()
 		{
-			Browser.CloseBrowsers();
+			//Browser.CloseBrowsers();
 		}
 
 		[ClassInitialize]
