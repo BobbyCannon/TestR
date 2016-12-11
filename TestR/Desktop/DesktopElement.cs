@@ -176,7 +176,8 @@ namespace TestR.Desktop
 		/// <inheritdoc />
 		public override Element Focus()
 		{
-			NativeElement.SetFocus();
+			//NativeElement.SetFocus();
+			NativeMethods.SetFocus(NativeElement.CurrentNativeWindowHandle);
 			return this;
 		}
 
@@ -361,6 +362,7 @@ namespace TestR.Desktop
 		/// <inheritdoc />
 		public override ElementHost WaitForComplete(int minimumDelay = 0)
 		{
+			Thread.Sleep(minimumDelay);
 			return this;
 		}
 

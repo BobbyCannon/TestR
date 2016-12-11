@@ -1475,6 +1475,226 @@
             Event for key press events when monitoring the keyboard.
             </summary>
         </member>
+        <member name="T:TestR.Native.Keyboard.SpecialKeys">
+            <summary>
+            Represents specials keys to send when typing text.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.Alt">
+            <summary>
+            Represents an CTRL key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.Backspace">
+            <summary>
+            Represents an BACKSPACE key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.Break">
+            <summary>
+            Represents an BREAK key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.CapsLock">
+            <summary>
+            Represents an CAPS LOCK key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.Control">
+            <summary>
+            Represents an CTRL key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.Delete">
+            <summary>
+            Represents an DELETE key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.DownArrow">
+            <summary>
+            Represents an DOWN ARROW key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.End">
+            <summary>
+            Represents an END key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.Enter">
+            <summary>
+            Represents an ENTER key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.Esc">
+            <summary>
+            Represents an ESC key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.F1">
+            <summary>
+            Represents an F1 key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.F10">
+            <summary>
+            Represents an F10 key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.F11">
+            <summary>
+            Represents an F11 key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.F12">
+            <summary>
+            Represents an F12 key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.F13">
+            <summary>
+            Represents an F13 key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.F14">
+            <summary>
+            Represents an F14 key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.F15">
+            <summary>
+            Represents an F15 key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.F16">
+            <summary>
+            Represents an F16 key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.F2">
+            <summary>
+            Represents an F2 key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.F3">
+            <summary>
+            Represents an F3 key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.F4">
+            <summary>
+            Represents an F4 key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.F5">
+            <summary>
+            Represents an F5 key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.F6">
+            <summary>
+            Represents an F6 key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.F7">
+            <summary>
+            Represents an F7 key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.F8">
+            <summary>
+            Represents an F8 key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.F9">
+            <summary>
+            Represents an F9 key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.Help">
+            <summary>
+            Represents an HELP key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.Home">
+            <summary>
+            Represents an HOME key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.Insert">
+            <summary>
+            Represents an INSERT key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.KeypadAdd">
+            <summary>
+            Represents an Keypad add key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.KeypadDivide">
+            <summary>
+            Represents an Keypad divide key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.KeypadMultiply">
+            <summary>
+            Represents an Keypad multiply key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.KeypadSubtract">
+            <summary>
+            Represents an Keypad subtract key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.LeftArrow">
+            <summary>
+            Represents an LEFT ARROW key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.NumLock">
+            <summary>
+            Represents an NUM LOCK key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.PageDown">
+            <summary>
+            Represents an PAGE DOWN key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.PageUp">
+            <summary>
+            Represents an PAGE UP key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.PrintScreen">
+            <summary>
+            Represents an PRINT SCREEN key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.RightArrow">
+            <summary>
+            Represents an RIGHT ARROW key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.ScrollLock">
+            <summary>
+            Represents an SCROLL LOCK key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.Shift">
+            <summary>
+            Represents an SHIFT key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.Tab">
+            <summary>
+            Represents an TAB key press.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Keyboard.SpecialKeys.UpArrow">
+            <summary>
+            Represents an UP ARROW key press.
+            </summary>
+        </member>
         <member name="T:TestR.Native.Mouse">
             <summary>
             Represents the mouse and allows for simulated input.
