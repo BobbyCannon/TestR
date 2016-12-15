@@ -135,12 +135,18 @@ namespace TestR.Web.Elements
 
 		#region Methods
 
+		/// <inheritdoc />
+		public override Element TypeText(string value)
+		{
+			return TypeText(value, false);
+		}
+
 		/// <summary>
 		/// Type text into the element.
 		/// </summary>
 		/// <param name="value"> The value to be typed. </param>
 		/// <param name="reset"> Clear the input before typing the text. </param>
-		public void TypeText(string value, bool reset = false)
+		public Element TypeText(string value, bool reset)
 		{
 			Click();
 			Focus();
@@ -161,6 +167,7 @@ namespace TestR.Web.Elements
 
 			Highlight(false);
 			TriggerElement();
+			return this;
 		}
 
 		#endregion

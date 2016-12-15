@@ -137,6 +137,11 @@
             <param name="arguments"> The arguments for the executable. Arguments are optional. </param>
             <returns> True if the application exists and false otherwise. </returns>
         </member>
+        <member name="M:TestR.Application.Focus">
+            <summary>
+            Sets the application to as the focused window.
+            </summary>
+        </member>
         <member name="M:TestR.Application.IsInFront">
             <summary>
             Returns a value indicating if the windows is in front of all other windows.
@@ -4523,6 +4528,9 @@
             HTML5: Specifies how the text in a text area is to be wrapped when submitted in a form.
             </remarks>
         </member>
+        <member name="M:TestR.Web.Elements.TextArea.TypeText(System.String)">
+            <inheritdoc />
+        </member>
         <member name="M:TestR.Web.Elements.TextArea.TypeText(System.String,System.Boolean)">
             <summary>
             Type text into the element.
@@ -4611,6 +4619,9 @@
             <remarks>
             Specifies the value of an input element.
             </remarks>
+        </member>
+        <member name="M:TestR.Web.Elements.TextInput.TypeText(System.String)">
+            <inheritdoc />
         </member>
         <member name="M:TestR.Web.Elements.TextInput.TypeText(System.String,System.Boolean)">
             <summary>

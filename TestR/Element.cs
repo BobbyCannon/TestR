@@ -146,7 +146,7 @@ namespace TestR
 		/// Focus the element then type the text via the keyboard.
 		/// </summary>
 		/// <param name="value"> The value to type. </param>
-		public Element TypeText(string value)
+		public virtual Element TypeText(string value)
 		{
 			Application.BringToFront();
 			Focus();

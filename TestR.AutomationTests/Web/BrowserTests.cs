@@ -1,6 +1,5 @@
 #region References
 
-using System.Diagnostics;
 using System.Linq;
 using System.Management.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -550,7 +549,9 @@ namespace TestR.AutomationTests.Web
 				button.MiddleClick();
 				browser.WaitForComplete(100);
 
-				if (browser.BrowserType == BrowserType.Firefox)
+				browser.BrowserType.Dump();
+
+				if ((browser.BrowserType == BrowserType.Firefox) || (browser.BrowserType == BrowserType.Chrome))
 				{
 					// Middle click does not click but does set focus.
 					Assert.IsTrue(button.Focused);
@@ -948,6 +949,19 @@ namespace TestR.AutomationTests.Web
 				input.Value = "foo";
 				input.TypeText("bar", true);
 				Assert.AreEqual("bar", input.Value);
+			});
+		}
+
+		[TestMethod]
+		public void TypeTextUsingKeyboard()
+		{
+			ForEachBrowser(browser =>
+			{
+				//LogManager.UpdateReferenceId(browser, "TypeTextSetInput");
+				browser.NavigateTo(TestSite + "/inputs.html");
+				var input = browser.First("text");
+				input.TypeText("bar");
+				Assert.AreEqual("bar", ((TextInput) input).Value);
 			});
 		}
 

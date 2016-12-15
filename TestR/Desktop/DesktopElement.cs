@@ -176,7 +176,7 @@ namespace TestR.Desktop
 		/// <inheritdoc />
 		public override Element Focus()
 		{
-			//NativeElement.SetFocus();
+			NativeElement.SetFocus();
 			NativeMethods.SetFocus(NativeElement.CurrentNativeWindowHandle);
 			return this;
 		}

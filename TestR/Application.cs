@@ -186,6 +186,7 @@ namespace TestR
 			}
 
 			application.BringToFront();
+			NativeMethods.SetFocus(application.Handle);
 
 			return application;
 		}
@@ -207,11 +208,12 @@ namespace TestR
 		/// </summary>
 		public Application BringToFront()
 		{
-			NativeMethods.SetFocus(Handle);
+			Focus();
 			NativeMethods.ShowWindow(Handle);
 			NativeMethods.BringWindowToTop(Handle);
 			NativeMethods.SetForegroundWindow(Handle);
 			NativeMethods.BringToTop(Handle);
+			Focus();
 			return this;
 		}
 
@@ -349,6 +351,15 @@ namespace TestR
 			}
 
 			return false;
+		}
+
+		/// <summary>
+		/// Sets the application to as the focused window.
+		/// </summary>
+		public Application Focus()
+		{
+			NativeMethods.SetFocus(Handle);
+			return this;
 		}
 
 		/// <summary>
