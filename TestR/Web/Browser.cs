@@ -349,8 +349,17 @@ namespace TestR.Web
 				throw new ArgumentNullException(nameof(uri));
 			}
 
-			//LogManager.Write("Navigating to " + uri + ".", LogLevel.Verbose);
+			_lastUri = Uri;
+
+			//LogManager.Write("Navigating to " + expectedUri + ".", LogLevel.Verbose);
 			BrowserNavigateTo(uri);
+
+			if (_lastUri.Equals(uri, StringComparison.OrdinalIgnoreCase))
+			{
+				Refresh();
+				return;
+			}
+
 			WaitForNavigation(expectedUri ?? uri);
 		}
 
@@ -412,7 +421,7 @@ namespace TestR.Web
 				//LogManager.Write("Waiting for navigation with timeout of " + timeout.Value + ".", LogLevel.Verbose);
 				if (!Utility.Wait(() => Uri != _lastUri, (int) timeout.Value.TotalMilliseconds))
 				{
-					throw new Exception("Browser never completed navigated away from " + _lastUri + ".");
+					throw new Exception($"Browser never completed navigated away from {Uri}.");
 				}
 			}
 			else
@@ -423,12 +432,11 @@ namespace TestR.Web
 						|| Uri.StartsWith(alternateUri, StringComparison.OrdinalIgnoreCase),
 					(int) timeout.Value.TotalMilliseconds))
 				{
-					throw new Exception("Browser never completed navigation to " + uri + ". Current URI is " + Uri + ".");
+					throw new Exception($"Browser never completed navigation to {uri}. Current URI is {Uri}.");
 				}
 			}
 
 			Refresh();
-			_lastUri = Uri;
 		}
 
 		/// <summary>

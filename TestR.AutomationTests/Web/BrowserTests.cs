@@ -616,11 +616,26 @@ namespace TestR.AutomationTests.Web
 		}
 
 		[TestMethod]
+		public void NavigateToFromHttpToHttpsWhenAlreadyOnExpectedUri()
+		{
+			ForEachBrowser(browser =>
+			{
+				browser.NavigateTo($"{TestSite}/index.html");
+				var expected = TestSite.Replace("https://", "http://") + "/index.html";
+				Assert.IsFalse(expected.StartsWith("https://"));
+				browser.NavigateTo(expected);
+				Assert.IsTrue(browser.Uri.StartsWith("https://"));
+				Assert.AreEqual($"{TestSite}/index.html", browser.Uri.ToLower());
+			});
+		}
+
+		[TestMethod]
 		public void NavigateToSameUri()
 		{
 			ForEachBrowser(browser =>
 			{
 				var expected = TestSite + "/index.html";
+				browser.NavigateTo(expected);
 				browser.NavigateTo(expected);
 				browser.NavigateTo(expected);
 				Assert.AreEqual(expected, browser.Uri.ToLower());
@@ -633,6 +648,7 @@ namespace TestR.AutomationTests.Web
 			ForEachBrowser(browser =>
 			{
 				var expected = TestSite;
+				browser.NavigateTo(expected);
 				browser.NavigateTo(expected);
 				browser.NavigateTo(expected);
 				Assert.AreEqual($"{expected}/", browser.Uri.ToLower());
@@ -666,7 +682,25 @@ namespace TestR.AutomationTests.Web
 
 				expected = TestSite + "/inputs.html";
 				Assert.AreEqual(expected, browser.Uri.ToLower());
-				browser.First("submit").Click();
+			});
+		}
+
+		[TestMethod]
+		public void RedirectByLinkWithoutProvidingExpectedUri()
+		{
+			ForEachBrowser(browser =>
+			{
+				//LogManager.UpdateReferenceId(browser, "RedirectByLink");
+				var expected = TestSite + "/index.html";
+				browser.NavigateTo(expected);
+				Assert.AreEqual(expected, browser.Uri.ToLower());
+
+				// Redirect by the link.
+				browser.First<Link>("redirectLink").Click();
+				browser.WaitForNavigation();
+
+				expected = TestSite + "/inputs.html";
+				Assert.AreEqual(expected, browser.Uri.ToLower());
 			});
 		}
 
@@ -687,7 +721,26 @@ namespace TestR.AutomationTests.Web
 
 				expected = TestSite + "/inputs.html";
 				Assert.AreEqual(expected, browser.Uri.ToLower());
-				browser.First("submit").Click();
+			});
+		}
+
+		[TestMethod]
+		public void RedirectByScriptWithoutProvidedExpectedUri()
+		{
+			ForEachBrowser(browser =>
+			{
+				//LogManager.UpdateReferenceId(browser, "RedirectByScript");
+				var expected = TestSite + "/index.html";
+				browser.NavigateTo(expected);
+				Assert.AreEqual(expected, browser.Uri.ToLower());
+				Assert.IsNotNull(browser.First("link"), "Failed to find the link element.");
+
+				// Redirect by a script.
+				browser.ExecuteScript("window.location.href = 'inputs.html'");
+				browser.WaitForNavigation();
+
+				expected = TestSite + "/inputs.html";
+				Assert.AreEqual(expected, browser.Uri.ToLower());
 			});
 		}
 
