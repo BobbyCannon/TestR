@@ -418,7 +418,7 @@ namespace TestR.Web
 			else
 			{
 				//LogManager.Write("Waiting for navigation to " + uri + " with timeout of " + timeout.Value + ".", LogLevel.Verbose);
-				if (!Utility.Wait(() => Uri.Contains(uri, StringComparison.OrdinalIgnoreCase), (int) timeout.Value.TotalMilliseconds))
+				if (!Utility.Wait(() => Uri.StartsWith(uri, StringComparison.OrdinalIgnoreCase), (int) timeout.Value.TotalMilliseconds))
 				{
 					throw new Exception("Browser never completed navigation to " + uri + ". Current URI is " + Uri + ".");
 				}

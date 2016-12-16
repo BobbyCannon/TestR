@@ -609,6 +609,18 @@ namespace TestR.AutomationTests.Web
 		}
 
 		[TestMethod]
+		public void NavigateToSameUriWithEndingForwardSlash()
+		{
+			ForEachBrowser(browser =>
+			{
+				var expected = TestSite;
+				browser.NavigateTo(expected);
+				browser.NavigateTo(expected);
+				Assert.AreEqual($"{expected}/", browser.Uri.ToLower());
+			});
+		}
+
+		[TestMethod]
 		public void NavigateToWithDifferentFinalUri()
 		{
 			ForEachBrowser(browser =>
