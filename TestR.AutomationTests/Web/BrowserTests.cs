@@ -551,7 +551,7 @@ namespace TestR.AutomationTests.Web
 
 				browser.BrowserType.Dump();
 
-				if ((browser.BrowserType == BrowserType.Firefox) || (browser.BrowserType == BrowserType.Chrome))
+				if (browser.BrowserType == BrowserType.Firefox || browser.BrowserType == BrowserType.Chrome)
 				{
 					// Middle click does not click but does set focus.
 					Assert.IsTrue(button.Focused);
@@ -591,6 +591,18 @@ namespace TestR.AutomationTests.Web
 			ForEachBrowser(browser =>
 			{
 				var expected = TestSite + "/index.html";
+				browser.NavigateTo(expected);
+				Assert.AreEqual(expected, browser.Uri.ToLower());
+			});
+		}
+
+		[TestMethod]
+		public void NavigateToSameUri()
+		{
+			ForEachBrowser(browser =>
+			{
+				var expected = TestSite + "/index.html";
+				browser.NavigateTo(expected);
 				browser.NavigateTo(expected);
 				Assert.AreEqual(expected, browser.Uri.ToLower());
 			});

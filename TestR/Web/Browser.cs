@@ -351,7 +351,7 @@ namespace TestR.Web
 
 			//LogManager.Write("Navigating to " + uri + ".", LogLevel.Verbose);
 			BrowserNavigateTo(uri);
-			WaitForNavigation(expectedUri);
+			WaitForNavigation(expectedUri ?? uri);
 		}
 
 		/// <inheritdoc />
