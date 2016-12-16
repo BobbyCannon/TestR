@@ -1,5 +1,6 @@
 #region References
 
+using System;
 using System.Linq;
 using System.Management.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -17,12 +18,6 @@ namespace TestR.AutomationTests.Web
 	[Cmdlet(VerbsDiagnostic.Test, "Browsers")]
 	public class BrowserTests : BrowserTestCmdlet
 	{
-		#region Constants
-
-		public const string TestSite = "http://localhost:8080";
-
-		#endregion
-
 		#region Constructors
 
 		public BrowserTests()
@@ -30,6 +25,17 @@ namespace TestR.AutomationTests.Web
 			BrowserType = BrowserType.All;
 			//TestHelper.AddConsoleLogger();
 		}
+
+		static BrowserTests()
+		{
+			TestSite = $"https://{Environment.MachineName.ToLower()}";
+		}
+
+		#endregion
+
+		#region Properties
+
+		public static string TestSite { get; }
 
 		#endregion
 
@@ -593,6 +599,19 @@ namespace TestR.AutomationTests.Web
 				var expected = TestSite + "/index.html";
 				browser.NavigateTo(expected);
 				Assert.AreEqual(expected, browser.Uri.ToLower());
+			});
+		}
+
+		[TestMethod]
+		public void NavigateToFromHttpToHttps()
+		{
+			ForEachBrowser(browser =>
+			{
+				var expected = TestSite.Replace("https://", "http://") + "/index.html";
+				Assert.IsFalse(expected.StartsWith("https://"));
+				browser.NavigateTo(expected);
+				Assert.IsTrue(browser.Uri.StartsWith("https://"));
+				Assert.AreEqual($"{TestSite}/index.html", browser.Uri.ToLower());
 			});
 		}
 

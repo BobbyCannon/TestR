@@ -418,7 +418,10 @@ namespace TestR.Web
 			else
 			{
 				//LogManager.Write("Waiting for navigation to " + uri + " with timeout of " + timeout.Value + ".", LogLevel.Verbose);
-				if (!Utility.Wait(() => Uri.StartsWith(uri, StringComparison.OrdinalIgnoreCase), (int) timeout.Value.TotalMilliseconds))
+				var alternateUri = uri.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ? "https://" + uri.Substring(7) : "http://" + uri.Substring(8);
+				if (!Utility.Wait(() => Uri.StartsWith(uri, StringComparison.OrdinalIgnoreCase)
+						|| Uri.StartsWith(alternateUri, StringComparison.OrdinalIgnoreCase),
+					(int) timeout.Value.TotalMilliseconds))
 				{
 					throw new Exception("Browser never completed navigation to " + uri + ". Current URI is " + Uri + ".");
 				}
