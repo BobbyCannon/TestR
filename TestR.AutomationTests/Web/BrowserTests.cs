@@ -577,7 +577,7 @@ namespace TestR.AutomationTests.Web
 				//LogManager.UpdateReferenceId(browser, "ClickLink");
 				browser.NavigateTo(TestSite + "/index.html");
 				browser.First("angularLink").Click();
-				browser.WaitForComplete(150);
+				browser.WaitForComplete();
 
 				var actual = browser.ExecuteScript("TestR.runScript('document.toString()')");
 				Assert.IsTrue(actual.Contains("undefined"));
@@ -736,7 +736,7 @@ namespace TestR.AutomationTests.Web
 				Assert.IsNotNull(browser.First("link"), "Failed to find the link element.");
 
 				// Redirect by a script.
-				browser.ExecuteScript("window.location.href = 'inputs.html'");
+				browser.ExecuteScript("setTimeout(function() {window.location.href = 'inputs.html'}, 1000)");
 				browser.WaitForNavigation();
 
 				expected = TestSite + "/inputs.html";

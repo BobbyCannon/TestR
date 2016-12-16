@@ -351,16 +351,23 @@ namespace TestR.Web
 
 			_lastUri = Uri;
 
-			//LogManager.Write("Navigating to " + expectedUri + ".", LogLevel.Verbose);
-			BrowserNavigateTo(uri);
-
-			if (_lastUri.Equals(uri, StringComparison.OrdinalIgnoreCase))
+			try
 			{
-				Refresh();
-				return;
-			}
+				//LogManager.Write("Navigating to " + expectedUri + ".", LogLevel.Verbose);
+				BrowserNavigateTo(uri);
 
-			WaitForNavigation(expectedUri ?? uri);
+				if (_lastUri.Equals(uri, StringComparison.OrdinalIgnoreCase))
+				{
+					Refresh();
+					return;
+				}
+
+				WaitForNavigation(expectedUri ?? uri);
+			}
+			finally
+			{
+				_lastUri = uri;
+			}
 		}
 
 		/// <inheritdoc />
