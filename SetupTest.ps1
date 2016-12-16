@@ -1,1 +1,0 @@
-﻿Import-Module .\TestR.IntegrationTests\bin\Release\TestR.IntegrationTests.dll

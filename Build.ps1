@@ -46,6 +46,7 @@ $versionInfo = [System.Diagnostics.FileVersionInfo]::GetVersionInfo("$scriptPath
 $build = ([Version] $versionInfo.ProductVersion).Build
 $version = $versionInfo.FileVersion.Replace(".$build.0", "." + $build + $pre)
 
+Copy-Item Install.ps1 $destination\bin\
 Copy-Item TestR\bin\$Configuration\TestR.dll $destination\bin\
 Copy-Item TestR\bin\$Configuration\Interop.SHDocVw.dll $destination\bin\
 Copy-Item TestR\bin\$Configuration\Interop.UIAutomationClient.dll $destination\bin\
