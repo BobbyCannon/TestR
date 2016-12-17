@@ -509,8 +509,9 @@ namespace TestR.Web
 		{
 			element.Children.Clear();
 
-			var children = elements.Where(x => x["parentId"]?.ToString() == element.Id)
-				.Select(x => WebElement.Create(x, this, element));
+			var children = elements.Where(x => x["parentId"]?.ToString() == element.Id && x["id"]?.ToString() != element.Id)
+				.Select(x => WebElement.Create(x, this, element))
+				.ToList();
 
 			element.Children.AddRange(children);
 

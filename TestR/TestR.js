@@ -1,12 +1,11 @@
 ﻿var TestR = TestR ||
 {
 	properties: [
-		'cellIndex', 'checked', 'className', 'disabled', 'href', 'id', 'multiple', 'name', 'nodeType', 'readOnly', 'rowIndex', 'selected',
-		'src', 'tagName', 'textContent', 'value'
+		'cellIndex', 'checked', 'className', 'disabled', 'href', 'id', 'multiple', 'name', 'nodeType', 'readOnly',
+		'rowIndex', 'selected', 'src', 'tagName', 'textContent', 'value'
 	],
 	autoId: 1,
 	ignoredTags: ['script'],
-	ignoredProperties: ['tagName', 'id', 'name'],
 	resultElementId: 'testrResult',
 	triggerEvent: function (element, eventName, values) {
 		var eventObj = document.createEventObject
@@ -59,10 +58,14 @@
 				continue;
 			}
 
+			var elementId = TestR.getValueFromElement(element, 'id') || '';
+			var elementName = TestR.getValueFromElement(element, 'name') || '';
+			var parentId = TestR.getValueFromElement(element.parentNode, 'id') || '';
+
 			var item = {
-				id: element.id,
-				parentId: element.parentNode.id,
-				name: element.name || '',
+				id: elementId,
+				parentId: parentId,
+				name: elementName,
 				tagName: tagName,
 				attributes: []
 			};
@@ -77,18 +80,20 @@
 					continue;
 				}
 
-				if (TestR.properties.contains(attribute.nodeName)) {
+				if (item[attribute.nodeName]) {
+					//console.log('skip attribute ' + attribute.nodeName);
 					continue;
 				}
 
 				item.attributes.push(attribute.nodeName);
-				item.attributes.push(attribute.value);
+				item.attributes.push(attribute.nodeValue);
 			}
 
 			for (var k = 0; k < TestR.properties.length; k++) {
 				var name = TestR.properties[k];
 
-				if (TestR.ignoredProperties.contains(name)) {
+				if (item[name]) {
+					//console.log('skip property ' + name);
 					continue;
 				}
 
@@ -101,7 +106,7 @@
 					}
 				}
 			}
-
+			
 			response.push(item);
 		}
 
@@ -110,20 +115,26 @@
 	getElementValue: function (id, name) {
 		var element = document.getElementById(id);
 		if (element === undefined || element === null) {
-			return '';
+			return null;
 		}
 
-		var value = TestR.properties.contains(name) ? element[name] : element.attributes[name];
+		return TestR.getValueFromElement(element, name);
+	},
+	getValueFromElement: function (element, name) {
+		if (element === undefined || element === null) {
+			return null;
+		}
+
+		var value = element[name];
+		if ((value === null || value === undefined) || (element.nodeType === 1 && typeof (value) === 'object')) {
+			value = element.attributes[name];
+		}
 
 		if (value !== null && value !== undefined) {
-			if (value.nodeValue) {
-				return value.nodeValue;
-			}
-
-			return value.toString();
+			return (value.value || value.nodeValue || value).toString();
 		}
 
-		return '';
+		return null;
 	},
 	setElementValue: function (id, name, value) {
 		var element = document.getElementById(id);

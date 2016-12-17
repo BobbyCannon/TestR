@@ -5041,6 +5041,9 @@
             </summary>
             <returns> The string of element details. </returns>
         </member>
+        <member name="M:TestR.Web.WebElement.ToString">
+            <inheritdoc />
+        </member>
         <member name="M:TestR.Web.WebElement.WaitForComplete(System.Int32)">
             <inheritdoc />
         </member>

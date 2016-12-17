@@ -7,6 +7,7 @@ using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop.Elements;
 using TestR.Desktop.Pattern;
+using TestR.Native;
 using TestR.PowerShell;
 
 #endregion
@@ -198,6 +199,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		public void LocationShouldBeValid()
 		{
 			Application.CloseAll(ApplicationPath);
+			Mouse.MoveTo(0, 0);
 
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{

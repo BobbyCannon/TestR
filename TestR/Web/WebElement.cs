@@ -560,6 +560,12 @@ namespace TestR.Web
 		}
 
 		/// <inheritdoc />
+		public override string ToString()
+		{
+			return $"{GetType().Name} : {Id} : {Name}";
+		}
+
+		/// <inheritdoc />
 		public override ElementHost WaitForComplete(int minimumDelay = 0)
 		{
 			return Browser.WaitForComplete(minimumDelay);

@@ -496,6 +496,36 @@ namespace TestR.AutomationTests.Web
 		}
 
 		[TestMethod]
+		public void FormWithSubInputsWithNamesOfFormAttributeNames()
+		{
+			ForEachBrowser(browser =>
+			{
+				browser.NavigateTo(TestSite + "/forms.html");
+				browser.Descendants().Dump();
+				Assert.AreEqual(3, browser.Descendants().Count());
+				Assert.AreEqual(3, browser.Descendants<WebElement>().Count());
+
+				var form = browser.First<Form>("form");
+				Assert.AreEqual("form", form.Id);
+				Assert.AreEqual("form", form.Name);
+				Assert.AreEqual("form", form.TagName);
+				Assert.AreEqual("form", form.GetAttributeValue("id", true));
+
+				var input = browser.First<TextInput>("id");
+				Assert.AreEqual("id", input.Id);
+				Assert.AreEqual("id", input.Name);
+				Assert.AreEqual("input", input.TagName);
+				Assert.AreEqual("id", input.GetAttributeValue("id", true));
+
+				input = browser.First<TextInput>("name");
+				Assert.AreEqual("name", input.Id);
+				Assert.AreEqual("name", input.Name);
+				Assert.AreEqual("input", input.TagName);
+				Assert.AreEqual("name", input.GetAttributeValue("id", true));
+			});
+		}
+
+		[TestMethod]
 		public void GetElementByNameIndex()
 		{
 			ForEachBrowser(browser =>
@@ -557,15 +587,8 @@ namespace TestR.AutomationTests.Web
 
 				browser.BrowserType.Dump();
 
-				if (browser.BrowserType == BrowserType.Firefox || browser.BrowserType == BrowserType.Chrome)
-				{
-					// Middle click does not click but does set focus.
-					Assert.IsTrue(button.Focused);
-					return;
-				}
-
-				var actual = browser.First<TextArea>("textarea").Text;
-				Assert.AreEqual("button", actual);
+				// Middle click may not click but does set focus.
+				Assert.IsTrue(button.Focused);
 			});
 		}
 
@@ -1059,6 +1082,12 @@ namespace TestR.AutomationTests.Web
 				input.TypeText("bar");
 				Assert.AreEqual("bar", ((TextInput) input).Value);
 			});
+		}
+
+		private void ForEachBrowser(Action<Browser> action)
+		{
+			BrowserType = BrowserType.All;
+			base.ForEachBrowser(action);
 		}
 
 		#endregion

@@ -43,6 +43,7 @@ namespace TestR.AutomationTests.Desktop
 		[TestMethod]
 		public void ApplicationLocationWhileMaximized()
 		{
+			Native.Mouse.MoveTo(0,0);
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				application.BringToFront();

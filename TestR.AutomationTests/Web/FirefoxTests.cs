@@ -31,8 +31,7 @@ namespace TestR.AutomationTests.Web
 			{
 				Assert.IsNotNull(browser);
 				Console.WriteLine(browser.Id);
-				browser.NavigateTo("http://localhost:8080");
-				browser.Descendants().Count().Dump();
+				browser.NavigateTo($"http://{Environment.MachineName}");
 				browser.ExecuteScript("window.location.href").Dump();
 			}
 		}
@@ -44,8 +43,7 @@ namespace TestR.AutomationTests.Web
 			{
 				Assert.IsNotNull(browser);
 				Console.WriteLine(browser.Id);
-				browser.NavigateTo("http://localhost:8080");
-				browser.Descendants().Count().Dump();
+				browser.NavigateTo($"http://{Environment.MachineName}");
 				browser.ExecuteScript("window.location.href").Dump();
 			}
 		}
@@ -76,7 +74,7 @@ namespace TestR.AutomationTests.Web
 			{
 				Assert.IsNotNull(browser);
 				Console.WriteLine(browser.Id);
-				browser.NavigateTo("http://localhost:8080");
+				browser.NavigateTo($"http://{Environment.MachineName}");
 				browser.Descendants().Count().Dump();
 				browser.ExecuteScript("window.location.href").Dump();
 			}

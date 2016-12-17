@@ -1,6 +1,7 @@
 ﻿#region References
 
 using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Threading;
 using KellermanSoftware.CompareNetObjects;
@@ -45,7 +46,18 @@ namespace TestR.AutomationTests
 		/// <param name="label"> The label to prefix the value. </param>
 		public static void Dump(this object value, string label = "")
 		{
-			Console.WriteLine(string.IsNullOrWhiteSpace(label) ? value.ToString() : label + ":" + value);
+			var enumerable = value as IEnumerable;
+			if (enumerable != null && value.GetType() != typeof(string))
+			{
+				foreach (var x in enumerable)
+				{
+					x.Dump();
+				}
+			}
+			else
+			{
+				Console.WriteLine(string.IsNullOrWhiteSpace(label) ? value.ToString() : label + ":" + value);
+			}
 		}
 
 		public static void PrintChildren(Element parent, string prefix = "")
