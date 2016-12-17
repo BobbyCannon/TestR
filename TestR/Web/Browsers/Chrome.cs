@@ -172,7 +172,7 @@ namespace TestR.Web.Browsers
 		/// <param name="disposing"> True if disposing and false if otherwise. </param>
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing && (_socket != null))
+			if (disposing && _socket != null)
 			{
 				_socket.Dispose();
 				_socket = null;
@@ -210,13 +210,13 @@ namespace TestR.Web.Browsers
 			}
 
 			var response = data.AsJToken() as dynamic;
-			if ((response == null) || (response.result == null) || (response.result.result == null))
+			if (response == null || response.result == null || response.result.result == null)
 			{
 				return data;
 			}
 
 			var result = response.result.result;
-			if ((result.value != null) && (result.value.GetType().Name == "JValue"))
+			if (result.value != null && result.value.GetType().Name == "JValue")
 			{
 				return result.value;
 			}
@@ -243,7 +243,7 @@ namespace TestR.Web.Browsers
 
 			var response = SendRequestAndReadResponse(request, x => x.id == request.Id);
 			var document = response.AsJToken() as dynamic;
-			if ((document == null) || (document.result == null) || (document.result.root == null) || (document.result.root.documentURL == null))
+			if (document == null || document.result == null || document.result.root == null || document.result.root.documentURL == null)
 			{
 				throw new Exception("Failed to get the URI.");
 			}
@@ -336,7 +336,7 @@ namespace TestR.Web.Browsers
 			{
 				WebSocketReceiveResult result;
 
-				if ((_socket.State == WebSocketState.Aborted) || (_socket.State == WebSocketState.Closed))
+				if (_socket.State == WebSocketState.Aborted || _socket.State == WebSocketState.Closed)
 				{
 					return false;
 				}

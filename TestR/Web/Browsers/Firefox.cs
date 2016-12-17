@@ -173,7 +173,7 @@ namespace TestR.Web.Browsers
 		/// <param name="disposing"> True if disposing and false if otherwise. </param>
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing && (_socket != null))
+			if (disposing && _socket != null)
 			{
 				_socket.Dispose();
 				_socket = null;
@@ -197,7 +197,7 @@ namespace TestR.Web.Browsers
 				Text = script
 			};
 
-			var response = SendRequestAndReadResponse(request, x => (x.from == _consoleActor) && (x.input == script));
+			var response = SendRequestAndReadResponse(request, x => x.from == _consoleActor && x.input == script);
 			if (!string.IsNullOrEmpty(((object) response.exception).ToString()))
 			{
 				return TestrNotDefinedMessage;
@@ -250,7 +250,7 @@ namespace TestR.Web.Browsers
 			});
 
 			// Wait for the connect response.
-			WaitForResponse(x => (x.from == "root") && (x.applicationType == "browser"));
+			WaitForResponse(x => x.from == "root" && x.applicationType == "browser");
 
 			// Initialize the actor references.
 			InitializeActors();
@@ -259,13 +259,13 @@ namespace TestR.Web.Browsers
 		private void InitializeActors()
 		{
 			var listTabRequest = new { To = "root", Type = "listTabs" };
-			var listTabResponse = SendRequestAndReadResponse(listTabRequest, x => (x.from == "root") && (x.tabs != null));
+			var listTabResponse = SendRequestAndReadResponse(listTabRequest, x => x.from == "root" && x.tabs != null);
 			var selected = listTabResponse.tabs[(int) listTabResponse.selected];
 			_consoleActor = selected.consoleActor;
 			_tabActor = selected.actor;
 
 			var attachTabRequest = new { To = _tabActor, Type = "attach" };
-			SendRequestAndReadResponse(attachTabRequest, x => (x.from == _tabActor) && (x.type == "tabAttached"));
+			SendRequestAndReadResponse(attachTabRequest, x => x.from == _tabActor && x.type == "tabAttached");
 		}
 
 		private string ReadLongResponse(string response)
@@ -285,7 +285,7 @@ namespace TestR.Web.Browsers
 			while (offset < length)
 			{
 				SendRequest(new { To = actor, Type = "substring", Start = offset, End = offset + chuckLength });
-				var subresult = WaitForResponse(x => (x.from == actor) && (x.substring != null));
+				var subresult = WaitForResponse(x => x.from == actor && x.substring != null);
 				builder.Append((string) subresult.substring);
 				offset += chuckLength;
 			}

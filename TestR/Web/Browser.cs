@@ -529,7 +529,7 @@ namespace TestR.Web
 			//LogManager.Write("Detecting JavaScript libraries.", LogLevel.Verbose);
 
 			var uri = GetBrowserUri();
-			if ((uri.Length <= 0) || uri.Equals("about:tabs"))
+			if (uri.Length <= 0 || uri.Equals("about:tabs"))
 			{
 				return;
 			}

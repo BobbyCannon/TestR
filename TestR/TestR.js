@@ -41,7 +41,8 @@
 
 		// Add element IDs so we can build element hierarchy.
 		for (i = 0; i < allElements.length; i++) {
-			if (allElements[i].id === undefined || allElements[i].id === '') {
+			var currentId = TestR.getValueFromElement(allElements[i], 'id');
+			if (currentId === null || currentId === undefined || currentId === '') {
 				allElements[i].id = 'testR-' + TestR.autoId++;
 			}
 		}
@@ -58,9 +59,11 @@
 				continue;
 			}
 
-			var elementId = TestR.getValueFromElement(element, 'id') || '';
+			var elementId = TestR.getValueFromElement(element, 'id');
 			var elementName = TestR.getValueFromElement(element, 'name') || '';
 			var parentId = TestR.getValueFromElement(element.parentNode, 'id') || '';
+
+			console.log(elementId);
 
 			var item = {
 				id: elementId,
@@ -92,7 +95,7 @@
 			for (var k = 0; k < TestR.properties.length; k++) {
 				var name = TestR.properties[k];
 
-				if (item[name]) {
+				if (item[name] || name === 'textContent') {
 					//console.log('skip property ' + name);
 					continue;
 				}

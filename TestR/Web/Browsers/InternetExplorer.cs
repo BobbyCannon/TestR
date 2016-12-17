@@ -127,7 +127,7 @@ namespace TestR.Web.Browsers
 			//LogManager.Write("InternetExploreBrowser.WaitForComplete", LogLevel.Verbose);
 
 			// If the URL is empty and is not initialized means browser is no page is loaded.
-			if ((_browser.LocationURL == string.Empty) && (_browser.ReadyState == tagREADYSTATE.READYSTATE_UNINITIALIZED))
+			if (_browser.LocationURL == string.Empty && _browser.ReadyState == tagREADYSTATE.READYSTATE_UNINITIALIZED)
 			{
 				return this;
 			}
@@ -148,7 +148,7 @@ namespace TestR.Web.Browsers
 			}
 
 			// Wait while the browser is busy and not complete.
-			if (!Utility.Wait(() => !(_browser.Busy && (_browser.ReadyState != tagREADYSTATE.READYSTATE_COMPLETE)), Application.Timeout.TotalMilliseconds))
+			if (!Utility.Wait(() => !(_browser.Busy && _browser.ReadyState != tagREADYSTATE.READYSTATE_COMPLETE), Application.Timeout.TotalMilliseconds))
 			{
 				throw new Exception("The browser is currently busy.");
 			}
@@ -208,7 +208,7 @@ namespace TestR.Web.Browsers
 
 			try
 			{
-				if ((_browser == null) || !AutoClose)
+				if (_browser == null || !AutoClose)
 				{
 					return;
 				}
@@ -244,7 +244,7 @@ namespace TestR.Web.Browsers
 			//LogManager.Write("Request: " + script, LogLevel.Verbose);
 
 			// If the URL is empty and is not initialized means browser is no page is loaded.
-			if (!_browser.LocationURL.StartsWith("http", StringComparison.OrdinalIgnoreCase) || (_browser.ReadyState == tagREADYSTATE.READYSTATE_UNINITIALIZED))
+			if (!_browser.LocationURL.StartsWith("http", StringComparison.OrdinalIgnoreCase) || _browser.ReadyState == tagREADYSTATE.READYSTATE_UNINITIALIZED)
 			{
 				return string.Empty;
 			}
@@ -330,7 +330,7 @@ namespace TestR.Web.Browsers
 					if (processId > 0)
 					{
 						uint foundProcessId;
-						if (!NativeMethods.GetWindowThreadProcessId(new IntPtr(explorer.HWND), out foundProcessId) || (foundProcessId != processId))
+						if (!NativeMethods.GetWindowThreadProcessId(new IntPtr(explorer.HWND), out foundProcessId) || foundProcessId != processId)
 						{
 							continue;
 						}

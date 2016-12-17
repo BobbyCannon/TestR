@@ -158,7 +158,7 @@ namespace TestR
 		/// <returns> The child element for the ID. </returns>
 		public T First<T>(string id, bool includeDescendants = true) where T : Element
 		{
-			return First<T>(x => (x.FullId == id) || (x.Id == id) || (x.Name == id), includeDescendants);
+			return First<T>(x => x.FullId == id || x.Id == id || x.Name == id, includeDescendants);
 		}
 
 		/// <summary>
@@ -191,7 +191,7 @@ namespace TestR
 		/// <returns> The child element for the ID or null if otherwise. </returns>
 		public T FirstOrDefault<T>(string id, bool includeDescendants = true) where T : Element
 		{
-			return FirstOrDefault<T>(x => (x.FullId == id) || (x.Id == id) || (x.Name == id), includeDescendants);
+			return FirstOrDefault<T>(x => x.FullId == id || x.Id == id || x.Name == id, includeDescendants);
 		}
 
 		/// <summary>
@@ -234,7 +234,7 @@ namespace TestR
 		/// <returns> The collection of elements of the provided type. </returns>
 		public IEnumerable<T> OfType<T>() where T : Element
 		{
-			return this.Where(x => (x.GetType() == typeof(T)) || x is T).Cast<T>();
+			return this.Where(x => x.GetType() == typeof(T) || x is T).Cast<T>();
 		}
 
 		/// <summary>

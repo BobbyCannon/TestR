@@ -51,7 +51,7 @@ namespace TestR.Native
 		{
 			var result1 = NativeMethods.GetKeyState(NativeMethods.VirtualKeyStates.VK_LCONTROL);
 			var result2 = NativeMethods.GetKeyState(NativeMethods.VirtualKeyStates.VK_RCONTROL);
-			return ((result1 & 0x8000) == 0x8000) || ((result2 & 0x8000) == 0x8000);
+			return (result1 & 0x8000) == 0x8000 || (result2 & 0x8000) == 0x8000;
 		}
 
 		/// <summary>
@@ -87,7 +87,7 @@ namespace TestR.Native
 
 		private static int HookCallback(int nCode, int wParam, IntPtr lParam)
 		{
-			if ((nCode < 0) || (wParam != KeyDown))
+			if (nCode < 0 || wParam != KeyDown)
 			{
 				return NativeMethods.CallNextHookEx(_hookId, nCode, wParam, lParam);
 			}

@@ -1716,6 +1716,13 @@
             </summary>
             <returns> The point location of the mouse cursor. </returns>
         </member>
+        <member name="M:TestR.Native.Mouse.LeftClick(System.Int32,System.Int32)">
+            <summary>
+            Left click at the provided point.
+            </summary>
+            <param name="x"> The x point in which to click. </param>
+            <param name="y"> The y point in which to click. </param>
+        </member>
         <member name="M:TestR.Native.Mouse.LeftClick(System.Drawing.Point)">
             <summary>
             Left click at the provided point.

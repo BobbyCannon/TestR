@@ -26,7 +26,7 @@ namespace TestR.TestWinForms
 		{
 			var parent = element;
 
-			while ((parent != null) && (parent.TypeId != 50032))
+			while (parent != null && parent.TypeId != 50032)
 			{
 				parent = parent.Parent as DesktopElement;
 			}

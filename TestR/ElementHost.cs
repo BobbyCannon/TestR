@@ -200,7 +200,7 @@ namespace TestR
 		/// <returns> The child element for the ID. </returns>
 		public T First<T>(string id, bool includeDescendants = true, bool wait = true) where T : Element
 		{
-			return First<T>(x => (x.FullId == id) || (x.Id == id) || (x.Name == id), includeDescendants, wait);
+			return First<T>(x => x.FullId == id || x.Id == id || x.Name == id, includeDescendants, wait);
 		}
 
 		/// <summary>
@@ -236,7 +236,7 @@ namespace TestR
 		/// <returns> The child element for the ID or null if no child found. </returns>
 		public Element FirstOrDefault(string id, bool includeDescendants = true, bool wait = true)
 		{
-			return FirstOrDefault<Element>(x => (x.FullId == id) || (x.Id == id) || (x.Name == id), includeDescendants, wait);
+			return FirstOrDefault<Element>(x => x.FullId == id || x.Id == id || x.Name == id, includeDescendants, wait);
 		}
 
 		/// <summary>
@@ -260,7 +260,7 @@ namespace TestR
 		/// <returns> The child element for the ID or null if no child found. </returns>
 		public T FirstOrDefault<T>(string id, bool includeDescendants = true, bool wait = true) where T : Element
 		{
-			return FirstOrDefault<T>(x => (x.FullId == id) || (x.Id == id) || (x.Name == id), includeDescendants, wait);
+			return FirstOrDefault<T>(x => x.FullId == id || x.Id == id || x.Name == id, includeDescendants, wait);
 		}
 
 		/// <summary>
@@ -279,7 +279,7 @@ namespace TestR
 				try
 				{
 					response = Children.FirstOrDefault(condition, includeDescendants);
-					if ((response != null) || !wait)
+					if (response != null || !wait)
 					{
 						return true;
 					}

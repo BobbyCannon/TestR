@@ -67,6 +67,12 @@ namespace TestR.AutomationTests.Web
 			}
 		}
 
+		[ClassCleanup]
+		public static void ClassCleanup()
+		{
+			Browser.CloseBrowsers();
+		}
+
 		[TestMethod]
 		public void Create()
 		{
@@ -78,12 +84,6 @@ namespace TestR.AutomationTests.Web
 				browser.Descendants().Count().Dump();
 				browser.ExecuteScript("window.location.href").Dump();
 			}
-		}
-
-		[ClassCleanup]
-		public static void ClassCleanup()
-		{
-			Browser.CloseBrowsers();
 		}
 
 		[TestInitialize]

@@ -55,6 +55,16 @@ namespace TestR.Native
 		/// <summary>
 		/// Left click at the provided point.
 		/// </summary>
+		/// <param name="x"> The x point in which to click. </param>
+		/// <param name="y"> The y point in which to click. </param>
+		public static void LeftClick(int x, int y)
+		{
+			LeftClick(new Point(x, y));
+		}
+
+		/// <summary>
+		/// Left click at the provided point.
+		/// </summary>
 		/// <param name="point"> The point in which to click. </param>
 		public static void LeftClick(Point point)
 		{
@@ -103,7 +113,7 @@ namespace TestR.Native
 			var watch = Stopwatch.StartNew();
 			var currentPosition = GetCursorPosition();
 
-			while ((currentPosition.X != point.X) || (currentPosition.Y != point.Y))
+			while (currentPosition.X != point.X || currentPosition.Y != point.Y)
 			{
 				NativeMethods.SetCursorPosition(point.X, point.Y);
 				currentPosition = GetCursorPosition();

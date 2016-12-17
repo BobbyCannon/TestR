@@ -10,6 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop;
 using TestR.Desktop.Elements;
 using TestR.Desktop.Pattern;
+using TestR.Native;
 using TestR.PowerShell;
 
 #endregion
@@ -43,7 +44,7 @@ namespace TestR.AutomationTests.Desktop
 		[TestMethod]
 		public void ApplicationLocationWhileMaximized()
 		{
-			Native.Mouse.MoveTo(0,0);
+			Mouse.MoveTo(0, 0);
 			using (var application = Application.AttachOrCreate(_applicationPath))
 			{
 				application.BringToFront();

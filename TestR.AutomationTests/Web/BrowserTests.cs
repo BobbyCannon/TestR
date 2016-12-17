@@ -132,7 +132,7 @@ namespace TestR.AutomationTests.Web
 		[ClassCleanup]
 		public static void ClassCleanup()
 		{
-			//Browser.CloseBrowsers();
+			Browser.CloseBrowsers();
 		}
 
 		[ClassInitialize]
@@ -501,7 +501,6 @@ namespace TestR.AutomationTests.Web
 			ForEachBrowser(browser =>
 			{
 				browser.NavigateTo(TestSite + "/forms.html");
-				browser.Descendants().Dump();
 				Assert.AreEqual(3, browser.Descendants().Count());
 				Assert.AreEqual(3, browser.Descendants<WebElement>().Count());
 
@@ -510,6 +509,35 @@ namespace TestR.AutomationTests.Web
 				Assert.AreEqual("form", form.Name);
 				Assert.AreEqual("form", form.TagName);
 				Assert.AreEqual("form", form.GetAttributeValue("id", true));
+
+				var input = browser.First<TextInput>("id");
+				Assert.AreEqual("id", input.Id);
+				Assert.AreEqual("id", input.Name);
+				Assert.AreEqual("input", input.TagName);
+				Assert.AreEqual("id", input.GetAttributeValue("id", true));
+
+				input = browser.First<TextInput>("name");
+				Assert.AreEqual("name", input.Id);
+				Assert.AreEqual("name", input.Name);
+				Assert.AreEqual("input", input.TagName);
+				Assert.AreEqual("name", input.GetAttributeValue("id", true));
+			});
+		}
+
+		[TestMethod]
+		public void FormWithSubInputsWithNamesOfFormAttributeNamesButMainFormHasNoId()
+		{
+			ForEachBrowser(browser =>
+			{
+				browser.NavigateTo(TestSite + "/forms2.html");
+				Assert.AreEqual(3, browser.Descendants().Count());
+				Assert.AreEqual(3, browser.Descendants<WebElement>().Count());
+
+				var form = browser.First<Form>("form");
+				Assert.AreEqual("testR-1", form.Id);
+				Assert.AreEqual("form", form.Name);
+				Assert.AreEqual("form", form.TagName);
+				Assert.AreEqual("testR-1", form.GetAttributeValue("id", true));
 
 				var input = browser.First<TextInput>("id");
 				Assert.AreEqual("id", input.Id);
@@ -585,10 +613,9 @@ namespace TestR.AutomationTests.Web
 				button.MiddleClick();
 				browser.WaitForComplete(100);
 
-				browser.BrowserType.Dump();
-
 				// Middle click may not click but does set focus.
 				Assert.IsTrue(button.Focused);
+				Mouse.LeftClick(button.Location);
 			});
 		}
 
@@ -805,6 +832,8 @@ namespace TestR.AutomationTests.Web
 
 				var result = Utility.Wait(() => DesktopElement.FromCursor()?.TypeName == "menu item");
 				Assert.IsTrue(result, "Failed to find menu.");
+
+				Mouse.LeftClick(button.Location);
 			});
 		}
 

@@ -135,7 +135,7 @@ namespace TestR
 			var p = NativeMethods.GetWindowPlacement(process.MainWindowHandle);
 			var location = p.rcNormalPosition.Location;
 
-			if ((p.ShowState == 2) || (p.ShowState == 3))
+			if (p.ShowState == 2 || p.ShowState == 3)
 			{
 				NativeMethods.Rect windowsRect;
 				NativeMethods.GetWindowRect(process.MainWindowHandle, out windowsRect);

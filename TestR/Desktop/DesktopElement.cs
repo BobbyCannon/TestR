@@ -92,7 +92,7 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Gets a value that indicates whether the element can be use by the keyboard.
 		/// </summary>
-		public bool KeyboardFocusable => (NativeElement.CurrentIsKeyboardFocusable == 1) && Enabled;
+		public bool KeyboardFocusable => NativeElement.CurrentIsKeyboardFocusable == 1 && Enabled;
 
 		/// <inheritdoc />
 		public override Point Location
@@ -130,9 +130,9 @@ namespace TestR.Desktop
 			get
 			{
 				Point point;
-				var clickable = TryGetClickablePoint(out point) && (point.Y != 0) && (point.Y != 0);
+				var clickable = TryGetClickablePoint(out point) && point.Y != 0 && point.Y != 0;
 				var focused = Focused || Children.Any(x => x.Focused);
-				return (NativeElement.CurrentIsOffscreen == 0) && (clickable || focused);
+				return NativeElement.CurrentIsOffscreen == 0 && (clickable || focused);
 			}
 		}
 
@@ -581,7 +581,7 @@ namespace TestR.Desktop
 		private DesktopElement UpdateParent()
 		{
 			var parent = NativeElement.GetCachedParent() ?? NativeElement.GetCurrentParent();
-			if ((parent == null) || (parent.CurrentProcessId != NativeElement.CurrentProcessId))
+			if (parent == null || parent.CurrentProcessId != NativeElement.CurrentProcessId)
 			{
 				Parent = null;
 				return this;

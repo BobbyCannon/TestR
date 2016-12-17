@@ -63,6 +63,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Forms2.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Forms.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

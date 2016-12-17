@@ -95,6 +95,12 @@ namespace TestR.AutomationTests.Web
 			}
 		}
 
+		[ClassCleanup]
+		public static void ClassCleanup()
+		{
+			Browser.CloseBrowsers();
+		}
+
 		[TestMethod]
 		public void CloseAllBrowsers()
 		{
@@ -129,12 +135,6 @@ namespace TestR.AutomationTests.Web
 			{
 				Assert.IsNotNull(browser2);
 			}
-		}
-
-		[ClassCleanup]
-		public static void ClassCleanup()
-		{
-			Browser.CloseBrowsers();
 		}
 
 		[TestInitialize]

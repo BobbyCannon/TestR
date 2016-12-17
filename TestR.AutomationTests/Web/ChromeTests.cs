@@ -2,7 +2,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Management.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.PowerShell;
@@ -67,6 +66,12 @@ namespace TestR.AutomationTests.Web
 			}
 		}
 
+		[ClassCleanup]
+		public static void ClassCleanup()
+		{
+			Browser.CloseBrowsers();
+		}
+
 		[TestMethod]
 		public void Create()
 		{
@@ -77,12 +82,6 @@ namespace TestR.AutomationTests.Web
 				browser.NavigateTo($"http://{Environment.MachineName}");
 				browser.ExecuteScript("window.location.href").Dump();
 			}
-		}
-
-		[ClassCleanup]
-		public static void ClassCleanup()
-		{
-			Browser.CloseBrowsers();
 		}
 
 		[TestInitialize]

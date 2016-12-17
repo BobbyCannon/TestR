@@ -72,7 +72,7 @@ namespace TestR
 		/// <summary>
 		/// Gets the value indicating that the process is running.
 		/// </summary>
-		public bool IsRunning => (Process != null) && !Process.HasExited;
+		public bool IsRunning => Process != null && !Process.HasExited;
 
 		/// <summary>
 		/// Gets the location of the application.
@@ -116,7 +116,7 @@ namespace TestR
 		public static Application Attach(string executablePath, string arguments = null, bool refresh = true)
 		{
 			var fileName = Path.GetFileName(executablePath);
-			if ((fileName != null) && !fileName.Contains("."))
+			if (fileName != null && !fileName.Contains("."))
 			{
 				fileName += ".exe";
 			}
@@ -133,7 +133,7 @@ namespace TestR
 					if (!string.IsNullOrWhiteSpace(arguments))
 					{
 						var data = managementObject["CommandLine"];
-						if ((data == null) || !data.ToString().Contains(arguments))
+						if (data == null || !data.ToString().Contains(arguments))
 						{
 							continue;
 						}
@@ -145,7 +145,7 @@ namespace TestR
 						continue;
 					}
 
-					if ((process.MainWindowHandle == IntPtr.Zero) || !NativeMethods.IsWindowVisible(process.MainWindowHandle))
+					if (process.MainWindowHandle == IntPtr.Zero || !NativeMethods.IsWindowVisible(process.MainWindowHandle))
 					{
 						continue;
 					}
@@ -327,7 +327,7 @@ namespace TestR
 					if (!string.IsNullOrWhiteSpace(arguments))
 					{
 						var data = managementObject["CommandLine"];
-						if ((data == null) || !data.ToString().Contains(arguments))
+						if (data == null || !data.ToString().Contains(arguments))
 						{
 							continue;
 						}
@@ -340,7 +340,7 @@ namespace TestR
 							continue;
 						}
 
-						if ((process.MainWindowHandle == IntPtr.Zero) || !NativeMethods.IsWindowVisible(process.MainWindowHandle))
+						if (process.MainWindowHandle == IntPtr.Zero || !NativeMethods.IsWindowVisible(process.MainWindowHandle))
 						{
 							continue;
 						}
@@ -419,7 +419,7 @@ namespace TestR
 			var watch = Stopwatch.StartNew();
 			Process.WaitForInputIdle(Timeout.Milliseconds);
 
-			while ((watch.Elapsed.TotalMilliseconds < minimumDelay) && (minimumDelay > 0))
+			while (watch.Elapsed.TotalMilliseconds < minimumDelay && minimumDelay > 0)
 			{
 				Thread.Sleep(10);
 			}
@@ -438,7 +438,7 @@ namespace TestR
 				return;
 			}
 
-			if (AutoClose && (Process != null) && Process.HasExited)
+			if (AutoClose && Process != null && Process.HasExited)
 			{
 				Close();
 			}
