@@ -63,8 +63,6 @@
 			var elementName = TestR.getValueFromElement(element, 'name') || '';
 			var parentId = TestR.getValueFromElement(element.parentNode, 'id') || '';
 
-			console.log(elementId);
-
 			var item = {
 				id: elementId,
 				parentId: parentId,
@@ -84,7 +82,6 @@
 				}
 
 				if (item[attribute.nodeName]) {
-					//console.log('skip attribute ' + attribute.nodeName);
 					continue;
 				}
 
@@ -96,7 +93,6 @@
 				var name = TestR.properties[k];
 
 				if (item[name] || name === 'textContent') {
-					//console.log('skip property ' + name);
 					continue;
 				}
 
