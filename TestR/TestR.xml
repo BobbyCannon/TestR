@@ -69,38 +69,42 @@
             Gets or sets the time out for delay request. Defaults to 5 seconds.
             </summary>
         </member>
-        <member name="M:TestR.Application.Attach(System.String,System.String,System.Boolean)">
+        <member name="M:TestR.Application.Attach(System.String,System.String,System.Boolean,System.Boolean)">
             <summary>
             Attaches the application to an existing process.
             </summary>
             <param name="executablePath"> The path to the executable. </param>
             <param name="arguments"> The arguments for the executable. Arguments are optional. </param>
             <param name="refresh"> The setting to determine to refresh children now. </param>
+            <param name="bringToFront"> Bring process to front</param>
             <returns> The instance that represents the application. </returns>
         </member>
-        <member name="M:TestR.Application.Attach(System.IntPtr,System.Boolean)">
+        <member name="M:TestR.Application.Attach(System.IntPtr,System.Boolean,System.Boolean)">
             <summary>
             Attaches the application to an existing process.
             </summary>
             <param name="handle"> The main window handle of the executable. </param>
             <param name="refresh"> The setting to determine to refresh children now. </param>
+            <param name="bringToFront"> Bring process to front</param>
             <returns> The instance that represents the application. </returns>
         </member>
-        <member name="M:TestR.Application.Attach(System.Diagnostics.Process,System.Boolean)">
+        <member name="M:TestR.Application.Attach(System.Diagnostics.Process,System.Boolean,System.Boolean)">
             <summary>
             Attaches the application to an existing process.
             </summary>
             <param name="process"> The process to attach to. </param>
             <param name="refresh"> The setting to determine to refresh children now. </param>
+            <param name="bringToFront"> Bring process to front</param>
             <returns> The instance that represents the application. </returns>
         </member>
-        <member name="M:TestR.Application.AttachOrCreate(System.String,System.String,System.Boolean)">
+        <member name="M:TestR.Application.AttachOrCreate(System.String,System.String,System.Boolean,System.Boolean)">
             <summary>
             Attaches the application to an existing process.
             </summary>
             <param name="executablePath"> The path to the executable. </param>
             <param name="arguments"> The arguments for the executable. Arguments are optional. </param>
             <param name="refresh"> The setting to determine to refresh children now. </param>
+            <param name="bringToFront"> Bring the process to the front. </param>
             <returns> The instance that represents the application. </returns>
         </member>
         <member name="M:TestR.Application.BringToFront">
@@ -120,13 +124,14 @@
             <param name="executablePath"> The path to the executable. </param>
             <param name="timeout"> The timeout to wait for the application to close. </param>
         </member>
-        <member name="M:TestR.Application.Create(System.String,System.String,System.Boolean)">
+        <member name="M:TestR.Application.Create(System.String,System.String,System.Boolean,System.Boolean)">
             <summary>
             Creates a new application process.
             </summary>
             <param name="executablePath"> The path to the executable. </param>
             <param name="arguments"> The arguments for the executable. Arguments are optional. </param>
             <param name="refresh"> The flag to trigger loading to load state when creating the application. Defaults to true. </param>
+            <param name="bringToFront"> Bring the process to the front. </param>
             <returns> The instance that represents an application. </returns>
         </member>
         <member name="M:TestR.Application.Exists(System.String,System.String)">
@@ -1926,6 +1931,17 @@
             Retains the current size (ignores the cx and cy parameters).
             </summary>
         </member>
+        <member name="T:TestR.TestRException">
+            <summary>
+            Custom TestR Exception instead of the generic Exception
+            </summary>
+        </member>
+        <member name="M:TestR.TestRException.#ctor(System.String)">
+            <summary>
+            Custom TestR Exception instead of the generic Exception
+            </summary>
+            <param name="message"></param>
+        </member>
         <member name="T:TestR.Utility">
             <summary>
             Represents the Utility class.
@@ -2028,11 +2044,12 @@
             Gets the URI of the current page.
             </summary>
         </member>
-        <member name="M:TestR.Web.Browser.AttachBrowsers(TestR.Web.BrowserType)">
+        <member name="M:TestR.Web.Browser.AttachBrowsers(TestR.Web.BrowserType,System.Boolean)">
             <summary>
             Attach browsers for each type provided.
             </summary>
             <param name="type"> The type of the browser to attach to. </param>
+            <param name="bringToFront"> Bring the process to the front. </param>
         </member>
         <member name="M:TestR.Web.Browser.AttachOrCreate(TestR.Web.BrowserType)">
             <summary>
@@ -2040,11 +2057,12 @@
             </summary>
             <param name="type"> The type of the browser to attach to or create. </param>
         </member>
-        <member name="M:TestR.Web.Browser.AttachToBrowser(System.Diagnostics.Process)">
+        <member name="M:TestR.Web.Browser.AttachToBrowser(System.Diagnostics.Process,System.Boolean)">
             <summary>
             Attach process as a browser.
             </summary>
             <param name="process"> The process of the browser to attach to. </param>
+            <param name="bringToFront"> Bring the process to the front. </param>
             <returns> The browser if successfully attached or otherwise null. </returns>
         </member>
         <member name="M:TestR.Web.Browser.BringToFront">
@@ -2058,11 +2076,12 @@
             </summary>
             <param name="type"> The type of the browser to close. </param>
         </member>
-        <member name="M:TestR.Web.Browser.CreateBrowsers(TestR.Web.BrowserType)">
+        <member name="M:TestR.Web.Browser.CreateBrowsers(TestR.Web.BrowserType,System.Boolean)">
             <summary>
             Create browsers for each type provided.
             </summary>
             <param name="type"> The type of the browser to create. </param>
+            <param name="bringToFront"> Bring the process to the front. </param>
         </member>
         <member name="M:TestR.Web.Browser.ExecuteScript(System.String,System.Boolean)">
             <summary>
@@ -2194,25 +2213,25 @@
             Gets the type of the browser.
             </summary>
         </member>
-        <member name="M:TestR.Web.Browsers.Chrome.Attach">
+        <member name="M:TestR.Web.Browsers.Chrome.Attach(System.Boolean)">
             <summary>
             Attempts to attach to an existing browser.
             </summary>
             <returns> The browser instance or null if not found. </returns>
         </member>
-        <member name="M:TestR.Web.Browsers.Chrome.Attach(System.Diagnostics.Process)">
+        <member name="M:TestR.Web.Browsers.Chrome.Attach(System.Diagnostics.Process,System.Boolean)">
             <summary>
             Attempts to attach to an existing browser.
             </summary>
             <returns> The browser instance or null if not found. </returns>
         </member>
-        <member name="M:TestR.Web.Browsers.Chrome.AttachOrCreate">
+        <member name="M:TestR.Web.Browsers.Chrome.AttachOrCreate(System.Boolean)">
             <summary>
             Attempts to attach to an existing browser. If one is not found then create and return a new one.
             </summary>
             <returns> The browser instance. </returns>
         </member>
-        <member name="M:TestR.Web.Browsers.Chrome.Create">
+        <member name="M:TestR.Web.Browsers.Chrome.Create(System.Boolean)">
             <summary>
             Attempts to create a new browser. If one is not found then we'll make sure it was started with the
             remote debugger argument. If not an exception will be thrown.
@@ -2271,25 +2290,25 @@
             Gets the type of the browser.
             </summary>
         </member>
-        <member name="M:TestR.Web.Browsers.Edge.Attach">
+        <member name="M:TestR.Web.Browsers.Edge.Attach(System.Boolean)">
             <summary>
             Attempts to attach to an existing browser.
             </summary>
             <returns> An instance of an Internet Explorer browser. </returns>
         </member>
-        <member name="M:TestR.Web.Browsers.Edge.Attach(System.Diagnostics.Process)">
+        <member name="M:TestR.Web.Browsers.Edge.Attach(System.Diagnostics.Process,System.Boolean)">
             <summary>
             Attempts to attach to an existing browser.
             </summary>
             <returns> The browser instance or null if not found. </returns>
         </member>
-        <member name="M:TestR.Web.Browsers.Edge.AttachOrCreate">
+        <member name="M:TestR.Web.Browsers.Edge.AttachOrCreate(System.Boolean)">
             <summary>
             Attempts to attach to an existing browser. If one is not found then create and return a new one.
             </summary>
             <returns> An instance of an Internet Explorer browser. </returns>
         </member>
-        <member name="M:TestR.Web.Browsers.Edge.Create">
+        <member name="M:TestR.Web.Browsers.Edge.Create(System.Boolean)">
             <summary>
             Creates a new instance of an Edge browser.
             </summary>
@@ -2356,25 +2375,25 @@
             Gets the type of the browser.
             </summary>
         </member>
-        <member name="M:TestR.Web.Browsers.Firefox.Attach">
+        <member name="M:TestR.Web.Browsers.Firefox.Attach(System.Boolean)">
             <summary>
             Attempts to attach to an existing browser.
             </summary>
             <returns> The browser instance or null if not found. </returns>
         </member>
-        <member name="M:TestR.Web.Browsers.Firefox.Attach(System.Diagnostics.Process)">
+        <member name="M:TestR.Web.Browsers.Firefox.Attach(System.Diagnostics.Process,System.Boolean)">
             <summary>
             Attempts to attach to an existing browser.
             </summary>
             <returns> The browser instance or null if not found. </returns>
         </member>
-        <member name="M:TestR.Web.Browsers.Firefox.AttachOrCreate">
+        <member name="M:TestR.Web.Browsers.Firefox.AttachOrCreate(System.Boolean)">
             <summary>
             Attempts to attach to an existing browser. If one is not found then create and return a new one.
             </summary>
             <returns> The browser instance. </returns>
         </member>
-        <member name="M:TestR.Web.Browsers.Firefox.Create">
+        <member name="M:TestR.Web.Browsers.Firefox.Create(System.Boolean)">
             <summary>
             Attempts to create a new browser.
             </summary>
@@ -2436,25 +2455,25 @@
             Gets the raw HTML of the page.
             </summary>
         </member>
-        <member name="M:TestR.Web.Browsers.InternetExplorer.Attach">
+        <member name="M:TestR.Web.Browsers.InternetExplorer.Attach(System.Boolean)">
             <summary>
             Attempts to attach to an existing browser.
             </summary>
             <returns> An instance of an Internet Explorer browser. </returns>
         </member>
-        <member name="M:TestR.Web.Browsers.InternetExplorer.Attach(System.Diagnostics.Process)">
+        <member name="M:TestR.Web.Browsers.InternetExplorer.Attach(System.Diagnostics.Process,System.Boolean)">
             <summary>
             Attempts to attach to an existing browser.
             </summary>
             <returns> The browser instance or null if not found. </returns>
         </member>
-        <member name="M:TestR.Web.Browsers.InternetExplorer.AttachOrCreate">
+        <member name="M:TestR.Web.Browsers.InternetExplorer.AttachOrCreate(System.Boolean)">
             <summary>
             Attempts to attach to an existing browser. If one is not found then create and return a new one.
             </summary>
             <returns> An instance of an Internet Explorer browser. </returns>
         </member>
-        <member name="M:TestR.Web.Browsers.InternetExplorer.Create">
+        <member name="M:TestR.Web.Browsers.InternetExplorer.Create(System.Boolean)">
             <summary>
             Creates a new instance of an Internet Explorer browser.
             </summary>

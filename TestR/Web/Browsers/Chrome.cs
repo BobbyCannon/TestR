@@ -78,9 +78,9 @@ namespace TestR.Web.Browsers
 		/// Attempts to attach to an existing browser.
 		/// </summary>
 		/// <returns> The browser instance or null if not found. </returns>
-		public static Browser Attach()
+		public static Browser Attach(bool bringToFront = true)
 		{
-			var application = Application.Attach(BrowserName, DebugArgument, false);
+			var application = Application.Attach(BrowserName, DebugArgument, false, bringToFront);
 			if (application == null)
 			{
 				return null;
@@ -96,7 +96,7 @@ namespace TestR.Web.Browsers
 		/// Attempts to attach to an existing browser.
 		/// </summary>
 		/// <returns> The browser instance or null if not found. </returns>
-		public static Browser Attach(Process process)
+		public static Browser Attach(Process process, bool bringToFront = true)
 		{
 			if (process.ProcessName != BrowserName)
 			{
@@ -108,7 +108,7 @@ namespace TestR.Web.Browsers
 				throw new ArgumentException("The process was not started with the debug arguments.", nameof(process));
 			}
 
-			var application = Application.Attach(process, false);
+			var application = Application.Attach(process, false, bringToFront);
 			var browser = new Chrome(application);
 			browser.Connect();
 			browser.Refresh();
@@ -119,9 +119,9 @@ namespace TestR.Web.Browsers
 		/// Attempts to attach to an existing browser. If one is not found then create and return a new one.
 		/// </summary>
 		/// <returns> The browser instance. </returns>
-		public static Browser AttachOrCreate()
+		public static Browser AttachOrCreate(bool bringToFront = true)
 		{
-			return Attach() ?? Create();
+			return Attach(bringToFront) ?? Create(bringToFront);
 		}
 
 		/// <summary>
@@ -129,15 +129,15 @@ namespace TestR.Web.Browsers
 		/// remote debugger argument. If not an exception will be thrown.
 		/// </summary>
 		/// <returns> The browser instance. </returns>
-		public static Browser Create()
+		public static Browser Create(bool bringToFront = true)
 		{
 			if (Application.Exists(BrowserName) && !Application.Exists(BrowserName, DebugArgument))
 			{
-				throw new Exception("The first instance of Chrome was not started with the remote debugger enabled.");
+				throw new TestRException("The first instance of Chrome was not started with the remote debugger enabled.");
 			}
 
 			// Create a new instance and return it.
-			var application = Application.Create($"{BrowserName}.exe", DebugArgument, false);
+			var application = Application.Create($"{BrowserName}.exe", DebugArgument, false, bringToFront);
 			var browser = new Chrome(application);
 			browser.Connect();
 			browser.Refresh();
@@ -245,7 +245,7 @@ namespace TestR.Web.Browsers
 			var document = response.AsJToken() as dynamic;
 			if (document == null || document.result == null || document.result.root == null || document.result.root.documentURL == null)
 			{
-				throw new Exception("Failed to get the URI.");
+				throw new TestRException("Failed to get the URI.");
 			}
 
 			return document.result.root.documentURL;
@@ -274,13 +274,13 @@ namespace TestR.Web.Browsers
 
 			if (sessions.Count == 0)
 			{
-				throw new Exception("All debugging sessions are taken.");
+				throw new TestRException("All debugging sessions are taken.");
 			}
 
 			var session = sessions.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.WebSocketDebuggerUrl));
 			if (session == null)
 			{
-				throw new Exception("Could not find a valid debugger enabled page. Make sure you close the debugger tools.");
+				throw new TestRException("Could not find a valid debugger enabled page. Make sure you close the debugger tools.");
 			}
 
 			var sessionWsEndpoint = new Uri(session.WebSocketDebuggerUrl);
@@ -288,7 +288,7 @@ namespace TestR.Web.Browsers
 
 			if (!_socket.ConnectAsync(sessionWsEndpoint, CancellationToken.None).Wait(Application.Timeout))
 			{
-				throw new Exception("Failed to connect to the server.");
+				throw new TestRException("Failed to connect to the server.");
 			}
 
 			Task.Run(() =>
@@ -309,7 +309,7 @@ namespace TestR.Web.Browsers
 				var stream = response.GetResponseStream();
 				if (stream == null)
 				{
-					throw new Exception("Failed to get a response.");
+					throw new TestRException("Failed to get a response.");
 				}
 
 				using (var reader = new StreamReader(stream))

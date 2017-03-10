@@ -301,7 +301,7 @@ namespace TestR.Desktop
 
 			if (!KeyboardFocusable)
 			{
-				throw new Exception("The element is read-only.");
+				throw new TestRException("The element is read-only.");
 			}
 
 			// Set focus for input functionality and begin.
