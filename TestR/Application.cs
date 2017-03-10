@@ -106,14 +106,15 @@ namespace TestR
 
 		#region Methods
 
-		/// <summary>
-		/// Attaches the application to an existing process.
-		/// </summary>
-		/// <param name="executablePath"> The path to the executable. </param>
-		/// <param name="arguments"> The arguments for the executable. Arguments are optional. </param>
-		/// <param name="refresh"> The setting to determine to refresh children now. </param>
-		/// <returns> The instance that represents the application. </returns>
-		public static Application Attach(string executablePath, string arguments = null, bool refresh = true)
+	    /// <summary>
+	    /// Attaches the application to an existing process.
+	    /// </summary>
+	    /// <param name="executablePath"> The path to the executable. </param>
+	    /// <param name="arguments"> The arguments for the executable. Arguments are optional. </param>
+	    /// <param name="refresh"> The setting to determine to refresh children now. </param>
+	    /// <param name="bringToFront"> Bring process to front</param>
+	    /// <returns> The instance that represents the application. </returns>
+	    public static Application Attach(string executablePath, string arguments = null, bool refresh = true, bool bringToFront = true)
 		{
 			var fileName = Path.GetFileName(executablePath);
 			if (fileName != null && !fileName.Contains("."))
@@ -150,32 +151,34 @@ namespace TestR
 						continue;
 					}
 
-					return Attach(process, refresh);
+					return Attach(process, refresh, bringToFront);
 				}
 			}
 
 			return null;
 		}
 
-		/// <summary>
-		/// Attaches the application to an existing process.
-		/// </summary>
-		/// <param name="handle"> The main window handle of the executable. </param>
-		/// <param name="refresh"> The setting to determine to refresh children now. </param>
-		/// <returns> The instance that represents the application. </returns>
-		public static Application Attach(IntPtr handle, bool refresh = true)
+        /// <summary>
+        /// Attaches the application to an existing process.
+        /// </summary>
+        /// <param name="handle"> The main window handle of the executable. </param>
+        /// <param name="refresh"> The setting to determine to refresh children now. </param>
+        /// <param name="bringToFront"> Bring process to front</param>
+        /// <returns> The instance that represents the application. </returns>
+        public static Application Attach(IntPtr handle, bool refresh = true, bool bringToFront = true)
 		{
 			var process = Process.GetProcesses().FirstOrDefault(x => x.MainWindowHandle == handle);
-			return process == null ? null : Attach(process, refresh);
+			return process == null ? null : Attach(process, refresh, bringToFront);
 		}
 
-		/// <summary>
-		/// Attaches the application to an existing process.
-		/// </summary>
-		/// <param name="process"> The process to attach to. </param>
-		/// <param name="refresh"> The setting to determine to refresh children now. </param>
-		/// <returns> The instance that represents the application. </returns>
-		public static Application Attach(Process process, bool refresh = true)
+        /// <summary>
+        /// Attaches the application to an existing process.
+        /// </summary>
+        /// <param name="process"> The process to attach to. </param>
+        /// <param name="refresh"> The setting to determine to refresh children now. </param>
+        /// <param name="bringToFront"> Bring process to front</param>
+        /// <returns> The instance that represents the application. </returns>
+        public static Application Attach(Process process, bool refresh = true, bool bringToFront = true)
 		{
 			var application = new Application(process);
 
@@ -185,22 +188,23 @@ namespace TestR
 				application.WaitForComplete();
 			}
 
-			application.BringToFront();
+			if (bringToFront) application.BringToFront();
 			NativeMethods.SetFocus(application.Handle);
 
 			return application;
 		}
 
-		/// <summary>
-		/// Attaches the application to an existing process.
-		/// </summary>
-		/// <param name="executablePath"> The path to the executable. </param>
-		/// <param name="arguments"> The arguments for the executable. Arguments are optional. </param>
-		/// <param name="refresh"> The setting to determine to refresh children now. </param>
-		/// <returns> The instance that represents the application. </returns>
-		public static Application AttachOrCreate(string executablePath, string arguments = null, bool refresh = true)
+        /// <summary>
+        /// Attaches the application to an existing process.
+        /// </summary>
+        /// <param name="executablePath"> The path to the executable. </param>
+        /// <param name="arguments"> The arguments for the executable. Arguments are optional. </param>
+        /// <param name="refresh"> The setting to determine to refresh children now. </param>
+        /// <param name="bringToFront"> Bring the process to the front. </param>
+        /// <returns> The instance that represents the application. </returns>
+        public static Application AttachOrCreate(string executablePath, string arguments = null, bool refresh = true, bool bringToFront = true)
 		{
-			return Attach(executablePath, arguments, refresh) ?? Create(executablePath, arguments, refresh);
+			return Attach(executablePath, arguments, refresh, bringToFront) ?? Create(executablePath, arguments, refresh, bringToFront);
 		}
 
 		/// <summary>
@@ -275,14 +279,15 @@ namespace TestR
 			});
 		}
 
-		/// <summary>
-		/// Creates a new application process.
-		/// </summary>
-		/// <param name="executablePath"> The path to the executable. </param>
-		/// <param name="arguments"> The arguments for the executable. Arguments are optional. </param>
-		/// <param name="refresh"> The flag to trigger loading to load state when creating the application. Defaults to true. </param>
-		/// <returns> The instance that represents an application. </returns>
-		public static Application Create(string executablePath, string arguments = null, bool refresh = true)
+        /// <summary>
+        /// Creates a new application process.
+        /// </summary>
+        /// <param name="executablePath"> The path to the executable. </param>
+        /// <param name="arguments"> The arguments for the executable. Arguments are optional. </param>
+        /// <param name="refresh"> The flag to trigger loading to load state when creating the application. Defaults to true. </param>
+        /// <param name="bringToFront"> Bring the process to the front. </param>
+        /// <returns> The instance that represents an application. </returns>
+        public static Application Create(string executablePath, string arguments = null, bool refresh = true, bool bringToFront = true)
 		{
 			var processStartInfo = new ProcessStartInfo(executablePath);
 			if (!string.IsNullOrWhiteSpace(arguments))
@@ -298,7 +303,7 @@ namespace TestR
 
 			process.WaitForInputIdle();
 
-			return Attach(process, refresh);
+			return Attach(process, refresh, bringToFront);
 		}
 
 		/// <summary>
