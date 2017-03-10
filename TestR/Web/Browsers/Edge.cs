@@ -62,7 +62,7 @@ namespace TestR.Web.Browsers
 		/// Attempts to attach to an existing browser.
 		/// </summary>
 		/// <returns> An instance of an Internet Explorer browser. </returns>
-		public static Browser Attach()
+		public static Browser Attach(bool bringToFront = true)
 		{
 			InitializeDriver();
 			var session = GetSession() ?? StartSession();
@@ -71,7 +71,7 @@ namespace TestR.Web.Browsers
 				return null;
 			}
 
-			var application = Application.Attach(BrowserName, null, false);
+			var application = Application.Attach(BrowserName, null, false, bringToFront);
 			var browser = new Edge(application, session);
 			browser.Refresh();
 			return browser;
@@ -81,7 +81,7 @@ namespace TestR.Web.Browsers
 		/// Attempts to attach to an existing browser.
 		/// </summary>
 		/// <returns> The browser instance or null if not found. </returns>
-		public static Browser Attach(Process process)
+		public static Browser Attach(Process process, bool bringToFront = true)
 		{
 			if (process.ProcessName != BrowserName)
 			{
@@ -89,7 +89,7 @@ namespace TestR.Web.Browsers
 			}
 
 			var session = GetSession() ?? StartSession();
-			var application = Application.Attach(process, false);
+			var application = Application.Attach(process, false, bringToFront);
 			var browser = new Edge(application, session);
 			browser.Refresh();
 			return browser;
@@ -99,20 +99,20 @@ namespace TestR.Web.Browsers
 		/// Attempts to attach to an existing browser. If one is not found then create and return a new one.
 		/// </summary>
 		/// <returns> An instance of an Internet Explorer browser. </returns>
-		public static Browser AttachOrCreate()
+		public static Browser AttachOrCreate(bool bringToFront = true)
 		{
-			return Attach() ?? Create();
+			return Attach(bringToFront) ?? Create(bringToFront);
 		}
 
 		/// <summary>
 		/// Creates a new instance of an Edge browser.
 		/// </summary>
 		/// <returns> An instance of an Edge browser. </returns>
-		public static Browser Create()
+		public static Browser Create(bool bringToFront = true)
 		{
 			InitializeDriver();
 			var session = GetSession() ?? StartSession();
-			var application = Application.Attach(BrowserName, null, false);
+			var application = Application.Attach(BrowserName, null, false, bringToFront);
 			var browser = new Edge(application, session);
 			browser.Refresh();
 			return browser;

@@ -13,375 +13,375 @@ using TestR.Native;
 
 namespace TestR.Web.Browsers
 {
-	/// <summary>
-	/// Represents an Internet Explorer browser.
-	/// </summary>
-	public class InternetExplorer : Browser
-	{
-		#region Constants
+    /// <summary>
+    /// Represents an Internet Explorer browser.
+    /// </summary>
+    public class InternetExplorer : Browser
+    {
+        #region Constants
 
-		/// <summary>
-		/// The name of the browser.
-		/// </summary>
-		public const string BrowserName = "iexplore";
+        /// <summary>
+        /// The name of the browser.
+        /// </summary>
+        public const string BrowserName = "iexplore";
 
-		#endregion
+        #endregion
 
-		#region Fields
+        #region Fields
 
-		private SHDocVw.InternetExplorer _browser;
+        private SHDocVw.InternetExplorer _browser;
 
-		private static int _zoneId;
+        private static int _zoneId;
 
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Constructors
 
-		private InternetExplorer(SHDocVw.InternetExplorer browser)
-			: base(Application.Attach(new IntPtr(browser.HWND), false))
-		{
-			_browser = browser;
-			_zoneId = NativeMethods.GetZoneId(_browser.LocationURL);
-		}
+        private InternetExplorer(SHDocVw.InternetExplorer browser, bool bringToFront = true)
+            : base(Application.Attach(new IntPtr(browser.HWND), false, bringToFront))
+        {
+            _browser = browser;
+            _zoneId = NativeMethods.GetZoneId(_browser.LocationURL);
+        }
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
-		/// Gets the type of the browser.
-		/// </summary>
-		public override BrowserType BrowserType => BrowserType.InternetExplorer;
+        /// <summary>
+        /// Gets the type of the browser.
+        /// </summary>
+        public override BrowserType BrowserType => BrowserType.InternetExplorer;
 
-		/// <summary>
-		/// Gets the raw HTML of the page.
-		/// </summary>
-		public override string RawHtml => ((HTMLDocument) _browser.Document).documentElement.outerHTML;
+        /// <summary>
+        /// Gets the raw HTML of the page.
+        /// </summary>
+        public override string RawHtml => ((HTMLDocument)_browser.Document).documentElement.outerHTML;
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		/// <summary>
-		/// Attempts to attach to an existing browser.
-		/// </summary>
-		/// <returns> An instance of an Internet Explorer browser. </returns>
-		public static Browser Attach()
-		{
-			var foundBrowser = GetBrowserToAttachTo();
-			if (foundBrowser == null)
-			{
-				return null;
-			}
+        /// <summary>
+        /// Attempts to attach to an existing browser.
+        /// </summary>
+        /// <returns> An instance of an Internet Explorer browser. </returns>
+        public static Browser Attach(bool bringToFront = true)
+        {
+            var foundBrowser = GetBrowserToAttachTo();
+            if (foundBrowser == null)
+            {
+                return null;
+            }
 
-			var browser = new InternetExplorer(foundBrowser);
-			browser.Refresh();
-			return browser;
-		}
+            var browser = new InternetExplorer(foundBrowser, bringToFront);
+            browser.Refresh();
+            return browser;
+        }
 
-		/// <summary>
-		/// Attempts to attach to an existing browser.
-		/// </summary>
-		/// <returns> The browser instance or null if not found. </returns>
-		public static Browser Attach(Process process)
-		{
-			if (process.ProcessName != BrowserName)
-			{
-				return null;
-			}
+        /// <summary>
+        /// Attempts to attach to an existing browser.
+        /// </summary>
+        /// <returns> The browser instance or null if not found. </returns>
+        public static Browser Attach(Process process, bool bringToFront = true)
+        {
+            if (process.ProcessName != BrowserName)
+            {
+                return null;
+            }
 
-			var foundBrowser = GetBrowserToAttachTo(process.Id);
-			if (foundBrowser == null)
-			{
-				return null;
-			}
+            var foundBrowser = GetBrowserToAttachTo(process.Id);
+            if (foundBrowser == null)
+            {
+                return null;
+            }
 
-			var browser = new InternetExplorer(foundBrowser);
-			browser.Refresh();
-			return browser;
-		}
+            var browser = new InternetExplorer(foundBrowser, bringToFront);
+            browser.Refresh();
+            return browser;
+        }
 
-		/// <summary>
-		/// Attempts to attach to an existing browser. If one is not found then create and return a new one.
-		/// </summary>
-		/// <returns> An instance of an Internet Explorer browser. </returns>
-		public static Browser AttachOrCreate()
-		{
-			return Attach() ?? Create();
-		}
+        /// <summary>
+        /// Attempts to attach to an existing browser. If one is not found then create and return a new one.
+        /// </summary>
+        /// <returns> An instance of an Internet Explorer browser. </returns>
+        public static Browser AttachOrCreate(bool bringToFront = true)
+        {
+            return Attach(bringToFront) ?? Create(bringToFront);
+        }
 
-		/// <summary>
-		/// Creates a new instance of an Internet Explorer browser.
-		/// </summary>
-		/// <returns> An instance of an Internet Explorer browser. </returns>
-		public static Browser Create()
-		{
-			var browser = new InternetExplorer(CreateInternetExplorerClass());
-			browser.Refresh();
-			return browser;
-		}
+        /// <summary>
+        /// Creates a new instance of an Internet Explorer browser.
+        /// </summary>
+        /// <returns> An instance of an Internet Explorer browser. </returns>
+        public static Browser Create(bool bringToFront = true)
+        {
+            var browser = new InternetExplorer(CreateInternetExplorerClass(), bringToFront);
+            browser.Refresh();
+            return browser;
+        }
 
-		/// <inheritdoc />
-		public override ElementHost WaitForComplete(int minimumDelay = 0)
-		{
-			//LogManager.Write("InternetExploreBrowser.WaitForComplete", LogLevel.Verbose);
+        /// <inheritdoc />
+        public override ElementHost WaitForComplete(int minimumDelay = 0)
+        {
+            //LogManager.Write("InternetExploreBrowser.WaitForComplete", LogLevel.Verbose);
 
-			// If the URL is empty and is not initialized means browser is no page is loaded.
-			if (_browser.LocationURL == string.Empty && _browser.ReadyState == tagREADYSTATE.READYSTATE_UNINITIALIZED)
-			{
-				return this;
-			}
+            // If the URL is empty and is not initialized means browser is no page is loaded.
+            if (_browser.LocationURL == string.Empty && _browser.ReadyState == tagREADYSTATE.READYSTATE_UNINITIALIZED)
+            {
+                return this;
+            }
 
-			var states = new[] { tagREADYSTATE.READYSTATE_COMPLETE, tagREADYSTATE.READYSTATE_INTERACTIVE };
-			var readyStates = new[] { "complete", "interactive" };
+            var states = new[] { tagREADYSTATE.READYSTATE_COMPLETE, tagREADYSTATE.READYSTATE_INTERACTIVE };
+            var readyStates = new[] { "complete", "interactive" };
 
-			// Wait for browser to completely load or become interactive.
-			if (!Utility.Wait(() => states.Contains(_browser.ReadyState), Application.Timeout.TotalMilliseconds))
-			{
-				throw new Exception("The browser never finished loading...");
-			}
+            // Wait for browser to completely load or become interactive.
+            if (!Utility.Wait(() => states.Contains(_browser.ReadyState), Application.Timeout.TotalMilliseconds))
+            {
+                throw new Exception("The browser never finished loading...");
+            }
 
-			// Wait for browser document to completely load or become interactive.
-			if (!Utility.Wait(() => readyStates.Contains(((IHTMLDocument2) _browser.Document).readyState), Application.Timeout.TotalMilliseconds))
-			{
-				throw new Exception("The browser document never finished loading...");
-			}
+            // Wait for browser document to completely load or become interactive.
+            if (!Utility.Wait(() => readyStates.Contains(((IHTMLDocument2)_browser.Document).readyState), Application.Timeout.TotalMilliseconds))
+            {
+                throw new Exception("The browser document never finished loading...");
+            }
 
-			// Wait while the browser is busy and not complete.
-			if (!Utility.Wait(() => !(_browser.Busy && _browser.ReadyState != tagREADYSTATE.READYSTATE_COMPLETE), Application.Timeout.TotalMilliseconds))
-			{
-				throw new Exception("The browser is currently busy.");
-			}
+            // Wait while the browser is busy and not complete.
+            if (!Utility.Wait(() => !(_browser.Busy && _browser.ReadyState != tagREADYSTATE.READYSTATE_COMPLETE), Application.Timeout.TotalMilliseconds))
+            {
+                throw new Exception("The browser is currently busy.");
+            }
 
-			return this;
-		}
+            return this;
+        }
 
-		/// <summary>
-		/// Navigates the browser to the provided URI.
-		/// </summary>
-		/// <param name="uri"> The URI to navigate to. </param>
-		protected override void BrowserNavigateTo(string uri)
-		{
-			try
-			{
-				//LogManager.Write("InternetExplorer navigated to " + uri + ".", LogLevel.Verbose);
-				if (_browser.LocationURL == uri)
-				{
-					_browser.Refresh2(3);
-				}
-				else
-				{
-					object nil = null;
-					object absoluteUri = uri;
-					_browser.Navigate2(ref absoluteUri, ref nil, ref nil, ref nil, ref nil);
-				}
+        /// <summary>
+        /// Navigates the browser to the provided URI.
+        /// </summary>
+        /// <param name="uri"> The URI to navigate to. </param>
+        protected override void BrowserNavigateTo(string uri)
+        {
+            try
+            {
+                //LogManager.Write("InternetExplorer navigated to " + uri + ".", LogLevel.Verbose);
+                if (_browser.LocationURL == uri)
+                {
+                    _browser.Refresh2(3);
+                }
+                else
+                {
+                    object nil = null;
+                    object absoluteUri = uri;
+                    _browser.Navigate2(ref absoluteUri, ref nil, ref nil, ref nil, ref nil);
+                }
 
-				WaitForComplete();
+                WaitForComplete();
 
-				var htmlDocument = _browser.Document as IHTMLDocument2;
-				if (htmlDocument == null)
-				{
-					throw new Exception("Failed to run script because no document is loaded.");
-				}
+                var htmlDocument = _browser.Document as IHTMLDocument2;
+                if (htmlDocument == null)
+                {
+                    throw new Exception("Failed to run script because no document is loaded.");
+                }
 
-				Thread.Sleep(50);
-			}
-			catch (Exception)
-			{
-				// A COMException with "RPC_E_DISCONNECTED" happens when the browser switches security context.
-				Thread.Sleep(150);
-				ReinitializeBrowser();
-				BrowserNavigateTo(uri);
-			}
-		}
+                Thread.Sleep(50);
+            }
+            catch (Exception)
+            {
+                // A COMException with "RPC_E_DISCONNECTED" happens when the browser switches security context.
+                Thread.Sleep(150);
+                ReinitializeBrowser();
+                BrowserNavigateTo(uri);
+            }
+        }
 
-		/// <summary>
-		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-		/// </summary>
-		/// <param name="disposing"> True if disposing and false if otherwise. </param>
-		protected override void Dispose(bool disposing)
-		{
-			if (!disposing)
-			{
-				return;
-			}
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        /// <param name="disposing"> True if disposing and false if otherwise. </param>
+        protected override void Dispose(bool disposing)
+        {
+            if (!disposing)
+            {
+                return;
+            }
 
-			try
-			{
-				if (_browser == null || !AutoClose)
-				{
-					return;
-				}
+            try
+            {
+                if (_browser == null || !AutoClose)
+                {
+                    return;
+                }
 
-				WaitForComplete();
+                WaitForComplete();
 
-				// We cannot allow the browser to close within a second.
-				// I assume that add-on(s) need time to start before closing the browser.
-				var timeout = TimeSpan.FromMilliseconds(1000);
-				var watch = Stopwatch.StartNew();
+                // We cannot allow the browser to close within a second.
+                // I assume that add-on(s) need time to start before closing the browser.
+                var timeout = TimeSpan.FromMilliseconds(1000);
+                var watch = Stopwatch.StartNew();
 
-				while (watch.Elapsed <= timeout)
-				{
-					Thread.Sleep(50);
-				}
+                while (watch.Elapsed <= timeout)
+                {
+                    Thread.Sleep(50);
+                }
 
-				_browser.Quit();
-			}
-			catch
-			{
-				_browser = null;
-			}
-		}
+                _browser.Quit();
+            }
+            catch
+            {
+                _browser = null;
+            }
+        }
 
-		/// <summary>
-		/// Execute JavaScript code in the current document.
-		/// </summary>
-		/// <param name="script"> The code script to execute. </param>
-		/// <param name="expectResponse"> The script will return response. </param>
-		/// <returns> The response from the execution. </returns>
-		protected override string ExecuteJavaScript(string script, bool expectResponse = true)
-		{
-			//LogManager.Write("Request: " + script, LogLevel.Verbose);
+        /// <summary>
+        /// Execute JavaScript code in the current document.
+        /// </summary>
+        /// <param name="script"> The code script to execute. </param>
+        /// <param name="expectResponse"> The script will return response. </param>
+        /// <returns> The response from the execution. </returns>
+        protected override string ExecuteJavaScript(string script, bool expectResponse = true)
+        {
+            //LogManager.Write("Request: " + script, LogLevel.Verbose);
 
-			// If the URL is empty and is not initialized means browser is no page is loaded.
-			if (!_browser.LocationURL.StartsWith("http", StringComparison.OrdinalIgnoreCase) || _browser.ReadyState == tagREADYSTATE.READYSTATE_UNINITIALIZED)
-			{
-				return string.Empty;
-			}
+            // If the URL is empty and is not initialized means browser is no page is loaded.
+            if (!_browser.LocationURL.StartsWith("http", StringComparison.OrdinalIgnoreCase) || _browser.ReadyState == tagREADYSTATE.READYSTATE_UNINITIALIZED)
+            {
+                return string.Empty;
+            }
 
-			var document = _browser.Document as IHTMLDocument2;
-			if (document == null)
-			{
-				throw new Exception("Failed to run script because no document is loaded.");
-			}
+            var document = _browser.Document as IHTMLDocument2;
+            if (document == null)
+            {
+                throw new Exception("Failed to run script because no document is loaded.");
+            }
 
-			try
-			{
-				// See if we are injecting the test script.
-				if (script.Contains("var TestR=TestR") || script.Contains("var TestR = TestR"))
-				{
-					document.parentWindow.execScript(script, "javascript");
-					return "Injected TestR Script";
-				}
+            try
+            {
+                // See if we are injecting the test script.
+                if (script.Contains("var TestR=TestR") || script.Contains("var TestR = TestR"))
+                {
+                    document.parentWindow.execScript(script, "javascript");
+                    return "Injected TestR Script";
+                }
 
-				script = script.Replace("\r", "\\r")
-					.Replace("\n", "\\n")
-					.Replace("\'", "\\\'")
-					.Replace("\"", "\\\"");
+                script = script.Replace("\r", "\\r")
+                    .Replace("\n", "\\n")
+                    .Replace("\'", "\\\'")
+                    .Replace("\"", "\\\"");
 
-				// Run the script using TestR.
-				script = HttpUtility.HtmlEncode(script);
-				var wrappedScript = $"TestR.runScript('{script}');";
-				document.parentWindow.execScript(wrappedScript, "javascript");
+                // Run the script using TestR.
+                script = HttpUtility.HtmlEncode(script);
+                var wrappedScript = $"TestR.runScript('{script}');";
+                document.parentWindow.execScript(wrappedScript, "javascript");
 
-				return GetJavascriptResult((IHTMLDocument3) document);
-			}
-			catch (Exception ex)
-			{
-				if (ex.HResult == -2147352319)
-				{
-					return TestrNotDefinedMessage;
-				}
+                return GetJavascriptResult((IHTMLDocument3)document);
+            }
+            catch (Exception ex)
+            {
+                if (ex.HResult == -2147352319)
+                {
+                    return TestrNotDefinedMessage;
+                }
 
-				throw;
-			}
-		}
+                throw;
+            }
+        }
 
-		/// <summary>
-		/// Reads the current URI directly from the browser.
-		/// </summary>
-		/// <returns> The current URI that was read from the browser. </returns>
-		protected override string GetBrowserUri()
-		{
-			//LogManager.Write("First browser's URI.", LogLevel.Verbose);
-			var location = _browser.LocationURL;
-			var zone = NativeMethods.GetZoneId(location);
-			return zone != _zoneId ? ReinitializeBrowser() : location;
-		}
+        /// <summary>
+        /// Reads the current URI directly from the browser.
+        /// </summary>
+        /// <returns> The current URI that was read from the browser. </returns>
+        protected override string GetBrowserUri()
+        {
+            //LogManager.Write("First browser's URI.", LogLevel.Verbose);
+            var location = _browser.LocationURL;
+            var zone = NativeMethods.GetZoneId(location);
+            return zone != _zoneId ? ReinitializeBrowser() : location;
+        }
 
-		/// <summary>
-		/// Creates an instance of the InternetExplorer.
-		/// </summary>
-		/// <returns> An instance of Internet Explorer. </returns>
-		private static SHDocVw.InternetExplorer CreateInternetExplorerClass()
-		{
-			try
-			{
-				var explorer = new InternetExplorerClass { Visible = true };
-				return explorer;
-			}
-			catch (Exception)
-			{
-				return CreateInternetExplorerClass();
-			}
-		}
+        /// <summary>
+        /// Creates an instance of the InternetExplorer.
+        /// </summary>
+        /// <returns> An instance of Internet Explorer. </returns>
+        private static SHDocVw.InternetExplorer CreateInternetExplorerClass()
+        {
+            try
+            {
+                var explorer = new InternetExplorerClass { Visible = true };
+                return explorer;
+            }
+            catch (Exception)
+            {
+                return CreateInternetExplorerClass();
+            }
+        }
 
-		private static SHDocVw.InternetExplorer GetBrowserToAttachTo(int processId = 0)
-		{
-			var explorers = new ShellWindowsClass()
-				.Cast<SHDocVw.InternetExplorer>()
-				.Where(x => x.FullName.ToLower().Contains("iexplore.exe"))
-				.ToList();
+        private static SHDocVw.InternetExplorer GetBrowserToAttachTo(int processId = 0)
+        {
+            var explorers = new ShellWindowsClass()
+                .Cast<SHDocVw.InternetExplorer>()
+                .Where(x => x.FullName.ToLower().Contains("iexplore.exe"))
+                .ToList();
 
-			foreach (var explorer in explorers)
-			{
-				try
-				{
-					if (processId > 0)
-					{
-						uint foundProcessId;
-						if (!NativeMethods.GetWindowThreadProcessId(new IntPtr(explorer.HWND), out foundProcessId) || foundProcessId != processId)
-						{
-							continue;
-						}
-					}
+            foreach (var explorer in explorers)
+            {
+                try
+                {
+                    if (processId > 0)
+                    {
+                        uint foundProcessId;
+                        if (!NativeMethods.GetWindowThreadProcessId(new IntPtr(explorer.HWND), out foundProcessId) || foundProcessId != processId)
+                        {
+                            continue;
+                        }
+                    }
 
-					using (var browser = new InternetExplorer(explorer))
-					{
-						//LogManager.Write($"Found browser with id of {browser.Id} at location {browser.Uri}.", LogLevel.Verbose);
-					}
+                    using (var browser = new InternetExplorer(explorer, true))
+                    {
+                        //LogManager.Write($"Found browser with id of {browser.Id} at location {browser.Uri}.", LogLevel.Verbose);
+                    }
 
-					return explorer;
-				}
-				catch (Exception)
-				{
-					// Ignore this browser and move to the next one.
-					//LogManager.Write($"Error with finding browser to attach to. Exception: {ex.Message}.", LogLevel.Verbose);
-				}
-			}
+                    return explorer;
+                }
+                catch (Exception)
+                {
+                    // Ignore this browser and move to the next one.
+                    //LogManager.Write($"Error with finding browser to attach to. Exception: {ex.Message}.", LogLevel.Verbose);
+                }
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		private string GetJavascriptResult(IHTMLDocument3 document)
-		{
-			try
-			{
-				var resultElement = document.getElementById("testrResult");
-				var result = resultElement.getAttribute("value");
+        private string GetJavascriptResult(IHTMLDocument3 document)
+        {
+            try
+            {
+                var resultElement = document.getElementById("testrResult");
+                var result = resultElement.getAttribute("value");
 
-				//LogManager.Write("Response: " + result, LogLevel.Verbose);
-				return result ?? string.Empty;
-			}
-			catch
-			{
-				// The document may have been redirected which means the member will not be there.
-				return string.Empty;
-			}
-		}
+                //LogManager.Write("Response: " + result, LogLevel.Verbose);
+                return result ?? string.Empty;
+            }
+            catch
+            {
+                // The document may have been redirected which means the member will not be there.
+                return string.Empty;
+            }
+        }
 
-		/// <summary>
-		/// Disconnects from the current browser and finds the new instance.
-		/// </summary>
-		private string ReinitializeBrowser()
-		{
-			Application.Dispose();
-			_browser = GetBrowserToAttachTo() ?? CreateInternetExplorerClass();
-			Application = Application.Attach(new IntPtr(_browser.HWND), false);
-			_zoneId = NativeMethods.GetZoneId(_browser.LocationURL);
-			return _browser.LocationURL;
-		}
+        /// <summary>
+        /// Disconnects from the current browser and finds the new instance.
+        /// </summary>
+        private string ReinitializeBrowser()
+        {
+            Application.Dispose();
+            _browser = GetBrowserToAttachTo() ?? CreateInternetExplorerClass();
+            Application = Application.Attach(new IntPtr(_browser.HWND), false, true);
+            _zoneId = NativeMethods.GetZoneId(_browser.LocationURL);
+            return _browser.LocationURL;
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }
