@@ -223,7 +223,7 @@ namespace TestR.Web.Browsers
 			var path = @"C:\Program Files (x86)\Microsoft Web Driver\MicrosoftWebDriver.exe";
 			if (!File.Exists(path))
 			{
-				throw new Exception("Please install the Microsoft web driver.");
+				throw new TestRException("Please install the Microsoft web driver.");
 			}
 
 			var process = Process.GetProcessesByName("MicrosoftWebDriver").FirstOrDefault();
@@ -269,7 +269,7 @@ namespace TestR.Web.Browsers
 				var stream = response.GetResponseStream();
 				if (stream == null)
 				{
-					throw new Exception("Failed to get a response.");
+					throw new TestRException("Failed to get a response.");
 				}
 
 				using (var reader = new StreamReader(stream))

@@ -133,7 +133,7 @@ namespace TestR.Web.Browsers
 		{
 			if (Application.Exists(BrowserName) && !Application.Exists(BrowserName, DebugArgument))
 			{
-				throw new Exception("The first instance of Chrome was not started with the remote debugger enabled.");
+				throw new TestRException("The first instance of Chrome was not started with the remote debugger enabled.");
 			}
 
 			// Create a new instance and return it.
@@ -245,7 +245,7 @@ namespace TestR.Web.Browsers
 			var document = response.AsJToken() as dynamic;
 			if (document == null || document.result == null || document.result.root == null || document.result.root.documentURL == null)
 			{
-				throw new Exception("Failed to get the URI.");
+				throw new TestRException("Failed to get the URI.");
 			}
 
 			return document.result.root.documentURL;
@@ -274,13 +274,13 @@ namespace TestR.Web.Browsers
 
 			if (sessions.Count == 0)
 			{
-				throw new Exception("All debugging sessions are taken.");
+				throw new TestRException("All debugging sessions are taken.");
 			}
 
 			var session = sessions.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.WebSocketDebuggerUrl));
 			if (session == null)
 			{
-				throw new Exception("Could not find a valid debugger enabled page. Make sure you close the debugger tools.");
+				throw new TestRException("Could not find a valid debugger enabled page. Make sure you close the debugger tools.");
 			}
 
 			var sessionWsEndpoint = new Uri(session.WebSocketDebuggerUrl);
@@ -288,7 +288,7 @@ namespace TestR.Web.Browsers
 
 			if (!_socket.ConnectAsync(sessionWsEndpoint, CancellationToken.None).Wait(Application.Timeout))
 			{
-				throw new Exception("Failed to connect to the server.");
+				throw new TestRException("Failed to connect to the server.");
 			}
 
 			Task.Run(() =>
@@ -309,7 +309,7 @@ namespace TestR.Web.Browsers
 				var stream = response.GetResponseStream();
 				if (stream == null)
 				{
-					throw new Exception("Failed to get a response.");
+					throw new TestRException("Failed to get a response.");
 				}
 
 				using (var reader = new StreamReader(stream))

@@ -273,7 +273,7 @@ namespace TestR.Web.Browsers
 			var result = (dynamic) JsonConvert.DeserializeObject(response);
 			if (result.type != "longString")
 			{
-				throw new Exception("This response was not a long string response.");
+				throw new TestRException("This response was not a long string response.");
 			}
 
 			var length = (int) result.length;

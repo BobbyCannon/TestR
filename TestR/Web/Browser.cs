@@ -431,7 +431,7 @@ namespace TestR.Web
 				//LogManager.Write("Waiting for navigation with timeout of " + timeout.Value + ".", LogLevel.Verbose);
 				if (!Utility.Wait(() => Uri != _lastUri, (int) timeout.Value.TotalMilliseconds))
 				{
-					throw new Exception($"Browser never completed navigated away from {Uri}.");
+					throw new TestRException($"Browser never completed navigated away from {Uri}.");
 				}
 			}
 			else
@@ -442,7 +442,7 @@ namespace TestR.Web
 						|| Uri.StartsWith(alternateUri, StringComparison.OrdinalIgnoreCase),
 					(int) timeout.Value.TotalMilliseconds))
 				{
-					throw new Exception($"Browser never completed navigation to {uri}. Current URI is {Uri}.");
+					throw new TestRException($"Browser never completed navigation to {uri}. Current URI is {Uri}.");
 				}
 			}
 
@@ -496,7 +496,7 @@ namespace TestR.Web
 		{
 			if (count > 3)
 			{
-				throw new Exception("Failed to inject the TestR JavaScript.");
+				throw new TestRException("Failed to inject the TestR JavaScript.");
 			}
 
 			ExecuteJavaScript(GetTestScript());
@@ -589,7 +589,7 @@ namespace TestR.Web
 			var data = ExecuteScript("JSON.stringify(TestR.getElements())");
 			if (JavascriptLibraries.Contains(JavaScriptLibrary.Angular) && data.Contains("ng-view ng-cloak"))
 			{
-				throw new Exception("JavaScript not completed?");
+				throw new TestRException("JavaScript not completed?");
 			}
 
 			var elements = JsonConvert.DeserializeObject<JArray>(data);

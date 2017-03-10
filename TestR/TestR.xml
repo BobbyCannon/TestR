@@ -1931,6 +1931,17 @@
             Retains the current size (ignores the cx and cy parameters).
             </summary>
         </member>
+        <member name="T:TestR.TestRException">
+            <summary>
+            Custom TestR Exception instead of the generic Exception
+            </summary>
+        </member>
+        <member name="M:TestR.TestRException.#ctor(System.String)">
+            <summary>
+            Custom TestR Exception instead of the generic Exception
+            </summary>
+            <param name="message"></param>
+        </member>
         <member name="T:TestR.Utility">
             <summary>
             Represents the Utility class.

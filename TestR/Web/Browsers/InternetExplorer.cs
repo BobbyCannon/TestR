@@ -138,19 +138,19 @@ namespace TestR.Web.Browsers
             // Wait for browser to completely load or become interactive.
             if (!Utility.Wait(() => states.Contains(_browser.ReadyState), Application.Timeout.TotalMilliseconds))
             {
-                throw new Exception("The browser never finished loading...");
+                throw new TestRException("The browser never finished loading...");
             }
 
             // Wait for browser document to completely load or become interactive.
             if (!Utility.Wait(() => readyStates.Contains(((IHTMLDocument2)_browser.Document).readyState), Application.Timeout.TotalMilliseconds))
             {
-                throw new Exception("The browser document never finished loading...");
+                throw new TestRException("The browser document never finished loading...");
             }
 
             // Wait while the browser is busy and not complete.
             if (!Utility.Wait(() => !(_browser.Busy && _browser.ReadyState != tagREADYSTATE.READYSTATE_COMPLETE), Application.Timeout.TotalMilliseconds))
             {
-                throw new Exception("The browser is currently busy.");
+                throw new TestRException("The browser is currently busy.");
             }
 
             return this;
@@ -181,7 +181,7 @@ namespace TestR.Web.Browsers
                 var htmlDocument = _browser.Document as IHTMLDocument2;
                 if (htmlDocument == null)
                 {
-                    throw new Exception("Failed to run script because no document is loaded.");
+                    throw new TestRException("Failed to run script because no document is loaded.");
                 }
 
                 Thread.Sleep(50);
@@ -252,7 +252,7 @@ namespace TestR.Web.Browsers
             var document = _browser.Document as IHTMLDocument2;
             if (document == null)
             {
-                throw new Exception("Failed to run script because no document is loaded.");
+                throw new TestRException("Failed to run script because no document is loaded.");
             }
 
             try
