@@ -79,10 +79,11 @@ namespace TestR.Web.Browsers
 		/// <summary>
 		/// Attempts to attach to an existing browser.
 		/// </summary>
+		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
 		/// <returns> The browser instance or null if not found. </returns>
-		public static Browser Attach()
+		public static Browser Attach(bool bringToFront = true)
 		{
-			var application = Application.Attach(BrowserName, null, false);
+			var application = Application.Attach(BrowserName, null, false, bringToFront);
 			if (application == null)
 			{
 				return null;
@@ -97,8 +98,10 @@ namespace TestR.Web.Browsers
 		/// <summary>
 		/// Attempts to attach to an existing browser.
 		/// </summary>
+		/// <param name="process"> The process to attach to. </param>
+		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
 		/// <returns> The browser instance or null if not found. </returns>
-		public static Browser Attach(Process process)
+		public static Browser Attach(Process process, bool bringToFront = true)
 		{
 			if (process.ProcessName != BrowserName)
 			{
@@ -110,7 +113,7 @@ namespace TestR.Web.Browsers
 				throw new ArgumentException("The process was not started with the debug arguments.", nameof(process));
 			}
 
-			var application = Application.Attach(process, false);
+			var application = Application.Attach(process, false, bringToFront);
 			var browser = new Firefox(application);
 			browser.Connect();
 			browser.Refresh();
@@ -120,10 +123,11 @@ namespace TestR.Web.Browsers
 		/// <summary>
 		/// Attempts to attach to an existing browser. If one is not found then create and return a new one.
 		/// </summary>
+		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
 		/// <returns> The browser instance. </returns>
-		public static Browser AttachOrCreate()
+		public static Browser AttachOrCreate(bool bringToFront = true)
 		{
-			return Attach() ?? Create();
+			return Attach(bringToFront) ?? Create(bringToFront);
 		}
 
 		/// <summary>
@@ -133,11 +137,12 @@ namespace TestR.Web.Browsers
 		/// The Firefox browser must have the "listen 6000" command run in the console to enable remote debugging. A newly created
 		/// browser will not be able to connect until someone manually starts the remote debugger.
 		/// </remarks>
+		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
 		/// <returns> The browser instance. </returns>
-		public static Browser Create()
+		public static Browser Create(bool bringToFront = true)
 		{
 			// Create a new instance and return it.
-			var application = Application.Create($"{BrowserName}.exe", DebugArgument, false);
+			var application = Application.Create($"{BrowserName}.exe", DebugArgument, false, bringToFront);
 			var browser = new Firefox(application);
 			browser.Connect();
 			browser.Refresh();
@@ -273,7 +278,7 @@ namespace TestR.Web.Browsers
 			var result = (dynamic) JsonConvert.DeserializeObject(response);
 			if (result.type != "longString")
 			{
-				throw new Exception("This response was not a long string response.");
+				throw new TestRException("This response was not a long string response.");
 			}
 
 			var length = (int) result.length;

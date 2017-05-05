@@ -119,28 +119,29 @@ namespace TestR.Web
 		/// Attach browsers for each type provided.
 		/// </summary>
 		/// <param name="type"> The type of the browser to attach to. </param>
-		public static IEnumerable<Browser> AttachBrowsers(BrowserType type = BrowserType.All)
+		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+		public static IEnumerable<Browser> AttachBrowsers(BrowserType type = BrowserType.All, bool bringToFront = true)
 		{
 			var response = new List<Browser>();
 
 			if ((type & BrowserType.Chrome) == BrowserType.Chrome)
 			{
-				response.Add(Chrome.Attach());
+				response.Add(Chrome.Attach(bringToFront));
 			}
 
 			if ((type & BrowserType.Edge) == BrowserType.Edge)
 			{
-				response.Add(Edge.Attach());
+				response.Add(Edge.Attach(bringToFront));
 			}
 
 			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)
 			{
-				response.Add(InternetExplorer.Attach());
+				response.Add(InternetExplorer.Attach(bringToFront));
 			}
 
 			if ((type & BrowserType.Firefox) == BrowserType.Firefox)
 			{
-				response.Add(Firefox.Attach());
+				response.Add(Firefox.Attach(bringToFront));
 			}
 
 			return response;
@@ -185,10 +186,11 @@ namespace TestR.Web
 		/// Attach process as a browser.
 		/// </summary>
 		/// <param name="process"> The process of the browser to attach to. </param>
+		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
 		/// <returns> The browser if successfully attached or otherwise null. </returns>
-		public static Browser AttachToBrowser(Process process)
+		public static Browser AttachToBrowser(Process process, bool bringToFront = true)
 		{
-			return Chrome.Attach(process) ?? Edge.Attach(process) ?? InternetExplorer.Attach(process) ?? Firefox.Attach(process);
+			return Chrome.Attach(process, bringToFront) ?? Edge.Attach(process, bringToFront) ?? InternetExplorer.Attach(process, bringToFront) ?? Firefox.Attach(process, bringToFront);
 		}
 
 		/// <summary>
@@ -231,13 +233,14 @@ namespace TestR.Web
 		/// Create browsers for each type provided.
 		/// </summary>
 		/// <param name="type"> The type of the browser to create. </param>
-		public static IEnumerable<Browser> CreateBrowsers(BrowserType type = BrowserType.All)
+		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+		public static IEnumerable<Browser> CreateBrowsers(BrowserType type = BrowserType.All, bool bringToFront = true)
 		{
 			var response = new List<Browser>();
 
 			if ((type & BrowserType.Chrome) == BrowserType.Chrome)
 			{
-				response.Add(Chrome.Create());
+				response.Add(Chrome.Create(bringToFront));
 			}
 
 			//if ((type & BrowserType.Edge) == BrowserType.Edge)
@@ -247,12 +250,12 @@ namespace TestR.Web
 
 			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)
 			{
-				response.Add(InternetExplorer.Create());
+				response.Add(InternetExplorer.Create(bringToFront));
 			}
 
 			if ((type & BrowserType.Firefox) == BrowserType.Firefox)
 			{
-				response.Add(Firefox.Create());
+				response.Add(Firefox.Create(bringToFront));
 			}
 
 			return response;
@@ -428,7 +431,7 @@ namespace TestR.Web
 				//LogManager.Write("Waiting for navigation with timeout of " + timeout.Value + ".", LogLevel.Verbose);
 				if (!Utility.Wait(() => Uri != _lastUri, (int) timeout.Value.TotalMilliseconds))
 				{
-					throw new Exception($"Browser never completed navigated away from {Uri}.");
+					throw new TestRException($"Browser never completed navigated away from {Uri}.");
 				}
 			}
 			else
@@ -439,7 +442,7 @@ namespace TestR.Web
 						|| Uri.StartsWith(alternateUri, StringComparison.OrdinalIgnoreCase),
 					(int) timeout.Value.TotalMilliseconds))
 				{
-					throw new Exception($"Browser never completed navigation to {uri}. Current URI is {Uri}.");
+					throw new TestRException($"Browser never completed navigation to {uri}. Current URI is {Uri}.");
 				}
 			}
 
@@ -493,7 +496,7 @@ namespace TestR.Web
 		{
 			if (count > 3)
 			{
-				throw new Exception("Failed to inject the TestR JavaScript.");
+				throw new TestRException("Failed to inject the TestR JavaScript.");
 			}
 
 			ExecuteJavaScript(GetTestScript());
@@ -586,7 +589,7 @@ namespace TestR.Web
 			var data = ExecuteScript("JSON.stringify(TestR.getElements())");
 			if (JavascriptLibraries.Contains(JavaScriptLibrary.Angular) && data.Contains("ng-view ng-cloak"))
 			{
-				throw new Exception("JavaScript not completed?");
+				throw new TestRException("JavaScript not completed?");
 			}
 
 			var elements = JsonConvert.DeserializeObject<JArray>(data);
