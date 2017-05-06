@@ -30,9 +30,7 @@ namespace TestR
 		#region Methods
 
 		/// <summary>
-		/// Runs the action until the action returns true or the timeout is reached. Will delay in between actions of the
-		/// provided
-		/// time.
+		/// Runs the action until the action returns true or the timeout is reached. Will delay in between actions of the provided time.
 		/// </summary>
 		/// <param name="action"> The action to call. </param>
 		/// <param name="timeout"> The timeout to attempt the action. This value is in milliseconds. </param>
@@ -44,9 +42,7 @@ namespace TestR
 		}
 
 		/// <summary>
-		/// Runs the action until the action returns true or the timeout is reached. Will delay in between actions of the
-		/// provided
-		/// time.
+		/// Runs the action until the action returns true or the timeout is reached. Will delay in between actions of the provided time.
 		/// </summary>
 		/// <param name="input"> The input to pass to the action. </param>
 		/// <param name="action"> The action to call. </param>

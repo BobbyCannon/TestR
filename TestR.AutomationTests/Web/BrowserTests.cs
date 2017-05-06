@@ -70,14 +70,44 @@ namespace TestR.AutomationTests.Web
 
 				var button = browser.First<Button>("addItem");
 				button.Click();
-				browser.Refresh();
+
+				var newItem = browser.FirstOrDefault("items-0");
+				Assert.IsNotNull(newItem, "Never found the new item.");
 
 				Assert.AreEqual(elementCount + 1, browser.Descendants().Count());
 				elementCount = browser.Descendants().Count();
 
 				button.Click();
-				browser.Refresh();
+
+				newItem = browser.FirstOrDefault("items-1");
+				Assert.IsNotNull(newItem, "Never found the new item.");
+
 				Assert.AreEqual(elementCount + 1, browser.Descendants().Count());
+			});
+		}
+
+		[TestMethod]
+		public void AngularNewElementCount()
+		{
+			ForEachBrowser(browser =>
+			{
+				//LogManager.UpdateReferenceId(browser, "AngularNewElements");
+				browser.NavigateTo(TestSite + "/Angular.html#/");
+
+				var span = browser.First<Span>("items-length");
+				var button = browser.First<Button>("addItem");
+				button.Click();
+
+				var count = 0;
+				var result = span.Wait(x =>
+				{
+					count++;
+					var text = ((Span)x).Text;
+					return text == "1";
+				}, 2000);
+
+				Assert.IsTrue(count > 1, "We should have tested text more than once.");
+				Assert.IsTrue(result, "The count never incremented to 1.");
 			});
 		}
 
@@ -796,8 +826,12 @@ namespace TestR.AutomationTests.Web
 				browser.First("addItem").Click();
 				Assert.AreEqual(35, browser.Descendants().Count());
 
-				browser.Refresh();
-				Assert.AreEqual(36, browser.Descendants().Count());
+				var result = browser.Wait(x =>
+				{
+					x.Refresh();
+					return x.Descendants().Count() == 36;
+				});
+				Assert.IsTrue(result, "The count never incremented.");
 			});
 		}
 

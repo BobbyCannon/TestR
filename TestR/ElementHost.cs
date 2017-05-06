@@ -323,6 +323,18 @@ namespace TestR
 		}
 
 		/// <summary>
+		/// Runs the action until the action returns true or the timeout is reached. Will delay in between actions of the provided time.
+		/// </summary>
+		/// <param name="action"> The action to call. </param>
+		/// <param name="timeout"> The timeout to attempt the action. This value is in milliseconds. </param>
+		/// <param name="delay"> The delay in between actions. This value is in milliseconds. </param>
+		/// <returns> Returns true of the call completed successfully or false if it timed out. </returns>
+		public bool Wait(Func<ElementHost, bool> action, int timeout = 1000, int delay = 50)
+		{
+			return Utility.Wait(() => action(this), timeout, delay);
+		}
+
+		/// <summary>
 		/// Waits for the host to complete the work. Will wait until no longer busy.
 		/// </summary>
 		/// <param name="minimumDelay"> The minimum delay in milliseconds to wait. Defaults to 0 milliseconds. </param>

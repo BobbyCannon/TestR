@@ -56,17 +56,23 @@
 					$scope.message = 'Hello World';
 					$scope.model = {};
 					$scope.items = [];
+
 					$scope.user = {
 						email: '',
 						userName: '',
 						password: ''
 					};
+
 					$scope.state = {
 						error: ''
 					};
-					$scope.addItem = function() {
-						var id = $scope.items.length + 1;
-						$scope.items.push({ id: id, text: id.toString() });
+
+					$scope.addItem = function () {
+						setTimeout(function() {
+							var id = $scope.items.length + 1;
+							$scope.items.push({ id: id, text: id.toString() });
+							$scope.$apply();
+						}, 500);
 					};
 
 					$scope.register = function() {
