@@ -60,6 +60,11 @@ namespace TestR.UnitTests.TestTypes
 			throw new NotImplementedException();
 		}
 
+		public override Element LeftClick(int x = 0, int y = 0)
+		{
+			throw new NotImplementedException();
+		}
+
 		public override Element MiddleClick(int x = 0, int y = 0)
 		{
 			throw new NotImplementedException();

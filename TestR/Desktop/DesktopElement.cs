@@ -85,8 +85,8 @@ namespace TestR.Desktop
 		/// <inheritdoc />
 		public override string this[string id]
 		{
-			get { return NativeElement.GetCachedPropertyValue(int.Parse(id)).ToString(); }
-			set { throw new NotImplementedException(); }
+			get => NativeElement.GetCachedPropertyValue(int.Parse(id)).ToString();
+			set => throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -236,6 +236,15 @@ namespace TestR.Desktop
 		public string GetText()
 		{
 			return ValuePattern.Create(this)?.Value ?? string.Empty;
+		}
+
+		/// <inheritdoc />
+		public override Element LeftClick(int x = 0, int y = 0)
+		{
+			var point = GetClickablePoint(x, y);
+			Mouse.LeftClick(point);
+			Thread.Sleep(100);
+			return this;
 		}
 
 		/// <inheritdoc />

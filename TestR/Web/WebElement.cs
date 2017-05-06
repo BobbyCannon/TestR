@@ -69,8 +69,8 @@ namespace TestR.Web
 		/// </remarks>
 		public string AccessKey
 		{
-			get { return this["accesskey"]; }
-			set { this["accesskey"] = value; }
+			get => this["accesskey"];
+			set => this["accesskey"] = value;
 		}
 
 		/// <summary>
@@ -86,8 +86,8 @@ namespace TestR.Web
 		/// </remarks>
 		public string Class
 		{
-			get { return this["class"]; }
-			set { this["class"] = value; }
+			get => this["class"];
+			set => this["class"] = value;
 		}
 
 		/// <summary>
@@ -98,8 +98,8 @@ namespace TestR.Web
 		/// </remarks>
 		public string ContentEditable
 		{
-			get { return this["contenteditable"]; }
-			set { this["contenteditable"] = value; }
+			get => this["contenteditable"];
+			set => this["contenteditable"] = value;
 		}
 
 		/// <summary>
@@ -110,8 +110,8 @@ namespace TestR.Web
 		/// </remarks>
 		public string ContextMenu
 		{
-			get { return this["contextmenu"]; }
-			set { this["contextmenu"] = value; }
+			get => this["contextmenu"];
+			set => this["contextmenu"] = value;
 		}
 
 		/// <summary>
@@ -122,8 +122,8 @@ namespace TestR.Web
 		/// </remarks>
 		public string Draggable
 		{
-			get { return this["draggable"]; }
-			set { this["draggable"] = value; }
+			get => this["draggable"];
+			set => this["draggable"] = value;
 		}
 
 		/// <summary>
@@ -134,8 +134,8 @@ namespace TestR.Web
 		/// </remarks>
 		public string DropZone
 		{
-			get { return this["dropzone"]; }
-			set { this["dropzone"] = value; }
+			get => this["dropzone"];
+			set => this["dropzone"] = value;
 		}
 
 		/// <inheritdoc />
@@ -158,8 +158,8 @@ namespace TestR.Web
 		/// </remarks>
 		public string Hidden
 		{
-			get { return this["hidden"]; }
-			set { this["hidden"] = value; }
+			get => this["hidden"];
+			set => this["hidden"] = value;
 		}
 
 		/// <inheritdoc />
@@ -168,8 +168,8 @@ namespace TestR.Web
 		/// <inheritdoc />
 		public override string this[string name]
 		{
-			get { return GetAttributeValue(name, Browser.AutoRefresh); }
-			set { SetAttributeValue(name, value); }
+			get => GetAttributeValue(name, Browser.AutoRefresh);
+			set => SetAttributeValue(name, value);
 		}
 
 		/// <summary>
@@ -180,8 +180,8 @@ namespace TestR.Web
 		/// </remarks>
 		public string Language
 		{
-			get { return this["lang"]; }
-			set { this["lang"] = value; }
+			get => this["lang"];
+			set => this["lang"] = value;
 		}
 
 		/// <inheritdoc />
@@ -206,8 +206,8 @@ namespace TestR.Web
 		/// </remarks>
 		public string SpellCheck
 		{
-			get { return this["spellcheck"]; }
-			set { this["spellcheck"] = value; }
+			get => this["spellcheck"];
+			set => this["spellcheck"] = value;
 		}
 
 		/// <summary>
@@ -218,8 +218,8 @@ namespace TestR.Web
 		/// </remarks>
 		public string Style
 		{
-			get { return this["style"]; }
-			set { this["style"] = value; }
+			get => this["style"];
+			set => this["style"] = value;
 		}
 
 		/// <summary>
@@ -230,8 +230,8 @@ namespace TestR.Web
 		/// </remarks>
 		public string TabIndex
 		{
-			get { return this["tabindex"]; }
-			set { this["tabindex"] = value; }
+			get => this["tabindex"];
+			set => this["tabindex"] = value;
 		}
 
 		/// <summary>
@@ -244,8 +244,8 @@ namespace TestR.Web
 		/// </summary>
 		public virtual string Text
 		{
-			get { return this["textContent"]; }
-			set { this["textContent"] = value; }
+			get => this["textContent"];
+			set => this["textContent"] = value;
 		}
 
 		/// <summary>
@@ -256,8 +256,8 @@ namespace TestR.Web
 		/// </remarks>
 		public string TextDirection
 		{
-			get { return this["dir"]; }
-			set { this["dir"] = value; }
+			get => this["dir"];
+			set => this["dir"] = value;
 		}
 
 		/// <summary>
@@ -268,8 +268,8 @@ namespace TestR.Web
 		/// </remarks>
 		public string Title
 		{
-			get { return this["title"]; }
-			set { this["title"] = value; }
+			get => this["title"];
+			set => this["title"] = value;
 		}
 
 		/// <summary>
@@ -280,8 +280,8 @@ namespace TestR.Web
 		/// </remarks>
 		public string Translate
 		{
-			get { return this["translate"]; }
-			set { this["translate"] = value; }
+			get => this["translate"];
+			set => this["translate"] = value;
 		}
 
 		/// <inheritdoc />
@@ -432,6 +432,18 @@ namespace TestR.Web
 		}
 
 		/// <inheritdoc />
+		public override Element LeftClick(int x = 0, int y = 0)
+		{
+			ScrollIntoView();
+
+			var clickX = Location.X + x + (Width > 0 ? Width / 2 : 0);
+			var clickY = Location.Y + y + (Height > 0 ? Height / 2 : 0);
+
+			Mouse.LeftClick(clickX, clickY);
+			return this;
+		}
+
+		/// <inheritdoc />
 		public override Element MiddleClick(int x = 0, int y = 0)
 		{
 			ScrollIntoView();
@@ -480,9 +492,10 @@ namespace TestR.Web
 		/// <summary>
 		/// Scroll the element into view.
 		/// </summary>
-		public void ScrollIntoView()
+		public WebElement ScrollIntoView()
 		{
 			Browser.ExecuteScript("$('#" + Id + "')[0].scrollIntoView()");
+			return this;
 		}
 
 		/// <summary>

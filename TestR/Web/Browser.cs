@@ -406,6 +406,17 @@ namespace TestR.Web
 			ExecuteJavaScript("TestR.removeElementAttribute('" + element.Id + "', '" + name + "');", false);
 		}
 
+		/// <summary>
+		/// Resize the browser to the provided size.
+		/// </summary>
+		/// <param name="width"> The width to set. </param>
+		/// <param name="height"> The height to set. </param>
+		public ElementHost Resize(int width, int height)
+		{
+			Application.Resize(width, height);
+			return this;
+		}
+
 		/// <inheritdoc />
 		public override ElementHost WaitForComplete(int minimumDelay = 0)
 		{

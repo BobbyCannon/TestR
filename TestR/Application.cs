@@ -419,6 +419,18 @@ namespace TestR
 		}
 
 		/// <summary>
+		/// Resize the browser to the provided size.
+		/// </summary>
+		/// <param name="width"> The width to set. </param>
+		/// <param name="height"> The height to set. </param>
+		public ElementHost Resize(int width, int height)
+		{
+			var location = Location;
+			NativeMethods.MoveWindow(Process.MainWindowHandle, location.X, location.Y, width, height, true);
+			return this;
+		}
+
+		/// <summary>
 		/// Waits for the Process to not be busy.
 		/// </summary>
 		/// <param name="minimumDelay"> The minimum delay in milliseconds to wait. Defaults to 0 milliseconds. </param>

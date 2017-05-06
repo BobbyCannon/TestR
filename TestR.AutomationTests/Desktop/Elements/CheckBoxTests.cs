@@ -204,7 +204,9 @@ namespace TestR.AutomationTests.Desktop.Elements
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
 				var checkbox = application.First<CheckBox>("checkBox1");
-				Assert.AreEqual(new Point(737, 396), checkbox.Location);
+				var x = application.Location.X + 248;
+				var y = application.Location.Y + 173;
+				Assert.AreEqual(new Point(x, y), checkbox.Location);
 			}
 		}
 

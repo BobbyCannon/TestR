@@ -36,7 +36,7 @@
 	},
 	getElements: function () {
 		var response = [];
-		var allElements = document.body.getElementsByTagName('*');
+		var allElements = document.getElementsByTagName('*');
 		var i;
 
 		// Add element IDs so we can build element hierarchy.
@@ -120,17 +120,21 @@
 		return TestR.getValueFromElement(element, name);
 	},
 	getValueFromElement: function (element, name) {
-		if (element === undefined || element === null) {
+		try {
+			if (element === undefined || element === null) {
+				return null;
+			}
+
+			var value = element[name];
+			if ((value === null || value === undefined) || (element.nodeType === 1 && typeof (value) === 'object')) {
+				value = element.attributes[name];
+			}
+
+			if (value !== null && value !== undefined) {
+				return (value.value || value.nodeValue || value).toString();
+			}
+		} catch (e) {
 			return null;
-		}
-
-		var value = element[name];
-		if ((value === null || value === undefined) || (element.nodeType === 1 && typeof (value) === 'object')) {
-			value = element.attributes[name];
-		}
-
-		if (value !== null && value !== undefined) {
-			return (value.value || value.nodeValue || value).toString();
 		}
 
 		return null;

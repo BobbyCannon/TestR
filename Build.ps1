@@ -1,4 +1,4 @@
-param (
+﻿param (
     [Parameter()]
     [string] $Configuration = "Release",
     [Parameter()]
@@ -27,7 +27,13 @@ if (!(Test-Path $nugetDestination -PathType Container)){
 
 .\IncrementVersion.ps1 -Build +
 
-$msbuild = "C:\Program Files (x86)\MSBuild\14.0\Bin\msbuild.exe"
+# Visual Studio Online Support
+$msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\MSBuild.exe"
+
+if (!(Test-Path $msbuild -PathType Leaf)) {
+	$msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\msbuild.exe"	
+}
+
 & $msbuild "$scriptPath\TestR.sln" /p:Configuration="$Configuration" /p:Platform="Any CPU" /t:Rebuild /p:VisualStudioVersion=14.0 /v:m /m
 
 if ($LASTEXITCODE -ne 0) {

@@ -116,6 +116,13 @@ namespace TestR
 		public abstract Element Focus();
 
 		/// <summary>
+		/// Performs mouse left click at the center of the element.
+		/// </summary>
+		/// <param name="x"> Optional X offset when clicking. </param>
+		/// <param name="y"> Optional Y offset when clicking. </param>
+		public abstract Element LeftClick(int x = 0, int y = 0);
+
+		/// <summary>
 		/// Performs mouse middle click at the center of the element.
 		/// </summary>
 		/// <param name="x"> Optional X offset when clicking. </param>

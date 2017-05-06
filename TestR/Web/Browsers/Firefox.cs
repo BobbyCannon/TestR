@@ -265,7 +265,15 @@ namespace TestR.Web.Browsers
 		{
 			var listTabRequest = new { To = "root", Type = "listTabs" };
 			var listTabResponse = SendRequestAndReadResponse(listTabRequest, x => x.from == "root" && x.tabs != null);
-			var selected = listTabResponse.tabs[(int) listTabResponse.selected];
+
+			while (listTabResponse.tabs.Count <= 0)
+			{
+				Thread.Sleep(10);
+				listTabResponse = SendRequestAndReadResponse(listTabRequest, x => x.from == "root" && x.tabs != null);
+			}
+
+			var index = (int) listTabResponse.selected;
+			var selected = listTabResponse.tabs[index];
 			_consoleActor = selected.consoleActor;
 			_tabActor = selected.actor;
 
