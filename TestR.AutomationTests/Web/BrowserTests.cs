@@ -331,6 +331,7 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "ElementChildren");
 				browser.NavigateTo(TestSite + "/relationships.html");
+				Assert.AreEqual(4045, browser.Descendants().Count());
 				var children = browser.First("parent1div").Children;
 
 				var expected = new[] { "child1div", "child2span", "child3br", "child4input" };

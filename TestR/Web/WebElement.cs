@@ -165,6 +165,11 @@ namespace TestR.Web
 		/// <inheritdoc />
 		public override string Id => _element.id;
 
+		/// <summary>
+		/// Gets the ID of the parent element.
+		/// </summary>
+		public string ParentId => _element.parentId;
+
 		/// <inheritdoc />
 		public override string this[string name]
 		{

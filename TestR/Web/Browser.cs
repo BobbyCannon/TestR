@@ -519,22 +519,6 @@ namespace TestR.Web
 			}
 		}
 
-		private void AddChildren(ElementHost element, JArray elements)
-		{
-			element.Children.Clear();
-
-			var children = elements.Where(x => x["parentId"]?.ToString() == element.Id && x["id"]?.ToString() != element.Id)
-				.Select(x => WebElement.Create(x, this, element))
-				.ToList();
-
-			element.Children.AddRange(children);
-
-			foreach (var child in element.Children)
-			{
-				AddChildren(child, elements);
-			}
-		}
-
 		/// <summary>
 		/// Runs script to detect specific libraries.
 		/// </summary>
@@ -609,13 +593,19 @@ namespace TestR.Web
 				return;
 			}
 
-			elements.Where(x => x["parentId"]?.ToString() == "")
-				.ForEach(x => Children.Add(WebElement.Create(x, this, this)));
+			var webElements = elements.Select(x => WebElement.Create(x, this, null)).ToList();
 
-			foreach (var element in Children)
+			foreach (var element in webElements)
 			{
-				AddChildren(element, elements);
+				element.Children.AddRange(webElements.Where(x => x.ParentId == element.Id));
+
+				foreach (var child in element.Children)
+				{
+					child.Parent = element;
+				}
 			}
+
+			Children.AddRange(webElements.Where(x => x.Parent == null));
 		}
 
 		#endregion

@@ -4933,6 +4933,11 @@
         <member name="P:TestR.Web.WebElement.Id">
             <inheritdoc />
         </member>
+        <member name="P:TestR.Web.WebElement.ParentId">
+            <summary>
+            Gets the ID of the parent element.
+            </summary>
+        </member>
         <member name="P:TestR.Web.WebElement.Item(System.String)">
             <inheritdoc />
         </member>
