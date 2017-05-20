@@ -470,6 +470,8 @@ namespace TestR.Web
 		/// <inheritdoc />
 		public override ElementHost Refresh()
 		{
+			Children.Clear();
+			Children.AddRange(Browser.GetElements(Id));
 			return this;
 		}
 

@@ -7,7 +7,7 @@
 	autoId: 1,
 	ignoredTags: ['script'],
 	resultElementId: 'testrResult',
-	triggerEvent: function (element, eventName, values) {
+	triggerEvent: function(element, eventName, values) {
 		var eventObj = document.createEventObject
 			? document.createEventObject()
 			: document.createEvent('Events');
@@ -24,7 +24,7 @@
 			? element.dispatchEvent(eventObj)
 			: element.fireEvent('on' + eventName, eventObj);
 	},
-	getElementLocation: function (id) {
+	getElementLocation: function(id) {
 		var element = document.getElementById(id);
 		var box = element.getBoundingClientRect();
 		var borderWidth = (window.outerWidth - window.innerWidth) / 2;
@@ -34,7 +34,7 @@
 		var left = Math.round(x + box.left);
 		return JSON.stringify({ x: left, y: top });
 	},
-	getElements: function () {
+	getElements: function(forParentId) {
 		var response = [];
 		var allElements = document.getElementsByTagName('*');
 		var i;
@@ -62,6 +62,10 @@
 			var elementId = TestR.getValueFromElement(element, 'id');
 			var elementName = TestR.getValueFromElement(element, 'name') || '';
 			var parentId = TestR.getValueFromElement(element.parentNode, 'id') || '';
+
+			if (forParentId !== undefined && parentId !== forParentId) {
+				continue;
+			}
 
 			var item = {
 				id: elementId,
@@ -105,13 +109,13 @@
 					}
 				}
 			}
-			
+
 			response.push(item);
 		}
 
 		return response;
 	},
-	getElementValue: function (id, name) {
+	getElementValue: function(id, name) {
 		var element = document.getElementById(id);
 		if (element === undefined || element === null) {
 			return null;
@@ -119,7 +123,7 @@
 
 		return TestR.getValueFromElement(element, name);
 	},
-	getValueFromElement: function (element, name) {
+	getValueFromElement: function(element, name) {
 		try {
 			if (element === undefined || element === null) {
 				return null;
@@ -139,7 +143,7 @@
 
 		return null;
 	},
-	setElementValue: function (id, name, value) {
+	setElementValue: function(id, name, value) {
 		var element = document.getElementById(id);
 		if (element === undefined || element === null) {
 			return;
@@ -151,15 +155,15 @@
 			element.setAttribute(name, value);
 		}
 	},
-	removeElement: function (id) {
+	removeElement: function(id) {
 		var element = document.getElementById(id);
 		element.parentNode.removeChild(element);
 	},
-	removeElementAttribute: function (id, name) {
+	removeElementAttribute: function(id, name) {
 		var element = document.getElementById(id);
 		element.removeAttribute(name);
 	},
-	rightClick: function (id) {
+	rightClick: function(id) {
 		var element = document.getElementById(id);
 		var evt = element.ownerDocument.createEvent('MouseEvents');
 		var rightClickButtonCode = 2;
@@ -175,7 +179,7 @@
 			return !element.dispatchEvent(evt);
 		}
 	},
-	runScript: function (script) {
+	runScript: function(script) {
 		// decode the script.
 		script = script
 			.replace(/&quot;/g, '"')

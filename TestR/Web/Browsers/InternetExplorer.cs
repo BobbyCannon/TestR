@@ -31,7 +31,6 @@ namespace TestR.Web.Browsers
 
         private SHDocVw.InternetExplorer _browser;
 
-        private static int _zoneId;
 
         #endregion
 
@@ -41,7 +40,6 @@ namespace TestR.Web.Browsers
             : base(Application.Attach(new IntPtr(browser.HWND), false, bringToFront))
         {
             _browser = browser;
-            _zoneId = NativeMethods.GetZoneId(_browser.LocationURL);
         }
 
         #endregion
@@ -161,7 +159,7 @@ namespace TestR.Web.Browsers
             return this;
         }
 
-        /// <summary>
+	    /// <summary>
         /// Navigates the browser to the provided URI.
         /// </summary>
         /// <param name="uri"> The URI to navigate to. </param>
@@ -172,13 +170,15 @@ namespace TestR.Web.Browsers
                 //LogManager.Write("InternetExplorer navigated to " + uri + ".", LogLevel.Verbose);
                 if (_browser.LocationURL == uri)
                 {
-                    _browser.Refresh2(3);
+                    //_browser.Refresh2(3);
+                    _browser.Refresh();
                 }
                 else
                 {
-                    object nil = null;
-                    object absoluteUri = uri;
-                    _browser.Navigate2(ref absoluteUri, ref nil, ref nil, ref nil, ref nil);
+                    //object nil = null;
+                    //object absoluteUri = uri;
+                    //_browser.Navigate2(ref absoluteUri, ref nil, ref nil, ref nil, ref nil);
+					_browser.Navigate(uri);
                 }
 
                 WaitForComplete();
@@ -299,9 +299,7 @@ namespace TestR.Web.Browsers
         protected override string GetBrowserUri()
         {
             //LogManager.Write("First browser's URI.", LogLevel.Verbose);
-            var location = _browser.LocationURL;
-            var zone = NativeMethods.GetZoneId(location);
-            return zone != _zoneId ? ReinitializeBrowser() : location;
+            return _browser.LocationURL;
         }
 
         /// <summary>
@@ -312,8 +310,15 @@ namespace TestR.Web.Browsers
         {
             try
             {
-                var explorer = new InternetExplorerClass { Visible = true };
-                return explorer;
+	            var explorer = new InternetExplorerClass
+	            {
+		            Visible = true,
+					RegisterAsBrowser = true,
+					RegisterAsDropTarget = true,
+					IWebBrowserApp_Visible = true
+	            };
+
+				return explorer;
             }
             catch (Exception)
             {
@@ -382,8 +387,8 @@ namespace TestR.Web.Browsers
         {
             Application.Dispose();
             _browser = GetBrowserToAttachTo() ?? CreateInternetExplorerClass();
-            Application = Application.Attach(new IntPtr(_browser.HWND), false, true);
-            _zoneId = NativeMethods.GetZoneId(_browser.LocationURL);
+            Application = Application.Attach(new IntPtr(_browser.HWND), false);
+            //_zoneId = NativeMethods.GetZoneId(_browser.LocationURL);
             return _browser.LocationURL;
         }
 

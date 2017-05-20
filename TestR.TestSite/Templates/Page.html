@@ -5,8 +5,10 @@
 <br />
 <button id="addItem" ng-click="addItem()">Add Item</button><br />
 Total: <span id="items-length">{{ items.length }}</span><br />
-<div id="items-{{ $index }}" ng-repeat="item in items">
-	{{ item.text }}
+<div id="items">
+	<div id="items-{{ $index }}" ng-repeat="item in items">
+		{{ item.text }}
+	</div>
 </div>
-<a id="formLink" href="#/form">Form</a>
-<a id="anotherPageLink" href="#/anotherPage">Another Page</a>
+<a id="formLink" href="#!/form">Form</a>
+<a id="anotherPageLink" href="#!/anotherPage">Another Page</a>

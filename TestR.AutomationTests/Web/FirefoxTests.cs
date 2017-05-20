@@ -86,6 +86,34 @@ namespace TestR.AutomationTests.Web
 			}
 		}
 
+		/// <summary>
+		/// Not working because the 2nd process will close
+		/// </summary>
+		//[TestMethod]
+		public void CreateTwoInstances()
+		{
+			using (var browser = Firefox.Create())
+			{
+				using (var browser2 = Firefox.Create())
+				{
+					var expected = $"https://{Environment.MachineName.ToLower()}/";
+					Assert.IsNotNull(browser);
+					Console.WriteLine(browser.Id);
+					browser.NavigateTo(expected);
+					browser.ExecuteScript("window.location.href").Dump();
+					Assert.AreEqual(expected, browser.Uri);
+
+					Assert.IsNotNull(browser2);
+					Console.WriteLine(browser2.Id);
+					browser2.NavigateTo(expected);
+					browser2.ExecuteScript("window.location.href").Dump();
+					Assert.AreEqual(expected, browser2.Uri);
+
+					Assert.AreNotEqual(browser.Id, browser2.Id);
+				}
+			}
+		}
+
 		[TestInitialize]
 		public void TestInitialize()
 		{

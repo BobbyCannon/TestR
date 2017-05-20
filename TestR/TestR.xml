@@ -2006,7 +2006,6 @@
             <summary>
             This is the base class for browsers.
             </summary>
-            <exclude> </exclude>
         </member>
         <member name="F:TestR.Web.Browser.DefaultTimeout">
             <summary>

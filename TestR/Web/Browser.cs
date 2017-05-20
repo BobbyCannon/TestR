@@ -17,7 +17,6 @@ namespace TestR.Web
 	/// <summary>
 	/// This is the base class for browsers.
 	/// </summary>
-	/// <exclude> </exclude>
 	public abstract class Browser : ElementHost
 	{
 		#region Constants
@@ -48,6 +47,11 @@ namespace TestR.Web
 		protected Browser(Application application)
 			: base(application, application)
 		{
+			if (application == null)
+			{
+				throw new ArgumentNullException(nameof(application));
+			}
+
 			AutoRefresh = true;
 			JavascriptLibraries = new JavaScriptLibrary[0];
 		}
@@ -104,7 +108,7 @@ namespace TestR.Web
 		/// <summary>
 		/// Gets the raw HTML of the page.
 		/// </summary>
-		public virtual string RawHtml => ExecuteScript("document.getElementsByTagName('body')[0].innerHTML");
+		public virtual string RawHtml => ExecuteScript("document.documentElement.outerHTML");
 
 		/// <summary>
 		/// Gets the URI of the current page.
@@ -519,6 +523,18 @@ namespace TestR.Web
 			}
 		}
 
+		internal ICollection<WebElement> GetElements(string parentId = null)
+		{
+			var data = ExecuteScript(parentId == null ? "JSON.stringify(TestR.getElements())" : $"JSON.stringify(TestR.getElements('{parentId}'))");
+			if (JavascriptLibraries.Contains(JavaScriptLibrary.Angular) && data.Contains("ng-view ng-cloak"))
+			{
+				throw new TestRException("JavaScript not completed?");
+			}
+
+			var elements = JsonConvert.DeserializeObject<JArray>(data);
+			return elements?.Select(x => WebElement.Create(x, this, null)).ToList() ?? new List<WebElement>();
+		}
+
 		/// <summary>
 		/// Runs script to detect specific libraries.
 		/// </summary>
@@ -551,16 +567,16 @@ namespace TestR.Web
 				libraries.Add(JavaScriptLibrary.Moment);
 			}
 
-			//neither of the bootstrap tests are guaranteed since it's possible to customize 
-			//bootstrap to not include some plugins. Bootstrap doesn't provide a namespace to
-			//test against, so there is a small change of a false positive
+			// neither of the bootstrap tests are guaranteed since it's possible to customize 
+			// bootstrap to not include some plugins. Bootstrap doesn't provide a namespace to
+			// test against, so there is a small change of a false positive
 			hasLibrary = ExecuteScript("typeof $().emulateTransitionEnd == 'function'");
 			if (hasLibrary.Equals("true", StringComparison.OrdinalIgnoreCase))
 			{
 				libraries.Add(JavaScriptLibrary.Bootstrap3);
 			}
 
-			//both bs 2 and 3 have popover but only 3+ uses emulateTransitionEnd
+			// both bs 2 and 3 have popover but only 3+ uses emulateTransitionEnd
 			if (!libraries.Contains(JavaScriptLibrary.Bootstrap3))
 			{
 				hasLibrary = ExecuteScript("typeof($.fn.popover) !== 'undefined'");
@@ -581,19 +597,7 @@ namespace TestR.Web
 			//LogManager.Write("Refresh the elements.", LogLevel.Verbose);
 			Children.Clear();
 
-			var data = ExecuteScript("JSON.stringify(TestR.getElements())");
-			if (JavascriptLibraries.Contains(JavaScriptLibrary.Angular) && data.Contains("ng-view ng-cloak"))
-			{
-				throw new TestRException("JavaScript not completed?");
-			}
-
-			var elements = JsonConvert.DeserializeObject<JArray>(data);
-			if (elements == null)
-			{
-				return;
-			}
-
-			var webElements = elements.Select(x => WebElement.Create(x, this, null)).ToList();
+			var webElements = GetElements();
 
 			foreach (var element in webElements)
 			{

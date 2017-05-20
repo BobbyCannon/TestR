@@ -1,5 +1,6 @@
 #region References
 
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Management.Automation;
@@ -120,6 +121,31 @@ namespace TestR.AutomationTests.Web
 			using (var browser = InternetExplorer.Create())
 			{
 				Assert.IsNotNull(browser);
+			}
+		}
+
+		[TestMethod]
+		public void CreateTwoInstances()
+		{
+			using (var browser = InternetExplorer.Create())
+			{
+				using (var browser2 = InternetExplorer.Create())
+				{
+					var expected = $"https://{Environment.MachineName.ToLower()}/";
+					Assert.IsNotNull(browser);
+					Console.WriteLine(browser.Id);
+					browser.NavigateTo(expected);
+					browser.ExecuteScript("window.location.href").Dump();
+					Assert.AreEqual(expected, browser.Uri);
+
+					Assert.IsNotNull(browser2);
+					Console.WriteLine(browser2.Id);
+					browser2.NavigateTo(expected);
+					browser2.ExecuteScript("window.location.href").Dump();
+					Assert.AreEqual(expected, browser2.Uri);
+
+					Assert.AreNotEqual(browser.Id, browser2.Id);
+				}
 			}
 		}
 

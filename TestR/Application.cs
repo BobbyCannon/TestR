@@ -168,6 +168,12 @@ namespace TestR
 		public static Application Attach(IntPtr handle, bool refresh = true, bool bringToFront = true)
 		{
 			var process = Process.GetProcesses().FirstOrDefault(x => x.MainWindowHandle == handle);
+			if (process == null)
+			{
+				NativeMethods.GetWindowThreadProcessId(handle, out uint processId);
+				process = Process.GetProcesses().FirstOrDefault(x => x.Id == processId);
+			}
+
 			return process == null ? null : Attach(process, refresh, bringToFront);
 		}
 
@@ -192,6 +198,7 @@ namespace TestR
 			{
 				application.BringToFront();
 			}
+
 			NativeMethods.SetFocus(application.Handle);
 
 			return application;
