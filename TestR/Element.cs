@@ -116,6 +116,35 @@ namespace TestR
 		public abstract Element Focus();
 
 		/// <summary>
+		/// Get next sibling. Returns null if no sibling is found.
+		/// </summary>
+		public Element GetNextSibling()
+		{
+			var index = Parent?.Children.IndexOf(this);
+			if (index == null || index + 1 >= Parent?.Children.Count)
+			{
+				return null;
+			}
+
+			return Parent.Children[index.Value + 1];
+		}
+
+		/// <summary>
+		/// Get previous sibling. Returns null if no sibling is found.
+		/// </summary>
+		public Element GetPreviousSibling()
+		{
+			
+			var index = Parent?.Children.IndexOf(this);
+			if (index == null || index < 1)
+			{
+				return null;
+			}
+
+			return Parent.Children[index.Value - 1];
+		}
+
+		/// <summary>
 		/// Performs mouse left click at the center of the element.
 		/// </summary>
 		/// <param name="x"> Optional X offset when clicking. </param>

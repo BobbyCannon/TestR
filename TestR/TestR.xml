@@ -144,7 +144,7 @@
         </member>
         <member name="M:TestR.Application.Focus">
             <summary>
-            Sets the application to as the focused window.
+            Sets the application as the focused window.
             </summary>
         </member>
         <member name="M:TestR.Application.IsInFront">
@@ -152,6 +152,13 @@
             Returns a value indicating if the windows is in front of all other windows.
             </summary>
             <returns> </returns>
+        </member>
+        <member name="M:TestR.Application.MoveWindow(System.Int32,System.Int32)">
+            <summary>
+            Move the window and resize it.
+            </summary>
+            <param name="x"> The x coordinate to move to. </param>
+            <param name="y"> The y coordinate to move to. </param>
         </member>
         <member name="M:TestR.Application.MoveWindow(System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
@@ -682,6 +689,16 @@
             Represents a window for an application.
             </summary>
         </member>
+        <member name="P:TestR.Desktop.Elements.Window.IsMaximized">
+            <summary>
+            Get a flag that determines if the window is maximized.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.Elements.Window.IsMinimized">
+            <summary>
+            Get a flag that determines if the window is minimized.
+            </summary>
+        </member>
         <member name="P:TestR.Desktop.Elements.Window.Location">
             <summary>
             Gets the location of the element.
@@ -695,6 +712,11 @@
         <member name="P:TestR.Desktop.Elements.Window.TitleBar">
             <summary>
             Gets the title bar for the window. Returns null if the window does not have a title bar.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.Elements.Window.WindowState">
+            <summary>
+            Gets the state of the window.
             </summary>
         </member>
         <member name="M:TestR.Desktop.Elements.Window.BringToFront">
@@ -960,6 +982,16 @@
         <member name="M:TestR.Element.Focus">
             <summary>
             Set focus on the element.
+            </summary>
+        </member>
+        <member name="M:TestR.Element.GetNextSibling">
+            <summary>
+            Get next sibling. Returns null if no sibling is found.
+            </summary>
+        </member>
+        <member name="M:TestR.Element.GetPreviousSibling">
+            <summary>
+            Get previous sibling. Returns null if no sibling is found.
             </summary>
         </member>
         <member name="M:TestR.Element.LeftClick(System.Int32,System.Int32)">
@@ -2111,6 +2143,11 @@
             <param name="script"> The script to run. </param>
             <param name="expectResponse"> The script will return response. </param>
             <returns> The response from the script. </returns>
+        </member>
+        <member name="M:TestR.Web.Browser.Focus">
+            <summary>
+            Sets the browser as the focused window.
+            </summary>
         </member>
         <member name="M:TestR.Web.Browser.ForEachBrowser(System.Action{TestR.Web.Browser},TestR.Web.BrowserType)">
             <summary>
@@ -4198,6 +4235,9 @@
             Returns the selected option or null if nothing is selected.
             </summary>
         </member>
+        <member name="P:TestR.Web.Elements.Select.Text">
+            <inheritdoc />
+        </member>
         <member name="P:TestR.Web.Elements.Select.Value">
             <summary>
             Gets or sets the value for this select.
@@ -4932,11 +4972,6 @@
         <member name="P:TestR.Web.WebElement.Id">
             <inheritdoc />
         </member>
-        <member name="P:TestR.Web.WebElement.ParentId">
-            <summary>
-            Gets the ID of the parent element.
-            </summary>
-        </member>
         <member name="P:TestR.Web.WebElement.Item(System.String)">
             <inheritdoc />
         </member>
@@ -4953,6 +4988,11 @@
         </member>
         <member name="P:TestR.Web.WebElement.Name">
             <inheritdoc />
+        </member>
+        <member name="P:TestR.Web.WebElement.ParentId">
+            <summary>
+            Gets the ID of the parent element.
+            </summary>
         </member>
         <member name="P:TestR.Web.WebElement.SpellCheck">
             <summary>
@@ -5124,6 +5164,9 @@
             <returns> The string of element details. </returns>
         </member>
         <member name="M:TestR.Web.WebElement.ToString">
+            <inheritdoc />
+        </member>
+        <member name="M:TestR.Web.WebElement.TypeText(System.String)">
             <inheritdoc />
         </member>
         <member name="M:TestR.Web.WebElement.WaitForComplete(System.Int32)">

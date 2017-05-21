@@ -165,11 +165,6 @@ namespace TestR.Web
 		/// <inheritdoc />
 		public override string Id => _element.id;
 
-		/// <summary>
-		/// Gets the ID of the parent element.
-		/// </summary>
-		public string ParentId => _element.parentId;
-
 		/// <inheritdoc />
 		public override string this[string name]
 		{
@@ -202,6 +197,11 @@ namespace TestR.Web
 
 		/// <inheritdoc />
 		public override string Name => _element.name;
+
+		/// <summary>
+		/// Gets the ID of the parent element.
+		/// </summary>
+		public string ParentId => _element.parentId;
 
 		/// <summary>
 		/// Gets or sets the spell check (spellcheck) attribute.
@@ -333,6 +333,7 @@ namespace TestR.Web
 		public override Element Focus()
 		{
 			Browser.ExecuteScript("document.getElementById('" + Id + "').focus()");
+			Browser.ExecuteScript("document.getElementById('" + Id + "').select()");
 			return this;
 		}
 
@@ -583,6 +584,15 @@ namespace TestR.Web
 		public override string ToString()
 		{
 			return $"{GetType().Name} : {Id} : {Name}";
+		}
+
+		/// <inheritdoc />
+		public override Element TypeText(string value)
+		{
+			Browser.Focus();
+			Focus();
+			Native.Keyboard.TypeText(value);
+			return this;
 		}
 
 		/// <inheritdoc />

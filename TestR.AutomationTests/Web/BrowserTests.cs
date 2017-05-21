@@ -586,6 +586,46 @@ namespace TestR.AutomationTests.Web
 		}
 
 		[TestMethod]
+		public void GetNextSibling()
+		{
+			ForEachBrowser(browser =>
+			{
+				//LogManager.UpdateReferenceId(browser, "AngularNewElements");
+				browser.NavigateTo(TestSite + "/Angular.html#!/");
+
+				var items = browser.First<Division>("items");
+				Assert.AreEqual(0, items.Children.Count);
+
+				browser.First<Button>("addItem").Click().Click();
+
+				var item0 = browser.First("items-0");
+				var item1 = item0.GetNextSibling();
+
+				Assert.AreEqual("items-1", item1.Id);
+			});
+		}
+
+		[TestMethod]
+		public void GetPreviousSibling()
+		{
+			ForEachBrowser(browser =>
+			{
+				//LogManager.UpdateReferenceId(browser, "AngularNewElements");
+				browser.NavigateTo(TestSite + "/Angular.html#!/");
+
+				var items = browser.First<Division>("items");
+				Assert.AreEqual(0, items.Children.Count);
+
+				browser.First<Button>("addItem").Click().Click();
+
+				var item1 = browser.First("items-1");
+				var item0 = item1.GetPreviousSibling();
+
+				Assert.AreEqual("items-0", item0.Id);
+			});
+		}
+
+		[TestMethod]
 		public void HighlightAllElements()
 		{
 			ForEachBrowser(browser =>
@@ -948,6 +988,20 @@ namespace TestR.AutomationTests.Web
 		}
 
 		[TestMethod]
+		public void SetSelectText()
+		{
+			ForEachBrowser(browser =>
+			{
+				//LogManager.UpdateReferenceId(browser, "TypeTextPasswordInput");
+				browser.NavigateTo(TestSite + "/main.html");
+				var select = browser.First<Select>("select");
+				select.Text = "One";
+				Assert.AreEqual("One", select.Text);
+				Assert.AreEqual("1", select.Value);
+			});
+		}
+
+		[TestMethod]
 		public void SetTextAllInputs()
 		{
 			ForEachBrowser(browser =>
@@ -1151,6 +1205,20 @@ namespace TestR.AutomationTests.Web
 				var input = browser.First<TextInput>("password");
 				input.TypeText("password", true);
 				Assert.AreEqual("password", input.Value);
+			});
+		}
+
+		[TestMethod]
+		public void TypeTextSelectInput()
+		{
+			ForEachBrowser(browser =>
+			{
+				//LogManager.UpdateReferenceId(browser, "TypeTextPasswordInput");
+				browser.NavigateTo(TestSite + "/main.html");
+				var select = browser.First<Select>("select");
+				select.TypeText("One");
+				Assert.AreEqual("One", select.Text);
+				Assert.AreEqual("1", select.Value);
 			});
 		}
 

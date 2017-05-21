@@ -56,6 +56,56 @@ namespace TestR.AutomationTests.Desktop
 		}
 
 		[TestMethod]
+		public void ApplicationAttachShouldNotChangeMaximize()
+		{
+			Application.CloseAll(ApplicationPath);
+
+			using (var application1 = Application.Create(ApplicationPath))
+			{
+				Assert.IsNotNull(application1);
+				application1.Resize(500, 500);
+				application1.MoveWindow(100, 100);
+				
+				var window = application1.First<Window>();
+				Assert.IsFalse(window.IsMaximized);
+				window.TitleBar.MaximizeButton.Click();
+				Assert.IsTrue(window.IsMaximized);
+
+				using (var application2 = Application.Attach(ApplicationPath))
+				{
+					Assert.IsNotNull(application2);
+					Assert.AreEqual(application1.Handle, application2.Handle);
+					Assert.IsTrue(application2.First<Window>().IsMaximized);
+				}
+			}
+		}
+
+		[TestMethod]
+		public void ApplicationAttachShouldNotChangeMinimize()
+		{
+			Application.CloseAll(ApplicationPath);
+
+			using (var application1 = Application.Create(ApplicationPath))
+			{
+				Assert.IsNotNull(application1);
+				application1.Resize(500, 500);
+				application1.MoveWindow(100, 100);
+				
+				var window = application1.First<Window>();
+				Assert.IsFalse(window.IsMinimized);
+				window.TitleBar.MinimizeButton.Click();
+				Assert.IsTrue(window.IsMinimized);
+
+				using (var application2 = Application.Attach(ApplicationPath))
+				{
+					Assert.IsNotNull(application2);
+					Assert.AreEqual(application1.Handle, application2.Handle);
+					Assert.IsTrue(application2.First<Window>().IsMinimized);
+				}
+			}
+		}
+
+		[TestMethod]
 		public void ApplicationAttachShouldSucceed()
 		{
 			Application.CloseAll(ApplicationPath);

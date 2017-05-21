@@ -223,7 +223,6 @@ namespace TestR
 		public Application BringToFront()
 		{
 			Focus();
-			NativeMethods.ShowWindow(Handle);
 			NativeMethods.BringWindowToTop(Handle);
 			NativeMethods.SetForegroundWindow(Handle);
 			NativeMethods.BringToTop(Handle);
@@ -369,7 +368,7 @@ namespace TestR
 		}
 
 		/// <summary>
-		/// Sets the application to as the focused window.
+		/// Sets the application as the focused window.
 		/// </summary>
 		public Application Focus()
 		{
@@ -385,6 +384,17 @@ namespace TestR
 		{
 			var handle = NativeMethods.GetForegroundWindow();
 			return handle == Process.MainWindowHandle;
+		}
+
+		/// <summary>
+		/// Move the window and resize it.
+		/// </summary>
+		/// <param name="x"> The x coordinate to move to. </param>
+		/// <param name="y"> The y coordinate to move to. </param>
+		public Application MoveWindow(int x, int y)
+		{
+			NativeMethods.MoveWindow(Handle, x, y, Size.Width, Size.Height, true);
+			return this;
 		}
 
 		/// <summary>

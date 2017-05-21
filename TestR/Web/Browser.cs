@@ -286,6 +286,15 @@ namespace TestR.Web
 		}
 
 		/// <summary>
+		/// Sets the browser as the focused window.
+		/// </summary>
+		public Browser Focus()
+		{
+			Application.Focus();
+			return this;
+		}
+
+		/// <summary>
 		/// Process an action against a new instance of each browser type provided.
 		/// </summary>
 		/// <param name="action"> The action to perform against each browser. </param>
@@ -349,7 +358,7 @@ namespace TestR.Web
 		/// </summary>
 		/// <param name="uri"> The URI to navigate to. </param>
 		/// <param name="expectedUri"> The expected URI to navigate to. </param>
-		public void NavigateTo(string uri, string expectedUri = null)
+		public Browser NavigateTo(string uri, string expectedUri = null)
 		{
 			if (uri == null)
 			{
@@ -366,10 +375,11 @@ namespace TestR.Web
 				if (_lastUri.Equals(uri, StringComparison.OrdinalIgnoreCase))
 				{
 					Refresh();
-					return;
+					return this;
 				}
 
 				WaitForNavigation(expectedUri ?? uri);
+				return this;
 			}
 			finally
 			{
@@ -434,7 +444,7 @@ namespace TestR.Web
 		/// </summary>
 		/// <param name="uri"> The expected URI to land on. Defaults to empty string if not provided. </param>
 		/// <param name="timeout"> The timeout before giving up on the redirect. Defaults to Timeout if not provided. </param>
-		public void WaitForNavigation(string uri = null, TimeSpan? timeout = null)
+		public Browser WaitForNavigation(string uri = null, TimeSpan? timeout = null)
 		{
 			if (timeout == null)
 			{
@@ -462,6 +472,7 @@ namespace TestR.Web
 			}
 
 			Refresh();
+			return this;
 		}
 
 		/// <summary>

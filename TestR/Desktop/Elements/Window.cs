@@ -1,10 +1,11 @@
 ﻿#region References
 
 using System;
-using System.Drawing;
 using System.Linq;
+using System.Windows;
 using TestR.Native;
 using UIAutomationClient;
+using Point = System.Drawing.Point;
 
 #endregion
 
@@ -25,6 +26,16 @@ namespace TestR.Desktop.Elements
 		#endregion
 
 		#region Properties
+
+		/// <summary>
+		/// Get a flag that determines if the window is maximized.
+		/// </summary>
+		public bool IsMaximized => WindowState == WindowState.Maximized;
+
+		/// <summary>
+		/// Get a flag that determines if the window is minimized.
+		/// </summary>
+		public bool IsMinimized => WindowState == WindowState.Minimized;
 
 		/// <summary>
 		/// Gets the location of the element.
@@ -59,6 +70,30 @@ namespace TestR.Desktop.Elements
 		/// Gets the title bar for the window. Returns null if the window does not have a title bar.
 		/// </summary>
 		public TitleBar TitleBar => Children.OfType<TitleBar>().FirstOrDefault();
+
+		/// <summary>
+		/// Gets the state of the window.
+		/// </summary>
+		public WindowState WindowState
+		{
+			get
+			{
+				var state = NativeMethods.GetWindowPlacement(NativeElement.CurrentNativeWindowHandle).ShowState;
+
+				switch (state)
+				{
+					case 1:
+					default:
+						return WindowState.Normal;
+
+					case 2:
+						return WindowState.Minimized;
+
+					case 3:
+						return WindowState.Maximized;
+				}
+			}
+		}
 
 		#endregion
 

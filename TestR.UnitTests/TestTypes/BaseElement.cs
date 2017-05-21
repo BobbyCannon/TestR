@@ -33,8 +33,8 @@ namespace TestR.UnitTests.TestTypes
 
 		public override string this[string id]
 		{
-			get { throw new NotImplementedException(); }
-			set { throw new NotImplementedException(); }
+			get => throw new NotImplementedException();
+			set => throw new NotImplementedException();
 		}
 
 		public override Point Location { get; }

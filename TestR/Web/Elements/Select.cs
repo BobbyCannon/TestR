@@ -37,8 +37,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string AutoFocus
 		{
-			get { return this["autofocus"]; }
-			set { this["autofocus"] = value; }
+			get => this["autofocus"];
+			set => this["autofocus"] = value;
 		}
 
 		/// <summary>
@@ -49,8 +49,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Disabled
 		{
-			get { return this["disabled"]; }
-			set { this["disabled"] = value; }
+			get => this["disabled"];
+			set => this["disabled"] = value;
 		}
 
 		/// <summary>
@@ -61,8 +61,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Form
 		{
-			get { return this["form"]; }
-			set { this["form"] = value; }
+			get => this["form"];
+			set => this["form"] = value;
 		}
 
 		/// <summary>
@@ -73,8 +73,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Multiple
 		{
-			get { return this["multiple"]; }
-			set { this["multiple"] = value; }
+			get => this["multiple"];
+			set => this["multiple"] = value;
 		}
 
 		/// <summary>
@@ -85,8 +85,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string OptionCount
 		{
-			get { return this["size"]; }
-			set { this["size"] = value; }
+			get => this["size"];
+			set => this["size"] = value;
 		}
 
 		/// <summary>
@@ -97,8 +97,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Required
 		{
-			get { return this["required"]; }
-			set { this["required"] = value; }
+			get => this["required"];
+			set => this["required"] = value;
 		}
 
 		/// <summary>
@@ -109,13 +109,20 @@ namespace TestR.Web.Elements
 			get { return Children.OfType<Option>().FirstOrDefault(x => x.Value == Value); }
 		}
 
+		/// <inheritdoc />
+		public override string Text
+		{
+			get => Browser.ExecuteScript($"TestR.getSelectText(\'{Id}\')");
+			set => Browser.ExecuteScript($"TestR.setSelectText(\'{Id}\', \'{value}\')");
+		}
+
 		/// <summary>
 		/// Gets or sets the value for this select.
 		/// </summary>
 		public string Value
 		{
-			get { return this["value"]; }
-			set { this["value"] = value; }
+			get => this["value"];
+			set => this["value"] = value;
 		}
 
 		#endregion

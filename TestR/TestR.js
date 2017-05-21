@@ -123,6 +123,14 @@
 
 		return TestR.getValueFromElement(element, name);
 	},
+	getSelectText: function(elementId) {
+		var element = document.getElementById(elementId);
+		if (element.selectedIndex === -1) {
+			return null;
+		}
+
+		return element.options[element.selectedIndex].text;
+	},
 	getValueFromElement: function(element, name) {
 		try {
 			if (element === undefined || element === null) {
@@ -153,6 +161,16 @@
 			element[name] = value;
 		} else {
 			element.setAttribute(name, value);
+		}
+	},
+	setSelectText: function (elementId, value) {
+		var element = document.getElementById(elementId);
+
+		for (var i = 0; i < element.options.length; i++) {
+			if (element.options[i].text === value) {
+				element.options[i].selected = true;
+				return;
+			}
 		}
 	},
 	removeElement: function(id) {
