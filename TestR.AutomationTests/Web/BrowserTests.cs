@@ -773,11 +773,11 @@ namespace TestR.AutomationTests.Web
 		{
 			ForEachBrowser(browser =>
 			{
-				var expected = TestSite;
+				var expected = TestSite + "/";
 				browser.NavigateTo(expected);
 				browser.NavigateTo(expected);
 				browser.NavigateTo(expected);
-				Assert.AreEqual($"{expected}/", browser.Uri.ToLower());
+				Assert.AreEqual($"{expected}", browser.Uri.ToLower());
 			});
 		}
 
