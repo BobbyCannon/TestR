@@ -34,7 +34,7 @@ if (!(Test-Path $msbuild -PathType Leaf)) {
 	$msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\msbuild.exe"	
 }
 
-& $msbuild "$scriptPath\TestR.sln" /p:Configuration="$Configuration" /p:Platform="Any CPU" /t:Rebuild /p:VisualStudioVersion=14.0 /v:m /m
+& $msbuild "$scriptPath\TestR.sln" /p:Configuration="$Configuration" /p:Platform="Any CPU" /t:Rebuild /p:VisualStudioVersion=15.0 /v:m /m
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Build has failed! " $watch.Elapsed -ForegroundColor Red

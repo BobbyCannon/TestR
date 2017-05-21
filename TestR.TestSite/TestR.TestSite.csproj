@@ -121,6 +121,8 @@
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\moment-with-locales.js" />
+    <Content Include="Scripts\moment.js" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
@@ -158,8 +160,6 @@
     <Content Include="Relationships.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Scripts\moment-with-locales.js" />
-    <Content Include="Scripts\moment.js" />
     <Content Include="TextContent.html" />
     <Content Include="Templates\Form.html" />
     <Content Include="Templates\Page.html" />
