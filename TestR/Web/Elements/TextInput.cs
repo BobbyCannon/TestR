@@ -38,8 +38,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string AutoFocus
 		{
-			get { return this["autofocus"]; }
-			set { this["autofocus"] = value; }
+			get => this["autofocus"];
+			set => this["autofocus"] = value;
 		}
 
 		/// <summary>
@@ -50,8 +50,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Disabled
 		{
-			get { return this["disabled"]; }
-			set { this["disabled"] = value; }
+			get => this["disabled"];
+			set => this["disabled"] = value;
 		}
 
 		/// <summary>
@@ -62,8 +62,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Pattern
 		{
-			get { return this["pattern"]; }
-			set { this["pattern"] = value; }
+			get => this["pattern"];
+			set => this["pattern"] = value;
 		}
 
 		/// <summary>
@@ -74,8 +74,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string PlaceHolder
 		{
-			get { return this["placeholder"]; }
-			set { this["placeholder"] = value; }
+			get => this["placeholder"];
+			set => this["placeholder"] = value;
 		}
 
 		/// <summary>
@@ -86,8 +86,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string ReadOnly
 		{
-			get { return this["readonly"]; }
-			set { this["readonly"] = value; }
+			get => this["readonly"];
+			set => this["readonly"] = value;
 		}
 
 		/// <summary>
@@ -98,8 +98,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Step
 		{
-			get { return this["step"]; }
-			set { this["step"] = value; }
+			get => this["step"];
+			set => this["step"] = value;
 		}
 
 		/// <summary>
@@ -110,8 +110,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public override string Text
 		{
-			get { return this["value"]; }
-			set { TypeText(value, true); }
+			get => this["value"];
+			set => TypeText(value, true);
 		}
 
 		/// <summary>
@@ -127,8 +127,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Value
 		{
-			get { return this["value"]; }
-			set { TypeText(value, true); }
+			get => this["value"];
+			set => TypeText(value, true);
 		}
 
 		#endregion
@@ -164,6 +164,8 @@ namespace TestR.Web.Elements
 				FireEvent("keyUp", eventProperty);
 				Thread.Sleep(TypingDelay);
 			}
+
+			Thread.Sleep(TypingDelay);
 
 			Highlight(false);
 			TriggerElement();

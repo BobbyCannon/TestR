@@ -31,8 +31,8 @@ namespace TestR.TestWinForms
 
 		public string StatusText
 		{
-			get { return toolStripStatusLabel.Text; }
-			set { toolStripStatusLabel.Text = value; }
+			get => toolStripStatusLabel.Text;
+			set => toolStripStatusLabel.Text = value;
 		}
 
 		#endregion

@@ -125,6 +125,20 @@ namespace TestR.AutomationTests.Web
 		}
 
 		[TestMethod]
+		public void CreateTwoBrowsers()
+		{
+			using (var browser1 = InternetExplorer.Create())
+			{
+				Assert.IsNotNull(browser1);
+			}
+
+			using (var browser2 = InternetExplorer.Create())
+			{
+				Assert.IsNotNull(browser2);
+			}
+		}
+
+		[TestMethod]
 		public void CreateTwoInstances()
 		{
 			using (var browser = InternetExplorer.Create())
@@ -146,20 +160,6 @@ namespace TestR.AutomationTests.Web
 
 					Assert.AreNotEqual(browser.Id, browser2.Id);
 				}
-			}
-		}
-
-		[TestMethod]
-		public void CreateTwoBrowsers()
-		{
-			using (var browser1 = InternetExplorer.Create())
-			{
-				Assert.IsNotNull(browser1);
-			}
-
-			using (var browser2 = InternetExplorer.Create())
-			{
-				Assert.IsNotNull(browser2);
 			}
 		}
 

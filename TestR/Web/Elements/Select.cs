@@ -126,5 +126,26 @@ namespace TestR.Web.Elements
 		}
 
 		#endregion
+
+		#region Methods
+
+		/// <inheritdoc />
+		public override Element TypeText(string value)
+		{
+			try
+			{
+				Click();
+				Focus();
+				Highlight(true);
+				Text = value;
+				return this;
+			}
+			finally
+			{
+				Highlight(false);
+			}
+		}
+
+		#endregion
 	}
 }

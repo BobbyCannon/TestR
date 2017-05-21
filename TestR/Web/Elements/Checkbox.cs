@@ -36,8 +36,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public bool Checked
 		{
-			get { return this["checked"] == "true"; }
-			set { this["checked"] = value.ToString(); }
+			get => this["checked"] == "true";
+			set => this["checked"] = value.ToString();
 		}
 
 		/// <summary>
@@ -48,8 +48,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Disabled
 		{
-			get { return this["disabled"]; }
-			set { this["disabled"] = value; }
+			get => this["disabled"];
+			set => this["disabled"] = value;
 		}
 
 		/// <summary>
@@ -60,8 +60,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Form
 		{
-			get { return this["form"]; }
-			set { this["form"] = value; }
+			get => this["form"];
+			set => this["form"] = value;
 		}
 
 		/// <summary>
@@ -72,8 +72,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string FormNoValidate
 		{
-			get { return this["formnovalidate"]; }
-			set { this["formnovalidate"] = value; }
+			get => this["formnovalidate"];
+			set => this["formnovalidate"] = value;
 		}
 
 		/// <summary>
@@ -81,8 +81,8 @@ namespace TestR.Web.Elements
 		/// </summary>
 		public override string Text
 		{
-			get { return TagName == "button" ? this["value"] : this["textContent"]; }
-			set { this[TagName == "button" ? "value" : "textContent"] = value; }
+			get => TagName == "button" ? this["value"] : this["textContent"];
+			set => this[TagName == "button" ? "value" : "textContent"] = value;
 		}
 
 		/// <summary>
@@ -90,8 +90,8 @@ namespace TestR.Web.Elements
 		/// </summary>
 		public string Value
 		{
-			get { return this["value"]; }
-			set { this["value"] = value; }
+			get => this["value"];
+			set => this["value"] = value;
 		}
 
 		#endregion

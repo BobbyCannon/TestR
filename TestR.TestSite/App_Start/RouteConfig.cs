@@ -14,7 +14,7 @@ namespace TestR.TestSite
 		public static void RegisterRoutes(RouteCollection routes)
 		{
 			routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-			routes.MapRoute("Default", "{controller}/{action}/{id}", new { action = "Index", id = UrlParameter.Optional });
+			routes.MapRoute("Default", "{controller}/{action}/{id}", new { Controller = "Default", action = "Index", id = UrlParameter.Optional });
 		}
 
 		#endregion

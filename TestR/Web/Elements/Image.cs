@@ -36,8 +36,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Alt
 		{
-			get { return this["alt"]; }
-			set { this["alt"] = value; }
+			get => this["alt"];
+			set => this["alt"] = value;
 		}
 
 		/// <summary>
@@ -56,8 +56,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Src
 		{
-			get { return this["src"]; }
-			set { this["src"] = value; }
+			get => this["src"];
+			set => this["src"] = value;
 		}
 
 		/// <summary>
@@ -68,8 +68,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Value
 		{
-			get { return this["value"]; }
-			set { this["value"] = value; }
+			get => this["value"];
+			set => this["value"] = value;
 		}
 
 		/// <summary>

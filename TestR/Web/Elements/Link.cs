@@ -36,8 +36,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Download
 		{
-			get { return this["download"]; }
-			set { this["download"] = value; }
+			get => this["download"];
+			set => this["download"] = value;
 		}
 
 		/// <summary>
@@ -48,8 +48,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Href
 		{
-			get { return this["href"]; }
-			set { this["href"] = value; }
+			get => this["href"];
+			set => this["href"] = value;
 		}
 
 		/// <summary>
@@ -60,8 +60,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Media
 		{
-			get { return this["media"]; }
-			set { this["media"] = value; }
+			get => this["media"];
+			set => this["media"] = value;
 		}
 
 		/// <summary>
@@ -73,8 +73,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Rel
 		{
-			get { return this["rel"]; }
-			set { this["rel"] = value; }
+			get => this["rel"];
+			set => this["rel"] = value;
 		}
 
 		/// <summary>
@@ -85,8 +85,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Target
 		{
-			get { return this["target"]; }
-			set { this["target"] = value; }
+			get => this["target"];
+			set => this["target"] = value;
 		}
 
 		/// <summary>
@@ -98,8 +98,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Type
 		{
-			get { return this["type"]; }
-			set { this["type"] = value; }
+			get => this["type"];
+			set => this["type"] = value;
 		}
 
 		#endregion

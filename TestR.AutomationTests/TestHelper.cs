@@ -31,10 +31,9 @@ namespace TestR.AutomationTests
 			//}
 		}
 
-		public static void AreEqual<T>(T expected, T actual)
+		public static void AreEqual<T>(T expected, T actual, bool ignoreOrder = true)
 		{
-			var compareObjects = new CompareLogic { Config = { MaxDifferences = int.MaxValue } };
-
+			var compareObjects = new CompareLogic { Config = { MaxDifferences = int.MaxValue, IgnoreCollectionOrder = ignoreOrder } };
 			var result = compareObjects.Compare(expected, actual);
 			Assert.IsTrue(result.AreEqual, result.DifferencesString);
 		}

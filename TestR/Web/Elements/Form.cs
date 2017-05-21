@@ -36,8 +36,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Action
 		{
-			get { return this["action"]; }
-			set { this["action"] = value; }
+			get => this["action"];
+			set => this["action"] = value;
 		}
 
 		/// <summary>
@@ -48,8 +48,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string AutoComplete
 		{
-			get { return this["autocomplete"]; }
-			set { this["autocomplete"] = value; }
+			get => this["autocomplete"];
+			set => this["autocomplete"] = value;
 		}
 
 		/// <summary>
@@ -60,8 +60,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string EncType
 		{
-			get { return this["enctype"]; }
-			set { this["enctype"] = value; }
+			get => this["enctype"];
+			set => this["enctype"] = value;
 		}
 
 		/// <summary>
@@ -72,8 +72,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Method
 		{
-			get { return this["method"]; }
-			set { this["method"] = value; }
+			get => this["method"];
+			set => this["method"] = value;
 		}
 
 		/// <summary>
@@ -84,8 +84,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string NoValidate
 		{
-			get { return this["novalidate"]; }
-			set { this["novalidate"] = value; }
+			get => this["novalidate"];
+			set => this["novalidate"] = value;
 		}
 
 		/// <summary>
@@ -96,8 +96,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Target
 		{
-			get { return this["target"]; }
-			set { this["target"] = value; }
+			get => this["target"];
+			set => this["target"] = value;
 		}
 
 		#endregion

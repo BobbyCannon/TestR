@@ -1384,7 +1384,7 @@
             <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
             <returns> true if item is successfully removed; otherwise, false. This method also returns false if item was not found. </returns>
         </member>
-        <member name="M:TestR.ElementHost.Wait(System.Func{TestR.ElementHost,System.Boolean},System.Int32,System.Int32)">
+        <member name="M:TestR.ElementHost.Wait(System.Func{TestR.ElementHost,System.Boolean},System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Runs the action until the action returns true or the timeout is reached. Will delay in between actions of the provided time.
             </summary>
@@ -4242,6 +4242,9 @@
             <summary>
             Gets or sets the value for this select.
             </summary>
+        </member>
+        <member name="M:TestR.Web.Elements.Select.TypeText(System.String)">
+            <inheritdoc />
         </member>
         <member name="T:TestR.Web.Elements.Small">
             <summary>

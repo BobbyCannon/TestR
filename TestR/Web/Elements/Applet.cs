@@ -36,8 +36,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Code
 		{
-			get { return this["code"]; }
-			set { this["code"] = value; }
+			get => this["code"];
+			set => this["code"] = value;
 		}
 
 		/// <summary>
@@ -53,8 +53,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Object
 		{
-			get { return this["object"]; }
-			set { this["object"] = value; }
+			get => this["object"];
+			set => this["object"] = value;
 		}
 
 		/// <summary>

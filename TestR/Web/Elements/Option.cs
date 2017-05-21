@@ -36,8 +36,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Disabled
 		{
-			get { return this["disabled"]; }
-			set { this["disabled"] = value; }
+			get => this["disabled"];
+			set => this["disabled"] = value;
 		}
 
 		/// <summary>
@@ -48,8 +48,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Label
 		{
-			get { return this["label"]; }
-			set { this["label"] = value; }
+			get => this["label"];
+			set => this["label"] = value;
 		}
 
 		/// <summary>
@@ -60,8 +60,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Selected
 		{
-			get { return this["selected"]; }
-			set { this["selected"] = value; }
+			get => this["selected"];
+			set => this["selected"] = value;
 		}
 
 		/// <summary>
@@ -72,7 +72,7 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Value
 		{
-			get { return this["value"]; }
+			get => this["value"];
 			set
 			{
 				this["value"] = value;

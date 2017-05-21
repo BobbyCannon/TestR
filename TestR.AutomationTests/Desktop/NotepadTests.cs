@@ -65,7 +65,7 @@ namespace TestR.AutomationTests.Desktop
 				Assert.IsNotNull(application1);
 				application1.Resize(500, 500);
 				application1.MoveWindow(100, 100);
-				
+
 				var window = application1.First<Window>();
 				Assert.IsFalse(window.IsMaximized);
 				window.TitleBar.MaximizeButton.Click();
@@ -90,7 +90,7 @@ namespace TestR.AutomationTests.Desktop
 				Assert.IsNotNull(application1);
 				application1.Resize(500, 500);
 				application1.MoveWindow(100, 100);
-				
+
 				var window = application1.First<Window>();
 				Assert.IsFalse(window.IsMinimized);
 				window.TitleBar.MinimizeButton.Click();

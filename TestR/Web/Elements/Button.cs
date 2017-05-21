@@ -36,8 +36,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string AutoFocus
 		{
-			get { return this["autofocus"]; }
-			set { this["autofocus"] = value; }
+			get => this["autofocus"];
+			set => this["autofocus"] = value;
 		}
 
 		/// <summary>
@@ -48,8 +48,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Disabled
 		{
-			get { return this["disabled"]; }
-			set { this["disabled"] = value; }
+			get => this["disabled"];
+			set => this["disabled"] = value;
 		}
 
 		/// <summary>
@@ -60,8 +60,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Form
 		{
-			get { return this["form"]; }
-			set { this["form"] = value; }
+			get => this["form"];
+			set => this["form"] = value;
 		}
 
 		/// <summary>
@@ -72,8 +72,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string FormAction
 		{
-			get { return this["formaction"]; }
-			set { this["formaction"] = value; }
+			get => this["formaction"];
+			set => this["formaction"] = value;
 		}
 
 		/// <summary>
@@ -84,8 +84,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string FormEncType
 		{
-			get { return this["formenctype"]; }
-			set { this["formenctype"] = value; }
+			get => this["formenctype"];
+			set => this["formenctype"] = value;
 		}
 
 		/// <summary>
@@ -96,8 +96,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string FormMethod
 		{
-			get { return this["formmethod"]; }
-			set { this["formmethod"] = value; }
+			get => this["formmethod"];
+			set => this["formmethod"] = value;
 		}
 
 		/// <summary>
@@ -108,8 +108,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string FormNoValidate
 		{
-			get { return this["formnovalidate"]; }
-			set { this["formnovalidate"] = value; }
+			get => this["formnovalidate"];
+			set => this["formnovalidate"] = value;
 		}
 
 		/// <summary>
@@ -120,8 +120,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string FormTarget
 		{
-			get { return this["formtarget"]; }
-			set { this["formtarget"] = value; }
+			get => this["formtarget"];
+			set => this["formtarget"] = value;
 		}
 
 		/// <summary>
@@ -129,8 +129,8 @@ namespace TestR.Web.Elements
 		/// </summary>
 		public override string Text
 		{
-			get { return TagName == "input" ? this["value"] : this["textContent"]; }
-			set { this[TagName == "input" ? "value" : "textContent"] = value; }
+			get => TagName == "input" ? this["value"] : this["textContent"];
+			set => this[TagName == "input" ? "value" : "textContent"] = value;
 		}
 
 		/// <summary>
@@ -138,8 +138,8 @@ namespace TestR.Web.Elements
 		/// </summary>
 		public string Value
 		{
-			get { return this["value"]; }
-			set { this["value"] = value; }
+			get => this["value"];
+			set => this["value"] = value;
 		}
 
 		#endregion

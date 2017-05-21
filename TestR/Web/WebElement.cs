@@ -11,7 +11,7 @@ using TestR.Native;
 using TestR.Web.Elements;
 using Font = TestR.Web.Elements.Font;
 using Image = TestR.Web.Elements.Image;
-using Keyboard = TestR.Web.Elements.Keyboard;
+using Keyboard = TestR.Native.Keyboard;
 
 #endregion
 
@@ -591,7 +591,7 @@ namespace TestR.Web
 		{
 			Browser.Focus();
 			Focus();
-			Native.Keyboard.TypeText(value);
+			Keyboard.TypeText(value);
 			return this;
 		}
 
@@ -852,7 +852,7 @@ namespace TestR.Web
 					return new Insert(token, browser, parent);
 
 				case "kbd":
-					return new Keyboard(token, browser, parent);
+					return new Elements.Keyboard(token, browser, parent);
 
 				case "keygen":
 					return new KeyGenerator(token, browser, parent);

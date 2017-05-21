@@ -134,7 +134,6 @@ namespace TestR
 		/// </summary>
 		public Element GetPreviousSibling()
 		{
-			
 			var index = Parent?.Children.IndexOf(this);
 			if (index == null || index < 1)
 			{

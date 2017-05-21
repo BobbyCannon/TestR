@@ -36,8 +36,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string ColumnSpan
 		{
-			get { return this["colspan"]; }
-			set { this["colspan"] = value; }
+			get => this["colspan"];
+			set => this["colspan"] = value;
 		}
 
 		/// <summary>
@@ -48,8 +48,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Headers
 		{
-			get { return this["headers"]; }
-			set { this["headers"] = value; }
+			get => this["headers"];
+			set => this["headers"] = value;
 		}
 
 		/// <summary>
@@ -60,8 +60,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string RowSpan
 		{
-			get { return this["rowspan"]; }
-			set { this["rowspan"] = value; }
+			get => this["rowspan"];
+			set => this["rowspan"] = value;
 		}
 
 		#endregion

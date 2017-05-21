@@ -48,54 +48,54 @@
 				]);
 
 			app.controller('controller',
-			[
-				'$scope',
-				function($scope) {
-					$scope.message = 'Hello World';
-					$scope.model = {};
-					$scope.items = [];
+				[
+					'$scope',
+					function($scope) {
+						$scope.message = 'Hello World';
+						$scope.model = {};
+						$scope.items = [];
 
-					$scope.user = {
-						email: '',
-						userName: '',
-						password: ''
-					};
+						$scope.user = {
+							email: '',
+							userName: '',
+							password: ''
+						};
 
-					$scope.state = {
-						error: ''
-					};
+						$scope.state = {
+							error: ''
+						};
 
-					$scope.addItem = function () {
-						setTimeout(function() {
-							var id = $scope.items.length + 1;
-							$scope.items.push({ id: id, text: id.toString() });
-							$scope.$apply();
-						}, 500);
-					};
+						$scope.addItem = function() {
+							setTimeout(function() {
+								var id = $scope.items.length + 1;
+								$scope.items.push({ id: id, text: id.toString() });
+								$scope.$apply();
+							}, 500);
+						};
 
-					$scope.register = function() {
+						$scope.register = function() {
 
-						$scope.state.error = $scope.user.userName + ':' + $scope.user.password;
-					};
-				}
-			]);
+							$scope.state.error = $scope.user.userName + ':' + $scope.user.password;
+						};
+					}
+				]);
 
 			app.controller('anotherPageController',
-			[
-				'$scope',
-				function($scope) {
-					$scope.message = 'Hello World';
-					$scope.items = [];
-					$scope.user = {
-						email: ''
-					};
+				[
+					'$scope',
+					function($scope) {
+						$scope.message = 'Hello World';
+						$scope.items = [];
+						$scope.user = {
+							email: ''
+						};
 
-					$scope.addItem = function() {
-						var id = $scope.items.length + 1;
-						$scope.items.push({ id: id, text: id.toString() });
-					};
-				}
-			]);
+						$scope.addItem = function() {
+							var id = $scope.items.length + 1;
+							$scope.items.push({ id: id, text: id.toString() });
+						};
+					}
+				]);
 
 			$(document)
 				.ready(function() {

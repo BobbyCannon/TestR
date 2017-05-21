@@ -329,9 +329,9 @@ namespace TestR
 		/// <param name="timeout"> The timeout to attempt the action. This value is in milliseconds. </param>
 		/// <param name="delay"> The delay in between actions. This value is in milliseconds. </param>
 		/// <returns> Returns true of the call completed successfully or false if it timed out. </returns>
-		public bool Wait(Func<ElementHost, bool> action, int timeout = 1000, int delay = 50)
+		public bool Wait(Func<ElementHost, bool> action, int? timeout = null, int? delay = null)
 		{
-			return Utility.Wait(() => action(this), timeout, delay);
+			return Utility.Wait(() => action(this), timeout ?? Application.DefaultTimeout, delay ?? 50);
 		}
 
 		/// <summary>

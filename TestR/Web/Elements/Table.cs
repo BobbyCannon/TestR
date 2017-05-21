@@ -36,8 +36,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Sortable
 		{
-			get { return this["sortable"]; }
-			set { this["sortable"] = value; }
+			get => this["sortable"];
+			set => this["sortable"] = value;
 		}
 
 		#endregion

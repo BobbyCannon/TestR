@@ -27,8 +27,8 @@ namespace TestR.Desktop.Elements
 		/// </summary>
 		public string Text
 		{
-			get { return GetText(); }
-			set { SetText(value); }
+			get => GetText();
+			set => SetText(value);
 		}
 
 		#endregion

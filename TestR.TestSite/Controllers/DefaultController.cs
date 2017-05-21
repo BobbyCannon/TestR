@@ -11,6 +11,11 @@ namespace TestR.TestSite.Controllers
 	{
 		#region Methods
 
+		public ActionResult Index()
+		{
+			return View();
+		}
+
 		public ActionResult Login()
 		{
 			if (!User.Identity.IsAuthenticated)
@@ -19,11 +24,6 @@ namespace TestR.TestSite.Controllers
 			}
 
 			return RedirectToAction("Index");
-		}
-
-		public ActionResult Index()
-		{
-			return View();
 		}
 
 		#endregion

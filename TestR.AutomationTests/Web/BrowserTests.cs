@@ -1213,10 +1213,10 @@ namespace TestR.AutomationTests.Web
 		{
 			ForEachBrowser(browser =>
 			{
-				//LogManager.UpdateReferenceId(browser, "TypeTextPasswordInput");
+				//LogManager.UpdateReferenceId(browser, "TypeTextSelectInput");
 				browser.NavigateTo(TestSite + "/main.html");
 				var select = browser.First<Select>("select");
-				select.TypeText("One");
+				select.TypeText("O");
 				Assert.AreEqual("One", select.Text);
 				Assert.AreEqual("1", select.Value);
 			});

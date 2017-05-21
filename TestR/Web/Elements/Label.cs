@@ -36,8 +36,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string For
 		{
-			get { return this["for"]; }
-			set { this["for"] = value; }
+			get => this["for"];
+			set => this["for"] = value;
 		}
 
 		/// <summary>
@@ -48,8 +48,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Form
 		{
-			get { return this["form"]; }
-			set { this["form"] = value; }
+			get => this["form"];
+			set => this["form"] = value;
 		}
 
 		#endregion

@@ -134,7 +134,49 @@ namespace TestR.Native
 
 		#endregion
 
-		#region Structures
+		#region Enumerations
+
+		internal enum MouseMessages
+		{
+			WM_LBUTTONDOWN = 0x0201,
+			WM_LBUTTONUP = 0x0202,
+			WM_MOUSEMOVE = 0x0200,
+			WM_MOUSEWHEEL = 0x020A,
+			WM_RBUTTONDOWN = 0x0204,
+			WM_RBUTTONUP = 0x0205
+		}
+
+		[Flags]
+		internal enum SetWindowPosFlags : uint
+		{
+			/// <summary>
+			/// Retains the current position (ignores X and Y parameters).
+			/// </summary>
+			NoMove = 0x0002,
+
+			/// <summary>
+			/// Retains the current size (ignores the cx and cy parameters).
+			/// </summary>
+			NoSize = 0x0001
+		}
+
+		internal enum VirtualKeyStates
+		{
+			VK_LSHIFT = 0xA0,
+			VK_RSHIFT = 0xA1,
+			VK_LCONTROL = 0xA2,
+			VK_RCONTROL = 0xA3
+		}
+
+		#endregion
+
+		#region Delegates
+
+		internal delegate bool EnumThreadDelegate(IntPtr hWnd, IntPtr lParam);
+
+		internal delegate int HookDelegate(int code, int wParam, IntPtr lParam);
+
+		#endregion
 
 		[StructLayout(LayoutKind.Sequential)]
 		internal struct MouseHook
@@ -181,10 +223,6 @@ namespace TestR.Native
 			internal Rectangle rcNormalPosition;
 		}
 
-		#endregion
-
-		#region Interfaces
-
 		[ComImport]
 		[Guid("79EAC9EE-BAF9-11CE-8C82-00AA004BA90B")]
 		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -226,51 +264,5 @@ namespace TestR.Native
 
 			#endregion
 		}
-
-		#endregion
-
-		#region Enumerations
-
-		internal enum MouseMessages
-		{
-			WM_LBUTTONDOWN = 0x0201,
-			WM_LBUTTONUP = 0x0202,
-			WM_MOUSEMOVE = 0x0200,
-			WM_MOUSEWHEEL = 0x020A,
-			WM_RBUTTONDOWN = 0x0204,
-			WM_RBUTTONUP = 0x0205
-		}
-
-		[Flags]
-		internal enum SetWindowPosFlags : uint
-		{
-			/// <summary>
-			/// Retains the current position (ignores X and Y parameters).
-			/// </summary>
-			NoMove = 0x0002,
-
-			/// <summary>
-			/// Retains the current size (ignores the cx and cy parameters).
-			/// </summary>
-			NoSize = 0x0001
-		}
-
-		internal enum VirtualKeyStates
-		{
-			VK_LSHIFT = 0xA0,
-			VK_RSHIFT = 0xA1,
-			VK_LCONTROL = 0xA2,
-			VK_RCONTROL = 0xA3
-		}
-
-		#endregion
-
-		#region Delegates
-
-		internal delegate bool EnumThreadDelegate(IntPtr hWnd, IntPtr lParam);
-
-		internal delegate int HookDelegate(int code, int wParam, IntPtr lParam);
-
-		#endregion
 	}
 }

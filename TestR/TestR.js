@@ -163,11 +163,14 @@
 			element.setAttribute(name, value);
 		}
 	},
-	setSelectText: function (elementId, value) {
+	setSelectText: function(elementId, value) {
 		var element = document.getElementById(elementId);
 
 		for (var i = 0; i < element.options.length; i++) {
 			if (element.options[i].text === value) {
+				element.options[i].selected = true;
+				return;
+			} else if (element.options[i].text.lastIndexOf(value,0) === 0) {
 				element.options[i].selected = true;
 				return;
 			}

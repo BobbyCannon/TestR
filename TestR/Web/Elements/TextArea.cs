@@ -38,8 +38,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string AutoFocus
 		{
-			get { return this["autofocus"]; }
-			set { this["autofocus"] = value; }
+			get => this["autofocus"];
+			set => this["autofocus"] = value;
 		}
 
 		/// <summary>
@@ -50,8 +50,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Cols
 		{
-			get { return this["cols"]; }
-			set { this["cols"] = value; }
+			get => this["cols"];
+			set => this["cols"] = value;
 		}
 
 		/// <summary>
@@ -62,8 +62,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Disabled
 		{
-			get { return this["disabled"]; }
-			set { this["disabled"] = value; }
+			get => this["disabled"];
+			set => this["disabled"] = value;
 		}
 
 		/// <summary>
@@ -74,8 +74,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Form
 		{
-			get { return this["form"]; }
-			set { this["form"] = value; }
+			get => this["form"];
+			set => this["form"] = value;
 		}
 
 		/// <summary>
@@ -86,8 +86,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string MaxLength
 		{
-			get { return this["maxlength"]; }
-			set { this["maxlength"] = value; }
+			get => this["maxlength"];
+			set => this["maxlength"] = value;
 		}
 
 		/// <summary>
@@ -98,8 +98,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string PlaceHolder
 		{
-			get { return this["placeholder"]; }
-			set { this["placeholder"] = value; }
+			get => this["placeholder"];
+			set => this["placeholder"] = value;
 		}
 
 		/// <summary>
@@ -110,8 +110,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string ReadOnly
 		{
-			get { return this["readonly"]; }
-			set { this["readonly"] = value; }
+			get => this["readonly"];
+			set => this["readonly"] = value;
 		}
 
 		/// <summary>
@@ -122,8 +122,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Required
 		{
-			get { return this["required"]; }
-			set { this["required"] = value; }
+			get => this["required"];
+			set => this["required"] = value;
 		}
 
 		/// <summary>
@@ -134,8 +134,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Rows
 		{
-			get { return this["rows"]; }
-			set { this["rows"] = value; }
+			get => this["rows"];
+			set => this["rows"] = value;
 		}
 
 		/// <summary>
@@ -146,8 +146,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public override string Text
 		{
-			get { return this["value"]; }
-			set { TypeText(value, true); }
+			get => this["value"];
+			set => TypeText(value, true);
 		}
 
 		/// <summary>
@@ -163,8 +163,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Value
 		{
-			get { return this["value"]; }
-			set { TypeText(value, true); }
+			get => this["value"];
+			set => TypeText(value, true);
 		}
 
 		/// <summary>
@@ -175,8 +175,8 @@ namespace TestR.Web.Elements
 		/// </remarks>
 		public string Wrap
 		{
-			get { return this["wrap"]; }
-			set { this["wrap"] = value; }
+			get => this["wrap"];
+			set => this["wrap"] = value;
 		}
 
 		#endregion
@@ -212,6 +212,8 @@ namespace TestR.Web.Elements
 				FireEvent("keyUp", eventProperty);
 				Thread.Sleep(TypingDelay);
 			}
+
+			Thread.Sleep(TypingDelay);
 
 			Highlight(false);
 			TriggerElement();
