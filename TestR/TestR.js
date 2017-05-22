@@ -7,22 +7,27 @@
 	autoId: 1,
 	ignoredTags: ['script'],
 	resultElementId: 'testrResult',
-	triggerEvent: function(element, eventName, values) {
-		var eventObj = document.createEventObject
-			? document.createEventObject()
-			: document.createEvent('Events');
+	triggerEvent: function (element, eventName, values) {
+		var event;
 
-		if (eventObj.initEvent) {
-			eventObj.initEvent(eventName, true, true);
+		if (document.createEvent) {
+			event = document.createEvent('HTMLEvents');
+			event.initEvent(eventName, true, true);
+		} else {
+			event = document.createEventObject();
+			event.eventType = eventName;
 		}
 
+		event.eventName = eventName;
 		for (var i = 0; i < values.length; i++) {
-			eventObj[values[i].key] = values[i].value;
+			event[values[i].key] = values[i].value;
 		}
 
-		element.dispatchEvent
-			? element.dispatchEvent(eventObj)
-			: element.fireEvent('on' + eventName, eventObj);
+		if (document.createEvent) {
+			element.dispatchEvent(event);
+		} else {
+			element.fireEvent('on' + event.eventType, event);
+		}
 	},
 	getElementLocation: function(id) {
 		var element = document.getElementById(id);
@@ -163,15 +168,21 @@
 			element.setAttribute(name, value);
 		}
 	},
-	setSelectText: function(elementId, value) {
-		var element = document.getElementById(elementId);
+	setSelectText: function (elementId, value) {
+		var i, element = document.getElementById(elementId);
 
-		for (var i = 0; i < element.options.length; i++) {
+		for (i = 0; i < element.options.length; i++) {
 			if (element.options[i].text === value) {
 				element.options[i].selected = true;
+				TestR.triggerEvent(element, 'change', []);
 				return;
-			} else if (element.options[i].text.lastIndexOf(value,0) === 0) {
+			}
+		}
+
+		for (i = 0; i < element.options.length; i++) {
+			if (element.options[i].text.lastIndexOf(value, 0) === 0) {
 				element.options[i].selected = true;
+				TestR.triggerEvent(element, 'change', []);
 				return;
 			}
 		}

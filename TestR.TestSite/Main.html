@@ -37,7 +37,7 @@
 		<i id="i1">I with ID of 1</i><br />
 		<span id="span1">SPAN with ID of 1</span><br />
 		<input name="inputName" type="text" /><br />
-		<input type="text" value="Hello World" /><br />
+		<input id="text" type="text" value="Hello World" /><br />
 		<input id="inputButton" type="button" value="Input Button" onclick="$('#textarea').text('inputButton')" /><br />
 		<button id="button" type="button" onclick="$('#textarea').text('button')">Button</button><br />
 		<button name="buttonByName" type="button" onclick="$('#textarea').text('buttonByName')">Button By Name</button><br />
@@ -50,7 +50,29 @@
 			<option id="option2" value="2" selected>Two</option>
 			<option id="option3" value="3">Three</option>
 			<option id="option4" value="4">Four</option>
+		</select><br />
+		<select id="select2" size="4" >
+			<option id="option21" value="1">One</option>
+			<option id="option22" value="2" selected>Two</option>
+			<option id="option23" value="3">Three</option>
+			<option id="option24" value="4">Four</option>
 		</select>
 		<script src="./Scripts/jquery-3.1.1.js"></script>
+		<script language="javascript">
+
+			$(document).ready(function () {
+				$("#select").change(function () {
+					$('#text').val($("#select").val());
+				});
+
+				$("#select2").change(function () {
+					$('#textarea').val($("#select2").val());
+				});
+
+				$('#text').focus(function() {
+					$('#text').val('focused');
+				});
+			});
+		</script>
 	</body>
 </html>

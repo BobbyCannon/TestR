@@ -518,6 +518,22 @@ namespace TestR.AutomationTests.Web
 		}
 
 		[TestMethod]
+		public void FocusEvent()
+		{
+			ForEachBrowser(browser =>
+			{
+				//LogManager.UpdateReferenceId(browser, "Focus");
+				browser.NavigateTo(TestSite + "/main.html");
+
+				var expected = browser.First<TextInput>("text");
+				expected.Focus();
+				Assert.IsNotNull(browser.ActiveElement, "There should be an active element.");
+				Assert.AreEqual(expected.Id, browser.ActiveElement.Id);
+				Assert.AreEqual("focused", expected.Text);
+			});
+		}
+
+		[TestMethod]
 		public void FormWithSubInputsWithNamesOfFormAttributeNames()
 		{
 			ForEachBrowser(browser =>
@@ -998,6 +1014,9 @@ namespace TestR.AutomationTests.Web
 				select.Text = "One";
 				Assert.AreEqual("One", select.Text);
 				Assert.AreEqual("1", select.Value);
+
+				var text = browser.First<TextInput>("text");
+				Assert.AreEqual("1", text.Value);
 			});
 		}
 

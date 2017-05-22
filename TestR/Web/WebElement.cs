@@ -333,7 +333,7 @@ namespace TestR.Web
 		public override Element Focus()
 		{
 			Browser.ExecuteScript("document.getElementById('" + Id + "').focus()");
-			Browser.ExecuteScript("document.getElementById('" + Id + "').select()");
+			FireEvent("focus", new Dictionary<string, string>());
 			return this;
 		}
 
