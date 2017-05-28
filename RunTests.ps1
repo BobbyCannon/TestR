@@ -1,6 +1,6 @@
 ﻿param (
 	[Parameter(Mandatory = $false)]
-	[string] $Test = "TestR.AutomationTests",
+	[string] $Test = "TestR.UnitTests",
 	[Parameter(Mandatory = $false)]
 	[switch] $List
 )
