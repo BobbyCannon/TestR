@@ -1,73 +1,102 @@
 ﻿param (
-    [Parameter()]
-    [string] $Configuration = "Release",
-    [Parameter()]
-    [Switch] $PreRelease
+    [Parameter(Mandatory = $false, Position = 0)]
+    [string] $Configuration = "Release"
 )
 
+$ErrorActionPreference = "Stop"
 $watch = [System.Diagnostics.Stopwatch]::StartNew()
-$scriptPath = Split-Path (Get-Variable MyInvocation).Value.MyCommand.Path 
-Set-Location $scriptPath
-$destination = "C:\Binaries\TestR"
-$nugetDestination = "C:\Workspaces\Nuget\Developer"
+$scriptPath = $PSScriptRoot 
+
+if ($scriptPath.Length -le 0) {
+	$scriptPath = "C:\Workspaces\GitHub\TestR"
+}
+
+Push-Location $scriptPath
+
+$destination = "$scriptPath\Binaries"
 
 if (Test-Path $destination -PathType Container){
     Remove-Item $destination -Recurse -Force
 }
 
-New-Item $destination -ItemType Directory | Out-Null
-New-Item $destination\bin -ItemType Directory | Out-Null
-New-Item $destination\tests -ItemType Directory | Out-Null
+try {
+	.\ResetAssemblyInfos.ps1
+    .\IncrementVersion.ps1 -Revision *
 
-if (!(Test-Path $nugetDestination -PathType Container)){
-    New-Item $nugetDestination -ItemType Directory | Out-Null
-}
+	# Visual Studio Online Support
+	$nuget = "C:\LR\MMS\Services\mms\TaskAgentProvisioner\Tools\agents\2.114.0\externals\nuget\NuGet.exe"
+	
+	if (!(Test-Path $nuget -PathType Leaf)) {
+		$nuget = "nuget.exe"
+	}
 
-& nuget.exe restore "$scriptPath\TestR.sln"
+	& $nuget restore "$scriptPath\TestR.sln"
 
-.\IncrementVersion.ps1 -Build +
+	if ($LASTEXITCODE -ne 0) {
+		Write-Host "Nuget pull has failed! " $watch.Elapsed -ForegroundColor Red
+		exit $LASTEXITCODE
+	}
+	
+	# Visual Studio Online Support
+	$msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\MSBuild.exe"
+	
+	if (!(Test-Path $msbuild -PathType Leaf)) {
+		$msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\MSBuild.exe"	
+	}
+	
+	& $msbuild "$scriptPath\TestR.sln" /p:Configuration="$Configuration" /p:Platform="Any CPU" /p:PublishProfile=deployment /p:DeployOnBuild=True /t:Rebuild /p:VisualStudioVersion=15.0 /v:m /m
 
-# Visual Studio Online Support
-$msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\MSBuild.exe"
+	if ($LASTEXITCODE -ne 0) {
+		Write-Error "Build has failed! $($watch.Elapsed)"
+		exit $LASTEXITCODE
+	}
 
-if (!(Test-Path $msbuild -PathType Leaf)) {
-	$msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\msbuild.exe"	
-}
-
-& $msbuild "$scriptPath\TestR.sln" /p:Configuration="$Configuration" /p:Platform="Any CPU" /t:Rebuild /p:VisualStudioVersion=15.0 /v:m /m
-
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "Build has failed! " $watch.Elapsed -ForegroundColor Red
+	$pre = ""
+	
+	if ($PreRelease) {
+	    $pre = "-pre"
+	}
+	
+	$versionInfo = [System.Diagnostics.FileVersionInfo]::GetVersionInfo("$scriptPath\TestR\bin\$Configuration\TestR.dll")
+	$build = ([Version] $versionInfo.ProductVersion).Build
+	$revision = ([Version] $versionInfo.ProductVersion).Revision
+	$version = $versionInfo.FileVersion.Replace(".$build.$revision", "." + $build + $pre)
+		
+	#New-Item $destination -ItemType Directory | Out-Null
+	Copy-Item Deploy.ps1 $destination
+	Copy-Item RunTests.ps1 $destination
+	
+	New-Item $destination\TestR -ItemType Directory | Out-Null
+	Copy-Item Install.ps1 $destination\TestR\
+	Copy-Item TestR\bin\$Configuration\TestR.dll $destination\TestR\
+	Copy-Item TestR\bin\$Configuration\Interop.SHDocVw.dll $destination\TestR\
+	Copy-Item TestR\bin\$Configuration\Interop.UIAutomationClient.dll $destination\TestR\
+	Copy-Item TestR.PowerShell\bin\$Configuration\TestR.PowerShell.dll $destination\TestR\
+	
+	New-Item $destination\TestR.AutomationTests -ItemType Directory | Out-Null
+	Copy-Item TestR.AutomationTests\bin\$configuration\*.ps1 $destination\TestR.AutomationTests\
+	Copy-Item TestR.AutomationTests\bin\$configuration\*.dll $destination\TestR.AutomationTests\
+	
+	& $nuget pack TestR.nuspec -Prop Configuration="$Configuration" -Version $version
+	Move-Item "TestR.$version.nupkg" "$destination" -force
+	Copy-Item "$destination\TestR.$version.nupkg" "$nugetDestination" -force
+	
+	& $nuget pack TestR.PowerShell.nuspec -Prop Configuration="$Configuration" -Version $version
+	Move-Item "TestR.PowerShell.$version.nupkg" "$destination" -force
+	Copy-Item "$destination\TestR.PowerShell.$version.nupkg" "$nugetDestination" -force
+	
+	Write-Host
+	Write-Host "Build v$($version):" $watch.Elapsed -ForegroundColor Yellow
+} catch  {
+    Write-Host $_.Exception.ToString() -ForegroundColor Red
+    Write-Error "Build Failed: $($watch.Elapsed)"
     exit $LASTEXITCODE
+} finally {
+    Pop-Location
+    
+    try {
+    	Stop-Process -ProcessName msbuild*
+    } catch {
+    	# ignore an errors
+    }
 }
-
-Set-Location $scriptPath
-$pre = ""
-
-if ($PreRelease) {
-    $pre = "-pre"
-}
-
-$versionInfo = [System.Diagnostics.FileVersionInfo]::GetVersionInfo("$scriptPath\TestR\bin\$Configuration\TestR.dll")
-$build = ([Version] $versionInfo.ProductVersion).Build
-$version = $versionInfo.FileVersion.Replace(".$build.0", "." + $build + $pre)
-
-Copy-Item Install.ps1 $destination\bin\
-Copy-Item TestR\bin\$Configuration\TestR.dll $destination\bin\
-Copy-Item TestR\bin\$Configuration\Interop.SHDocVw.dll $destination\bin\
-Copy-Item TestR\bin\$Configuration\Interop.UIAutomationClient.dll $destination\bin\
-Copy-Item TestR.AutomationTests\bin\$configuration\*.ps1 $destination\tests\
-Copy-Item TestR.AutomationTests\bin\$configuration\*.dll $destination\tests\
-Copy-Item TestR.PowerShell\bin\$Configuration\TestR.PowerShell.dll $destination\bin\
-
-& "nuget.exe" pack TestR.nuspec -Prop Configuration="$Configuration" -Version $version
-Move-Item "TestR.$version.nupkg" "$destination" -force
-Copy-Item "$destination\TestR.$version.nupkg" "$nugetDestination" -force
-
-& "nuget.exe" pack TestR.PowerShell.nuspec -Prop Configuration="$Configuration" -Version $version
-Move-Item "TestR.PowerShell.$version.nupkg" "$destination" -force
-Copy-Item "$destination\TestR.PowerShell.$version.nupkg" "$nugetDestination" -force
-
-Write-Host
-Set-Location $scriptPath
-Write-Host "TestR Build:" $watch.Elapsed -ForegroundColor Yellow

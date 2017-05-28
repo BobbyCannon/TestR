@@ -161,3 +161,4 @@ NuGet.Config
 Help/html
 .vs
 *.DotSettings
+Binaries/
