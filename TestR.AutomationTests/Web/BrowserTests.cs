@@ -630,10 +630,14 @@ namespace TestR.AutomationTests.Web
 				Assert.AreEqual(0, items.Children.Count);
 
 				browser.First<Button>("addItem").Click().Click();
+				var result = items.Wait(x => x.Refresh().Children.Count >= 2);
+				Assert.IsTrue(result, "Should have had two items.");
+				Assert.AreEqual(2, items.Children.Count);
 
-				var item0 = browser.First("items-0");
+				var item0 = items.First("items-0");
 				var item1 = item0.GetNextSibling();
 
+				Assert.IsNotNull(item1, "Failed to find sibling.");
 				Assert.AreEqual("items-1", item1.Id);
 			});
 		}
@@ -650,8 +654,11 @@ namespace TestR.AutomationTests.Web
 				Assert.AreEqual(0, items.Children.Count);
 
 				browser.First<Button>("addItem").Click().Click();
+				var result = items.Wait(x => x.Refresh().Children.Count >= 2);
+				Assert.IsTrue(result, "Should have had two items.");
+				Assert.AreEqual(2, items.Children.Count);
 
-				var item1 = browser.First("items-1");
+				var item1 = items.First("items-1");
 				var item0 = item1.GetPreviousSibling();
 
 				Assert.AreEqual("items-0", item0.Id);
@@ -733,20 +740,13 @@ namespace TestR.AutomationTests.Web
 		{
 			ForEachBrowser(browser =>
 			{
-				//LogManager.UpdateReferenceId(browser, "ClickLink");
 				browser.NavigateTo(TestSite + "/main.html");
-				browser.First("angularLink").Click();
-				browser.WaitForComplete();
 
 				var actual = browser.ExecuteScript("TestR.runScript('document.toString()')");
 				Assert.IsTrue(actual.Contains("undefined"));
-				//Assert.AreEqual("{\r\n  \"type\": \"undefined\"\r\n}", actual);
 
-				actual = browser.ExecuteScript("document.getElementById('testrResult').textContent");
-				Assert.AreEqual("", actual);
-
-				browser.First<TextInput>("email").TypeText("test");
-				Assert.AreEqual("test", browser.First<TextInput>("email").Text);
+				actual = browser.ExecuteScript("document.title");
+				Assert.AreEqual("Index", actual);
 			});
 		}
 

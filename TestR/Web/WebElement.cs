@@ -472,7 +472,7 @@ namespace TestR.Web
 		public override ElementHost Refresh()
 		{
 			Children.Clear();
-			Children.AddRange(Browser.GetElements(Id));
+			Children.AddRange(Browser.GetElements(this));
 			return this;
 		}
 

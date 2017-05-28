@@ -1,5 +1,6 @@
 ﻿#region References
 
+using System;
 using System.Drawing;
 using System.Management.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -179,9 +180,11 @@ namespace TestR.AutomationTests.Desktop.Elements
 
 			using (var application = GetApplication())
 			{
-				var checkbox = application.First<CheckBox>("checkBox1");
-				var x = application.Location.X + 248;
-				var y = application.Location.Y + 173;
+				application.MoveWindow(0, 0);
+				var window = application.First<Window>();
+				var checkbox = window.First<CheckBox>("checkBox1");
+				var x = window.Location.X + 115;
+				var y = window.Location.Y + 146;
 				Assert.AreEqual(new Point(x, y), checkbox.Location);
 			}
 		}

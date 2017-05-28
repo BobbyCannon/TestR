@@ -543,16 +543,16 @@ namespace TestR.Web
 			}
 		}
 
-		internal ICollection<WebElement> GetElements(string parentId = null)
+		internal ICollection<WebElement> GetElements(WebElement parent = null)
 		{
-			var data = ExecuteScript(parentId == null ? "JSON.stringify(TestR.getElements())" : $"JSON.stringify(TestR.getElements('{parentId}'))");
+			var data = ExecuteScript(parent?.Id == null ? "JSON.stringify(TestR.getElements())" : $"JSON.stringify(TestR.getElements('{parent.Id}'))");
 			if (JavascriptLibraries.Contains(JavaScriptLibrary.Angular) && data.Contains("ng-view ng-cloak"))
 			{
 				throw new TestRException("JavaScript not completed?");
 			}
 
 			var elements = JsonConvert.DeserializeObject<JArray>(data);
-			return elements?.Select(x => WebElement.Create(x, this, null)).ToList() ?? new List<WebElement>();
+			return elements?.Select(x => WebElement.Create(x, this, parent)).ToList() ?? new List<WebElement>();
 		}
 
 		/// <summary>
@@ -617,7 +617,7 @@ namespace TestR.Web
 			//LogManager.Write("Refresh the elements.", LogLevel.Verbose);
 			Children.Clear();
 
-			var webElements = GetElements();
+			var webElements = GetElements(null);
 
 			foreach (var element in webElements)
 			{
