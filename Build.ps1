@@ -73,6 +73,7 @@ try {
 	
 	New-Item $destination\TestR.AutomationTests -ItemType Directory | Out-Null
 	Copy-Item TestR.AutomationTests\bin\$configuration\* $destination\TestR.AutomationTests\
+	Copy-Item $destination\TestR\* $destination\TestR.AutomationTests\
 	
 	& $nuget pack TestR.nuspec -Prop Configuration="$Configuration" -Version $version
 	Move-Item "TestR.$version.nupkg" "$destination" -force
@@ -89,6 +90,8 @@ try {
     Write-Error "Build Failed: $($watch.Elapsed)"
     exit $LASTEXITCODE
 } finally {
+	.\ResetAssemblyInfos.ps1
+	
     Pop-Location
     
     try {
