@@ -145,20 +145,18 @@ namespace TestR.AutomationTests.Web
 			{
 				using (var browser2 = InternetExplorer.Create())
 				{
-					var expected = $"https://{Environment.MachineName.ToLower()}/";
+					var expected = "https://testr.local/";
 					Assert.IsNotNull(browser);
 					Console.WriteLine(browser.Id);
-					browser.NavigateTo(expected);
+					browser.NavigateTo(expected + "main.html");
 					browser.ExecuteScript("window.location.href").Dump();
-					Assert.AreEqual(expected, browser.Uri);
+					Assert.AreEqual(expected + "main.html", browser.Uri);
 
 					Assert.IsNotNull(browser2);
 					Console.WriteLine(browser2.Id);
-					browser2.NavigateTo(expected);
+					browser2.NavigateTo(expected + "inputs.html");
 					browser2.ExecuteScript("window.location.href").Dump();
-					Assert.AreEqual(expected, browser2.Uri);
-
-					Assert.AreNotEqual(browser.Id, browser2.Id);
+					Assert.AreEqual(expected + "inputs.html", browser2.Uri);
 				}
 			}
 		}

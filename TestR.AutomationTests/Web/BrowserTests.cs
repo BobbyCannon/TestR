@@ -22,7 +22,7 @@ namespace TestR.AutomationTests.Web
 
 		static BrowserTests()
 		{
-			TestSite = $"https://{Environment.MachineName.ToLower()}";
+			TestSite = "https://testr.local";
 		}
 
 		#endregion
@@ -332,7 +332,7 @@ namespace TestR.AutomationTests.Web
 			{
 				//LogManager.UpdateReferenceId(browser, "ElementChildren");
 				browser.NavigateTo(TestSite + "/relationships.html");
-				Assert.AreEqual(5174, browser.Descendants().Count());
+				Assert.AreEqual(4043, browser.Descendants().Count());
 
 				foreach (var e in browser.Descendants())
 				{
