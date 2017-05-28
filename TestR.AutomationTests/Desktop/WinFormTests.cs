@@ -1,17 +1,14 @@
 ﻿#region References
 
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Management.Automation;
-using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop;
 using TestR.Desktop.Elements;
 using TestR.Desktop.Pattern;
 using TestR.Native;
-using TestR.PowerShell;
 
 #endregion
 
@@ -19,20 +16,14 @@ namespace TestR.AutomationTests.Desktop
 {
 	[TestClass]
 	[Cmdlet(VerbsDiagnostic.Test, "WinForms")]
-	public class WinFormTests : TestCmdlet
+	public class WinFormTests : BaseTest
 	{
-		#region Fields
-
-		private static string _applicationPath;
-
-		#endregion
-
 		#region Methods
 
 		[TestMethod]
 		public void ApplicationLocation()
 		{
-			using (var application = Application.AttachOrCreate(_applicationPath))
+			using (var application = GetApplication())
 			{
 				var expected = application.First<Window>("ParentForm");
 				var actual = application.Location;
@@ -45,7 +36,7 @@ namespace TestR.AutomationTests.Desktop
 		public void ApplicationLocationWhileMaximized()
 		{
 			Mouse.MoveTo(0, 0);
-			using (var application = Application.AttachOrCreate(_applicationPath))
+			using (var application = GetApplication())
 			{
 				application.BringToFront();
 
@@ -61,7 +52,7 @@ namespace TestR.AutomationTests.Desktop
 		[TestMethod]
 		public void ApplicationSize()
 		{
-			using (var application = Application.AttachOrCreate(_applicationPath))
+			using (var application = GetApplication())
 			{
 				var expected = application.First<Window>("ParentForm");
 				var actual = application.Size;
@@ -73,7 +64,7 @@ namespace TestR.AutomationTests.Desktop
 		[TestMethod]
 		public void CheckBoxCheckedStateShouldBeIndeterminate()
 		{
-			using (var application = Application.AttachOrCreate(_applicationPath))
+			using (var application = GetApplication())
 			{
 				var window = application.First<Window>("ParentForm");
 				var checkbox = window.First<CheckBox>("checkBox3");
@@ -85,7 +76,7 @@ namespace TestR.AutomationTests.Desktop
 		[TestMethod]
 		public void CheckBoxCheckedStateShouldBeOff()
 		{
-			using (var application = Application.AttachOrCreate(_applicationPath))
+			using (var application = GetApplication())
 			{
 				var window = application.First<Window>("ParentForm");
 				var checkbox = window.First<CheckBox>("checkBox1");
@@ -97,7 +88,7 @@ namespace TestR.AutomationTests.Desktop
 		[TestMethod]
 		public void CheckBoxCheckedStateShouldBeOn()
 		{
-			using (var application = Application.AttachOrCreate(_applicationPath))
+			using (var application = GetApplication())
 			{
 				var window = application.First<Window>("ParentForm");
 				var checkbox = window.First<CheckBox>("checkBox2");
@@ -109,7 +100,7 @@ namespace TestR.AutomationTests.Desktop
 		[TestMethod]
 		public void CheckBoxCount()
 		{
-			using (var application = Application.AttachOrCreate(_applicationPath))
+			using (var application = GetApplication())
 			{
 				var window = application.First<Window>(x => x.Id == "FormMain");
 				var checkboxes = window.Descendants<CheckBox>();
@@ -122,7 +113,7 @@ namespace TestR.AutomationTests.Desktop
 		[TestMethod]
 		public void CheckBoxWithIndeterminateStateShouldBeChecked()
 		{
-			using (var application = Application.AttachOrCreate(_applicationPath))
+			using (var application = GetApplication())
 			{
 				var window = application.First<Window>("ParentForm");
 				var checkbox = window.First<CheckBox>("checkBox3");
@@ -134,7 +125,7 @@ namespace TestR.AutomationTests.Desktop
 		[TestMethod]
 		public void CheckBoxWithOffStateShouldBeChecked()
 		{
-			using (var application = Application.AttachOrCreate(_applicationPath))
+			using (var application = GetApplication())
 			{
 				var window = application.First<Window>("ParentForm");
 				var checkbox = window.First<CheckBox>("checkBox1");
@@ -146,7 +137,7 @@ namespace TestR.AutomationTests.Desktop
 		[TestMethod]
 		public void CheckBoxWithOnStateShouldBeChecked()
 		{
-			using (var application = Application.AttachOrCreate(_applicationPath))
+			using (var application = GetApplication())
 			{
 				var window = application.First<Window>("ParentForm");
 				var checkbox = window.First<CheckBox>("checkBox2");
@@ -158,7 +149,7 @@ namespace TestR.AutomationTests.Desktop
 		[TestMethod]
 		public void CheckWindowId()
 		{
-			using (var application = Application.AttachOrCreate(_applicationPath))
+			using (var application = GetApplication())
 			{
 				var window = application.First<Window>("ParentForm");
 				Assert.AreEqual("ParentForm", window.Id);
@@ -169,7 +160,7 @@ namespace TestR.AutomationTests.Desktop
 		[TestMethod]
 		public void CheckWindowName()
 		{
-			using (var application = Application.AttachOrCreate(_applicationPath))
+			using (var application = GetApplication())
 			{
 				var window = application.First<Window>("ParentForm");
 				Assert.AreEqual("ParentForm", window.Name);
@@ -183,21 +174,10 @@ namespace TestR.AutomationTests.Desktop
 			Application.CloseAll(_applicationPath);
 		}
 
-		[ClassInitialize]
-		public static void ClassInitialize(TestContext context)
-		{
-			var assembly = Assembly.GetExecutingAssembly();
-			var path = Path.GetDirectoryName(assembly.Location);
-			var info = new DirectoryInfo(path ?? "/");
-			
-			_applicationPath += info.FullName + "\\TestR.TestWinForms.exe";
-			Application.CloseAll(_applicationPath);
-		}
-
 		[TestMethod]
 		public void GetMainMenuBar()
 		{
-			using (var application = Application.AttachOrCreate(_applicationPath))
+			using (var application = GetApplication())
 			{
 				var window = application.First<Window>("ParentForm");
 				var mainMenu = window.Children["menuStrip"];
@@ -210,7 +190,7 @@ namespace TestR.AutomationTests.Desktop
 		[TestMethod]
 		public void GetMainStatusStrip()
 		{
-			using (var application = Application.AttachOrCreate(_applicationPath))
+			using (var application = GetApplication())
 			{
 				var window = application.First<Window>("ParentForm");
 				var statusBar = window.StatusBar;
@@ -224,7 +204,7 @@ namespace TestR.AutomationTests.Desktop
 		[TestMethod]
 		public void GetMainTitleBar()
 		{
-			using (var application = Application.AttachOrCreate(_applicationPath))
+			using (var application = GetApplication())
 			{
 				var window = application.First<Window>("ParentForm");
 				var titleBar = window.TitleBar;
@@ -239,7 +219,7 @@ namespace TestR.AutomationTests.Desktop
 		public void GetParents()
 		{
 			CheckBox checkbox;
-			using (var application = Application.AttachOrCreate(_applicationPath))
+			using (var application = GetApplication())
 			{
 				var window = application.First<Window>("ParentForm");
 				checkbox = window.First<CheckBox>("checkBox1");
@@ -255,7 +235,7 @@ namespace TestR.AutomationTests.Desktop
 		[TestMethod]
 		public void GetWindowById()
 		{
-			using (var application = Application.AttachOrCreate(_applicationPath))
+			using (var application = GetApplication())
 			{
 				var window = application.First<Window>("FormMain");
 				Assert.IsNotNull(window);
@@ -265,7 +245,7 @@ namespace TestR.AutomationTests.Desktop
 		[TestMethod]
 		public void GetWindowByName()
 		{
-			using (var application = Application.AttachOrCreate(_applicationPath))
+			using (var application = GetApplication())
 			{
 				var window = application.First<Window>("TestR Test WinForm");
 				Assert.IsNotNull(window);
@@ -275,7 +255,7 @@ namespace TestR.AutomationTests.Desktop
 		[TestMethod]
 		public void RefreshingApplicationWhileClosingWindowsShouldNotFail()
 		{
-			using (var application = Application.Create(_applicationPath))
+			using (var application = GetApplication())
 			{
 				var tempApplication = application;
 				var window = application.First<Window>("TestR Test WinForm");

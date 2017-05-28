@@ -1,13 +1,10 @@
 ﻿#region References
 
 using System;
-using System.IO;
 using System.Linq;
 using System.Management.Automation;
-using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop.Elements;
-using TestR.PowerShell;
 
 #endregion
 
@@ -15,37 +12,20 @@ namespace TestR.AutomationTests.Desktop.Elements
 {
 	[TestClass]
 	[Cmdlet(VerbsDiagnostic.Test, "Window")]
-	public class WindowTests : TestCmdlet
+	public class WindowTests : BaseTest
 	{
-		#region Fields
-
-		public static string ApplicationPath;
-
-		#endregion
-
 		#region Methods
 
 		[ClassCleanup]
 		public static void ClassCleanup()
 		{
-			Application.CloseAll(ApplicationPath);
-		}
-
-		[ClassInitialize]
-		public static void ClassInitialize(TestContext context)
-		{
-			var assembly = Assembly.GetExecutingAssembly();
-			var path = Path.GetDirectoryName(assembly.Location);
-			var info = new DirectoryInfo(path ?? "/");
-
-			ApplicationPath += info.FullName + "\\TestR.TestWinForms.exe";
-			Application.CloseAll(ApplicationPath);
+			Application.CloseAll(_applicationPath);
 		}
 
 		[TestMethod]
 		public void MoveChildWindow()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = GetApplication())
 			{
 				var window = application.First<Window>();
 				var childWindow = window.First<Window>();
@@ -66,7 +46,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		[TestMethod]
 		public void MoveParentWindow()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = GetApplication())
 			{
 				var window = application.First<Window>();
 				Assert.IsNotNull(window);
@@ -84,7 +64,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		[TestMethod]
 		public void ResizeChildWindow()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = GetApplication())
 			{
 				var window = application.First<Window>();
 				var childWindow = window.First<Window>();
@@ -102,7 +82,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		[TestMethod]
 		public void ResizeParentWindow()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = GetApplication())
 			{
 				var window = application.Descendants<Window>().FirstOrDefault();
 				var random = new Random();
@@ -113,12 +93,6 @@ namespace TestR.AutomationTests.Desktop.Elements
 				Assert.AreEqual(width, window.Size.Width);
 				Assert.AreEqual(height, window.Size.Height);
 			}
-		}
-
-		[TestInitialize]
-		public void TestInitialize()
-		{
-			Application.CloseAll(ApplicationPath);
 		}
 
 		#endregion

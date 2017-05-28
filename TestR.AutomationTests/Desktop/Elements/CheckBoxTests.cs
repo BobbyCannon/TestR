@@ -1,14 +1,11 @@
 ﻿#region References
 
 using System.Drawing;
-using System.IO;
 using System.Management.Automation;
-using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop.Elements;
 using TestR.Desktop.Pattern;
 using TestR.Native;
-using TestR.PowerShell;
 
 #endregion
 
@@ -16,22 +13,14 @@ namespace TestR.AutomationTests.Desktop.Elements
 {
 	[TestClass]
 	[Cmdlet(VerbsDiagnostic.Test, "CheckBox")]
-	public class CheckBoxTests : TestCmdlet
+	public class CheckBoxTests : BaseTest
 	{
-		#region Fields
-
-		public static string ApplicationPath;
-
-		#endregion
-
 		#region Methods
 
 		[TestMethod]
 		public void CheckByClickingForThreeStates()
 		{
-			Application.CloseAll(ApplicationPath);
-
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = GetApplication())
 			{
 				var checkbox = application.First<CheckBox>("checkBox3");
 				checkbox.Click();
@@ -46,7 +35,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		[TestMethod]
 		public void CheckByClickingForTwoStates()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = GetApplication())
 			{
 				var checkbox = application.First<CheckBox>("checkBox1");
 				checkbox.Click();
@@ -59,7 +48,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		[TestMethod]
 		public void CheckByClickingWhileDisabled()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = GetApplication())
 			{
 				var checkbox = application.First<CheckBox>("checkBox4");
 				checkbox.Click();
@@ -70,7 +59,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		[TestMethod]
 		public void CheckByTogglingForThreeStates()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = GetApplication())
 			{
 				var checkbox = application.First<CheckBox>("checkBox3");
 				checkbox.Toggle();
@@ -85,7 +74,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		[TestMethod]
 		public void CheckByTogglingForTwoStates()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = GetApplication())
 			{
 				var checkbox = application.First<CheckBox>("checkBox1");
 				checkbox.Toggle();
@@ -98,7 +87,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		[TestMethod]
 		public void CheckedShouldBeChecked()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = GetApplication())
 			{
 				var checkbox = application.First<CheckBox>("checkBox2");
 				Assert.AreEqual(true, checkbox.Checked);
@@ -110,7 +99,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		[TestMethod]
 		public void CheckedStateShouldBeChecked()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = GetApplication())
 			{
 				var checkbox = application.First<CheckBox>("checkBox2");
 				Assert.AreEqual(ToggleState.On, checkbox.CheckedState);
@@ -120,7 +109,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		[TestMethod]
 		public void CheckedStateShouldBeIndeterminate()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = GetApplication())
 			{
 				var checkbox = application.First<CheckBox>("checkBox3");
 				Assert.AreEqual(ToggleState.Indeterminate, checkbox.CheckedState);
@@ -130,7 +119,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		[TestMethod]
 		public void CheckedStateShouldBeUnchecked()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = GetApplication())
 			{
 				var checkbox = application.First<CheckBox>("checkBox1");
 				Assert.AreEqual(ToggleState.Off, checkbox.CheckedState);
@@ -140,24 +129,13 @@ namespace TestR.AutomationTests.Desktop.Elements
 		[ClassCleanup]
 		public static void ClassCleanup()
 		{
-			Application.CloseAll(ApplicationPath);
-		}
-
-		[ClassInitialize]
-		public static void ClassInitialize(TestContext context)
-		{
-			var assembly = Assembly.GetExecutingAssembly();
-			var path = Path.GetDirectoryName(assembly.Location);
-			var info = new DirectoryInfo(path ?? "/");
-
-			ApplicationPath += info.FullName + "\\TestR.TestWinForms.exe";
-			Application.CloseAll(ApplicationPath);
+			Application.CloseAll(_applicationPath);
 		}
 
 		[TestMethod]
 		public void EnabledShouldBeFalse()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = GetApplication())
 			{
 				var checkbox = application.First<CheckBox>("checkBox4");
 				Assert.AreEqual(false, checkbox.Enabled);
@@ -167,7 +145,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		[TestMethod]
 		public void EnabledShouldBeTrue()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = GetApplication())
 			{
 				var checkbox = application.First<CheckBox>("checkBox1");
 				Assert.AreEqual(true, checkbox.Enabled);
@@ -177,7 +155,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		[TestMethod]
 		public void KeyboardFocusableShouldBeFalse()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = GetApplication())
 			{
 				var checkbox = application.First<CheckBox>("checkBox4");
 				Assert.AreEqual(false, checkbox.KeyboardFocusable);
@@ -187,7 +165,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		[TestMethod]
 		public void KeyboardFocusableShouldBeTrue()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = GetApplication())
 			{
 				var checkbox = application.First<CheckBox>("checkBox1");
 				Assert.AreEqual(true, checkbox.KeyboardFocusable);
@@ -197,10 +175,9 @@ namespace TestR.AutomationTests.Desktop.Elements
 		[TestMethod]
 		public void LocationShouldBeValid()
 		{
-			Application.CloseAll(ApplicationPath);
 			Mouse.MoveTo(0, 0);
 
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = GetApplication())
 			{
 				var checkbox = application.First<CheckBox>("checkBox1");
 				var x = application.Location.X + 248;
@@ -212,23 +189,17 @@ namespace TestR.AutomationTests.Desktop.Elements
 		[TestMethod]
 		public void SizeShouldBeValid()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = GetApplication())
 			{
 				var checkbox = application.First<CheckBox>("checkBox1");
 				Assert.AreEqual(new Size(82, 17), checkbox.Size);
 			}
 		}
 
-		[TestInitialize]
-		public void TestInitialize()
-		{
-			Application.CloseAll(ApplicationPath);
-		}
-
 		[TestMethod]
 		public void VisibleShouldBeFalse()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = GetApplication())
 			{
 				var checkbox = application.FirstOrDefault<CheckBox>("checkBox5", wait: false);
 				// Cannot be found because it's not visible.
@@ -239,7 +210,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 		[TestMethod]
 		public void VisibleShouldBeTrue()
 		{
-			using (var application = Application.AttachOrCreate(ApplicationPath))
+			using (var application = GetApplication())
 			{
 				var checkbox = application.First<CheckBox>("checkBox1");
 				Assert.AreEqual(true, checkbox.Visible);
