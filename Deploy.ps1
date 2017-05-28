@@ -42,13 +42,13 @@ if ($site -eq $null) {
 
 Set-ItemProperty -Path $webPath -Name Bindings -Value $bindings
 
-$certificate = (Get-ChildItem Cert:\LocalMachine -Recurse | Where { $_.Subject -ne $null -and $_.Subject.Contains("testr.local") })
+$certificate = (Get-ChildItem Cert:\LocalMachine -Recurse | Where { $_.Subject -ne $null -and $_.Subject.Contains("testr.local") })[0]
 if ($certificate -eq $null) {
 	$certificate = New-SelfSignedCertificate -CertStoreLocation Cert:\LocalMachine\My -DnsName testr.local
 }
 
 $binding = Get-WebBinding -Name $siteName -Protocol "https"
-$binding.AddSslCertificate($certificate.GetCertHashString(), "WebHosting")
+$binding.AddSslCertificate($certificate.GetCertHashString(), "MY")
 
 $pool = Get-Item "IIS:\AppPools\$siteName" -ErrorAction Ignore
 if ($pool -eq $null) {
