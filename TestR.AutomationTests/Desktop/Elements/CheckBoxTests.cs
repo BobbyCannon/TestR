@@ -150,8 +150,7 @@ namespace TestR.AutomationTests.Desktop.Elements
 			var path = Path.GetDirectoryName(assembly.Location);
 			var info = new DirectoryInfo(path ?? "/");
 
-			ApplicationPath = info.Parent?.Parent?.Parent?.FullName;
-			ApplicationPath += "\\TestR.TestWinForms\\Bin\\" + (assembly.IsAssemblyDebugBuild() ? "Debug" : "Release") + "\\TestR.TestWinForms.exe";
+			ApplicationPath += info.FullName + "\\TestR.TestWinForms.exe";
 			Application.CloseAll(ApplicationPath);
 		}
 

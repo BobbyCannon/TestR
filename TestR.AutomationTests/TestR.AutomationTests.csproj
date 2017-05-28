@@ -94,6 +94,10 @@
       <Project>{0896d938-1426-4d1a-8c06-649650404693}</Project>
       <Name>TestR.PowerShell</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TestR.TestWinForms\TestR.TestWinForms.csproj">
+      <Project>{e43d1f20-edfa-43da-9e72-0685082df62b}</Project>
+      <Name>TestR.TestWinForms</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TestR\TestR.csproj">
       <Project>{dec269ed-d43e-4d3a-ba25-238a9dd7cf04}</Project>
       <Name>TestR</Name>
