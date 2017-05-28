@@ -111,6 +111,15 @@ namespace TestR.Web
 		public virtual string RawHtml => ExecuteScript("document.documentElement.outerHTML");
 
 		/// <summary>
+		/// Gets or sets the time out for delay request. Defaults to 5 seconds.
+		/// </summary>
+		public TimeSpan Timeout
+		{
+			get => Application.Timeout;
+			set => Application.Timeout = value;
+		}
+
+		/// <summary>
 		/// Gets the URI of the current page.
 		/// </summary>
 		public string Uri => GetBrowserUri();

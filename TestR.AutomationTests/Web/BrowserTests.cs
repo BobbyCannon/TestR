@@ -324,6 +324,23 @@ namespace TestR.AutomationTests.Web
 			});
 		}
 
+
+		[TestMethod]
+		public void DeepDescendants()
+		{
+			ForEachBrowser(browser =>
+			{
+				//LogManager.UpdateReferenceId(browser, "ElementChildren");
+				browser.NavigateTo(TestSite + "/relationships.html");
+				Assert.AreEqual(5174, browser.Descendants().Count());
+
+				foreach (var e in browser.Descendants())
+				{
+					Console.WriteLine(e.Id);
+				}
+			});
+		}
+
 		[TestMethod]
 		public void ElementChildren()
 		{

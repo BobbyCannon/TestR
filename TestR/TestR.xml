@@ -2092,6 +2092,11 @@
             Gets the raw HTML of the page.
             </summary>
         </member>
+        <member name="P:TestR.Web.Browser.Timeout">
+            <summary>
+            Gets or sets the time out for delay request. Defaults to 5 seconds.
+            </summary>
+        </member>
         <member name="P:TestR.Web.Browser.Uri">
             <summary>
             Gets the URI of the current page.
