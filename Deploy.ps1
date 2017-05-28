@@ -18,7 +18,7 @@ if ($scriptPath -eq $null) {
 }
 
 if (Test-Path $SitePath -PathType Container) {
-	Remove-Item $SitePath -Recurse
+	Remove-Item $SitePath -Recurse -Force
 }
 
 New-Item $SitePath -ItemType Directory | Out-Null
