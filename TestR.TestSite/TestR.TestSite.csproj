@@ -110,6 +110,7 @@
     </Content>
     <Content Include="Global.asax" />
     <Content Include="packages.config" />
+    <None Include="Properties\PublishProfiles\deployment.pubxml" />
     <None Include="Properties\PublishProfiles\localhost.pubxml" />
     <Content Include="Scripts\angular-mocks.js" />
     <Content Include="Scripts\angular-route.js" />
