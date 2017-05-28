@@ -22,7 +22,7 @@ if (Test-Path $SitePath -PathType Container) {
 }
 
 New-Item $SitePath -ItemType Directory | Out-Null
-Copy-Item "$scriptPath\TestR\*" $SitePath -Recurse -Force
+Copy-Item "$scriptPath\TestR.Website\*" $SitePath -Recurse -Force
 
 $bindings = @()
 $bindings += @{ protocol="http"; bindingInformation="*:80:testr.local"}
