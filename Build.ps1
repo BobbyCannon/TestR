@@ -68,14 +68,11 @@ try {
 	
 	New-Item $destination\TestR -ItemType Directory | Out-Null
 	Copy-Item Install.ps1 $destination\TestR\
-	Copy-Item TestR\bin\$Configuration\TestR.dll $destination\TestR\
-	Copy-Item TestR\bin\$Configuration\Interop.SHDocVw.dll $destination\TestR\
-	Copy-Item TestR\bin\$Configuration\Interop.UIAutomationClient.dll $destination\TestR\
-	Copy-Item TestR.PowerShell\bin\$Configuration\TestR.PowerShell.dll $destination\TestR\
+	Copy-Item TestR\bin\$Configuration\* $destination\TestR\
+	Copy-Item TestR.PowerShell\bin\$Configuration\* $destination\TestR\
 	
 	New-Item $destination\TestR.AutomationTests -ItemType Directory | Out-Null
-	Copy-Item TestR.AutomationTests\bin\$configuration\*.ps1 $destination\TestR.AutomationTests\
-	Copy-Item TestR.AutomationTests\bin\$configuration\*.dll $destination\TestR.AutomationTests\
+	Copy-Item TestR.AutomationTests\bin\$configuration\* $destination\TestR.AutomationTests\
 	
 	& $nuget pack TestR.nuspec -Prop Configuration="$Configuration" -Version $version
 	Move-Item "TestR.$version.nupkg" "$destination" -force
