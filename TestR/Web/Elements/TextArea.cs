@@ -164,7 +164,7 @@ namespace TestR.Web.Elements
 		public string Value
 		{
 			get => this["value"];
-			set => TypeText(value, true);
+			set => this["value"] = value;
 		}
 
 		/// <summary>

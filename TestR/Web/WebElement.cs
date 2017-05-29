@@ -514,7 +514,8 @@ namespace TestR.Web
 		public void SetAttributeValue(string name, string value)
 		{
 			name = _propertiesToRename.ContainsKey(name) ? _propertiesToRename[name] : name;
-			value = value.Replace("\r", "\\r")
+			value = value
+				.Replace("\r", "\\r")
 				.Replace("\n", "\\n")
 				.Replace("\'", "\\\'")
 				.Replace("\"", "\\\"");
