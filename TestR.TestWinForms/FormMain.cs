@@ -20,7 +20,7 @@ namespace TestR.TestWinForms
 
 		#region Methods
 
-		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+		private void ExitToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			Close();
 		}

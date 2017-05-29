@@ -22,11 +22,6 @@ namespace TestR.Web
 		#region Constants
 
 		/// <summary>
-		/// Gets the default timeout (in milliseconds).
-		/// </summary>
-		public const int DefaultTimeout = 5000;
-
-		/// <summary>
 		/// Gets the missing TestR error.
 		/// </summary>
 		public const string TestrNotDefinedMessage = "TestR is not defined";
@@ -111,7 +106,7 @@ namespace TestR.Web
 		public virtual string RawHtml => ExecuteScript("document.documentElement.outerHTML");
 
 		/// <summary>
-		/// Gets or sets the time out for delay request. Defaults to 5 seconds.
+		/// Gets or sets the time out for delay request. Defaults to 60 seconds.
 		/// </summary>
 		public TimeSpan Timeout
 		{
@@ -443,7 +438,7 @@ namespace TestR.Web
 		/// <inheritdoc />
 		public override ElementHost WaitForComplete(int minimumDelay = 0)
 		{
-			Utility.Wait(() => ExecuteJavaScript("document.readyState === 'complete'").Equals("true", StringComparison.OrdinalIgnoreCase));
+			Wait(x => ExecuteJavaScript("document.readyState === 'complete'").Equals("true", StringComparison.OrdinalIgnoreCase));
 			Application?.WaitForComplete(minimumDelay);
 			return this;
 		}
@@ -463,7 +458,7 @@ namespace TestR.Web
 			if (uri == null)
 			{
 				//LogManager.Write("Waiting for navigation with timeout of " + timeout.Value + ".", LogLevel.Verbose);
-				if (!Utility.Wait(() => Uri != _lastUri, (int) timeout.Value.TotalMilliseconds))
+				if (!Wait(x => Uri != _lastUri, (int) timeout.Value.TotalMilliseconds))
 				{
 					throw new TestRException($"Browser never completed navigated away from {Uri}.");
 				}
@@ -472,7 +467,7 @@ namespace TestR.Web
 			{
 				//LogManager.Write("Waiting for navigation to " + uri + " with timeout of " + timeout.Value + ".", LogLevel.Verbose);
 				var alternateUri = uri.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ? "https://" + uri.Substring(7) : "http://" + uri.Substring(8);
-				if (!Utility.Wait(() => Uri.StartsWith(uri, StringComparison.OrdinalIgnoreCase)
+				if (!Wait(x => Uri.StartsWith(uri, StringComparison.OrdinalIgnoreCase)
 						|| Uri.StartsWith(alternateUri, StringComparison.OrdinalIgnoreCase),
 					(int) timeout.Value.TotalMilliseconds))
 				{

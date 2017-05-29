@@ -24,7 +24,7 @@ namespace TestR
 		/// <summary>
 		/// Gets the default timeout (in milliseconds).
 		/// </summary>
-		public const int DefaultTimeout = 5000;
+		public const int DefaultTimeout = 60000;
 
 		#endregion
 
@@ -98,7 +98,7 @@ namespace TestR
 		public bool SlowMotion { get; set; }
 
 		/// <summary>
-		/// Gets or sets the time out for delay request. Defaults to 5 seconds.
+		/// Gets or sets the time out for delay request. Defaults to 60 seconds.
 		/// </summary>
 		public TimeSpan Timeout { get; set; }
 

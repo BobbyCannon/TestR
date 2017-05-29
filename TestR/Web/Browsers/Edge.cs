@@ -65,7 +65,7 @@ namespace TestR.Web.Browsers
 		public static Browser Attach(bool bringToFront = true)
 		{
 			InitializeDriver();
-			var session = GetSession() ?? StartSession();
+			var session = GetSession() ?? StartSession(Application.DefaultTimeout);
 			if (string.IsNullOrWhiteSpace(session))
 			{
 				return null;
@@ -90,7 +90,7 @@ namespace TestR.Web.Browsers
 				return null;
 			}
 
-			var session = GetSession() ?? StartSession();
+			var session = GetSession() ?? StartSession(Application.DefaultTimeout);
 			var application = Application.Attach(process, false, bringToFront);
 			var browser = new Edge(application, session);
 			browser.Refresh();
@@ -115,7 +115,7 @@ namespace TestR.Web.Browsers
 		public static Browser Create(bool bringToFront = true)
 		{
 			InitializeDriver();
-			var session = GetSession() ?? StartSession();
+			var session = GetSession() ?? StartSession(Application.DefaultTimeout);
 			var application = Application.Attach(BrowserName, null, false, bringToFront);
 			var browser = new Edge(application, session);
 			browser.Refresh();
@@ -283,7 +283,7 @@ namespace TestR.Web.Browsers
 			}
 		}
 
-		private static string StartSession()
+		private static string StartSession(int timeout)
 		{
 			string response = null;
 
@@ -299,7 +299,7 @@ namespace TestR.Web.Browsers
 
 				response = item.sessionId.ToString();
 				return true;
-			});
+			}, timeout, 50);
 
 			return response;
 		}

@@ -55,8 +55,7 @@ namespace TestR.Desktop.Elements
 					parentRect = new NativeMethods.Rect();
 				}
 
-				NativeMethods.Rect rect;
-				NativeMethods.GetWindowRect(NativeElement.CurrentNativeWindowHandle, out rect);
+				NativeMethods.GetWindowRect(NativeElement.CurrentNativeWindowHandle, out NativeMethods.Rect rect);
 				return new Point(rect.Left - parentRect.Left, rect.Top - parentRect.Top);
 			}
 		}
@@ -156,9 +155,9 @@ namespace TestR.Desktop.Elements
 			return this;
 		}
 
-		private static void HourGlassWait()
+		private void HourGlassWait()
 		{
-			Utility.Wait(() => MouseCursor.WaitCursors.Contains(Mouse.Cursor));
+			Wait(x => MouseCursor.WaitCursors.Contains(Mouse.Cursor));
 		}
 
 		private void WaitForWindow()

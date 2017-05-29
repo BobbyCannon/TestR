@@ -66,7 +66,7 @@
         </member>
         <member name="P:TestR.Application.Timeout">
             <summary>
-            Gets or sets the time out for delay request. Defaults to 5 seconds.
+            Gets or sets the time out for delay request. Defaults to 60 seconds.
             </summary>
         </member>
         <member name="M:TestR.Application.Attach(System.String,System.String,System.Boolean,System.Boolean)">
@@ -1390,8 +1390,8 @@
             </summary>
             <param name="action"> The action to call. </param>
             <param name="timeout"> The timeout to attempt the action. This value is in milliseconds. </param>
-            <param name="delay"> The delay in between actions. This value is in milliseconds. </param>
-            <returns> Returns true of the call completed successfully or false if it timed out. </returns>
+            <param name="delay"> The delay in between actions. This value is in milliseconds. Defaults to Application.Timeout. </param>
+            <returns> Returns true of the call completed successfully or false if it timed out. Default to 50 ms. </returns>
         </member>
         <member name="M:TestR.ElementHost.WaitForComplete(System.Int32)">
             <summary>
@@ -2005,16 +2005,6 @@
             Represents the Utility class.
             </summary>
         </member>
-        <member name="F:TestR.Utility.DefaultWaitDelay">
-            <summary>
-            The detail wait delay.
-            </summary>
-        </member>
-        <member name="F:TestR.Utility.DefaultWaitTimeout">
-            <summary>
-            The default wait timeout.
-            </summary>
-        </member>
         <member name="M:TestR.Utility.Wait(System.Func{System.Boolean},System.Double,System.Int32)">
             <summary>
             Runs the action until the action returns true or the timeout is reached. Will delay in between actions of the provided time.
@@ -2037,11 +2027,6 @@
         <member name="T:TestR.Web.Browser">
             <summary>
             This is the base class for browsers.
-            </summary>
-        </member>
-        <member name="F:TestR.Web.Browser.DefaultTimeout">
-            <summary>
-            Gets the default timeout (in milliseconds).
             </summary>
         </member>
         <member name="F:TestR.Web.Browser.TestrNotDefinedMessage">
@@ -2094,7 +2079,7 @@
         </member>
         <member name="P:TestR.Web.Browser.Timeout">
             <summary>
-            Gets or sets the time out for delay request. Defaults to 5 seconds.
+            Gets or sets the time out for delay request. Defaults to 60 seconds.
             </summary>
         </member>
         <member name="P:TestR.Web.Browser.Uri">

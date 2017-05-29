@@ -954,7 +954,7 @@ namespace TestR.AutomationTests.Web
 				var location = button.Location;
 				Mouse.MoveTo(location.X + 60, location.Y + 22);
 
-				var result = Utility.Wait(() => DesktopElement.FromCursor()?.TypeName == "menu item");
+				var result = Utility.Wait(() => DesktopElement.FromCursor()?.TypeName == "menu item", Application.DefaultTimeout, 50);
 				Assert.IsTrue(result, "Failed to find menu.");
 
 				Mouse.LeftClick(button.Location);

@@ -14,40 +14,35 @@ namespace TestR.UnitTests
 		#region Methods
 
 		[TestMethod]
-		public void DefaultWaitDelay()
-		{
-			Assert.AreEqual(50, Utility.DefaultWaitDelay);
-		}
-
-		[TestMethod]
-		public void DefaultWaitTimeout()
-		{
-			Assert.AreEqual(1000, Utility.DefaultWaitTimeout);
-		}
-
-		[TestMethod]
 		public void WaitWithFailingActionAndNoTimeout()
 		{
-			var actual = Utility.Wait(() => false, 0);
+			var actual = Utility.Wait(() => false, 0, 50);
 			Assert.IsFalse(actual);
 		}
 
 		[TestMethod]
-		public void WaitWithFailingActionAndTimeoutThenPassingAction()
+		public void WaitWithDelayValue()
 		{
 			var value = true;
 			var watch = Stopwatch.StartNew();
-			var actual = Utility.Wait(() => value = !value, int.MaxValue);
+			var actual = Utility.Wait(() => value = !value, int.MaxValue, 50);
 			Assert.IsTrue(actual);
-			Assert.IsTrue(watch.ElapsedMilliseconds >= Utility.DefaultWaitDelay);
-			Assert.IsTrue(watch.ElapsedMilliseconds < Utility.DefaultWaitDelay * 2);
+			Assert.IsTrue(watch.ElapsedMilliseconds >= 50);
+			Assert.IsTrue(watch.ElapsedMilliseconds < 50 * 2);
+
+			actual = Utility.Wait(() => value = !value, int.MaxValue, 200);
+			Assert.IsTrue(actual);
+			Assert.IsTrue(watch.ElapsedMilliseconds >= 200);
+			Assert.IsTrue(watch.ElapsedMilliseconds < 200 * 2);
 		}
 
 		[TestMethod]
 		public void WaitWithPassingAction()
 		{
-			var actual = Utility.Wait(() => true);
+			var watch = Stopwatch.StartNew();
+			var actual = Utility.Wait(() => true, int.MaxValue, 1000);
 			Assert.IsTrue(actual);
+			Assert.IsTrue(watch.ElapsedMilliseconds < 1000);
 		}
 
 		[TestMethod]
@@ -61,7 +56,7 @@ namespace TestR.UnitTests
 			{
 				actualInput = x;
 				return true;
-			});
+			}, 1000, 50);
 
 			Assert.IsTrue(actual);
 			Assert.AreEqual(expected, actualInput);

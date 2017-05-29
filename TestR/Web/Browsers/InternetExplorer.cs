@@ -138,19 +138,19 @@ namespace TestR.Web.Browsers
 			var readyStates = new[] { "complete", "interactive" };
 
 			// Wait for browser to completely load or become interactive.
-			if (!Utility.Wait(() => states.Contains(_browser.ReadyState), Application.Timeout.TotalMilliseconds))
+			if (!Wait(x => states.Contains(_browser.ReadyState)))
 			{
 				throw new TestRException("The browser never finished loading...");
 			}
 
 			// Wait for browser document to completely load or become interactive.
-			if (!Utility.Wait(() => readyStates.Contains(((IHTMLDocument2) _browser.Document).readyState), Application.Timeout.TotalMilliseconds))
+			if (!Wait(x => readyStates.Contains(((IHTMLDocument2) _browser.Document).readyState)))
 			{
 				throw new TestRException("The browser document never finished loading...");
 			}
 
 			// Wait while the browser is busy and not complete.
-			if (!Utility.Wait(() => !(_browser.Busy && _browser.ReadyState != tagREADYSTATE.READYSTATE_COMPLETE), Application.Timeout.TotalMilliseconds))
+			if (!Wait(x => !(_browser.Busy && _browser.ReadyState != tagREADYSTATE.READYSTATE_COMPLETE)))
 			{
 				throw new TestRException("The browser is currently busy.");
 			}
@@ -338,8 +338,7 @@ namespace TestR.Web.Browsers
 				{
 					if (processId > 0)
 					{
-						uint foundProcessId;
-						if (!NativeMethods.GetWindowThreadProcessId(new IntPtr(explorer.HWND), out foundProcessId) || foundProcessId != processId)
+						if (!NativeMethods.GetWindowThreadProcessId(new IntPtr(explorer.HWND), out uint foundProcessId) || foundProcessId != processId)
 						{
 							continue;
 						}
