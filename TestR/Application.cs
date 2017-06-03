@@ -242,7 +242,7 @@ namespace TestR
 
 			Process.CloseMainWindow();
 
-			if (!Process.WaitForExit(1500))
+			if (!Process.WaitForExit((int) Timeout.TotalMilliseconds))
 			{
 				Process.Kill();
 			}
@@ -272,7 +272,7 @@ namespace TestR
 				{
 					// The process did not close so now we are just going to kill it.
 					process.Kill();
-					process.WaitForExit();
+					process.WaitForExit(timeout);
 				}
 			});
 
@@ -284,7 +284,7 @@ namespace TestR
 			{
 				// The process did not close so now we are just going to kill it.
 				process.Kill();
-				process.WaitForExit();
+				process.WaitForExit(timeout);
 			});
 		}
 
@@ -310,7 +310,7 @@ namespace TestR
 				throw new InvalidOperationException("Failed to start the application.");
 			}
 
-			process.WaitForInputIdle();
+			process.WaitForInputIdle(DefaultTimeout);
 
 			return Attach(process, refresh, bringToFront);
 		}
