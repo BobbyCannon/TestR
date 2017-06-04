@@ -255,24 +255,35 @@ namespace TestR
 		/// </summary>
 		/// <param name="executablePath"> The path to the executable. </param>
 		/// <param name="timeout"> The timeout to wait for the application to close. </param>
-		public static void CloseAll(string executablePath, int timeout = 1000)
+		/// <param name="exceptProcessId"> The ID of the process to exclude. </param>
+		public static void CloseAll(string executablePath, int timeout = DefaultTimeout, int exceptProcessId = 0)
 		{
 			var processName = Path.GetFileNameWithoutExtension(executablePath);
 
-			// Find all the main processes.
+			// Find all the main processes with windows.
 			var processes = Process.GetProcessesByName(processName)
-				.Where(x => x.MainWindowHandle != IntPtr.Zero);
+				.Where(x => x.MainWindowHandle != IntPtr.Zero)
+				.Where(x => exceptProcessId == 0 || x.Id != exceptProcessId)
+				.ToList();
 
 			processes.ForEachDisposable(process =>
 			{
-				// Ask to close the process nicely.
-				process.CloseMainWindow();
-
-				if (!process.WaitForExit(timeout))
+				try
 				{
-					// The process did not close so now we are just going to kill it.
-					process.Kill();
-					process.WaitForExit(timeout);
+					// Ask to close the process nicely.
+					process.CloseMainWindow();
+					process.Close();
+
+					if (!process.WaitForExit(timeout))
+					{
+						// The process did not close so now we are just going to kill it.
+						process.Kill();
+						process.WaitForExit(timeout);
+					}
+				}
+				catch
+				{
+					// Ignore errors closing
 				}
 			});
 
@@ -280,11 +291,19 @@ namespace TestR
 			Thread.Sleep(250);
 
 			// Find all the other processes.
-			Process.GetProcessesByName(processName).ForEachDisposable(process =>
+			processes = Process.GetProcessesByName(processName).Where(x => exceptProcessId == 0 || x.Id != exceptProcessId).ToList();
+			processes.ForEachDisposable(process =>
 			{
-				// The process did not close so now we are just going to kill it.
-				process.Kill();
-				process.WaitForExit(timeout);
+				try
+				{
+					// The process did not close so now we are just going to kill it.
+					process.Kill();
+					process.WaitForExit(timeout);
+				}
+				catch
+				{
+					// Ignore errors closing
+				}
 			});
 		}
 

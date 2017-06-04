@@ -117,12 +117,13 @@
             Closes the window.
             </summary>
         </member>
-        <member name="M:TestR.Application.CloseAll(System.String,System.Int32)">
+        <member name="M:TestR.Application.CloseAll(System.String,System.Int32,System.Int32)">
             <summary>
             Closes all windows my name and closes them.
             </summary>
             <param name="executablePath"> The path to the executable. </param>
             <param name="timeout"> The timeout to wait for the application to close. </param>
+            <param name="exceptProcessId"> The ID of the process to exclude. </param>
         </member>
         <member name="M:TestR.Application.Create(System.String,System.String,System.Boolean,System.Boolean)">
             <summary>

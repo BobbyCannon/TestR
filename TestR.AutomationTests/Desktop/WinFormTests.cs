@@ -175,6 +175,26 @@ namespace TestR.AutomationTests.Desktop
 		}
 
 		[TestMethod]
+		public void CloseAll()
+		{
+			using (var application1 = Application.Create(_applicationPath))
+			{
+				using (var application2 = Application.Create(_applicationPath))
+				{
+					Assert.IsTrue(application1.IsRunning);
+					Assert.IsTrue(application2.IsRunning);
+					Assert.AreNotEqual(application1.Id, application2.Id);
+
+					Application.CloseAll(_applicationPath, exceptProcessId: application2.Process.Id);
+
+					Assert.IsFalse(application1.IsRunning);
+					Assert.IsTrue(application2.IsRunning);
+					Assert.AreNotEqual(application1.Id, application2.Id);
+				}
+			}
+		}
+
+		[TestMethod]
 		public void GetMainMenuBar()
 		{
 			using (var application = GetApplication())
