@@ -163,12 +163,6 @@ namespace TestR.Desktop.Elements
 		private void WaitForWindow()
 		{
 			// todo: why does this not work for window?
-			//if (_pattern.WaitForInputIdle(100) < 0)
-			//{
-			//	throw new TestRException("Timed out waiting for window to respond.");
-			//}
-
-			//Utility.Wait(() => _pattern.Current.WindowInteractionState != WindowInteractionState.NotResponding);
 		}
 
 		#endregion

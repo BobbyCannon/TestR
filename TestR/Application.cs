@@ -329,8 +329,6 @@ namespace TestR
 				throw new InvalidOperationException("Failed to start the application.");
 			}
 
-			process.WaitForInputIdle(DefaultTimeout);
-
 			return Attach(process, refresh, bringToFront);
 		}
 
@@ -473,7 +471,6 @@ namespace TestR
 		public override ElementHost WaitForComplete(int minimumDelay = 0)
 		{
 			var watch = Stopwatch.StartNew();
-			Process.WaitForInputIdle(Timeout.Milliseconds);
 
 			while (watch.Elapsed.TotalMilliseconds < minimumDelay && minimumDelay > 0)
 			{
