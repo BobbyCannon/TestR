@@ -11,6 +11,12 @@ namespace TestR.Native
 {
 	internal static class NativeMethods
 	{
+		#region Constants
+
+		private const uint _tokenQuery = 0x0008;
+
+		#endregion
+
 		#region Fields
 
 		private static readonly IntPtr _notTopMost = new IntPtr(-2);
@@ -26,6 +32,38 @@ namespace TestR.Native
 			SetWindowPos(handle, _notTopMost, 0, 0, 0, 0, SetWindowPosFlags.NoMove | SetWindowPosFlags.NoSize);
 			SetWindowPos(handle, _topMost, 0, 0, 0, 0, SetWindowPosFlags.NoMove | SetWindowPosFlags.NoSize);
 			SetWindowPos(handle, _notTopMost, 0, 0, 0, 0, SetWindowPosFlags.NoMove | SetWindowPosFlags.NoSize);
+		}
+
+		public static bool IsElevated(IntPtr handle)
+		{
+			if (!OpenProcessToken(handle, _tokenQuery, out IntPtr hToken))
+			{
+				var error = Marshal.GetLastWin32Error();
+				throw new Exception($"{error}: Failed to access the process token.");
+			}
+
+			var pElevationType = Marshal.AllocHGlobal(sizeof(TOKEN_ELEVATION_TYPE));
+			GetTokenInformation(hToken, TokenInformationClass.TokenElevationType, pElevationType, sizeof(TOKEN_ELEVATION_TYPE), out uint dwSize);
+			var elevationType = (TOKEN_ELEVATION_TYPE) Marshal.ReadInt32(pElevationType);
+			Marshal.FreeHGlobal(pElevationType);
+
+			switch (elevationType)
+			{
+				case TOKEN_ELEVATION_TYPE.TokenElevationTypeDefault:
+					//Console.WriteLine("\nTokenElevationTypeDefault - User is not using a split token.\n");
+					return false;
+
+				case TOKEN_ELEVATION_TYPE.TokenElevationTypeFull:
+					//Console.WriteLine("\nTokenElevationTypeFull - User has a split token, and the process is running elevated.\n");
+					return true;
+
+				case TOKEN_ELEVATION_TYPE.TokenElevationTypeLimited:
+					//Console.WriteLine("\nTokenElevationTypeLimited - User has a split token, but the process is not running elevated.\n");
+					return false;
+
+				default:
+					return false;
+			}
 		}
 
 		[DllImport("user32.dll", SetLastError = true)]
@@ -126,8 +164,17 @@ namespace TestR.Native
 		[DllImport("user32.dll", SetLastError = true)]
 		internal static extern int UnhookWindowsHookEx(int idHook);
 
+		[DllImport("advapi32.dll", SetLastError = true)]
+		private static extern bool GetTokenInformation(IntPtr TokenHandle,
+			TokenInformationClass TokenInformationClass, IntPtr TokenInformation,
+			uint TokenInformationLength, out uint ReturnLength);
+
 		[DllImport("user32.dll", SetLastError = true)]
 		private static extern bool GetWindowPlacement(IntPtr hWnd, ref WindowPlacement lpwndpl);
+
+		[DllImport("advapi32.dll", SetLastError = true)]
+		private static extern bool OpenProcessToken(IntPtr ProcessHandle, uint
+			DesiredAccess, out IntPtr TokenHandle);
 
 		[DllImport("user32.dll", SetLastError = true)]
 		private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, SetWindowPosFlags uFlags);
@@ -166,6 +213,47 @@ namespace TestR.Native
 			VK_RSHIFT = 0xA1,
 			VK_LCONTROL = 0xA2,
 			VK_RCONTROL = 0xA3
+		}
+
+		// Define other methods and classes here
+		private enum TOKEN_ELEVATION_TYPE
+		{
+			TokenElevationTypeDefault = 1,
+			TokenElevationTypeFull,
+			TokenElevationTypeLimited
+		}
+
+		private enum TokenInformationClass
+		{
+			TokenUser = 1,
+			TokenGroups,
+			TokenPrivileges,
+			TokenOwner,
+			TokenPrimaryGroup,
+			TokenDefaultDacl,
+			TokenSource,
+			TokenType,
+			TokenImpersonationLevel,
+			TokenStatistics,
+			TokenRestrictedSids,
+			TokenSessionId,
+			TokenGroupsAndPrivileges,
+			TokenSessionReference,
+			TokenSandBoxInert,
+			TokenAuditPolicy,
+			TokenOrigin,
+			TokenElevationType,
+			TokenLinkedToken,
+			TokenElevation,
+			TokenHasRestrictions,
+			TokenAccessInformation,
+			TokenVirtualizationAllowed,
+			TokenVirtualizationEnabled,
+			TokenIntegrityLevel,
+			TokenUIAccess,
+			TokenMandatoryPolicy,
+			TokenLogonSid,
+			MaxTokenInfoClass
 		}
 
 		#endregion

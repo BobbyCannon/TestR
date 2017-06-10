@@ -129,6 +129,11 @@ namespace TestR.Desktop
 		{
 			get
 			{
+				if (NativeElement.CurrentIsOffscreen == 0)
+				{
+					return true;
+				}
+
 				Point point;
 				var clickable = TryGetClickablePoint(out point) && point.Y != 0 && point.Y != 0;
 				var focused = Focused || Children.Any(x => x.Focused);

@@ -28,6 +28,11 @@ namespace TestR.Desktop.Elements
 		#region Properties
 
 		/// <summary>
+		/// Gets the handle for the Window.
+		/// </summary>
+		public IntPtr Handle => NativeElement.CurrentNativeWindowHandle;
+
+		/// <summary>
 		/// Get a flag that determines if the window is maximized.
 		/// </summary>
 		public bool IsMaximized => WindowState == WindowState.Maximized;

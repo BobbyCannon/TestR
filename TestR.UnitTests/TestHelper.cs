@@ -3,6 +3,7 @@
 using KellermanSoftware.CompareNetObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using TestR.Native;
 
 #endregion
 
@@ -36,7 +37,7 @@ namespace TestR.UnitTests
 
 		public static ElementHost CreateHost()
 		{
-			var application = new Application(null);
+			var application = new Application((SafeProcess) null);
 			var response = CreateMock<ElementHost>(application, null);
 
 			return response.Object;

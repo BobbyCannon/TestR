@@ -5,6 +5,7 @@ using System.Linq;
 using System.Management.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop.Elements;
+using TestR.Native;
 using TestR.PowerShell;
 
 #endregion
@@ -28,9 +29,14 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
+				application.AutoClose = true;
 				var window = application.Children.First();
 				var document = (Edit) window.Children.First("15");
-				document.SetText("Hello World : Sub Collection");
+				var expected = "Hello World : Sub Collection";
+				document.SetText(expected);
+				var actual = document.Text;
+				application.Timeout = TimeSpan.Zero;
+				Assert.AreEqual(expected, actual);
 			}
 		}
 
@@ -39,8 +45,13 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
+				application.AutoClose = true;
 				var document = application.First<Edit>("15");
-				document.Text = "Hello World : GetChild Generic";
+				var expected = "Hello World : GetChild Generic";
+				document.Text = expected;
+				var actual = document.Text;
+				application.Timeout = TimeSpan.Zero;
+				Assert.AreEqual(expected, actual);
 			}
 		}
 
@@ -49,9 +60,14 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
+				application.AutoClose = true;
 				var window = application.First<Window>();
 				var document = (Edit) window.First("15");
-				document.Text = "Hello World : GetChild Non Generic";
+				var expected = "Hello World : GetChild Non Generic";
+				document.Text = expected;
+				var actual = document.Text;
+				application.Timeout = TimeSpan.Zero;
+				Assert.AreEqual(expected, actual);
 			}
 		}
 
@@ -87,10 +103,12 @@ namespace TestR.AutomationTests.Desktop
 
 			using (var application1 = Application.Create(ApplicationPath))
 			{
+				application1.AutoClose = true;
 				Assert.IsNotNull(application1);
 				application1.Resize(500, 500);
 				application1.MoveWindow(100, 100);
-
+				application1.Timeout = TimeSpan.Zero;
+				
 				var window = application1.First<Window>();
 				Assert.IsFalse(window.IsMinimized);
 				window.TitleBar.MinimizeButton.Click();
@@ -98,6 +116,8 @@ namespace TestR.AutomationTests.Desktop
 
 				using (var application2 = Application.Attach(ApplicationPath))
 				{
+					application2.AutoClose = true;
+					application2.Timeout = TimeSpan.Zero;
 					Assert.IsNotNull(application2);
 					Assert.AreEqual(application1.Handle, application2.Handle);
 					Assert.IsTrue(application2.First<Window>().IsMinimized);
@@ -145,6 +165,26 @@ namespace TestR.AutomationTests.Desktop
 		}
 
 		[TestMethod]
+		public void ApplicationAutoCloseShouldSucceed()
+		{
+			Application.CloseAll(ApplicationPath);
+
+			var processes = ProcessService.Where(ApplicationPath).ToList();
+			processes.ForEach(x => x.Dispose());
+			Assert.AreEqual(0, processes.Count);
+			
+			using (var application = Application.Create(ApplicationPath))
+			{
+				application.AutoClose = true;
+				Assert.IsNotNull(application);
+			}
+
+			processes = ProcessService.Where(ApplicationPath).ToList();
+			processes.ForEach(x => x.Dispose());
+			Assert.AreEqual(0, processes.Count);
+		}
+
+		[TestMethod]
 		public void ApplicationListElements()
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
@@ -167,15 +207,15 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
+				application.AutoClose = true;
 				application.BringToFront();
 				var window = application.Descendants<Window>().First();
 				var menuBar = window.Descendants<MenuBar>().First();
-				TestHelper.PrintChildren(menuBar);
-
 				var menu = menuBar.First<MenuItem>(x => x.Name == "File");
 				Assert.IsNotNull(menu);
 				Assert.IsTrue(menu.SupportsExpandingCollapsing);
 				menu.Click();
+				application.Timeout = TimeSpan.Zero;
 			}
 		}
 
@@ -186,8 +226,10 @@ namespace TestR.AutomationTests.Desktop
 			Application.CloseAll(ApplicationPath);
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
+				application.AutoClose = true;
 				var window = application.First<Window>(x => x.Name == "Untitled - Notepad");
 				window.TitleBar.CaptureSnippet(filePath);
+				application.Timeout = TimeSpan.Zero;
 			}
 		}
 

@@ -12,7 +12,7 @@ using TestR.Web.Browsers;
 
 #endregion
 
-namespace TestR.AutomationTests.Web
+namespace TestR.AutomationTests.Desktop
 {
 	[TestClass]
 	[Cmdlet(VerbsDiagnostic.Test, "InternetExplorer")]
@@ -31,25 +31,6 @@ namespace TestR.AutomationTests.Web
 			using (var browser2 = InternetExplorer.Attach())
 			{
 				Assert.IsNotNull(browser2);
-			}
-		}
-
-		[TestMethod]
-		public void AttachOneBrowserWithTwoCreated()
-		{
-			using (var browser1 = InternetExplorer.Create())
-			{
-				Assert.IsNotNull(browser1);
-			}
-
-			using (var browser2 = InternetExplorer.Create())
-			{
-				Assert.IsNotNull(browser2);
-			}
-
-			using (var browser3 = InternetExplorer.Attach())
-			{
-				Assert.IsNotNull(browser3);
 			}
 		}
 
@@ -107,10 +88,9 @@ namespace TestR.AutomationTests.Web
 		{
 			using (var browser = InternetExplorer.Create())
 			{
-				browser.Application.WaitForComplete();
-				Thread.Sleep(1000);
-
+				Assert.IsNotNull(browser);
 				Browser.CloseBrowsers(BrowserType.InternetExplorer);
+				Thread.Sleep(50);
 				Assert.IsFalse(Process.GetProcessesByName(InternetExplorer.BrowserName).Any());
 			}
 		}

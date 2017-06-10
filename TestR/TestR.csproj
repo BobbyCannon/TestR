@@ -109,12 +109,15 @@
     <Compile Include="Desktop\Elements\Tree.cs" />
     <Compile Include="Desktop\Elements\TreeItem.cs" />
     <Compile Include="Desktop\Elements\Window.cs" />
+    <Compile Include="Native\ManagementObjectDisposer.cs" />
     <Compile Include="Desktop\Pattern\ExpandCollapsePattern.cs" />
     <Compile Include="Desktop\Pattern\ExpandCollapseState.cs" />
     <Compile Include="Desktop\Pattern\TogglePattern.cs" />
     <Compile Include="Desktop\Pattern\ToggleState.cs" />
     <Compile Include="Desktop\Pattern\TransformPattern.cs" />
     <Compile Include="Desktop\Pattern\ValuePattern.cs" />
+    <Compile Include="Native\SafeProcess.cs" />
+    <Compile Include="Native\ProcessService.cs" />
     <Compile Include="Element.cs" />
     <Compile Include="ElementCollection.cs" />
     <Compile Include="ElementHost.cs" />

@@ -53,8 +53,9 @@ namespace TestR.Web.Browsers
 		/// Initializes a new instance of the Firefox class.
 		/// </summary>
 		/// <param name="application"> The window of the existing browser. </param>
-		private Firefox(Application application)
-			: base(application)
+		/// <param name="windowsToIgnore"> The windows to ignore. Optional. </param>
+		private Firefox(Application application, ICollection<IntPtr> windowsToIgnore = null)
+			: base(application, windowsToIgnore)
 		{
 			_consoleActor = string.Empty;
 			_jsonSerializerSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
@@ -141,9 +142,36 @@ namespace TestR.Web.Browsers
 		/// <returns> The browser instance. </returns>
 		public static Browser Create(bool bringToFront = true)
 		{
-			// Create a new instance and return it.
-			var application = Application.Create($"{BrowserName}.exe", DebugArgument, false, bringToFront);
-			var browser = new Firefox(application);
+			Firefox browser;
+
+			// See if chrome is already running
+			var application = Application.Attach(BrowserName, DebugArgument, false, bringToFront);
+			if (application != null)
+			{
+				// Start process but connect to current process and new window.
+				var existing = application.GetWindows().Select(x =>
+				{
+					x.Dispose();
+					return x.Handle;
+				}).ToList();
+
+				try
+				{
+					Application.Create(BrowserName, "-new-window", false, bringToFront).Dispose();
+				}
+				catch
+				{
+					// Process may close during creation causing error.
+				}
+
+				browser = new Firefox(application, existing);
+			}
+			else
+			{
+				application = Application.Create(BrowserName, DebugArgument, false, bringToFront);
+				browser = new Firefox(application);
+			}
+
 			browser.Connect();
 			browser.Refresh();
 			return browser;

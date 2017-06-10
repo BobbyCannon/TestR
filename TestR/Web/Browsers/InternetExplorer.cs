@@ -36,7 +36,7 @@ namespace TestR.Web.Browsers
 		#region Constructors
 
 		private InternetExplorer(SHDocVw.InternetExplorer browser, bool bringToFront = true)
-			: base(Application.Attach(new IntPtr(browser.HWND), false, bringToFront))
+			: base(Application.Attach(ProcessService.Where(BrowserName).First(x => x.MainWindowHandle == new IntPtr(browser.HWND)), false, bringToFront))
 		{
 			_browser = browser;
 		}
@@ -319,6 +319,8 @@ namespace TestR.Web.Browsers
 					IWebBrowserApp_Visible = true
 				};
 
+				explorer.Navigate("about:blank");
+
 				return explorer;
 			}
 			catch (Exception)
@@ -346,7 +348,7 @@ namespace TestR.Web.Browsers
 						}
 					}
 
-					using (var browser = new InternetExplorer(explorer, true))
+					using (var browser = new InternetExplorer(explorer))
 					{
 						//LogManager.Write($"Found browser with id of {browser.Id} at location {browser.Uri}.", LogLevel.Verbose);
 					}
@@ -387,7 +389,7 @@ namespace TestR.Web.Browsers
 		{
 			Application.Dispose();
 			_browser = GetBrowserToAttachTo() ?? CreateInternetExplorerClass();
-			Application = Application.Attach(new IntPtr(_browser.HWND), false);
+			Application = Application.Attach(ProcessService.Where(BrowserName).First(x => x.MainWindowHandle == new IntPtr(_browser.HWND)), false);
 			//_zoneId = NativeMethods.GetZoneId(_browser.LocationURL);
 			return _browser.LocationURL;
 		}

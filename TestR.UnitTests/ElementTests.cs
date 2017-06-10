@@ -2,6 +2,7 @@
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TestR.Native;
 using TestR.UnitTests.TestTypes;
 
 #endregion
@@ -28,7 +29,7 @@ namespace TestR.UnitTests
 		[TestMethod]
 		public void FirstOrDefaultWithException()
 		{
-			var application = new Application(null);
+			var application = new Application((SafeProcess) null);
 			var host = TestHelper.CreateMock<ElementHost>(application, null);
 			var triggered = false;
 
@@ -50,7 +51,7 @@ namespace TestR.UnitTests
 		{
 			var trigger = true;
 			var expected = TestHelper.CreateElement("Expected", "Expected");
-			var application = new Application(null);
+			var application = new Application((SafeProcess) null);
 			var host = TestHelper.CreateMock<ElementHost>(application, null);
 			var element = TestHelper.CreateElement("Root", "Root", host.Object);
 

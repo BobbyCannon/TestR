@@ -10,7 +10,7 @@ using TestR.Web.Browsers;
 
 #endregion
 
-namespace TestR.AutomationTests.Web
+namespace TestR.AutomationTests.Desktop
 {
 	//[TestClass]
 	//[Cmdlet(VerbsDiagnostic.Test, "Edge")]

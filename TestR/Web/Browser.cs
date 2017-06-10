@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TestR.Desktop.Elements;
 using TestR.Web.Browsers;
 
 #endregion
@@ -39,7 +40,7 @@ namespace TestR.Web
 		/// <summary>
 		/// Initializes a new instance of the Browser class.
 		/// </summary>
-		protected Browser(Application application)
+		protected Browser(Application application, ICollection<IntPtr> windowsToIgnore = null)
 			: base(application, application)
 		{
 			if (application == null)
@@ -49,6 +50,14 @@ namespace TestR.Web
 
 			AutoRefresh = true;
 			JavascriptLibraries = new JavaScriptLibrary[0];
+
+			var watch = Stopwatch.StartNew();
+
+			do
+			{
+				Window?.Dispose();
+				Window = application.GetWindows(windowsToIgnore).FirstOrDefault();
+			} while ((Window == null || !Window.Visible) && watch.Elapsed <= Timeout);
 		}
 
 		#endregion
@@ -118,6 +127,11 @@ namespace TestR.Web
 		/// Gets the URI of the current page.
 		/// </summary>
 		public string Uri => GetBrowserUri();
+
+		/// <summary>
+		/// The main windows for the browser.
+		/// </summary>
+		public Window Window { get; private set; }
 
 		#endregion
 
@@ -349,11 +363,25 @@ namespace TestR.Web
 		/// </summary>
 		/// <param name="x"> The x coordinate to move to. </param>
 		/// <param name="y"> The y coordinate to move to. </param>
+		public virtual Browser MoveWindow(int x, int y)
+		{
+			Window.Focus();
+			Window.Move(x, y);
+			return this;
+		}
+		
+		/// <summary>
+		/// Move the window and resize it.
+		/// </summary>
+		/// <param name="x"> The x coordinate to move to. </param>
+		/// <param name="y"> The y coordinate to move to. </param>
 		/// <param name="width"> The width of the window. </param>
 		/// <param name="height"> The height of the window. </param>
 		public virtual Browser MoveWindow(int x, int y, int width, int height)
 		{
-			Application.MoveWindow(x, y, width, height);
+			Window.Focus();
+			Window.Move(x,y);
+			Window.Resize(width, height);
 			return this;
 		}
 

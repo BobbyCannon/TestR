@@ -48,13 +48,14 @@ namespace TestR.Web.Browsers
 		#endregion
 
 		#region Constructors
-
+		
 		/// <summary>
 		/// Initializes a new instance of the Chrome class.
 		/// </summary>
 		/// <param name="application"> The window of the existing browser. </param>
-		private Chrome(Application application)
-			: base(application)
+		/// <param name="windowsToIgnore"> The windows to ignore. Optional. </param>
+		private Chrome(Application application, ICollection<IntPtr> windowsToIgnore = null)
+			: base(application, windowsToIgnore)
 		{
 			_jsonSerializerSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 			_requestId = 0;
@@ -141,9 +142,28 @@ namespace TestR.Web.Browsers
 				throw new TestRException("The first instance of Chrome was not started with the remote debugger enabled.");
 			}
 
-			// Create a new instance and return it.
-			var application = Application.Create($"{BrowserName}.exe", DebugArgument, false, bringToFront);
-			var browser = new Chrome(application);
+			Chrome browser;
+
+			// See if chrome is already running
+			var application = Application.Attach(BrowserName, DebugArgument, false, bringToFront);
+			if (application != null)
+			{
+				// Start process but connect to current process and new window.
+				var existing = application.GetWindows().Select(x =>
+				{
+					x.Dispose();
+					return x.Handle;
+				}).ToList();
+
+				Application.Create(BrowserName, DebugArgument, false, bringToFront).Dispose();
+				browser = new Chrome(application, existing);
+			}
+			else
+			{
+				application = Application.Create(BrowserName, DebugArgument, false, bringToFront);
+				browser = new Chrome(application);
+			}
+
 			browser.Connect();
 			browser.Refresh();
 			return browser;
@@ -164,6 +184,9 @@ namespace TestR.Web.Browsers
 					Url = uri
 				}
 			};
+
+			Application.Focus();
+			Window.Focus();
 
 			SendRequestAndReadResponse(request, x => x.id == request.Id);
 
@@ -263,7 +286,7 @@ namespace TestR.Web.Browsers
 		private void Connect()
 		{
 			var sessions = new List<RemoteSessionsResponse>();
-
+			
 			Utility.Wait(() =>
 			{
 				try
@@ -297,12 +320,17 @@ namespace TestR.Web.Browsers
 			}
 
 			Task.Run(() =>
-			{
-				while (ReadResponseAsync())
 				{
-					Thread.Sleep(1);
-				}
-			});
+					while (ReadResponseAsync())
+					{
+						Thread.Sleep(1);
+					}
+				})
+				.ContinueWith(x =>
+				{
+					_socket?.Dispose();
+					_socket = null;
+				});
 		}
 
 		private List<RemoteSessionsResponse> GetAvailableSessions()
@@ -319,7 +347,8 @@ namespace TestR.Web.Browsers
 
 				using (var reader = new StreamReader(stream))
 				{
-					var sessions = JsonConvert.DeserializeObject<List<RemoteSessionsResponse>>(reader.ReadToEnd());
+					var data = reader.ReadToEnd();
+					var sessions = JsonConvert.DeserializeObject<List<RemoteSessionsResponse>>(data);
 					sessions.RemoveAll(x => x.Url.StartsWith("chrome-extension"));
 					sessions.RemoveAll(x => x.Url.StartsWith("chrome-devtools"));
 					return sessions;
@@ -414,6 +443,9 @@ namespace TestR.Web.Browsers
 
 			[DataMember]
 			public string FaviconUrl { get; set; }
+
+			[DataMember]
+			public string Id { get; set; }
 
 			[DataMember]
 			public string ThumbnailUrl { get; set; }

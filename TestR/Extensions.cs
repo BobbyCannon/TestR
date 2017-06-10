@@ -3,16 +3,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using TestR.Desktop;
-using TestR.Desktop.Elements;
-using TestR.Native;
 using TestR.Web;
 using UIAutomationClient;
 using ExpandCollapseState = TestR.Desktop.Pattern.ExpandCollapseState;
@@ -99,11 +95,12 @@ namespace TestR
 		/// <param name="collection"> The collection of items to run the action with. </param>
 		/// <param name="action"> The action to run against each item in the collection. </param>
 		/// <typeparam name="T"> The type of the item in the collection. </typeparam>
-		public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
+		public static IEnumerable<T> ForEach<T>(this IEnumerable<T> collection, Action<T> action)
 		{
 			foreach (var item in collection)
 			{
 				action(item);
+				yield return item;
 			}
 		}
 
@@ -113,7 +110,7 @@ namespace TestR
 		/// <param name="collection"> The collection of items to run the action with. </param>
 		/// <param name="action"> The action to run against each item in the collection. </param>
 		/// <typeparam name="T"> The type of the item in the collection. </typeparam>
-		public static void ForEachDisposable<T>(this IEnumerable<T> collection, Action<T> action)
+		public static IEnumerable<T> ForEachDisposable<T>(this IEnumerable<T> collection, Action<T> action)
 			where T : IDisposable
 		{
 			foreach (var item in collection)
@@ -121,69 +118,19 @@ namespace TestR
 				using (item)
 				{
 					action(item);
+					yield return item;
 				}
 			}
 		}
 
 		/// <summary>
-		/// First the main window location for the process.
+		/// Formats the string to be able to include inside inner string.
 		/// </summary>
-		/// <param name="process"> The process that contains the window. </param>
-		/// <returns> The location of the window. </returns>
-		public static Point GetWindowLocation(this Process process)
+		/// <param name="source"> The source string value. </param>
+		/// <returns> The string formatted to be place inside inner string. </returns>
+		public static string FormatForInnerString(this string source)
 		{
-			var p = NativeMethods.GetWindowPlacement(process.MainWindowHandle);
-			var location = p.rcNormalPosition.Location;
-
-			if (p.ShowState == 2 || p.ShowState == 3)
-			{
-				NativeMethods.Rect windowsRect;
-				NativeMethods.GetWindowRect(process.MainWindowHandle, out windowsRect);
-				location = new Point(windowsRect.Left + 8, windowsRect.Top + 8);
-			}
-
-			return location;
-		}
-
-		/// <summary>
-		/// Gets all windows for the process.
-		/// </summary>
-		/// <param name="process"> The process to get windows for. </param>
-		/// <param name="application"> The application the elements are for. </param>
-		/// <returns> The array of windows. </returns>
-		public static IEnumerable<Window> GetWindows(this Process process, Application application)
-		{
-			// There is a issue in Windows 10 and Cortana (or modern apps) where there is a 60 second delay when walking the root element.
-			// When you hit the last sibling it delays. For now we are simply going to return the main window and we'll roll this code
-			// back once the Windows 10 issue has been resolved.
-
-			process.Refresh();
-			var response = new List<Window>();
-			var automation = new CUIAutomationClass();
-
-			foreach (var handle in EnumerateProcessWindowHandles(process.Id))
-			{
-				var automationElement = automation.ElementFromHandle(handle);
-				var element = DesktopElement.Create(automationElement, application, null) as Window;
-				if (element != null)
-				{
-					response.Add(element);
-				}
-			}
-
-			return response;
-		}
-
-		/// <summary>
-		/// Gets the size of the main window for the process.
-		/// </summary>
-		/// <param name="process"> The process to size. </param>
-		/// <returns> The size of the main window. </returns>
-		public static Size GetWindowSize(this Process process)
-		{
-			NativeMethods.Rect data;
-			NativeMethods.GetWindowRect(process.MainWindowHandle, out data);
-			return new Size(data.Right - data.Left, data.Bottom - data.Top);
+			return source.Replace("\\", "\\\\");
 		}
 
 		/// <summary>
@@ -225,8 +172,7 @@ namespace TestR
 		/// <returns> The JSON data of the object. </returns>
 		public static int ToInt(this string item)
 		{
-			int response;
-			return int.TryParse(item, out response) ? response : 0;
+			return int.TryParse(item, out int response) ? response : 0;
 		}
 
 		/// <summary>
@@ -285,22 +231,6 @@ namespace TestR
 			var automation = new CUIAutomationClass();
 			var walker = automation.CreateTreeWalker(automation.RawViewCondition);
 			return walker.GetParentElement(element);
-		}
-
-		private static IEnumerable<IntPtr> EnumerateProcessWindowHandles(int processId)
-		{
-			var handles = new List<IntPtr>();
-
-			foreach (ProcessThread thread in Process.GetProcessById(processId).Threads)
-			{
-				NativeMethods.EnumThreadWindows(thread.Id, (hWnd, lParam) =>
-				{
-					handles.Add(hWnd);
-					return true;
-				}, IntPtr.Zero);
-			}
-
-			return handles;
 		}
 
 		private static JsonSerializerSettings GetSerializerSettings(bool camelCase = false)

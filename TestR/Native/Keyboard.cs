@@ -1,7 +1,6 @@
 ﻿#region References
 
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -59,9 +58,9 @@ namespace TestR.Native
 		/// </summary>
 		public static void StartMonitoring()
 		{
-			using (var curProcess = Process.GetCurrentProcess())
+			using (var curProcess = ProcessService.GetCurrentProcess())
 			{
-				using (var curModule = curProcess.MainModule)
+				using (var curModule = curProcess.Process.MainModule)
 				{
 					_hookId = NativeMethods.SetWindowsHookEx(KeyboardLowLevel, _hook, NativeMethods.GetModuleHandle(curModule.ModuleName), 0);
 				}

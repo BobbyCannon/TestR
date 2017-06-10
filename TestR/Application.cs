@@ -1,14 +1,16 @@
 ﻿#region References
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Management;
 using System.Runtime.InteropServices;
 using System.Threading;
+using TestR.Desktop;
+using TestR.Desktop.Elements;
 using TestR.Native;
+using UIAutomationClient;
 
 #endregion
 
@@ -35,6 +37,15 @@ namespace TestR
 		/// </summary>
 		/// <param name="process"> The process for the application. </param>
 		public Application(Process process)
+			: this(new SafeProcess(process))
+		{
+		}
+
+		/// <summary>
+		/// Creates an instance of the application.
+		/// </summary>
+		/// <param name="process"> The safe process for the application. </param>
+		public Application(SafeProcess process)
 			: base(null, null)
 		{
 			Process = process;
@@ -43,7 +54,7 @@ namespace TestR
 			if (Process != null)
 			{
 				//Process.Exited += (sender, args) => OnClosed();
-				Process.EnableRaisingEvents = true;
+				Process.Process.EnableRaisingEvents = true;
 			}
 
 			Timeout = TimeSpan.FromMilliseconds(DefaultTimeout);
@@ -85,7 +96,7 @@ namespace TestR
 		/// <summary>
 		/// Gets the underlying process for this application.
 		/// </summary>
-		public Process Process { get; private set; }
+		public SafeProcess Process { get; private set; }
 
 		/// <summary>
 		/// Gets the size of the application.
@@ -116,46 +127,8 @@ namespace TestR
 		/// <returns> The instance that represents the application. </returns>
 		public static Application Attach(string executablePath, string arguments = null, bool refresh = true, bool bringToFront = true)
 		{
-			var fileName = Path.GetFileName(executablePath);
-			if (fileName != null && !fileName.Contains("."))
-			{
-				fileName += ".exe";
-			}
-
-			var processName = Path.GetFileNameWithoutExtension(executablePath);
-			var query = $"SELECT Handle, CommandLine FROM Win32_Process WHERE Name='{fileName}'";
-
-			using (var searcher = new ManagementObjectSearcher(query))
-			{
-				foreach (var result in searcher.Get())
-				{
-					var managementObject = (ManagementObject) result;
-					var handle = int.Parse(managementObject["Handle"].ToString());
-					if (!string.IsNullOrWhiteSpace(arguments))
-					{
-						var data = managementObject["CommandLine"];
-						if (data == null || !data.ToString().Contains(arguments))
-						{
-							continue;
-						}
-					}
-
-					var process = Process.GetProcessesByName(processName).FirstOrDefault(x => x.Id == handle);
-					if (process == null)
-					{
-						continue;
-					}
-
-					if (process.MainWindowHandle == IntPtr.Zero || !NativeMethods.IsWindowVisible(process.MainWindowHandle))
-					{
-						continue;
-					}
-
-					return Attach(process, refresh, bringToFront);
-				}
-			}
-
-			return null;
+			var process = ProcessService.Where(executablePath, arguments).FirstOrDefault();
+			return process == null ? null : Attach(process, refresh, bringToFront);
 		}
 
 		/// <summary>
@@ -167,13 +140,7 @@ namespace TestR
 		/// <returns> The instance that represents the application. </returns>
 		public static Application Attach(IntPtr handle, bool refresh = true, bool bringToFront = true)
 		{
-			var process = Process.GetProcesses().FirstOrDefault(x => x.MainWindowHandle == handle);
-			if (process == null)
-			{
-				NativeMethods.GetWindowThreadProcessId(handle, out uint processId);
-				process = Process.GetProcesses().FirstOrDefault(x => x.Id == processId);
-			}
-
+			var process = ProcessService.Where(x => x.MainWindowHandle == handle).FirstOrDefault();
 			return process == null ? null : Attach(process, refresh, bringToFront);
 		}
 
@@ -185,6 +152,18 @@ namespace TestR
 		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
 		/// <returns> The instance that represents the application. </returns>
 		public static Application Attach(Process process, bool refresh = true, bool bringToFront = true)
+		{
+			return process == null ? null : Attach(new SafeProcess(process), refresh, bringToFront);
+		}
+
+		/// <summary>
+		/// Attaches the application to an existing process.
+		/// </summary>
+		/// <param name="process"> The process to attach to. </param>
+		/// <param name="refresh"> The setting to determine to refresh children now. </param>
+		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+		/// <returns> The instance that represents the application. </returns>
+		public static Application Attach(SafeProcess process, bool refresh = true, bool bringToFront = true)
 		{
 			var application = new Application(process);
 
@@ -233,20 +212,10 @@ namespace TestR
 		/// <summary>
 		/// Closes the window.
 		/// </summary>
-		public Application Close()
+		/// <param name="timeout"> The optional timeout in milliseconds. If not provided the Timeout value will be used. </param>
+		public Application Close(int? timeout = null)
 		{
-			if (Process.HasExited)
-			{
-				return this;
-			}
-
-			Process.CloseMainWindow();
-
-			if (!Process.WaitForExit((int) Timeout.TotalMilliseconds))
-			{
-				Process.Kill();
-			}
-
+			Process.Close(timeout ?? (int) Timeout.TotalMilliseconds);
 			return this;
 		}
 
@@ -258,53 +227,24 @@ namespace TestR
 		/// <param name="exceptProcessId"> The ID of the process to exclude. </param>
 		public static void CloseAll(string executablePath, int timeout = DefaultTimeout, int exceptProcessId = 0)
 		{
-			var processName = Path.GetFileNameWithoutExtension(executablePath);
+			List<SafeProcess> processes = null;
+			var watch = Stopwatch.StartNew();
 
-			// Find all the main processes with windows.
-			var processes = Process.GetProcessesByName(processName)
-				.Where(x => x.MainWindowHandle != IntPtr.Zero)
-				.Where(x => exceptProcessId == 0 || x.Id != exceptProcessId)
-				.ToList();
-
-			processes.ForEachDisposable(process =>
+			do
 			{
-				try
-				{
-					// Ask to close the process nicely.
-					process.CloseMainWindow();
-					process.Close();
+				processes?.ForEach(x => x.Dispose());
+				processes = ProcessService.Where(executablePath)
+					.Where(x => exceptProcessId == 0 || x.Id != exceptProcessId)
+					.ForEach(x => x.Close())
+					.ToList();
 
-					if (!process.WaitForExit(timeout))
-					{
-						// The process did not close so now we are just going to kill it.
-						process.Kill();
-						process.WaitForExit(timeout);
-					}
-				}
-				catch
+				if (watch.Elapsed.TotalMilliseconds >= timeout)
 				{
-					// Ignore errors closing
+					break;
 				}
-			});
+			} while (processes.Count > 0 && !processes.All(x => x.HasExited));
 
-			// Wait for the threads to sleep and child process to close.
-			Thread.Sleep(250);
-
-			// Find all the other processes.
-			processes = Process.GetProcessesByName(processName).Where(x => exceptProcessId == 0 || x.Id != exceptProcessId).ToList();
-			processes.ForEachDisposable(process =>
-			{
-				try
-				{
-					// The process did not close so now we are just going to kill it.
-					process.Kill();
-					process.WaitForExit(timeout);
-				}
-				catch
-				{
-					// Ignore errors closing
-				}
-			});
+			processes.ForEach(x => x.Dispose());
 		}
 
 		/// <summary>
@@ -317,13 +257,7 @@ namespace TestR
 		/// <returns> The instance that represents an application. </returns>
 		public static Application Create(string executablePath, string arguments = null, bool refresh = true, bool bringToFront = true)
 		{
-			var processStartInfo = new ProcessStartInfo(executablePath);
-			if (!string.IsNullOrWhiteSpace(arguments))
-			{
-				processStartInfo.Arguments = arguments;
-			}
-
-			var process = Process.Start(processStartInfo);
+			var process = ProcessService.Start(executablePath, arguments);
 			if (process == null)
 			{
 				throw new InvalidOperationException("Failed to start the application.");
@@ -340,48 +274,9 @@ namespace TestR
 		/// <returns> True if the application exists and false otherwise. </returns>
 		public static bool Exists(string executablePath, string arguments = null)
 		{
-			if (!executablePath.EndsWith(".exe"))
-			{
-				executablePath += ".exe";
-			}
-
-			var fileName = Path.GetFileName(executablePath);
-			var processName = Path.GetFileNameWithoutExtension(executablePath);
-			var query = $"SELECT Handle, CommandLine FROM Win32_Process WHERE Name='{fileName}'";
-
-			using (var searcher = new ManagementObjectSearcher(query))
-			{
-				foreach (var result in searcher.Get())
-				{
-					var managementObject = (ManagementObject) result;
-					var handle = int.Parse(managementObject["Handle"].ToString());
-					if (!string.IsNullOrWhiteSpace(arguments))
-					{
-						var data = managementObject["CommandLine"];
-						if (data == null || !data.ToString().Contains(arguments))
-						{
-							continue;
-						}
-					}
-
-					using (var process = Process.GetProcessesByName(processName).FirstOrDefault(x => x.Id == handle))
-					{
-						if (process == null)
-						{
-							continue;
-						}
-
-						if (process.MainWindowHandle == IntPtr.Zero || !NativeMethods.IsWindowVisible(process.MainWindowHandle))
-						{
-							continue;
-						}
-
-						return true;
-					}
-				}
-			}
-
-			return false;
+			var processes = ProcessService.Where(executablePath, arguments).ToList();
+			processes.ForEach(x => x.Dispose());
+			return processes.Any();
 		}
 
 		/// <summary>
@@ -401,6 +296,16 @@ namespace TestR
 		{
 			var handle = NativeMethods.GetForegroundWindow();
 			return handle == Process.MainWindowHandle;
+		}
+
+		/// <summary>
+		/// Forcefully closes the application.
+		/// </summary>
+		/// <param name="timeout"> The optional timeout in milliseconds. If not provided the Timeout value will be used. </param>
+		public Application Kill(int? timeout = null)
+		{
+			Process.Kill(timeout ?? (int) Timeout.TotalMilliseconds);
+			return this;
 		}
 
 		/// <summary>
@@ -435,7 +340,7 @@ namespace TestR
 				Utility.Wait(() =>
 				{
 					Children.Clear();
-					Children.AddRange(Process.GetWindows(this));
+					Children.AddRange(GetWindows());
 					return Children.Any();
 				}, Timeout.TotalMilliseconds, 10);
 
@@ -491,13 +396,61 @@ namespace TestR
 				return;
 			}
 
-			if (AutoClose && Process != null && Process.HasExited)
+			if (AutoClose)
 			{
-				Close();
+				Close((int) Timeout.TotalMilliseconds);
+				Kill((int) Timeout.TotalMilliseconds);
 			}
 
 			Process?.Dispose();
 			Process = null;
+		}
+
+		/// <summary>
+		/// Gets all windows for the process.
+		/// </summary>
+		/// <returns> The array of windows. </returns>
+		internal IEnumerable<Window> GetWindows(ICollection<IntPtr> windowsToIgnore = null)
+		{
+			// There is a issue in Windows 10 and Cortana (or modern apps) where there is a 60 second delay when walking the root element.
+			// When you hit the last sibling it delays. For now we are simply going to return the main window and we'll roll this code
+			// back once the Windows 10 issue has been resolved.
+
+			Process.Process.Refresh();
+			var automation = new CUIAutomationClass();
+
+			foreach (var handle in EnumerateProcessWindowHandles())
+			{
+				if (windowsToIgnore?.Contains(handle) == true)
+				{
+					continue;
+				}
+
+				var automationElement = automation.ElementFromHandle(handle);
+				if (DesktopElement.Create(automationElement, this, null) is Window element)
+				{
+					yield return element;
+				}
+			}
+		}
+
+		private IEnumerable<IntPtr> EnumerateProcessWindowHandles()
+		{
+			var handles = new List<IntPtr>();
+
+			foreach (ProcessThread thread in Process.Process.Threads)
+			{
+				using (thread)
+				{
+					NativeMethods.EnumThreadWindows(thread.Id, (hWnd, lParam) =>
+					{
+						handles.Add(hWnd);
+						return true;
+					}, IntPtr.Zero);
+				}
+			}
+
+			return handles;
 		}
 
 		#endregion
