@@ -67,7 +67,7 @@ namespace TestR.Web.Browsers
 		/// <returns> An instance of an Internet Explorer browser. </returns>
 		public static Browser Attach(bool bringToFront = true)
 		{
-			var browser = GetBrowserToAttachTo();
+			var browser = GetBrowserToAttachTo(0, bringToFront);
 			if (browser == null)
 			{
 				return null;
@@ -91,7 +91,7 @@ namespace TestR.Web.Browsers
 				return null;
 			}
 
-			var browser = GetBrowserToAttachTo(process.Id);
+			var browser = GetBrowserToAttachTo(process.Id, bringToFront);
 			if (browser == null)
 			{
 				return null;
@@ -340,6 +340,7 @@ namespace TestR.Web.Browsers
 				};
 
 				explorer.Navigate("about:blank");
+				Thread.Sleep(100);
 
 				return explorer;
 			}
