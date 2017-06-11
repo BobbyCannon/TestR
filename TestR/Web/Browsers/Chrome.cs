@@ -90,6 +90,7 @@ namespace TestR.Web.Browsers
 
 			var browser = new Chrome(application);
 			browser.Connect();
+			browser.NavigateTo("about:blank");
 			browser.Refresh();
 			return browser;
 		}
@@ -115,6 +116,7 @@ namespace TestR.Web.Browsers
 			var application = Application.Attach(process, false, bringToFront);
 			var browser = new Chrome(application);
 			browser.Connect();
+			browser.NavigateTo("about:blank");
 			browser.Refresh();
 			return browser;
 		}
@@ -165,6 +167,7 @@ namespace TestR.Web.Browsers
 			}
 
 			browser.Connect();
+			browser.NavigateTo("about:blank");
 			browser.Refresh();
 			return browser;
 		}
@@ -286,13 +289,20 @@ namespace TestR.Web.Browsers
 		private void Connect()
 		{
 			var sessions = new List<RemoteSessionsResponse>();
-			
+			RemoteSessionsResponse session = null;
+
 			Utility.Wait(() =>
 			{
 				try
 				{
 					sessions.AddRange(GetAvailableSessions());
-					return true;
+					if (sessions.Count == 0)
+					{
+						throw new TestRException("All debugging sessions are taken.");
+					}
+
+					session = sessions.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.WebSocketDebuggerUrl));
+					return session != null;
 				}
 				catch (WebException)
 				{
@@ -300,12 +310,6 @@ namespace TestR.Web.Browsers
 				}
 			}, Application.Timeout.TotalMilliseconds, 250);
 
-			if (sessions.Count == 0)
-			{
-				throw new TestRException("All debugging sessions are taken.");
-			}
-
-			var session = sessions.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.WebSocketDebuggerUrl));
 			if (session == null)
 			{
 				throw new TestRException("Could not find a valid debugger enabled page. Make sure you close the debugger tools.");
@@ -321,15 +325,26 @@ namespace TestR.Web.Browsers
 
 			Task.Run(() =>
 				{
-					while (ReadResponseAsync())
+					while (_socket != null)
 					{
+						if (!ReadResponseAsync())
+						{
+							if (_socket == null)
+							{
+								break;
+							}
+
+							_socket?.Dispose();
+							_socket = new ClientWebSocket();
+
+							if (!_socket.ConnectAsync(sessionWsEndpoint, CancellationToken.None).Wait(Application.Timeout))
+							{
+								throw new TestRException("Failed to connect to the server.");
+							}
+						}
+
 						Thread.Sleep(1);
 					}
-				})
-				.ContinueWith(x =>
-				{
-					_socket?.Dispose();
-					_socket = null;
 				});
 		}
 

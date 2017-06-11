@@ -235,8 +235,9 @@ namespace TestR
 				processes?.ForEach(x => x.Dispose());
 				processes = ProcessService.Where(executablePath)
 					.Where(x => exceptProcessId == 0 || x.Id != exceptProcessId)
-					.ForEach(x => x.Close())
 					.ToList();
+					
+				processes.ForEach(x => x.Close());
 
 				if (watch.Elapsed.TotalMilliseconds >= timeout)
 				{

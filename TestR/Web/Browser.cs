@@ -308,6 +308,7 @@ namespace TestR.Web
 		/// </summary>
 		public Browser Focus()
 		{
+			Window.Focus();
 			Application.Focus();
 			return this;
 		}
@@ -380,8 +381,7 @@ namespace TestR.Web
 		public virtual Browser MoveWindow(int x, int y, int width, int height)
 		{
 			Window.Focus();
-			Window.Move(x,y);
-			Window.Resize(width, height);
+			Window.Move(x, y, width, height);
 			return this;
 		}
 
@@ -422,7 +422,6 @@ namespace TestR.Web
 		/// <inheritdoc />
 		public override ElementHost Refresh()
 		{
-			//LogManager.Write("Refreshing the page.", LogLevel.Verbose);
 			WaitForComplete();
 			InjectTestScript();
 			DetectJavascriptLibraries();
@@ -436,7 +435,6 @@ namespace TestR.Web
 		/// <param name="element"> The element to remove. </param>
 		public bool RemoveElement(WebElement element)
 		{
-			//LogManager.Write("Removing element with ID of " + element.Id + ".", LogLevel.Verbose);
 			ExecuteJavaScript("TestR.removeElement('" + element.Id + "');", false);
 			return Children.Remove(element);
 		}
@@ -448,7 +446,6 @@ namespace TestR.Web
 		/// <param name="name"> The name of the attribute to remove. </param>
 		public void RemoveElementAttribute(WebElement element, string name)
 		{
-			//LogManager.Write("Removing element attribute with ID of " + element.Id + ".", LogLevel.Verbose);
 			ExecuteJavaScript("TestR.removeElementAttribute('" + element.Id + "', '" + name + "');", false);
 		}
 
@@ -459,7 +456,7 @@ namespace TestR.Web
 		/// <param name="height"> The height to set. </param>
 		public ElementHost Resize(int width, int height)
 		{
-			Application.Resize(width, height);
+			Window.Resize(width, height);
 			return this;
 		}
 

@@ -92,6 +92,7 @@ namespace TestR.Web.Browsers
 
 			var browser = new Firefox(application);
 			browser.Connect();
+			browser.NavigateTo("about:blank");
 			browser.Refresh();
 			return browser;
 		}
@@ -117,6 +118,7 @@ namespace TestR.Web.Browsers
 			var application = Application.Attach(process, false, bringToFront);
 			var browser = new Firefox(application);
 			browser.Connect();
+			browser.NavigateTo("about:blank");
 			browser.Refresh();
 			return browser;
 		}
@@ -173,6 +175,7 @@ namespace TestR.Web.Browsers
 			}
 
 			browser.Connect();
+			browser.NavigateTo("about:blank");
 			browser.Refresh();
 			return browser;
 		}

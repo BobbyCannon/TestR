@@ -95,12 +95,11 @@ namespace TestR
 		/// <param name="collection"> The collection of items to run the action with. </param>
 		/// <param name="action"> The action to run against each item in the collection. </param>
 		/// <typeparam name="T"> The type of the item in the collection. </typeparam>
-		public static IEnumerable<T> ForEach<T>(this IEnumerable<T> collection, Action<T> action)
+		public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
 		{
 			foreach (var item in collection)
 			{
 				action(item);
-				yield return item;
 			}
 		}
 
@@ -110,7 +109,7 @@ namespace TestR
 		/// <param name="collection"> The collection of items to run the action with. </param>
 		/// <param name="action"> The action to run against each item in the collection. </param>
 		/// <typeparam name="T"> The type of the item in the collection. </typeparam>
-		public static IEnumerable<T> ForEachDisposable<T>(this IEnumerable<T> collection, Action<T> action)
+		public static void ForEachDisposable<T>(this IEnumerable<T> collection, Action<T> action)
 			where T : IDisposable
 		{
 			foreach (var item in collection)
@@ -118,7 +117,6 @@ namespace TestR
 				using (item)
 				{
 					action(item);
-					yield return item;
 				}
 			}
 		}

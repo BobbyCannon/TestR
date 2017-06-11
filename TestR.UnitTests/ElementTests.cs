@@ -19,7 +19,9 @@ namespace TestR.UnitTests
 		{
 			var host = TestHelper.CreateHost();
 			var element = TestHelper.CreateElement("Parent", "Parent", host);
-			element.Children.Add(TestHelper.CreateElement("Child", "Child", element));
+			var child = TestHelper.CreateElement("Child", "Child", element);
+			element.Children.Add(child);
+			Assert.AreEqual(1, element.Children.Count);
 
 			var actual = element.First(x => x.Id == "Child");
 			Assert.AreEqual(element.Children[0], actual);
@@ -53,7 +55,6 @@ namespace TestR.UnitTests
 			var expected = TestHelper.CreateElement("Expected", "Expected");
 			var application = new Application((SafeProcess) null);
 			var host = TestHelper.CreateMock<ElementHost>(application, null);
-			var element = TestHelper.CreateElement("Root", "Root", host.Object);
 
 			host.Object.Application.Timeout = TimeSpan.FromSeconds(1);
 

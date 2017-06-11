@@ -73,6 +73,7 @@ namespace TestR.Web.Browsers
 			}
 
 			var browser = new InternetExplorer(foundBrowser, bringToFront);
+			browser.NavigateTo("about:blank");
 			browser.Refresh();
 			return browser;
 		}
@@ -97,6 +98,7 @@ namespace TestR.Web.Browsers
 			}
 
 			var browser = new InternetExplorer(foundBrowser, bringToFront);
+			browser.NavigateTo("about:blank");
 			browser.Refresh();
 			return browser;
 		}
@@ -119,6 +121,7 @@ namespace TestR.Web.Browsers
 		public static Browser Create(bool bringToFront = true)
 		{
 			var browser = new InternetExplorer(CreateInternetExplorerClass(), bringToFront);
+			browser.NavigateTo("about:blank");
 			browser.Refresh();
 			return browser;
 		}

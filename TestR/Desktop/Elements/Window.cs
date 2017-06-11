@@ -141,6 +141,18 @@ namespace TestR.Desktop.Elements
 		}
 
 		/// <summary>
+		/// Move the window.
+		/// </summary>
+		/// <param name="x"> The x value of the position to move to. </param>
+		/// <param name="y"> The y value of the position to move to. </param>
+		/// <param name="width"> The width to set. </param>
+		/// <param name="height"> The height to set. </param>
+		public void Move(int x, int y, int width, int height)
+		{
+			NativeMethods.MoveWindow(NativeElement.CurrentNativeWindowHandle, x, y, width, height, true);
+		}
+
+		/// <summary>
 		/// Resize the window.
 		/// </summary>
 		/// <param name="width"> The width to set. </param>
