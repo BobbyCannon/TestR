@@ -1,6 +1,7 @@
 ﻿#region References
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -35,8 +36,8 @@ namespace TestR.Web.Browsers
 
 		#region Constructors
 
-		private InternetExplorer(SHDocVw.InternetExplorer browser, bool bringToFront = true)
-			: base(Application.Attach(ProcessService.Where(BrowserName).First(x => x.MainWindowHandle == new IntPtr(browser.HWND)), false, bringToFront))
+		private InternetExplorer(SHDocVw.InternetExplorer browser, ICollection<IntPtr> windowsToIgnore = null, bool bringToFront = true)
+			: base(Application.Attach(ProcessService.Where(BrowserName).First(x => x.MainWindowHandle == new IntPtr(browser.HWND)), false, bringToFront), windowsToIgnore)
 		{
 			_browser = browser;
 		}
@@ -66,13 +67,12 @@ namespace TestR.Web.Browsers
 		/// <returns> An instance of an Internet Explorer browser. </returns>
 		public static Browser Attach(bool bringToFront = true)
 		{
-			var foundBrowser = GetBrowserToAttachTo();
-			if (foundBrowser == null)
+			var browser = GetBrowserToAttachTo();
+			if (browser == null)
 			{
 				return null;
 			}
 
-			var browser = new InternetExplorer(foundBrowser, bringToFront);
 			browser.NavigateTo("about:blank");
 			browser.Refresh();
 			return browser;
@@ -91,13 +91,12 @@ namespace TestR.Web.Browsers
 				return null;
 			}
 
-			var foundBrowser = GetBrowserToAttachTo(process.Id);
-			if (foundBrowser == null)
+			var browser = GetBrowserToAttachTo(process.Id);
+			if (browser == null)
 			{
 				return null;
 			}
 
-			var browser = new InternetExplorer(foundBrowser, bringToFront);
 			browser.NavigateTo("about:blank");
 			browser.Refresh();
 			return browser;
@@ -120,7 +119,26 @@ namespace TestR.Web.Browsers
 		/// <returns> An instance of an Internet Explorer browser. </returns>
 		public static Browser Create(bool bringToFront = true)
 		{
-			var browser = new InternetExplorer(CreateInternetExplorerClass(), bringToFront);
+			// See if chrome is already running
+			InternetExplorer browser;
+			var foundBrowser = GetBrowserToAttachTo();
+
+			if (foundBrowser != null)
+			{
+				// Start process but connect to current process and new window.
+				var existing = foundBrowser.Application.GetWindows().Select(x =>
+				{
+					x.Dispose();
+					return x.Handle;
+				}).ToList();
+
+				browser = new InternetExplorer(CreateInternetExplorerClass(), existing, bringToFront);
+			}
+			else
+			{
+				browser = new InternetExplorer(CreateInternetExplorerClass(), null, bringToFront);
+			}
+
 			browser.NavigateTo("about:blank");
 			browser.Refresh();
 			return browser;
@@ -302,7 +320,6 @@ namespace TestR.Web.Browsers
 		/// <returns> The current URI that was read from the browser. </returns>
 		protected override string GetBrowserUri()
 		{
-			//LogManager.Write("First browser's URI.", LogLevel.Verbose);
 			return _browser.LocationURL;
 		}
 
@@ -332,7 +349,7 @@ namespace TestR.Web.Browsers
 			}
 		}
 
-		private static SHDocVw.InternetExplorer GetBrowserToAttachTo(int processId = 0)
+		private static InternetExplorer GetBrowserToAttachTo(int processId = 0, bool bringToFront = true)
 		{
 			var explorers = new ShellWindowsClass()
 				.Cast<SHDocVw.InternetExplorer>()
@@ -351,12 +368,7 @@ namespace TestR.Web.Browsers
 						}
 					}
 
-					using (var browser = new InternetExplorer(explorer))
-					{
-						//LogManager.Write($"Found browser with id of {browser.Id} at location {browser.Uri}.", LogLevel.Verbose);
-					}
-
-					return explorer;
+					return new InternetExplorer(explorer, null, bringToFront);
 				}
 				catch (Exception)
 				{
@@ -391,7 +403,12 @@ namespace TestR.Web.Browsers
 		private string ReinitializeBrowser()
 		{
 			Application.Dispose();
-			_browser = GetBrowserToAttachTo() ?? CreateInternetExplorerClass();
+
+			using (var app = GetBrowserToAttachTo())
+			{
+				_browser = app?._browser ?? CreateInternetExplorerClass();
+			}
+
 			Application = Application.Attach(ProcessService.Where(BrowserName).First(x => x.MainWindowHandle == new IntPtr(_browser.HWND)), false);
 			//_zoneId = NativeMethods.GetZoneId(_browser.LocationURL);
 			return _browser.LocationURL;
