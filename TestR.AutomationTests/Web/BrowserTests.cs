@@ -918,13 +918,13 @@ namespace TestR.AutomationTests.Web
 			ForEachBrowser(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
-				browser.MoveWindow(0, 0, 300, 300);
+				browser.MoveWindow(0, 0, 400, 300);
 				browser.BringToFront();
 
 				var button = browser.First<WebElement>("button");
 				button.ScrollIntoView();
-				Assert.IsTrue(button.Location.X < 100);
-				Assert.IsTrue(button.Location.Y < 100);
+				Assert.IsTrue(button.Location.X < 100, $"x:{button.Location.X} should be less than 100.");
+				Assert.IsTrue(button.Location.Y < 100, $"y:{button.Location.Y} should be less than 100.");
 			});
 		}
 
