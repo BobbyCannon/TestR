@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Target Name="Interop" AfterTargets="ResolveReferences">
+		<ItemGroup>
+			<ReferencePath Condition="'%(FileName)' == 'Interop.UIAutomationClient'">
+				<EmbedInteropTypes>false</EmbedInteropTypes>
+				<Private>true</Private>
+			</ReferencePath>
+		</ItemGroup>
+	</Target>
+	<Target Name="AfterBuild">
+		<ItemGroup>
+			<NugetDlls Include="$(MSBuildThisFileDirectory)**\*.dll" />
+		</ItemGroup>
+		<Copy SourceFiles="@(NugetDlls)" DestinationFolder="$(OutputPath)" />
+	</Target>
+</Project>

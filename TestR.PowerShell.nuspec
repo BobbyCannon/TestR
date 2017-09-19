@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-	<metadata>
+	<metadata minClientVersion="3.3.0">
 		<id>TestR.PowerShell</id>
 		<version>1.0</version>
 		<authors>Bobby Cannon</authors>
@@ -20,9 +20,10 @@
 	</metadata>
 	<files>
 		<file src=".\Binaries\TestR\Install.ps1" target="tools" />
+		<file src=".\Binaries\TestR\TestR.PowerShell.targets" target="build" />
+		<file src=".\Binaries\TestR\Interop.SHDocVw.dll" target="build" />
 		<file src=".\Binaries\TestR\TestR.dll" target="lib\net452" />
 		<file src=".\Binaries\TestR\TestR.PowerShell.dll" target="lib\net452" />
-		<file src=".\Binaries\TestR\Interop.SHDocVw.dll" target="lib\net452" />
 		<file src=".\Binaries\TestR\Interop.UIAutomationClient.dll" target="lib\net452" />
 	</files>
 </package>

@@ -14,14 +14,19 @@ if ($scriptPath.Length -le 0) {
 Push-Location $scriptPath
 
 $destination = "$scriptPath\Binaries"
+$nugetDestination = "C:\Workspaces\Nuget\Developer"
 
 if (Test-Path $destination -PathType Container){
     Remove-Item $destination -Recurse -Force
 }
 
+if (!(Test-Path $nugetDestination -PathType Container)){
+    New-Item $nugetDestination -ItemType Directory | Out-Null
+}
+
 try {
 	.\ResetAssemblyInfos.ps1
-    .\IncrementVersion.ps1 -Revision *
+	.\IncrementVersion.ps1 -Build + -Revision *
 
 	# Visual Studio Online Support
 	$nuget = "C:\LR\MMS\Services\mms\TaskAgentProvisioner\Tools\agents\2.114.0\externals\nuget\NuGet.exe"
@@ -68,6 +73,8 @@ try {
 	
 	New-Item $destination\TestR -ItemType Directory | Out-Null
 	Copy-Item Install.ps1 $destination\TestR\
+	Copy-Item TestR.targets $destination\TestR\
+	Copy-Item TestR.PowerShell.targets $destination\TestR\
 	Copy-Item TestR\bin\$Configuration\* $destination\TestR\
 	Copy-Item TestR.PowerShell\bin\$Configuration\* $destination\TestR\
 	

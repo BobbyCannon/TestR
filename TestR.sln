@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestR", "TestR\TestR.csproj", "{DEC269ED-D43E-4D3A-BA25-238A9DD7CF04}"
 EndProject
@@ -11,8 +11,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
+		Install.ps1 = Install.ps1
 		TestR.nuspec = TestR.nuspec
 		TestR.PowerShell.nuspec = TestR.PowerShell.nuspec
+		TestR.PowerShell.targets = TestR.PowerShell.targets
+		TestR.targets = TestR.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{ABD2A310-C5DA-43DA-AFCB-D8FCD09DFD9F}"
@@ -74,5 +77,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {49C5DD7E-AB98-4E06-8AED-F8535FD57056}
 	EndGlobalSection
 EndGlobal
