@@ -73,7 +73,7 @@ namespace TestR.Web.Browsers
 				return null;
 			}
 
-			browser.NavigateTo("about:blank");
+			//browser.NavigateTo("about:blank");
 			browser.Refresh();
 			return browser;
 		}
@@ -97,7 +97,7 @@ namespace TestR.Web.Browsers
 				return null;
 			}
 
-			browser.NavigateTo("about:blank");
+			//browser.NavigateTo("about:blank");
 			browser.Refresh();
 			return browser;
 		}
@@ -339,7 +339,6 @@ namespace TestR.Web.Browsers
 					IWebBrowserApp_Visible = true
 				};
 
-				explorer.Navigate("about:blank");
 				Thread.Sleep(100);
 
 				return explorer;
