@@ -4,11 +4,10 @@
 		<ItemGroup>
 			<ReferencePath Condition="'%(FileName)' == 'Interop.UIAutomationClient'">
 				<EmbedInteropTypes>false</EmbedInteropTypes>
-				<Private>true</Private>
 			</ReferencePath>
 		</ItemGroup>
 	</Target>
-	<Target Name="AfterBuild">
+	<Target Name="BeforeCompile" BeforeTargets="Build">
 		<ItemGroup>
 			<NugetDlls Include="$(MSBuildThisFileDirectory)**\*.dll" />
 		</ItemGroup>
