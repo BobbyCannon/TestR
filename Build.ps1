@@ -97,9 +97,7 @@ try {
     Write-Error "Build Failed: $($watch.Elapsed)"
     exit $LASTEXITCODE
 } finally {
-	.\ResetAssemblyInfos.ps1
-	
-    Pop-Location
+	Pop-Location
     
     try {
     	Stop-Process -ProcessName msbuild*
