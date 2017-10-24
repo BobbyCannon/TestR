@@ -5,12 +5,9 @@
 			<ReferencePath Condition="'%(FileName)' == 'Interop.UIAutomationClient'">
 				<EmbedInteropTypes>false</EmbedInteropTypes>
 			</ReferencePath>
+			<ReferencePath Condition="'%(FileName)' == 'Interop.SHDocVw'">
+				<EmbedInteropTypes>false</EmbedInteropTypes>
+			</ReferencePath>
 		</ItemGroup>
-	</Target>
-	<Target Name="BeforeCompile" BeforeTargets="Build">
-		<ItemGroup>
-			<NugetDlls Include="$(MSBuildThisFileDirectory)**\*.dll" />
-		</ItemGroup>
-		<Copy SourceFiles="@(NugetDlls)" DestinationFolder="$(OutputPath)" />
 	</Target>
 </Project>
