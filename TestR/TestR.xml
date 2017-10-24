@@ -1380,6 +1380,11 @@
             </summary>
             <returns> The point location of the mouse cursor. </returns>
         </member>
+        <member name="M:TestR.Native.Mouse.LeftClick">
+            <summary>
+            Left click at the current mouse location.
+            </summary>
+        </member>
         <member name="M:TestR.Native.Mouse.LeftClick(System.Int32,System.Int32)">
             <summary>
             Left click at the provided point.
@@ -1392,6 +1397,35 @@
             Left click at the provided point.
             </summary>
             <param name="point"> The point in which to click. </param>
+        </member>
+        <member name="M:TestR.Native.Mouse.LeftClickDown">
+            <summary>
+            Left click and hold.
+            </summary>
+        </member>
+        <member name="M:TestR.Native.Mouse.LeftClickDown(System.Int32,System.Int32)">
+            <summary>
+            Left click and hold.
+            </summary>
+            <param name="x"> The x point in which to click. </param>
+            <param name="y"> The y point in which to click. </param>
+        </member>
+        <member name="M:TestR.Native.Mouse.LeftClickUp">
+            <summary>
+            Left click release.
+            </summary>
+        </member>
+        <member name="M:TestR.Native.Mouse.LeftClickUp(System.Int32,System.Int32)">
+            <summary>
+            Left click release.
+            </summary>
+            <param name="x"> The x point in which to click. </param>
+            <param name="y"> The y point in which to click. </param>
+        </member>
+        <member name="M:TestR.Native.Mouse.MiddleClick">
+            <summary>
+            Middle click at the current mouse location.
+            </summary>
         </member>
         <member name="M:TestR.Native.Mouse.MiddleClick(System.Int32,System.Int32)">
             <summary>
@@ -1406,6 +1440,16 @@
             </summary>
             <param name="point"> The point in which to click. </param>
         </member>
+        <member name="M:TestR.Native.Mouse.MiddleClickDown">
+            <summary>
+            Middle click and hold.
+            </summary>
+        </member>
+        <member name="M:TestR.Native.Mouse.MiddleClickUp">
+            <summary>
+            Middle click release.
+            </summary>
+        </member>
         <member name="M:TestR.Native.Mouse.MoveTo(System.Int32,System.Int32)">
             <summary>
             Sets the mouse to the provide point.
@@ -1419,6 +1463,11 @@
             </summary>
             <param name="point"> The point in which to move to. </param>
         </member>
+        <member name="M:TestR.Native.Mouse.RightClick">
+            <summary>
+            Right click at the current mouse location.
+            </summary>
+        </member>
         <member name="M:TestR.Native.Mouse.RightClick(System.Int32,System.Int32)">
             <summary>
             Right click at the provided point.
@@ -1431,6 +1480,25 @@
             Right click at the provided point.
             </summary>
             <param name="point"> The point in which to click. </param>
+        </member>
+        <member name="M:TestR.Native.Mouse.RightClickDown">
+            <summary>
+            Right click and hold.
+            </summary>
+        </member>
+        <member name="M:TestR.Native.Mouse.RightClickUp">
+            <summary>
+            Right click release.
+            </summary>
+        </member>
+        <member name="M:TestR.Native.Mouse.Select(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Select a section of screen using the left mouse button.
+            </summary>
+            <param name="x1"> Start x location. </param>
+            <param name="y1"> Start y location. </param>
+            <param name="x2"> End x location. </param>
+            <param name="y2"> End y location. </param>
         </member>
         <member name="M:TestR.Native.Mouse.StartMonitoring">
             <summary>

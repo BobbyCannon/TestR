@@ -22,6 +22,7 @@
 		<file src=".\Binaries\TestR\Install.ps1" target="tools" />
 		<file src=".\Binaries\TestR\TestR.PowerShell.targets" target="build" />
 		<file src=".\Binaries\TestR\Interop.SHDocVw.dll" target="build" />
+		<file src=".\Binaries\TestR\Interop.SHDocVw.dll" target="lib\net452" />
 		<file src=".\Binaries\TestR\TestR.dll" target="lib\net452" />
 		<file src=".\Binaries\TestR\TestR.PowerShell.dll" target="lib\net452" />
 		<file src=".\Binaries\TestR\Interop.UIAutomationClient.dll" target="lib\net452" />

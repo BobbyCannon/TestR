@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 using FormApplication = System.Windows.Forms.Application;
 
@@ -48,8 +49,16 @@ namespace TestR.Native
 		/// <returns> The point location of the mouse cursor. </returns>
 		public static Point GetCursorPosition()
 		{
-			Point currentMousePoint;
-			return NativeMethods.GetCursorPosition(out currentMousePoint) ? currentMousePoint : new Point();
+			return NativeMethods.GetCursorPosition(out var currentMousePoint) ? currentMousePoint : new Point();
+		}
+
+		/// <summary>
+		/// Left click at the current mouse location.
+		/// </summary>
+		public static void LeftClick()
+		{
+			ExecuteMouseEvent(MouseEventFlags.LeftDown);
+			ExecuteMouseEvent(MouseEventFlags.LeftUp);
 		}
 
 		/// <summary>
@@ -74,6 +83,53 @@ namespace TestR.Native
 		}
 
 		/// <summary>
+		/// Left click and hold.
+		/// </summary>
+		public static void LeftClickDown()
+		{
+			ExecuteMouseEvent(MouseEventFlags.LeftDown);
+		}
+
+		/// <summary>
+		/// Left click and hold.
+		/// </summary>
+		/// <param name="x"> The x point in which to click. </param>
+		/// <param name="y"> The y point in which to click. </param>
+		public static void LeftClickDown(int x, int y)
+		{
+			MoveTo(x, y);
+			ExecuteMouseEvent(MouseEventFlags.LeftDown, new Point(x, y));
+		}
+
+		/// <summary>
+		/// Left click release.
+		/// </summary>
+		public static void LeftClickUp()
+		{
+			ExecuteMouseEvent(MouseEventFlags.LeftUp);
+		}
+
+		/// <summary>
+		/// Left click release.
+		/// </summary>
+		/// <param name="x"> The x point in which to click. </param>
+		/// <param name="y"> The y point in which to click. </param>
+		public static void LeftClickUp(int x, int y)
+		{
+			MoveTo(x, y);
+			ExecuteMouseEvent(MouseEventFlags.LeftUp, new Point(x, y));
+		}
+
+		/// <summary>
+		/// Middle click at the current mouse location.
+		/// </summary>
+		public static void MiddleClick()
+		{
+			ExecuteMouseEvent(MouseEventFlags.MiddleDown);
+			ExecuteMouseEvent(MouseEventFlags.MiddleUp);
+		}
+
+		/// <summary>
 		/// Middle click at the provided point.
 		/// </summary>
 		/// <param name="x"> The x point in which to click. </param>
@@ -92,6 +148,22 @@ namespace TestR.Native
 			MoveTo(point);
 			ExecuteMouseEvent(MouseEventFlags.MiddleDown, point);
 			ExecuteMouseEvent(MouseEventFlags.MiddleUp, point);
+		}
+
+		/// <summary>
+		/// Middle click and hold.
+		/// </summary>
+		public static void MiddleClickDown()
+		{
+			ExecuteMouseEvent(MouseEventFlags.MiddleDown);
+		}
+
+		/// <summary>
+		/// Middle click release.
+		/// </summary>
+		public static void MiddleClickUp()
+		{
+			ExecuteMouseEvent(MouseEventFlags.MiddleUp);
 		}
 
 		/// <summary>
@@ -128,6 +200,15 @@ namespace TestR.Native
 		}
 
 		/// <summary>
+		/// Right click at the current mouse location.
+		/// </summary>
+		public static void RightClick()
+		{
+			ExecuteMouseEvent(MouseEventFlags.RightDown);
+			ExecuteMouseEvent(MouseEventFlags.RightUp);
+		}
+
+		/// <summary>
 		/// Right click at the provided point.
 		/// </summary>
 		/// <param name="x"> The x point in which to click. </param>
@@ -146,6 +227,36 @@ namespace TestR.Native
 			MoveTo(point);
 			ExecuteMouseEvent(MouseEventFlags.RightDown, point);
 			ExecuteMouseEvent(MouseEventFlags.RightUp, point);
+		}
+
+		/// <summary>
+		/// Right click and hold.
+		/// </summary>
+		public static void RightClickDown()
+		{
+			ExecuteMouseEvent(MouseEventFlags.RightDown);
+		}
+
+		/// <summary>
+		/// Right click release.
+		/// </summary>
+		public static void RightClickUp()
+		{
+			ExecuteMouseEvent(MouseEventFlags.RightUp);
+		}
+
+		/// <summary>
+		/// Select a section of screen using the left mouse button.
+		/// </summary>
+		/// <param name="x1"> Start x location. </param>
+		/// <param name="y1"> Start y location. </param>
+		/// <param name="x2"> End x location. </param>
+		/// <param name="y2"> End y location. </param>
+		public static void Select(int x1, int y1, int x2, int y2)
+		{
+			LeftClickDown(x1, y1);
+			Thread.Sleep(50);
+			LeftClickUp(x2, y2);
 		}
 
 		/// <summary>

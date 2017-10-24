@@ -80,6 +80,7 @@
     <Compile Include="Desktop\Elements\CheckBoxTests.cs" />
     <Compile Include="Desktop\Elements\WindowTests.cs" />
     <Compile Include="Desktop\Elements\ComboBoxTests.cs" />
+    <Compile Include="Desktop\MouseTests.cs" />
     <Compile Include="Desktop\WinFormTests.cs" />
     <Compile Include="Desktop\NotepadTests.cs" />
     <Compile Include="Web\BrowserTests.cs" />
