@@ -124,12 +124,16 @@
 			
 			response.push(item);
 
-			if (item.tagName.toLowerCase() === 'iframe') {
-				var itemHost = (element.contentDocument ? element.contentDocument : element.contentWindow.document);
-				var children = TestR.getElementsFromHost(itemHost, item.id, forParentId);
-				for (i = 0; i < children.length; i++) {
-					response.push(children[i]);
+			try {
+				if (item.tagName.toLowerCase() === 'iframe') {
+					var itemHost = (element.contentDocument ? element.contentDocument : element.contentWindow.document);
+					var children = TestR.getElementsFromHost(itemHost, item.id, forParentId);
+					for (i = 0; i < children.length; i++) {
+						response.push(children[i]);
+					}
 				}
+			} catch (ex) {
+				//console.log(ex.message);
 			}
 		}
 

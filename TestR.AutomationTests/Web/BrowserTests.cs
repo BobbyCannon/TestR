@@ -39,6 +39,16 @@ namespace TestR.AutomationTests.Web
 		#region Methods
 
 		[TestMethod]
+		public void EpicCoders()
+		{
+			ForEachBrowser(browser =>
+			{
+				browser.NavigateTo("https://epiccoders.com");
+				browser.Descendants().ToList().Count.Dump();
+			});
+		}
+
+		[TestMethod]
 		public void AngularInputTrigger()
 		{
 			ForEachBrowser(browser =>
