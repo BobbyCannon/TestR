@@ -5222,6 +5222,11 @@
         <member name="P:TestR.Web.WebElement.FocusedElement">
             <inheritdoc />
         </member>
+        <member name="P:TestR.Web.WebElement.FrameId">
+            <summary>
+            Gets the optional ID of the frame hosting the element. Will be null if the element is not hostied in a frame.
+            </summary>
+        </member>
         <member name="P:TestR.Web.WebElement.Height">
             <inheritdoc />
         </member>

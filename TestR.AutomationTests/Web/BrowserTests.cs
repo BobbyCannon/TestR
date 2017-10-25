@@ -22,12 +22,15 @@ namespace TestR.AutomationTests.Web
 
 		static BrowserTests()
 		{
+			DefaultTimeout = TimeSpan.FromMilliseconds(2000);
 			TestSite = "https://testr.local";
 		}
 
 		#endregion
 
 		#region Properties
+
+		public static TimeSpan DefaultTimeout { get; set; }
 
 		public static string TestSite { get; }
 
@@ -151,13 +154,13 @@ namespace TestR.AutomationTests.Web
 		[ClassCleanup]
 		public static void ClassCleanup()
 		{
-			Browser.CloseBrowsers();
+			//Browser.CloseBrowsers();
 		}
 
 		[ClassInitialize]
 		public static void ClassInitialize(TestContext context)
 		{
-			Browser.CloseBrowsers();
+			//Browser.CloseBrowsers();
 		}
 
 		[TestMethod]
@@ -660,6 +663,23 @@ namespace TestR.AutomationTests.Web
 					element.Highlight(false);
 					Assert.AreEqual(originalColor, element.GetStyleAttributeValue("background-color"));
 				}
+			});
+		}
+
+		[TestMethod]
+		public void IframesShouldHaveAccess()
+		{
+			ForEachBrowser(browser =>
+			{
+				browser.NavigateTo(TestSite + "/iframe.html");
+				browser.First("id").TypeText("hello");
+
+				var frame = browser.First("frame");
+				var email = frame.First<TextInput>("email");
+				email.TypeText("world");
+
+				Assert.AreEqual("world", email.Text);
+				Assert.AreEqual("world", email.GetAttributeValue("value"));
 			});
 		}
 
@@ -1256,6 +1276,7 @@ namespace TestR.AutomationTests.Web
 		{
 			ForEachBrowser(browser =>
 			{
+				browser.Timeout = DefaultTimeout;
 				browser.NavigateTo(TestSite + "/Angular.html#!/");
 
 				var items = browser.First<Division>("items");

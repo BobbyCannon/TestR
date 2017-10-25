@@ -22,7 +22,7 @@ if (Test-Path $SitePath -PathType Container) {
 }
 
 New-Item $SitePath -ItemType Directory | Out-Null
-Copy-Item "$scriptPath\TestR.Website\*" $SitePath -Recurse -Force
+Copy-Item "$scriptPath\TestR.TestSite\*" $SitePath -Recurse -Force
 
 $bindings = @()
 $bindings += @{ protocol="http"; bindingInformation="*:80:testr.local"}
@@ -44,7 +44,7 @@ Set-ItemProperty -Path $webPath -Name Bindings -Value $bindings
 
 $certificate = (Get-ChildItem Cert:\LocalMachine -Recurse | Where { $_.Subject -ne $null -and $_.Subject.Contains("testr.local") })[0]
 if ($certificate -eq $null) {
-	$certificate = New-SelfSignedCertificate -CertStoreLocation Cert:\LocalMachine\My -DnsName testr.local
+	$certificate = New-SelfSignedCertificate -CertStoreLocation Cert:\LocalMachine\My -DnsName testr.local -FriendlyName TestR
 }
 
 $binding = Get-WebBinding -Name $siteName -Protocol "https"

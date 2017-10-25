@@ -7,14 +7,19 @@
 	autoId: 1,
 	ignoredTags: ['script'],
 	resultElementId: 'testrResult',
-	triggerEvent: function (element, eventName, values) {
+	getElementHost: function(frameId) {
+		// Check to see if the element is an iFrame. If so get it document, else we'll just return the current element
+		var hostDocument = frameId ? document.getElementById(frameId) : document;
+		return (hostDocument.contentDocument ? hostDocument.contentDocument : hostDocument.contentWindow ? hostDocument.contentWindow.document : hostDocument);
+	},
+	triggerEvent: function(element, frameId, eventName, values) {
 		var event;
-
-		if (document.createEvent) {
-			event = document.createEvent('HTMLEvents');
+		var hostDocument = TestR.getElementHost(frameId);
+		if (hostDocument.createEvent) {
+			event = hostDocument.createEvent('HTMLEvents');
 			event.initEvent(eventName, true, true);
 		} else {
-			event = document.createEventObject();
+			event = hostDocument.createEventObject();
 			event.eventType = eventName;
 		}
 
@@ -23,14 +28,15 @@
 			event[values[i].key] = values[i].value;
 		}
 
-		if (document.createEvent) {
+		if (hostDocument.createEvent) {
 			element.dispatchEvent(event);
 		} else {
 			element.fireEvent('on' + event.eventType, event);
 		}
 	},
-	getElementLocation: function(id) {
-		var element = document.getElementById(id);
+	getElementLocation: function (id, frameId) {
+		var hostDocument = TestR.getElementHost(frameId);
+		var element = hostDocument.getElementById(id);
 		var box = element.getBoundingClientRect();
 		var borderWidth = (window.outerWidth - window.innerWidth) / 2;
 		var x = window.screenX + borderWidth;
@@ -39,9 +45,9 @@
 		var left = Math.round(x + box.left);
 		return JSON.stringify({ x: left, y: top });
 	},
-	getElements: function(forParentId) {
+	getElementsFromHost: function (host, frameId, forParentId) {
 		var response = [];
-		var allElements = document.getElementsByTagName('*');
+		var allElements = host.getElementsByTagName('*');
 		var i;
 
 		// Add element IDs so we can build element hierarchy.
@@ -66,7 +72,7 @@
 
 			var elementId = TestR.getValueFromElement(element, 'id');
 			var elementName = TestR.getValueFromElement(element, 'name') || '';
-			var parentId = TestR.getValueFromElement(element.parentNode, 'id') || '';
+			var parentId = TestR.getValueFromElement(element.parentNode, 'id') || frameId || '';
 
 			if (forParentId !== undefined && parentId !== forParentId) {
 				continue;
@@ -77,7 +83,8 @@
 				parentId: parentId,
 				name: elementName,
 				tagName: tagName,
-				attributes: []
+				attributes: [],
+				frameId: frameId
 			};
 
 			item.width = element.offsetWidth;
@@ -114,22 +121,36 @@
 					}
 				}
 			}
-
+			
 			response.push(item);
+
+			if (item.tagName.toLowerCase() === 'iframe') {
+				var itemHost = (element.contentDocument ? element.contentDocument : element.contentWindow.document);
+				var children = TestR.getElementsFromHost(itemHost, item.id, forParentId);
+				for (i = 0; i < children.length; i++) {
+					response.push(children[i]);
+				}
+			}
 		}
 
 		return response;
 	},
-	getElementValue: function(id, name) {
-		var element = document.getElementById(id);
+	getElements: function (forParentId, frameId) {
+		var host = TestR.getElementHost(frameId);
+		return TestR.getElementsFromHost(host, frameId, forParentId);
+	},
+	getElementValue: function (elementId, frameId, name) {
+		var hostDocument = TestR.getElementHost(frameId);
+		var element = hostDocument.getElementById(elementId);
 		if (element === undefined || element === null) {
 			return null;
 		}
 
 		return TestR.getValueFromElement(element, name);
 	},
-	getSelectText: function(elementId) {
-		var element = document.getElementById(elementId);
+	getSelectText: function (elementId, frameId) {
+		var hostDocument = TestR.getElementHost(frameId);
+		var element = hostDocument.getElementById(elementId);
 		if (element.selectedIndex === -1) {
 			return null;
 		}
@@ -156,8 +177,9 @@
 
 		return null;
 	},
-	setElementValue: function(id, name, value) {
-		var element = document.getElementById(id);
+	setElementValue: function (elementId, frameId, name, value) {
+		var hostDocument = TestR.getElementHost(frameId);
+		var element = hostDocument.getElementById(elementId);
 		if (element === undefined || element === null) {
 			return;
 		}
@@ -168,13 +190,14 @@
 			element.setAttribute(name, value);
 		}
 	},
-	setSelectText: function (elementId, value) {
-		var i, element = document.getElementById(elementId);
+	setSelectText: function (elementId, frameId, value) {
+		var hostDocument = TestR.getElementHost(frameId);
+		var i, element = hostDocument.getElementById(elementId);
 
 		for (i = 0; i < element.options.length; i++) {
 			if (element.options[i].text === value) {
 				element.options[i].selected = true;
-				TestR.triggerEvent(element, 'change', []);
+				TestR.triggerEvent(element, frameId, 'change', []);
 				return;
 			}
 		}
@@ -182,21 +205,24 @@
 		for (i = 0; i < element.options.length; i++) {
 			if (element.options[i].text.lastIndexOf(value, 0) === 0) {
 				element.options[i].selected = true;
-				TestR.triggerEvent(element, 'change', []);
+				TestR.triggerEvent(element, frameId, 'change', []);
 				return;
 			}
 		}
 	},
-	removeElement: function(id) {
-		var element = document.getElementById(id);
+	removeElement: function (elementId, frameId) {
+		var hostDocument = TestR.getElementHost(frameId);
+		var element = hostDocument.getElementById(elementId);
 		element.parentNode.removeChild(element);
 	},
-	removeElementAttribute: function(id, name) {
-		var element = document.getElementById(id);
+	removeElementAttribute: function (elementId, frameId, name) {
+		var hostDocument = TestR.getElementHost(frameId);
+		var element = hostDocument.getElementById(elementId);
 		element.removeAttribute(name);
 	},
-	rightClick: function(id) {
-		var element = document.getElementById(id);
+	rightClick: function (elementId, frameId) {
+		var hostDocument = TestR.getElementHost(frameId);
+		var element = hostDocument.getElementById(elementId);
 		var evt = element.ownerDocument.createEvent('MouseEvents');
 		var rightClickButtonCode = 2;
 

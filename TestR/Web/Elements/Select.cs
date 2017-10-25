@@ -112,8 +112,8 @@ namespace TestR.Web.Elements
 		/// <inheritdoc />
 		public override string Text
 		{
-			get => Browser.ExecuteScript($"TestR.getSelectText(\'{Id}\')");
-			set => Browser.ExecuteScript($"TestR.setSelectText(\'{Id}\', \'{value}\')");
+			get => Browser.ExecuteScript($"TestR.getSelectText(\'{Id}\',{GetFrameIdInsert()})");
+			set => Browser.ExecuteScript($"TestR.setSelectText(\'{Id}\',{GetFrameIdInsert()},\'{value}\')");
 		}
 
 		/// <summary>

@@ -22,6 +22,7 @@
     <UseGlobalApplicationHostFile />
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <TargetFrameworkProfile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -102,6 +103,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\TestR\TestR.js">
+      <Link>Scripts\TestR.js</Link>
+    </Content>
+    <Content Include="TestR.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="iframe.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Forms2.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

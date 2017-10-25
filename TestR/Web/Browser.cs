@@ -435,7 +435,7 @@ namespace TestR.Web
 		/// <param name="element"> The element to remove. </param>
 		public bool RemoveElement(WebElement element)
 		{
-			ExecuteJavaScript("TestR.removeElement('" + element.Id + "');", false);
+			ExecuteJavaScript($"TestR.removeElement(\'{element.Id}\',{element.GetFrameIdInsert()});", false);
 			return Children.Remove(element);
 		}
 
@@ -446,7 +446,7 @@ namespace TestR.Web
 		/// <param name="name"> The name of the attribute to remove. </param>
 		public void RemoveElementAttribute(WebElement element, string name)
 		{
-			ExecuteJavaScript("TestR.removeElementAttribute('" + element.Id + "', '" + name + "');", false);
+			ExecuteJavaScript($"TestR.removeElementAttribute(\'{element.Id}\',{element.GetFrameIdInsert()},\'{name}\');", false);
 		}
 
 		/// <summary>
@@ -565,7 +565,7 @@ namespace TestR.Web
 
 		internal ICollection<WebElement> GetElements(WebElement parent = null)
 		{
-			var data = ExecuteScript(parent?.Id == null ? "JSON.stringify(TestR.getElements())" : $"JSON.stringify(TestR.getElements('{parent.Id}'))");
+			var data = ExecuteScript(parent?.Id == null ? $"JSON.stringify(TestR.getElements(undefined,{parent?.GetFrameIdInsert() ?? "undefined"}))" : $"JSON.stringify(TestR.getElements('{parent.Id}',{parent.GetFrameIdInsert()}))");
 			if (JavascriptLibraries.Contains(JavaScriptLibrary.Angular) && data.Contains("ng-view ng-cloak"))
 			{
 				throw new TestRException("JavaScript not completed?");

@@ -47,7 +47,7 @@ namespace TestR
 		/// Gets the ID of this element host.
 		/// </summary>
 		public abstract string Id { get; }
-
+		
 		/// <summary>
 		/// Gets or sets the name of the element.
 		/// </summary>

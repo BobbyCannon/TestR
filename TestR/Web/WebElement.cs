@@ -147,6 +147,11 @@ namespace TestR.Web
 		/// <inheritdoc />
 		public override Element FocusedElement => Browser.FocusedElement;
 
+		/// <summary>
+		/// Gets the optional ID of the frame hosting the element. Will be null if the element is not hostied in a frame.
+		/// </summary>
+		public string FrameId => _element.frameId;
+
 		/// <inheritdoc />
 		public override int Height => (int) _element.height;
 
@@ -189,7 +194,7 @@ namespace TestR.Web
 		{
 			get
 			{
-				var data = Browser.ExecuteScript("TestR.getElementLocation('" + Id + "');");
+				var data = Browser.ExecuteScript($"TestR.getElementLocation(\'{Id}\',{GetFrameIdInsert()});");
 				var result = JsonConvert.DeserializeObject<dynamic>(data);
 				return new Point((int) result.x, (int) result.y);
 			}
@@ -306,7 +311,7 @@ namespace TestR.Web
 		/// <inheritdoc />
 		public override Element Click(int x = 0, int y = 0)
 		{
-			Browser.ExecuteScript("document.getElementById('" + Id + "').click()");
+			Browser.ExecuteScript($"document.getElementById(\'{Id}\',{GetFrameIdInsert()}).click()");
 			return this;
 		}
 
@@ -323,7 +328,7 @@ namespace TestR.Web
 				values = values.Remove(values.Length - 1, 1);
 			}
 
-			var script = "TestR.triggerEvent(document.getElementById('" + Id + "'), '" + eventName.ToLower() + "', [" + values + "]);";
+			var script = $"TestR.triggerEvent(document.getElementById(\'{Id}\',{GetFrameIdInsert()}),\'{eventName.ToLower()}\',[{values}]);";
 			Browser.ExecuteScript(script);
 		}
 
@@ -332,7 +337,7 @@ namespace TestR.Web
 		/// </summary>
 		public override Element Focus()
 		{
-			Browser.ExecuteScript("document.getElementById('" + Id + "').focus()");
+			Browser.ExecuteScript($"document.getElementById(\'{Id}\',{GetFrameIdInsert()}).focus()");
 			FireEvent("focus", new Dictionary<string, string>());
 			return this;
 		}
@@ -360,7 +365,7 @@ namespace TestR.Web
 			if (refresh)
 			{
 				name = _propertiesToRename.ContainsKey(name) ? _propertiesToRename[name] : name;
-				var script = "TestR.getElementValue('" + Id + "','" + name + "')";
+				var script = $"TestR.getElementValue(\'{Id}\',{GetFrameIdInsert()},\'{name}\')";
 				value = Browser.ExecuteScript(script);
 			}
 			else
@@ -520,7 +525,7 @@ namespace TestR.Web
 				.Replace("\'", "\\\'")
 				.Replace("\"", "\\\"");
 
-			var script = "TestR.setElementValue('" + Id + "','" + name + "','" + value + "')";
+			var script = $"TestR.setElementValue(\'{Id}\',{GetFrameIdInsert()},\'{name}\',\'{value}\')";
 			Browser.ExecuteScript(script);
 			AddOrUpdateElementAttribute(name, value);
 			TriggerElement();
@@ -1029,6 +1034,11 @@ namespace TestR.Web
 				default:
 					return element;
 			}
+		}
+
+		internal string GetFrameIdInsert()
+		{
+			return FrameId == null ? "undefined" : $"\'{FrameId}\'";
 		}
 
 		/// <summary>
