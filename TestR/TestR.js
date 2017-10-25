@@ -47,6 +47,7 @@
 	},
 	getElementsFromHost: function (host, frameId, forParentId) {
 		var response = [];
+		var processedFrames = [];
 		var allElements = host.getElementsByTagName('*');
 		var i;
 
@@ -125,7 +126,8 @@
 			response.push(item);
 
 			try {
-				if (item.tagName.toLowerCase() === 'iframe') {
+				if (item.tagName.toLowerCase() === 'iframe' && !processedFrames.contains(item.id)) {
+					processedFrames.push(item.id);
 					var itemHost = (element.contentDocument ? element.contentDocument : element.contentWindow.document);
 					var children = TestR.getElementsFromHost(itemHost, item.id, forParentId);
 					for (i = 0; i < children.length; i++) {

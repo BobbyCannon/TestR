@@ -39,16 +39,6 @@ namespace TestR.AutomationTests.Web
 		#region Methods
 
 		[TestMethod]
-		public void EpicCoders()
-		{
-			ForEachBrowser(browser =>
-			{
-				browser.NavigateTo("https://epiccoders.com");
-				browser.Descendants().ToList().Count.Dump();
-			});
-		}
-
-		[TestMethod]
 		public void AngularInputTrigger()
 		{
 			ForEachBrowser(browser =>
@@ -164,13 +154,13 @@ namespace TestR.AutomationTests.Web
 		[ClassCleanup]
 		public static void ClassCleanup()
 		{
-			//Browser.CloseBrowsers();
+			Browser.CloseBrowsers();
 		}
 
 		[ClassInitialize]
 		public static void ClassInitialize(TestContext context)
 		{
-			//Browser.CloseBrowsers();
+			Browser.CloseBrowsers();
 		}
 
 		[TestMethod]
@@ -401,6 +391,29 @@ namespace TestR.AutomationTests.Web
 				{
 					header.Text = "Header!";
 				}
+			});
+		}
+
+		[TestMethod]
+		public void InternetOfEpicCoders()
+		{
+			ForEachBrowser(browser =>
+			{
+				browser.NavigateTo("https://epiccoders.com");
+				browser.Descendants().ToList().Count.Dump();
+			});
+		}
+
+		[TestMethod]
+		public void InternetOfBing()
+		{
+			ForEachBrowser(browser =>
+			{
+				browser.NavigateTo("https://www.bing.com");
+				browser.Descendants().ToList().Count.Dump();
+				browser.FirstOrDefault("sb_form_q").TypeText("Bobby Cannon");
+				browser.FirstOrDefault("sb_form_go").Click();
+				browser.WaitForComplete();
 			});
 		}
 
