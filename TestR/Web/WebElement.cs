@@ -311,7 +311,7 @@ namespace TestR.Web
 		/// <inheritdoc />
 		public override Element Click(int x = 0, int y = 0)
 		{
-			Browser.ExecuteScript($"document.getElementById(\'{Id}\',{GetFrameIdInsert()}).click()");
+			Browser.ExecuteScript($"document.getElementById(\'{Id}\').click()");
 			return this;
 		}
 
@@ -328,7 +328,7 @@ namespace TestR.Web
 				values = values.Remove(values.Length - 1, 1);
 			}
 
-			var script = $"TestR.triggerEvent(document.getElementById(\'{Id}\',{GetFrameIdInsert()}),\'{eventName.ToLower()}\',[{values}]);";
+			var script = $"TestR.triggerEvent(document.getElementById(\'{Id}\'),{GetFrameIdInsert()},\'{eventName.ToLower()}\',[{values}]);";
 			Browser.ExecuteScript(script);
 		}
 
@@ -337,7 +337,7 @@ namespace TestR.Web
 		/// </summary>
 		public override Element Focus()
 		{
-			Browser.ExecuteScript($"document.getElementById(\'{Id}\',{GetFrameIdInsert()}).focus()");
+			Browser.ExecuteScript($"document.getElementById(\'{Id}\').focus()");
 			FireEvent("focus", new Dictionary<string, string>());
 			return this;
 		}

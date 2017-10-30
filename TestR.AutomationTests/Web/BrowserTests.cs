@@ -395,29 +395,6 @@ namespace TestR.AutomationTests.Web
 		}
 
 		[TestMethod]
-		public void InternetOfEpicCoders()
-		{
-			ForEachBrowser(browser =>
-			{
-				browser.NavigateTo("https://epiccoders.com");
-				browser.Descendants().ToList().Count.Dump();
-			});
-		}
-
-		[TestMethod]
-		public void InternetOfBing()
-		{
-			ForEachBrowser(browser =>
-			{
-				browser.NavigateTo("https://www.bing.com");
-				browser.Descendants().ToList().Count.Dump();
-				browser.FirstOrDefault("sb_form_q").TypeText("Bobby Cannon");
-				browser.FirstOrDefault("sb_form_go").Click();
-				browser.WaitForComplete();
-			});
-		}
-
-		[TestMethod]
 		public void FilterElementByTextElements()
 		{
 			ForEachBrowser(browser =>
@@ -704,6 +681,37 @@ namespace TestR.AutomationTests.Web
 				Assert.AreEqual("world", email.Text);
 				Assert.AreEqual("world", email.GetAttributeValue("value"));
 			});
+		}
+
+		[TestMethod]
+		public void InternetOfBing()
+		{
+			Browser.CloseBrowsers();
+
+			ForEachBrowser(browser =>
+			{
+				browser.NavigateTo("https://www.bing.com");
+				browser.Descendants().ToList().Count.Dump();
+				browser.FirstOrDefault("sb_form_q").TypeText("Bobby Cannon");
+				browser.FirstOrDefault("sb_form_go").Click();
+				browser.WaitForComplete();
+			});
+
+			Browser.CloseBrowsers();
+		}
+
+		[TestMethod]
+		public void InternetOfEpicCoders()
+		{
+			Browser.CloseBrowsers();
+
+			ForEachBrowser(browser =>
+			{
+				browser.NavigateTo("https://epiccoders.com");
+				browser.Descendants().ToList().Count.Dump();
+			});
+
+			Browser.CloseBrowsers();
 		}
 
 		[TestMethod]
