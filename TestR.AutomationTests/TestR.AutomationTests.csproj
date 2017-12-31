@@ -39,7 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Interop.UIAutomationClient">
-      <HintPath>C:\Program Files (x86)\Windows Kits\10\bin\10.0.15063.0\x86\UIAVerify\Interop.UIAutomationClient.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\Windows Kits\10\bin\10.0.16299.0\x86\UIAVerify\Interop.UIAutomationClient.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="KellermanSoftware.Compare-NET-Objects, Version=3.8.0.0, Culture=neutral, PublicKeyToken=d970ace04cc85217, processorArchitecture=MSIL">
@@ -81,6 +81,7 @@
     <Compile Include="Desktop\Elements\WindowTests.cs" />
     <Compile Include="Desktop\Elements\ComboBoxTests.cs" />
     <Compile Include="Desktop\MouseTests.cs" />
+    <Compile Include="Desktop\TypeTextTests.cs" />
     <Compile Include="Desktop\WinFormTests.cs" />
     <Compile Include="Desktop\NotepadTests.cs" />
     <Compile Include="Web\BrowserTests.cs" />
@@ -99,6 +100,10 @@
     <ProjectReference Include="..\TestR.TestWinForms\TestR.TestWinForms.csproj">
       <Project>{e43d1f20-edfa-43da-9e72-0685082df62b}</Project>
       <Name>TestR.TestWinForms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TestR.UnitTests\TestR.UnitTests.csproj">
+      <Project>{0ed4605c-594e-4e63-9112-84141a30e189}</Project>
+      <Name>TestR.UnitTests</Name>
     </ProjectReference>
     <ProjectReference Include="..\TestR\TestR.csproj">
       <Project>{dec269ed-d43e-4d3a-ba25-238a9dd7cf04}</Project>

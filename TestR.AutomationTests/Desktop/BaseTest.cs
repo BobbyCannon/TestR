@@ -1,5 +1,6 @@
 ﻿#region References
 
+using System;
 using System.IO;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -36,7 +37,9 @@ namespace TestR.AutomationTests.Desktop
 		public Application GetApplication()
 		{
 			Application.CloseAll(_applicationPath);
-			return Application.AttachOrCreate(_applicationPath);
+			var response = Application.AttachOrCreate(_applicationPath);
+			response.Timeout = TimeSpan.FromSeconds(5);
+			return response;
 		}
 
 		[TestInitialize]

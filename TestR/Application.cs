@@ -180,6 +180,7 @@ namespace TestR
 
 			NativeMethods.SetFocus(application.Handle);
 
+			application.WaitForComplete();
 			return application;
 		}
 

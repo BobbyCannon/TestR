@@ -28,9 +28,9 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("One");
-			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Two");
-			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("Three");
+			System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("One");
+			System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem("Two");
+			System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem("Three");
 			this.MenuStrip = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -62,6 +62,7 @@
 			this.linkLabel3 = new System.Windows.Forms.LinkLabel();
 			this.listBox1 = new System.Windows.Forms.ListBox();
 			this.listView1 = new System.Windows.Forms.ListView();
+			this.keyPress = new System.Windows.Forms.TextBox();
 			this.MenuStrip.SuspendLayout();
 			this.StatusStrip.SuspendLayout();
 			this.SuspendLayout();
@@ -373,9 +374,9 @@
 			// listView1
 			// 
 			this.listView1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2,
-            listViewItem3});
+            listViewItem4,
+            listViewItem5,
+            listViewItem6});
 			this.listView1.Location = new System.Drawing.Point(296, 158);
 			this.listView1.Name = "listView1";
 			this.listView1.Size = new System.Drawing.Size(121, 95);
@@ -383,11 +384,21 @@
 			this.listView1.UseCompatibleStateImageBehavior = false;
 			this.listView1.View = System.Windows.Forms.View.List;
 			// 
+			// keyPress
+			// 
+			this.keyPress.Location = new System.Drawing.Point(423, 158);
+			this.keyPress.Name = "keyPress";
+			this.keyPress.Size = new System.Drawing.Size(200, 20);
+			this.keyPress.TabIndex = 26;
+			this.keyPress.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keyPress_KeyDown);
+			this.keyPress.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.keyPress_PreviewKeyDown);
+			// 
 			// FormMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(639, 386);
+			this.Controls.Add(this.keyPress);
 			this.Controls.Add(this.listView1);
 			this.Controls.Add(this.listBox1);
 			this.Controls.Add(this.linkLabel3);
@@ -414,6 +425,7 @@
 			this.Controls.Add(this.checkBox1);
 			this.Controls.Add(this.StatusStrip);
 			this.Controls.Add(this.MenuStrip);
+			this.KeyPreview = true;
 			this.Name = "FormMain";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "TestR Test WinForm";
@@ -459,6 +471,7 @@
 		private System.Windows.Forms.LinkLabel linkLabel3;
 		private System.Windows.Forms.ListBox listBox1;
 		private System.Windows.Forms.ListView listView1;
+		private System.Windows.Forms.TextBox keyPress;
 	}
 }
 

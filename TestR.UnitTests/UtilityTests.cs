@@ -46,6 +46,15 @@ namespace TestR.UnitTests
 		}
 
 		[TestMethod]
+		public void WaitWithFailingActionWithSecondDelay()
+		{
+			var watch = Stopwatch.StartNew();
+			var actual = Utility.Wait(() => false, 1000, 10);
+			Assert.IsFalse(actual);
+			Assert.IsTrue(watch.ElapsedMilliseconds >= 1000);
+		}
+
+		[TestMethod]
 		public void WaitWithProvidedInput()
 		{
 			var host = TestHelper.CreateHost();

@@ -68,12 +68,12 @@ namespace TestR.Desktop.Elements
 		/// <summary>
 		/// Gets the status bar for the window. Returns null if the window does not have a status bar.
 		/// </summary>
-		public StatusBar StatusBar => Children.OfType<StatusBar>().FirstOrDefault();
+		public StatusBar StatusBar => FirstOrDefault<StatusBar>();
 
 		/// <summary>
 		/// Gets the title bar for the window. Returns null if the window does not have a title bar.
 		/// </summary>
-		public TitleBar TitleBar => Children.OfType<TitleBar>().FirstOrDefault();
+		public TitleBar TitleBar => FirstOrDefault<TitleBar>();
 
 		/// <summary>
 		/// Gets the state of the window.

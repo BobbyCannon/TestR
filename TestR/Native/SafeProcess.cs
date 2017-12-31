@@ -108,7 +108,7 @@ namespace TestR.Native
 					return;
 				}
 
-				// Ask the process to close gracefully and give it 10 seconds to do so.
+				// Ask the process to close gracefully and give it a chance to close.
 				_process.Refresh();
 				_process.CloseMainWindow();
 				_process.WaitForExit(timeout);

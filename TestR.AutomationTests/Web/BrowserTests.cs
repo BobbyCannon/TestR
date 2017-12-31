@@ -974,8 +974,8 @@ namespace TestR.AutomationTests.Web
 
 				var button = browser.First<WebElement>("button");
 				button.ScrollIntoView();
-				Assert.IsTrue(button.Location.X < 100, $"x:{button.Location.X} should be less than 100.");
-				Assert.IsTrue(button.Location.Y < 100, $"y:{button.Location.Y} should be less than 100.");
+				Assert.IsTrue(button.Location.X < 120, $"x:{button.Location.X} should be less than 100.");
+				Assert.IsTrue(button.Location.Y < 120, $"y:{button.Location.Y} should be less than 100.");
 			});
 		}
 

@@ -2,6 +2,7 @@
 
 using System;
 using System.Windows.Forms;
+using TestR.Native;
 
 #endregion
 
@@ -14,6 +15,9 @@ namespace TestR.TestWinForms
 		public FormMain()
 		{
 			InitializeComponent();
+
+			Keyboard.KeyPressed += key => keyPress.Text = KeyConverter.KeyToAsciiValue(key, Keyboard.IsShiftPressed()).ToString("X2") + " - " + key.ToString();
+			Keyboard.StartMonitoring();
 		}
 
 		#endregion
@@ -23,6 +27,16 @@ namespace TestR.TestWinForms
 		private void ExitToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			Close();
+		}
+
+		private void keyPress_KeyDown(object sender, KeyEventArgs e)
+		{
+			e.SuppressKeyPress = true;
+			e.Handled = true;
+		}
+
+		private void keyPress_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+		{
 		}
 
 		#endregion

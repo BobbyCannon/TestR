@@ -70,7 +70,7 @@ namespace TestR.Native
 		internal static extern bool BringWindowToTop(IntPtr hWnd);
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-		internal static extern int CallNextHookEx(int idHook, int nCode, int wParam, IntPtr lParam);
+		internal static extern int CallNextHookEx(int idHook, int nCode, int wParam, ref KeyboardHookStruct lParam);
 
 		[DllImport("user32.dll")]
 		internal static extern bool EnumThreadWindows(int dwThreadId, EnumThreadDelegate lpfn, IntPtr lParam);
@@ -165,16 +165,13 @@ namespace TestR.Native
 		internal static extern int UnhookWindowsHookEx(int idHook);
 
 		[DllImport("advapi32.dll", SetLastError = true)]
-		private static extern bool GetTokenInformation(IntPtr TokenHandle,
-			TokenInformationClass TokenInformationClass, IntPtr TokenInformation,
-			uint TokenInformationLength, out uint ReturnLength);
+		private static extern bool GetTokenInformation(IntPtr TokenHandle, TokenInformationClass TokenInformationClass, IntPtr TokenInformation, uint TokenInformationLength, out uint ReturnLength);
 
 		[DllImport("user32.dll", SetLastError = true)]
 		private static extern bool GetWindowPlacement(IntPtr hWnd, ref WindowPlacement lpwndpl);
 
 		[DllImport("advapi32.dll", SetLastError = true)]
-		private static extern bool OpenProcessToken(IntPtr ProcessHandle, uint
-			DesiredAccess, out IntPtr TokenHandle);
+		private static extern bool OpenProcessToken(IntPtr ProcessHandle, uint DesiredAccess, out IntPtr TokenHandle);
 
 		[DllImport("user32.dll", SetLastError = true)]
 		private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, SetWindowPosFlags uFlags);
@@ -262,7 +259,7 @@ namespace TestR.Native
 
 		internal delegate bool EnumThreadDelegate(IntPtr hWnd, IntPtr lParam);
 
-		internal delegate int HookDelegate(int code, int wParam, IntPtr lParam);
+		internal delegate int HookDelegate(int code, int wParam, ref KeyboardHookStruct lParam);
 
 		#endregion
 
@@ -309,6 +306,14 @@ namespace TestR.Native
 			internal System.Drawing.Point ptMinPosition;
 			internal System.Drawing.Point ptMaxPosition;
 			internal Rectangle rcNormalPosition;
+		}
+
+		internal struct KeyboardHookStruct {
+			public int vkCode;
+			public int scanCode;
+			public int flags;
+			public int time;
+			public int dwExtraInfo;
 		}
 
 		[ComImport]

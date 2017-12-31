@@ -47,7 +47,7 @@ namespace TestR
 		/// Gets the ID of this element host.
 		/// </summary>
 		public abstract string Id { get; }
-		
+
 		/// <summary>
 		/// Gets or sets the name of the element.
 		/// </summary>
@@ -279,6 +279,38 @@ namespace TestR
 				try
 				{
 					response = Children.FirstOrDefault(condition, includeDescendants);
+					if (response != null || !wait)
+					{
+						return true;
+					}
+
+					Refresh();
+					return false;
+				}
+				catch (Exception)
+				{
+					return !wait;
+				}
+			});
+
+			return response;
+		}
+
+		/// <summary>
+		/// Get the child from the children.
+		/// </summary>
+		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
+		/// <returns> The child element for the condition or null if no child found. </returns>
+		public T FirstOrDefault<T>(bool includeDescendants = true, bool wait = true) where T : Element
+		{
+			T response = null;
+
+			Wait(x =>
+			{
+				try
+				{
+					response = Children.FirstOrDefault<T>(includeDescendants);
 					if (response != null || !wait)
 					{
 						return true;

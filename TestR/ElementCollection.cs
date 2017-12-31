@@ -228,6 +228,38 @@ namespace TestR
 		}
 
 		/// <summary>
+		/// Get an element from the collection using the provided condition.
+		/// </summary>
+		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
+		/// <returns> The child element for the condition or null if otherwise. </returns>
+		public T FirstOrDefault<T>(bool includeDescendants = true) where T : Element
+		{
+			var children = OfType<T>().ToList();
+			var response = children.FirstOrDefault();
+
+			if (!includeDescendants)
+			{
+				return response;
+			}
+
+			if (response != null)
+			{
+				return response;
+			}
+
+			foreach (var child in this)
+			{
+				response = child.FirstOrDefault<T>(true, false);
+				if (response != null)
+				{
+					return response;
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
 		/// Gets a collection of element of the provided type.
 		/// </summary>
 		/// <typeparam name="T"> The type of the element for the collection. </typeparam>

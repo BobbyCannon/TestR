@@ -1,7 +1,9 @@
 ﻿#region References
 
 using System;
-using System.Runtime.InteropServices;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Windows.Input;
 
@@ -17,7 +19,7 @@ namespace TestR.Native
 		#region Constants
 
 		private const int KeyboardLowLevel = 13;
-		private const int KeyDown = 0x0100;
+		public static string[] Codes;
 
 		#endregion
 
@@ -34,11 +36,94 @@ namespace TestR.Native
 		{
 			_hookId = 0;
 			_hook = HookCallback;
+
+			Codes = new[]
+			{
+				"{BACKSPACE}", "{BS}", "{BKSP}", "{BREAK}", "{CAPSLOCK}", "{DELETE}", "{DEL}", "{DOWN}", "{END}", "{ENTER}", "{ESC}", "{HELP}", "{HOME}", "{INSERT}", "{INS}", "{LEFT}", "{NUMLOCK}", "{PGDN}", "{PGUP}",
+				"{PRTSC}", "{RIGHT}", "{SCROLLLOCK}", "{TAB}", "{UP}", "{F1}", "{F2}", "{F3}", "{F4}", "{F5}", "{F6}", "{F7}", "{F8}", "{F9}", "{F10}", "{F11}", "{F12}", "{F13}", "{F14}", "{F15}", "{F16}", "{ADD}",
+				"{SUBTRACT}", "{MULTIPLY}", "{DIVIDE}", "{~}", "{(}", "{)}", "{+}", "{^}", "{%}", "{[}", "{}}", "{{}", "{}}"
+			};
 		}
 
 		#endregion
 
 		#region Methods
+
+		/// <summary>
+		/// Updates the text in preparation for TypeText method.
+		/// </summary>
+		/// <param name="value"> The value to cleanup. </param>
+		/// <returns> The value that is ready to pass to SendKeys. </returns>
+		public static string FormatTextForTypeText(string value)
+		{
+			var builder = new StringBuilder(value.Length * 2);
+			var formatBuilder = new StringBuilder(value.Length);
+
+			for (var i = 0; i < value.Length; i++)
+			{
+				var c = value[i];
+
+				switch (c)
+				{
+					case '\x08':
+						builder.Append("{BS}");
+						continue;
+
+					case '\x13':
+						builder.Append("{BREAK}");
+						continue;
+
+					case '\x10':
+						builder.Append("{CAPSLOCK}");
+						continue;
+					
+					case '\x7F':
+						builder.Append("{DEL}");
+						continue;
+
+					case '~':
+					case '(':
+					case ')':
+					case '+':
+					case '^':
+					case '%':
+					case '[':
+					case ']':
+					case '}':
+						builder.Append($"{{{c}}}");
+						continue;
+					
+					case '{':
+						formatBuilder.Clear();
+
+						// look ahead to see if we are an existing format
+						for (var j = i; j < value.Length; j++)
+						{
+							formatBuilder.Append(value[j]);
+
+							if (value[j] == '}' && formatBuilder.Length > 2)
+							{
+								break;
+							}
+						}
+
+						var format = formatBuilder.ToString();
+						if (Codes.Contains(format))
+						{
+							builder.Append(format);
+							i += format.Length - 1;
+							continue;
+						}
+
+						builder.Append($"{{{c}}}");
+						continue;
+				}
+
+				builder.Append(c);
+			}
+
+			return builder.ToString();
+		}
 
 		/// <summary>
 		/// Determines if the control key is pressed.
@@ -50,6 +135,19 @@ namespace TestR.Native
 		{
 			var result1 = NativeMethods.GetKeyState(NativeMethods.VirtualKeyStates.VK_LCONTROL);
 			var result2 = NativeMethods.GetKeyState(NativeMethods.VirtualKeyStates.VK_RCONTROL);
+			return (result1 & 0x8000) == 0x8000 || (result2 & 0x8000) == 0x8000;
+		}
+
+		/// <summary>
+		/// Determines if the shift key is pressed.
+		/// </summary>
+		/// <returns>
+		/// True if either shift key is pressed and false if otherwise.
+		/// </returns>
+		public static bool IsShiftPressed()
+		{
+			var result1 = NativeMethods.GetKeyState(NativeMethods.VirtualKeyStates.VK_LSHIFT);
+			var result2 = NativeMethods.GetKeyState(NativeMethods.VirtualKeyStates.VK_RSHIFT);
 			return (result1 & 0x8000) == 0x8000 || (result2 & 0x8000) == 0x8000;
 		}
 
@@ -84,19 +182,18 @@ namespace TestR.Native
 			SendKeys.SendWait(value);
 		}
 
-		private static int HookCallback(int nCode, int wParam, IntPtr lParam)
+		private static int HookCallback(int nCode, int wParam, ref NativeMethods.KeyboardHookStruct lParam)
 		{
-			if (nCode < 0 || wParam != KeyDown)
+			if (nCode >= 0)
 			{
-				return NativeMethods.CallNextHookEx(_hookId, nCode, wParam, lParam);
+				var key = (Keys) lParam.vkCode;
+				var kea = new KeyEventArgs(key);
+				var keyPressed = KeyInterop.KeyFromVirtualKey(kea.KeyValue);
+
+				KeyPressed?.Invoke(keyPressed);
 			}
 
-			var vkCode = Marshal.ReadInt32(lParam);
-			var keyPressed = KeyInterop.KeyFromVirtualKey(vkCode);
-
-			KeyPressed?.Invoke(keyPressed);
-
-			return NativeMethods.CallNextHookEx(_hookId, nCode, wParam, lParam);
+			return NativeMethods.CallNextHookEx(_hookId, nCode, wParam, ref lParam);
 		}
 
 		#endregion

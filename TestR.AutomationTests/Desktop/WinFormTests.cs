@@ -26,8 +26,9 @@ namespace TestR.AutomationTests.Desktop
 			using (var application = GetApplication())
 			{
 				var expected = application.First<Window>("ParentForm");
-				var actual = application.Location;
-				Assert.AreEqual(expected.Location, actual);
+				var wait = application.Wait(x => application.Location.X > 0);
+				Assert.IsTrue(wait, "Application never displayed?");
+				Assert.AreEqual(expected.Location, application.Location);
 				application.Close();
 			}
 		}
@@ -55,8 +56,9 @@ namespace TestR.AutomationTests.Desktop
 			using (var application = GetApplication())
 			{
 				var expected = application.First<Window>("ParentForm");
-				var actual = application.Size;
-				Assert.AreEqual(expected.Size, actual);
+				var wait = application.Wait(x => application.Size.Height > 0);
+				Assert.IsTrue(wait, "Application never displayed?");
+				Assert.AreEqual(expected.Size, application.Size);
 				application.Close();
 			}
 		}
@@ -151,6 +153,7 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = GetApplication())
 			{
+				application.WaitForComplete(500);
 				var window = application.First<Window>("ParentForm");
 				Assert.AreEqual("ParentForm", window.Id);
 				application.Close();
@@ -162,6 +165,7 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var application = GetApplication())
 			{
+				application.WaitForComplete(500);
 				var window = application.First<Window>("ParentForm");
 				Assert.AreEqual("ParentForm", window.Name);
 				application.Close();
@@ -200,7 +204,7 @@ namespace TestR.AutomationTests.Desktop
 			using (var application = GetApplication())
 			{
 				var window = application.First<Window>("ParentForm");
-				var mainMenu = window.Children["menuStrip"];
+				var mainMenu = window.First("menuStrip");
 				Assert.AreEqual("menuStrip", mainMenu.Id);
 				Assert.AreEqual("MenuStrip", mainMenu.Name);
 				application.Close();
