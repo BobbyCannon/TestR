@@ -15,6 +15,7 @@ namespace TestR.AutomationTests.Desktop
 		#region Fields
 
 		protected static string _applicationPath;
+		protected static string _applicationPathX86;
 
 		#endregion
 
@@ -25,19 +26,22 @@ namespace TestR.AutomationTests.Desktop
 			var assembly = Assembly.GetExecutingAssembly();
 			var path = Path.GetDirectoryName(assembly.Location);
 			var info = new DirectoryInfo(path ?? "/");
-
-			_applicationPath = info.FullName + "\\TestR.TestWinForms.exe";
+			
+			_applicationPath = info.FullName.Replace("TestR.AutomationTests", "TestR.TestWinForms") + "\\TestR.TestWinForms.exe";
+			_applicationPathX86 = info.FullName.Replace("TestR.AutomationTests", "TestR.TestWinForms") + "\\TestR.TestWinForms-x86.exe";
 			Application.CloseAll(_applicationPath);
+			Application.CloseAll(_applicationPathX86);
 		}
 
 		#endregion
 
 		#region Methods
 
-		public Application GetApplication()
+		public Application GetApplication(bool x86 = false)
 		{
-			Application.CloseAll(_applicationPath);
-			var response = Application.AttachOrCreate(_applicationPath);
+			var path = x86 ? _applicationPathX86 : _applicationPath;
+			Application.CloseAll(path);
+			var response = Application.AttachOrCreate(path);
 			response.Timeout = TimeSpan.FromSeconds(5);
 			return response;
 		}
@@ -46,6 +50,7 @@ namespace TestR.AutomationTests.Desktop
 		public void TestInitialize()
 		{
 			Application.CloseAll(_applicationPath);
+			Application.CloseAll(_applicationPathX86);
 		}
 
 		#endregion

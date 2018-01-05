@@ -1022,9 +1022,14 @@
             Gets the ID.
             </summary>
         </member>
+        <member name="P:TestR.Native.SafeProcess.Is64Bit">
+            <summary>
+            Gets a flag indicating the process is 64 bit.
+            </summary>
+        </member>
         <member name="P:TestR.Native.SafeProcess.IsElevated">
             <summary>
-            Gets a flag idicating the process is elevated.
+            Gets a flag indicating the process is elevated.
             </summary>
         </member>
         <member name="P:TestR.Native.SafeProcess.MainWindowHandle">
@@ -1133,6 +1138,11 @@
         <member name="T:TestR.Native.Keyboard">
             <summary>
             Represents the keyboard and allows for simulated input.
+            </summary>
+        </member>
+        <member name="P:TestR.Native.Keyboard.Codes">
+            <summary>
+            All special codes used when TypeText is called.
             </summary>
         </member>
         <member name="M:TestR.Native.Keyboard.FormatTextForTypeText(System.String)">

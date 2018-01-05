@@ -69,7 +69,7 @@ namespace TestR.Native
 		[DllImport("user32.dll", SetLastError = true)]
 		internal static extern bool BringWindowToTop(IntPtr hWnd);
 
-		[DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
+		[DllImport("user32.dll", SetLastError = true)]
 		internal static extern int CallNextHookEx(int idHook, int nCode, int wParam, ref KeyboardHookStruct lParam);
 
 		[DllImport("user32.dll")]
@@ -132,6 +132,9 @@ namespace TestR.Native
 		[DllImport("user32.dll", SetLastError = true)]
 		internal static extern bool IsWindowVisible(IntPtr hWnd);
 
+		[DllImport("kernel32.dll", SetLastError = true)]
+		internal static extern bool IsWow64Process([In] IntPtr hProcess, [Out] out bool isX86);
+
 		[DllImport("user32.dll", SetLastError = true, EntryPoint = "mouse_event")]
 		internal static extern void MouseEvent(int dwFlags, int dx, int dy, int dwData, int dwExtraInfo);
 
@@ -175,6 +178,64 @@ namespace TestR.Native
 
 		[DllImport("user32.dll", SetLastError = true)]
 		private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, SetWindowPosFlags uFlags);
+
+		#endregion
+
+		#region Structures
+
+		[StructLayout(LayoutKind.Sequential)]
+		internal struct MouseHook
+		{
+			#region Fields
+
+			internal Point pt;
+			internal uint mouseData;
+			internal uint flags;
+			internal uint time;
+			internal IntPtr dwExtraInfo;
+
+			#endregion
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		internal struct Point
+		{
+			#region Fields
+
+			internal int x;
+			internal int y;
+
+			#endregion
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		internal struct Rect
+		{
+			internal int Left;
+			internal int Top;
+			internal int Right;
+			internal int Bottom;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		internal struct WindowPlacement
+		{
+			internal int length;
+			internal int flags;
+			internal int ShowState;
+			internal System.Drawing.Point ptMinPosition;
+			internal System.Drawing.Point ptMaxPosition;
+			internal Rectangle rcNormalPosition;
+		}
+
+		internal struct KeyboardHookStruct
+		{
+			public int vkCode;
+			public int scanCode;
+			public int flags;
+			public int time;
+			public int dwExtraInfo;
+		}
 
 		#endregion
 
@@ -262,59 +323,6 @@ namespace TestR.Native
 		internal delegate int HookDelegate(int code, int wParam, ref KeyboardHookStruct lParam);
 
 		#endregion
-
-		[StructLayout(LayoutKind.Sequential)]
-		internal struct MouseHook
-		{
-			#region Fields
-
-			internal Point pt;
-			internal uint mouseData;
-			internal uint flags;
-			internal uint time;
-			internal IntPtr dwExtraInfo;
-
-			#endregion
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
-		internal struct Point
-		{
-			#region Fields
-
-			internal int x;
-			internal int y;
-
-			#endregion
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
-		internal struct Rect
-		{
-			internal int Left;
-			internal int Top;
-			internal int Right;
-			internal int Bottom;
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
-		internal struct WindowPlacement
-		{
-			internal int length;
-			internal int flags;
-			internal int ShowState;
-			internal System.Drawing.Point ptMinPosition;
-			internal System.Drawing.Point ptMaxPosition;
-			internal Rectangle rcNormalPosition;
-		}
-
-		internal struct KeyboardHookStruct {
-			public int vkCode;
-			public int scanCode;
-			public int flags;
-			public int time;
-			public int dwExtraInfo;
-		}
 
 		[ComImport]
 		[Guid("79EAC9EE-BAF9-11CE-8C82-00AA004BA90B")]

@@ -1,7 +1,6 @@
 ﻿#region References
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -16,13 +15,6 @@ namespace TestR.Native
 	/// </summary>
 	public static class Keyboard
 	{
-		#region Constants
-
-		private const int KeyboardLowLevel = 13;
-		public static string[] Codes;
-
-		#endregion
-
 		#region Fields
 
 		private static readonly NativeMethods.HookDelegate _hook;
@@ -44,6 +36,15 @@ namespace TestR.Native
 				"{SUBTRACT}", "{MULTIPLY}", "{DIVIDE}", "{~}", "{(}", "{)}", "{+}", "{^}", "{%}", "{[}", "{}}", "{{}", "{}}"
 			};
 		}
+
+		#endregion
+
+		#region Properties
+
+		/// <summary>
+		/// All special codes used when TypeText is called.
+		/// </summary>
+		public static string[] Codes { get; }
 
 		#endregion
 
@@ -76,7 +77,7 @@ namespace TestR.Native
 					case '\x10':
 						builder.Append("{CAPSLOCK}");
 						continue;
-					
+
 					case '\x7F':
 						builder.Append("{DEL}");
 						continue;
@@ -92,7 +93,7 @@ namespace TestR.Native
 					case '}':
 						builder.Append($"{{{c}}}");
 						continue;
-					
+
 					case '{':
 						formatBuilder.Clear();
 
@@ -160,7 +161,8 @@ namespace TestR.Native
 			{
 				using (var curModule = curProcess.Process.MainModule)
 				{
-					_hookId = NativeMethods.SetWindowsHookEx(KeyboardLowLevel, _hook, NativeMethods.GetModuleHandle(curModule.ModuleName), 0);
+					const int keyboardLowLevel = 13;
+					_hookId = NativeMethods.SetWindowsHookEx(keyboardLowLevel, _hook, NativeMethods.GetModuleHandle(curModule.ModuleName), 0);
 				}
 			}
 		}

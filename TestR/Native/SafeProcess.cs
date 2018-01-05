@@ -70,7 +70,29 @@ namespace TestR.Native
 		public int Id { get; }
 
 		/// <summary>
-		/// Gets a flag idicating the process is elevated.
+		/// Gets a flag indicating the process is 64 bit.
+		/// </summary>
+		public bool Is64Bit
+		{
+			get
+			{
+				if (!Environment.Is64BitOperatingSystem)
+				{
+					return false;
+				}
+				
+				var result = IsWow64Process(Handle, out var isX86);
+				if (result)
+				{
+					return !isX86;
+				}
+
+				return false;
+			}
+		}
+
+		/// <summary>
+		/// Gets a flag indicating the process is elevated.
 		/// </summary>
 		public bool IsElevated => IsElevated(Handle);
 

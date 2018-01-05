@@ -149,6 +149,24 @@ namespace TestR.AutomationTests.Desktop
 		}
 
 		[TestMethod]
+		public void CheckProcessIs64Bit()
+		{
+			using (var application = GetApplication())
+			{
+				application.WaitForComplete(500);
+				Assert.IsTrue(application.Process.Is64Bit, "Application should be 64 bit.");
+				application.Close();
+			}
+
+			using (var application = GetApplication(true))
+			{
+				application.WaitForComplete(500);
+				Assert.IsFalse(application.Process.Is64Bit, "Application should be 32 bit.");
+				application.Close();
+			}
+		}
+
+		[TestMethod]
 		public void CheckWindowId()
 		{
 			using (var application = GetApplication())
@@ -176,6 +194,7 @@ namespace TestR.AutomationTests.Desktop
 		public static void ClassCleanup()
 		{
 			Application.CloseAll(_applicationPath);
+			Application.CloseAll(_applicationPathX86);
 		}
 
 		[TestMethod]

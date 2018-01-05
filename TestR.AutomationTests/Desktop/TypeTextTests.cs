@@ -15,7 +15,7 @@ namespace TestR.AutomationTests.Desktop
 {
 	[TestClass]
 	[Cmdlet(VerbsDiagnostic.Test, "TypeText")]
-	public class TypeTextTests : TestCmdlet
+	public class TypeTextTests : BaseTest
 	{
 		#region Constants
 
@@ -44,6 +44,29 @@ namespace TestR.AutomationTests.Desktop
 				actual.ToLiteral().Dump();
 				application.Timeout = TimeSpan.Zero;
 				TestHelper.AreEqual("12", actual);
+			}
+		}
+
+		[TestMethod]
+		public void CheckBoxWithIndeterminateStateShouldBeChecked()
+		{
+			using (var application = GetApplication())
+			{
+				application.First<Edit>("textBox1").TypeText("testuser@domain.com");
+				application.First<Edit>("textBox2").TypeText("testuser@domain.com");
+				application.First<Edit>("textBox3").TypeText("testuser@domain.com");
+				application.First<Edit>("textBox4").TypeText("testuser@domain.com");
+				application.First<Edit>("textBox5").TypeText("testuser@domain.com");
+				application.First<Edit>("textBox6").TypeText("testuser@domain.com");
+
+				Assert.AreEqual("testuser@domain.com", application.First<Edit>("textBox1").Text);
+				Assert.AreEqual("testuser@domain.com", application.First<Edit>("textBox2").Text);
+				Assert.AreEqual("testuser@domain.com", application.First<Edit>("textBox3").Text);
+				Assert.AreEqual("testuser@domain.com", application.First<Edit>("textBox4").Text);
+				Assert.AreEqual("testuser@domain.com", application.First<Edit>("textBox5").Text);
+				Assert.AreEqual("testuser@domain.com", application.First<Edit>("textBox6").Text);
+
+				application.Close();
 			}
 		}
 
