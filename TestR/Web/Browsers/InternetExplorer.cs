@@ -269,7 +269,8 @@ namespace TestR.Web.Browsers
 			//LogManager.Write("Request: " + script, LogLevel.Verbose);
 
 			// If the URL is empty and is not initialized means browser is no page is loaded.
-			if (!_browser.LocationURL.StartsWith("http", StringComparison.OrdinalIgnoreCase) || _browser.ReadyState == tagREADYSTATE.READYSTATE_UNINITIALIZED)
+			if (!(_browser.LocationURL.StartsWith("http", StringComparison.OrdinalIgnoreCase) || _browser.LocationURL.StartsWith("about:", StringComparison.OrdinalIgnoreCase)) 
+				|| _browser.ReadyState == tagREADYSTATE.READYSTATE_UNINITIALIZED)
 			{
 				return string.Empty;
 			}

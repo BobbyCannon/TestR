@@ -596,6 +596,23 @@ namespace TestR.AutomationTests.Web
 				Assert.AreEqual(expected, actual);
 			});
 		}
+		
+		[TestMethod]
+		public void GetAndSetHtmlOnAboutBlankPange()
+		{
+			ForEachBrowser(browser =>
+			{
+				var guid = Guid.NewGuid().ToString();
+				var actual = browser.GetHtml();
+				Assert.IsTrue(actual == "<html id=\"testR-1\"><head id=\"testR-2\"></head><body id=\"testR-3\"></body></html>" || actual == "");
+
+				var expected = $"<html><head><link href=\"https://epiccoders.com/Content/EpicCoders.css\" rel=\"stylesheet\"></head><body>{guid}</body></html>";
+				browser.SetHtml(expected);
+				actual = browser.GetHtml();
+				actual.Dump();
+				Assert.AreEqual(expected, actual);
+			});
+		}
 
 		[TestMethod]
 		public void GetElementByNameIndex()
