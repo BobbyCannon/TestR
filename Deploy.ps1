@@ -48,7 +48,7 @@ if ($certificate -eq $null) {
 }
 
 $binding = Get-WebBinding -Name $siteName -Protocol "https"
-$binding.AddSslCertificate($certificate.GetCertHashString(), "MY")
+$binding.AddSslCertificate($certificate.GetCertHashString(), "WebHosting")
 
 $pool = Get-Item "IIS:\AppPools\$siteName" -ErrorAction Ignore
 if ($pool -eq $null) {

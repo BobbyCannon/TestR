@@ -112,7 +112,7 @@ namespace TestR.Web
 		/// <summary>
 		/// Gets the raw HTML of the page.
 		/// </summary>
-		public virtual string RawHtml => ExecuteScript("document.documentElement.outerHTML");
+		public virtual string RawHtml => GetHtml();
 
 		/// <summary>
 		/// Gets or sets the time out for delay request. Defaults to 60 seconds.
@@ -131,7 +131,7 @@ namespace TestR.Web
 		/// <summary>
 		/// The main windows for the browser.
 		/// </summary>
-		public Window Window { get; private set; }
+		public Window Window { get; }
 
 		#endregion
 
@@ -331,6 +331,15 @@ namespace TestR.Web
 		}
 
 		/// <summary>
+		/// Gets the HTML displayed in the browser.
+		/// </summary>
+		public string GetHtml()
+		{
+			return ExecuteScript("document.documentElement.outerHTML")
+				.Replace("<input id=\"testrResult\" type=\"hidden\" value=\"\">", "");
+		}
+
+		/// <summary>
 		/// Inserts the test script into the current page.
 		/// </summary>
 		public static string GetTestScript()
@@ -370,7 +379,7 @@ namespace TestR.Web
 			Window.Move(x, y);
 			return this;
 		}
-		
+
 		/// <summary>
 		/// Move the window and resize it.
 		/// </summary>
@@ -458,6 +467,15 @@ namespace TestR.Web
 		{
 			Window.Resize(width, height);
 			return this;
+		}
+
+		/// <summary>
+		/// Sets the HTML to display in the browser.
+		/// </summary>
+		/// <param name="html"> The HTML to apply to the browser. </param>
+		public void SetHtml(string html)
+		{
+			ExecuteScript($"document.open(); document.write('{html}'); document.close();");
 		}
 
 		/// <inheritdoc />

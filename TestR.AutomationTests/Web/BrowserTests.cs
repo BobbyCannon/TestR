@@ -576,6 +576,28 @@ namespace TestR.AutomationTests.Web
 		}
 
 		[TestMethod]
+		public void GetAndSetHtml()
+		{
+			ForEachBrowser(browser =>
+			{
+				var guid = Guid.NewGuid().ToString();
+				browser.NavigateTo(TestSite);
+				browser.NavigateTo(TestSite + "/main.html");
+
+				var button = browser.FirstOrDefault<Button>("button");
+				Assert.IsNotNull(button);
+				var actual = browser.GetHtml();
+				Assert.IsFalse(actual.Contains(guid));
+
+				var expected = $"<html><head><link href=\"https://epiccoders.com/Content/EpicCoders.css\" rel=\"stylesheet\"></head><body>{guid}</body></html>";
+				browser.SetHtml(expected);
+				actual = browser.GetHtml();
+				actual.Dump();
+				Assert.AreEqual(expected, actual);
+			});
+		}
+
+		[TestMethod]
 		public void GetElementByNameIndex()
 		{
 			ForEachBrowser(browser =>

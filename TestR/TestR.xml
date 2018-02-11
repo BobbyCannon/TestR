@@ -2468,6 +2468,11 @@
             <param name="action"> The action to perform against each browser. </param>
             <param name="type"> The type of the browser to process against. </param>
         </member>
+        <member name="M:TestR.Web.Browser.GetHtml">
+            <summary>
+            Gets the HTML displayed in the browser.
+            </summary>
+        </member>
         <member name="M:TestR.Web.Browser.GetTestScript">
             <summary>
             Inserts the test script into the current page.
@@ -2518,6 +2523,12 @@
             </summary>
             <param name="width"> The width to set. </param>
             <param name="height"> The height to set. </param>
+        </member>
+        <member name="M:TestR.Web.Browser.SetHtml(System.String)">
+            <summary>
+            Sets the HTML to display in the browser.
+            </summary>
+            <param name="html"> The HTML to apply to the browser. </param>
         </member>
         <member name="M:TestR.Web.Browser.WaitForComplete(System.Int32)">
             <inheritdoc />
