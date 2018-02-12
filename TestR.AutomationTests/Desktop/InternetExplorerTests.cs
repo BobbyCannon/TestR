@@ -4,8 +4,10 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Management.Automation;
+using System.Text;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TestR.Desktop.Elements;
 using TestR.PowerShell;
 using TestR.Web;
 using TestR.Web.Browsers;
@@ -19,6 +21,37 @@ namespace TestR.AutomationTests.Desktop
 	public class InternetExplorerTests : TestCmdlet
 	{
 		#region Methods
+
+		[TestMethod]
+		public void Scrolling()
+		{
+			using (var browser = InternetExplorer.AttachOrCreate())
+			{
+				var builder = new StringBuilder();
+
+				for (var i = 0; i < 1000; i++)
+				{
+					builder.AppendLine($"Item {i}<br />");
+				}
+
+				browser.SetHtml(builder.ToString());
+
+				for (var i = 0; i <= 75; i++)
+				{
+					browser.Scroll(0, i);
+					Thread.Sleep(10);
+
+					Assert.AreEqual(0, browser.HorizontalScrollPercent);
+					Assert.IsTrue(browser.VerticalScrollPercent >= i - 1 && browser.VerticalScrollPercent <= i + 1);
+				}
+
+				builder.AppendLine("aoeu");
+				browser.SetHtml(builder.ToString());
+				browser.Scroll(0, 100);
+				Assert.AreEqual(0, browser.HorizontalScrollPercent);
+				Assert.AreEqual(100, browser.VerticalScrollPercent);
+			}
+		}
 
 		[TestMethod]
 		public void AttachOneBrowser()

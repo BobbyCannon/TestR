@@ -3,10 +3,13 @@
 using System;
 using System.Linq;
 using System.Management.Automation;
+using System.Security.Cryptography;
+using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop;
 using TestR.Native;
 using TestR.PowerShell;
+using TestR.UnitTests;
 using TestR.Web;
 using TestR.Web.Elements;
 
@@ -581,7 +584,6 @@ namespace TestR.AutomationTests.Web
 			ForEachBrowser(browser =>
 			{
 				var guid = Guid.NewGuid().ToString();
-				browser.NavigateTo(TestSite);
 				browser.NavigateTo(TestSite + "/main.html");
 
 				var button = browser.FirstOrDefault<Button>("button");
@@ -589,28 +591,32 @@ namespace TestR.AutomationTests.Web
 				var actual = browser.GetHtml();
 				Assert.IsFalse(actual.Contains(guid));
 
-				var expected = $"<html><head><link href=\"https://epiccoders.com/Content/EpicCoders.css\" rel=\"stylesheet\"></head><body>{guid}</body></html>";
+				var expected = $"<html><head><link href=\"https://testr.local/Content/testr.css\" rel=\"stylesheet\"></head><body>{guid}</body></html>";
 				browser.SetHtml(expected);
 				actual = browser.GetHtml();
 				actual.Dump();
 				Assert.AreEqual(expected, actual);
 			});
 		}
-		
+
 		[TestMethod]
-		public void GetAndSetHtmlOnAboutBlankPange()
+		public void GetAndSetHtmlOnAboutBlankPage()
 		{
 			ForEachBrowser(browser =>
 			{
-				var guid = Guid.NewGuid().ToString();
+				browser.NavigateTo("about:blank");
 				var actual = browser.GetHtml();
 				Assert.IsTrue(actual == "<html id=\"testR-1\"><head id=\"testR-2\"></head><body id=\"testR-3\"></body></html>" || actual == "");
 
-				var expected = $"<html><head><link href=\"https://epiccoders.com/Content/EpicCoders.css\" rel=\"stylesheet\"></head><body>{guid}</body></html>";
+				var guid = Guid.NewGuid().ToString();
+				var expected = $"<html><head><link href=\"https://testr.local/Content/testr.css\" rel=\"stylesheet\"></head><body>{guid}</body></html>";
 				browser.SetHtml(expected);
-				actual = browser.GetHtml();
-				actual.Dump();
-				Assert.AreEqual(expected, actual);
+				Assert.AreEqual(expected, browser.GetHtml());
+				
+				guid = Guid.NewGuid().ToString();
+				expected = $"<html><head></head><body>{guid}</body></html>";
+				browser.SetHtml(expected);
+				Assert.AreEqual(expected, browser.GetHtml());
 			});
 		}
 
@@ -1114,6 +1120,69 @@ namespace TestR.AutomationTests.Web
 			});
 		}
 
+		[TestMethod]
+		public void SetThenGetHtmlOnAboutBlankPage()
+		{
+			ForEachBrowser(browser =>
+			{
+				browser.SetHtml("aoeu");
+				Assert.IsTrue(browser.GetHtml().Contains("aoeu"));
+
+				var guid = Guid.NewGuid().ToString();
+				guid.Dump();
+				var body = $"Special characters like \", ', \0, \", \n, \r, \r\n, <, >, should not break html... however &amp; must be already encoded! \n{guid}";
+				var input = $"<html><head><link href=\"https://testr.local/Content/testr.css\" rel=\"stylesheet\"></head><body>{body}</body></html>";
+				browser.SetHtml(input);
+				var actual = browser.GetHtml();
+				actual.Dump();
+				Assert.IsTrue(actual.Contains(guid));
+			});
+		}
+		
+		[TestMethod]
+		public void SetThenGetHtmlOnAboutBlankPageWithAllCharacters()
+		{
+			ForEachBrowser(browser =>
+			{
+				var buffer = new byte[255];
+				for (var i = 0; i < buffer.Length; i++)
+				{
+					buffer[i] = (byte) i;
+				}
+
+				var data = Encoding.UTF8.GetString(buffer).Replace("&", "&amp;");
+				data.ToLiteral().Dump();
+				var guid = Guid.NewGuid().ToString();
+				guid.Dump();
+				var body = $"Special characters like \", ', \0, \", \n, \r, \r\n, <, >, should not break html... however &amp; must be already encoded! \n{data}\n{guid}";
+				var input = $"<html><head><link href=\"https://testr.local/Content/testr.css\" rel=\"stylesheet\"></head><body>{body}</body></html>";
+				browser.SetHtml(input);
+				var actual = browser.GetHtml();
+				actual.Dump();
+				Assert.IsTrue(actual.Contains(guid));
+			});
+		}
+		
+		[TestMethod]
+		public void SetThenGetHtmlOnAboutBlankPageWithRandomCharacters()
+		{
+			ForEachBrowser(browser =>
+			{
+				var buffer = new byte[32];
+				RandomNumberGenerator.Create().GetBytes(buffer);
+				var data = Encoding.UTF8.GetString(buffer);
+				data.ToLiteral().Dump();
+				var guid = Guid.NewGuid().ToString();
+				guid.Dump();
+				var body = $"Special characters like \", ', \0, \", \n, \r, \r\n, <, >, should not break html... however &amp; must be already encoded! \n{data}\n{guid}";
+				var input = $"<html><head><link href=\"https://testr.local/Content/testr.css\" rel=\"stylesheet\"></head><body>{body}</body></html>";
+				browser.SetHtml(input);
+				var actual = browser.GetHtml();
+				actual.Dump();
+				Assert.IsTrue(actual.Contains(guid));
+			});
+		}
+		
 		[TestMethod]
 		public void SetValueWithNewLine()
 		{

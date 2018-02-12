@@ -106,6 +106,7 @@
     <Content Include="..\TestR\TestR.js">
       <Link>Scripts\TestR.js</Link>
     </Content>
+    <Content Include="Content\TestR.css" />
     <Content Include="TestR.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

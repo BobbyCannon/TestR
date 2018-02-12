@@ -9,7 +9,7 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents a edit element.
 	/// </summary>
-	public class Pane : DesktopElement
+	public class Pane : ScrollableDesktopElement
 	{
 		#region Constructors
 

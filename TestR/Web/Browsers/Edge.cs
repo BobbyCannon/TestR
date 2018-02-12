@@ -188,6 +188,12 @@ namespace TestR.Web.Browsers
 			return ExecuteScript("window.location.href");
 		}
 
+		/// <inheritdoc />
+		protected override IScrollableElement GetScrollableElement()
+		{
+			return null;
+		}
+
 		private static void EndSession(string sessionId)
 		{
 			Request("DELETE", "http://localhost:17556/session/" + sessionId, null);

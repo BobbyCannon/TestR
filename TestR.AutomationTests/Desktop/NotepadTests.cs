@@ -31,7 +31,7 @@ namespace TestR.AutomationTests.Desktop
 			{
 				application.AutoClose = true;
 				var window = application.Children.First();
-				var document = (Edit) window.Children.First("15");
+				var document = (Edit) window.First("15");
 				var expected = "Hello World : Sub Collection";
 				document.SetText(expected);
 				var actual = document.Text;
@@ -107,7 +107,6 @@ namespace TestR.AutomationTests.Desktop
 				Assert.IsNotNull(application1);
 				application1.Resize(500, 500);
 				application1.MoveWindow(100, 100);
-				application1.Timeout = TimeSpan.Zero;
 				
 				var window = application1.First<Window>();
 				Assert.IsFalse(window.IsMinimized);
@@ -117,7 +116,6 @@ namespace TestR.AutomationTests.Desktop
 				using (var application2 = Application.Attach(ApplicationPath))
 				{
 					application2.AutoClose = true;
-					application2.Timeout = TimeSpan.Zero;
 					Assert.IsNotNull(application2);
 					Assert.AreEqual(application1.Handle, application2.Handle);
 					Assert.IsTrue(application2.First<Window>().IsMinimized);
@@ -209,8 +207,8 @@ namespace TestR.AutomationTests.Desktop
 			{
 				application.AutoClose = true;
 				application.BringToFront();
-				var window = application.Descendants<Window>().First();
-				var menuBar = window.Descendants<MenuBar>().First();
+				var window = application.FirstOrDefault<Window>();
+				var menuBar = window.FirstOrDefault<MenuBar>();
 				var menu = menuBar.First<MenuItem>(x => x.Name == "File");
 				Assert.IsNotNull(menu);
 				Assert.IsTrue(menu.SupportsExpandingCollapsing);

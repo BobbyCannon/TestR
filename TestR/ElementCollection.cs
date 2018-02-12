@@ -58,6 +58,33 @@ namespace TestR
 		}
 
 		/// <summary>
+		/// First a collection of element of a specific type from the collection using the provided condition.
+		/// </summary>
+		/// <param name="condition"> A function to test each element for a condition. </param>
+		/// <returns> The child elements for the condition. </returns>
+		public bool Any<T>(Func<T, bool> condition) where T : Element
+		{
+			var children = OfType<T>().ToList();
+			var response = children.FirstOrDefault(condition);
+
+			if (response != null)
+			{
+				return true;
+			}
+
+			foreach (var child in this)
+			{
+				response = child.FirstOrDefault(condition, true, false);
+				if (response != null)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
 		/// Check to see if this collection contains an element.
 		/// </summary>
 		/// <param name="id"> The id to search for. </param>

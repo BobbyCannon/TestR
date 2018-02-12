@@ -9,7 +9,7 @@ namespace TestR.Desktop.Elements
 	/// <summary>
 	/// Represents a document element.
 	/// </summary>
-	public class Document : DesktopElement
+	public class Document : ScrollableDesktopElement
 	{
 		#region Constructors
 

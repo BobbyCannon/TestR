@@ -105,6 +105,8 @@ namespace TestR.AutomationTests.Desktop
 			using (var application = GetApplication())
 			{
 				var window = application.First<Window>(x => x.Id == "FormMain");
+				window.Refresh();
+
 				var checkboxes = window.Descendants<CheckBox>();
 				// 4 outside list, 5 inside list
 				Assert.AreEqual(9, checkboxes.Count());

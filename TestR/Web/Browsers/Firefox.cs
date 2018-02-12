@@ -176,7 +176,7 @@ namespace TestR.Web.Browsers
 
 			browser.Connect();
 			browser.NavigateTo("about:blank");
-			browser.Refresh();
+			//browser.Refresh();
 			return browser;
 		}
 
@@ -251,6 +251,12 @@ namespace TestR.Web.Browsers
 		{
 			//LogManager.Write("First browser's URI.", LogLevel.Verbose);
 			return ExecuteJavaScript("window.location.href");
+		}
+
+		/// <inheritdoc />
+		protected override IScrollableElement GetScrollableElement()
+		{
+			return null;
 		}
 
 		/// <summary>

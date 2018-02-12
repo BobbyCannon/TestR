@@ -271,12 +271,18 @@ namespace TestR.Desktop
 		}
 
 		/// <inheritdoc />
-		public override ElementHost Refresh()
+		public override ElementHost Refresh<T>(Func<T, bool> condition)
 		{
 			Children.Clear();
 			var test = GetChildren(this).Select(x => Create(x, Application, this)).ToList();
 			Children.AddRange(test);
-			Children.ForEach(x => x.Refresh());
+
+			if (Children.Any(condition))
+			{
+				return this;
+			}
+
+			Children.ForEach(x => x.Refresh(condition));
 			return this;
 		}
 

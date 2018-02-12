@@ -37,8 +37,8 @@ namespace TestR.AutomationTests.Desktop
 			using (var application = Application.AttachOrCreate(ApplicationPath))
 			{
 				application.AutoClose = true;
-				var window = application.Children.First();
-				var document = (Edit) window.Children.First("15");
+				var window = application.First<Window>();
+				var document = (Edit) window.First("15");
 				document.TypeText("123\x08");
 				var actual = document.Text;
 				actual.ToLiteral().Dump();
@@ -77,7 +77,7 @@ namespace TestR.AutomationTests.Desktop
 			{
 				application.AutoClose = true;
 				var window = application.Children.First();
-				var document = (Edit) window.Children.First("15");
+				var document = (Edit) window.First("15");
 				document.TypeText("%(fx)");
 
 				var result = application.Wait(x => !application.IsRunning);
@@ -92,7 +92,7 @@ namespace TestR.AutomationTests.Desktop
 			{
 				application.AutoClose = true;
 				var window = application.Children.First();
-				var document = (Edit) window.Children.First("15");
+				var document = (Edit) window.First("15");
 				document.TypeText("%fx");
 
 				var result = application.Wait(x => !application.IsRunning);
@@ -107,7 +107,7 @@ namespace TestR.AutomationTests.Desktop
 			{
 				application.AutoClose = true;
 				var window = application.Children.First();
-				var document = (Edit) window.Children.First("15");
+				var document = (Edit) window.First("15");
 				document.TypeText("+(abc)");
 				var actual = document.Text;
 				actual.ToLiteral().Dump();
@@ -123,7 +123,7 @@ namespace TestR.AutomationTests.Desktop
 			{
 				application.AutoClose = true;
 				var window = application.Children.First();
-				var document = (Edit) window.Children.First("15");
+				var document = (Edit) window.First("15");
 				document.TypeText("+abc");
 				var actual = document.Text;
 				actual.ToLiteral().Dump();
@@ -139,7 +139,7 @@ namespace TestR.AutomationTests.Desktop
 			{
 				application.AutoClose = true;
 				var window = application.Children.First();
-				var document = (Edit) window.Children.First("15");
+				var document = (Edit) window.First("15");
 				var expected = AllCharacters;
 				document.SetText(expected);
 				var actual = document.Text;
@@ -156,7 +156,7 @@ namespace TestR.AutomationTests.Desktop
 			{
 				application.AutoClose = true;
 				var window = application.Children.First();
-				var document = (Edit) window.Children.First("15");
+				var document = (Edit) window.First("15");
 				document.TypeText("{A 1}{B 2}{C 3}");
 				var actual = document.Text;
 				actual.ToLiteral().Dump();
@@ -172,7 +172,7 @@ namespace TestR.AutomationTests.Desktop
 			{
 				application.AutoClose = true;
 				var window = application.Children.First();
-				var document = (Edit) window.Children.First("15");
+				var document = (Edit) window.First("15");
 				var formatedAllCharacters = Keyboard.FormatTextForTypeText(AllCharacters);
 				document.TypeText(formatedAllCharacters);
 				var actual = document.Text;

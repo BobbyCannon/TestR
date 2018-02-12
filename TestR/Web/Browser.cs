@@ -18,7 +18,7 @@ namespace TestR.Web
 	/// <summary>
 	/// This is the base class for browsers.
 	/// </summary>
-	public abstract class Browser : ElementHost
+	public abstract class Browser : ElementHost, IScrollableElement
 	{
 		#region Constants
 
@@ -99,10 +99,16 @@ namespace TestR.Web
 		/// <inheritdoc />
 		public override Element FocusedElement => ActiveElement;
 
+		/// <inheritdoc />
+		public double HorizontalScrollPercent => (ScrollableElement ?? (ScrollableElement = GetScrollableElement()))?.HorizontalScrollPercent ?? 0;
+
 		/// <summary>
 		/// Gets the ID of the browser.
 		/// </summary>
 		public override string Id => (Application?.Handle.ToInt32() ?? 0).ToString();
+
+		/// <inheritdoc />
+		public bool IsScrollable => (ScrollableElement ?? (ScrollableElement = GetScrollableElement()))?.IsScrollable ?? false;
 
 		/// <summary>
 		/// Gets a list of JavaScript libraries that were detected on the page.
@@ -128,10 +134,18 @@ namespace TestR.Web
 		/// </summary>
 		public string Uri => GetBrowserUri();
 
+		/// <inheritdoc />
+		public double VerticalScrollPercent => (ScrollableElement ?? (ScrollableElement = GetScrollableElement()))?.VerticalScrollPercent ?? 0;
+
 		/// <summary>
 		/// The main windows for the browser.
 		/// </summary>
 		public Window Window { get; }
+
+		/// <summary>
+		/// Gets the scrollable element to
+		/// </summary>
+		protected IScrollableElement ScrollableElement { get; set; }
 
 		#endregion
 
@@ -429,7 +443,7 @@ namespace TestR.Web
 		}
 
 		/// <inheritdoc />
-		public override ElementHost Refresh()
+		public override ElementHost Refresh<T>(Func<T, bool> condition)
 		{
 			WaitForComplete();
 			InjectTestScript();
@@ -470,12 +484,34 @@ namespace TestR.Web
 		}
 
 		/// <summary>
+		/// Scroll the browser window.
+		/// </summary>
+		/// <param name="horizontalPercent"> The percentage to scroll horizontally. </param>
+		/// <param name="verticalPercent"> The percentage to scroll vertically. </param>
+		public void Scroll(double horizontalPercent, double verticalPercent)
+		{
+			try
+			{
+				var e = ScrollableElement ?? (ScrollableElement = GetScrollableElement());
+				e?.Scroll(horizontalPercent, verticalPercent);
+			}
+			catch (Exception)
+			{
+				Application.Children.Clear();
+
+				var e = ScrollableElement = GetScrollableElement();
+				e?.Scroll(horizontalPercent, verticalPercent);
+			}
+		}
+
+		/// <summary>
 		/// Sets the HTML to display in the browser.
 		/// </summary>
 		/// <param name="html"> The HTML to apply to the browser. </param>
 		public void SetHtml(string html)
 		{
-			ExecuteScript($"document.open(); document.write('{html}'); document.close();");
+			var innerHtml = ReplaceInReverse(html, new Dictionary<char, string> { { '\'', "\\'" }, { '\n', "\\\n" }, { '\r', "\\\r" }, { '\0', "\\0" } });
+			ExecuteScript($"document.open(); document.write('{innerHtml}'); document.close();", false);
 		}
 
 		/// <inheritdoc />
@@ -562,6 +598,12 @@ namespace TestR.Web
 		protected abstract string GetBrowserUri();
 
 		/// <summary>
+		/// Gets the scrollable element to scrole browser content.
+		/// </summary>
+		/// <returns> </returns>
+		protected abstract IScrollableElement GetScrollableElement();
+
+		/// <summary>
 		/// Injects the test script into the browser.
 		/// </summary>
 		/// <param name="count"> The count of how many times this method has been called. </param>
@@ -579,6 +621,65 @@ namespace TestR.Web
 			{
 				InjectTestScript(count + 1);
 			}
+		}
+
+		/// <summary>
+		/// Replaces a character with a string. Does not replace if the string replacement matches at starting character.
+		/// </summary>
+		/// <param name="input"> The string to parse. </param>
+		/// <param name="replacements"> The collection of trigger characters and replacements. </param>
+		/// <returns> The updated string. </returns>
+		protected string Replace(string input, Dictionary<char, string> replacements)
+		{
+			foreach (var r in replacements)
+			{
+				for (var i = 0; i < input.Length; i++)
+				{
+					if (input[i] != r.Key)
+					{
+						continue;
+					}
+
+					if (i + r.Value.Length < input.Length)
+					{
+						if (input.Substring(i, r.Value.Length) != r.Value)
+						{
+							input = input.Remove(i, 1).Insert(i, r.Value);
+						}
+
+						i += r.Value.Length - 1;
+					}
+				}
+			}
+
+			return input;
+		}
+
+		/// <summary>
+		/// Replaces a character with a string processing input in reverse. Does not replace if the string replacement matches at starting character.
+		/// </summary>
+		/// <param name="input"> The string to parse. </param>
+		/// <param name="replacements"> The collection of trigger characters and replacements. </param>
+		/// <returns> The updated string. </returns>
+		protected string ReplaceInReverse(string input, Dictionary<char, string> replacements)
+		{
+			foreach (var r in replacements)
+			{
+				for (var i = input.Length - 1; i > 0; i--)
+				{
+					if (input[i] != r.Key)
+					{
+						continue;
+					}
+
+					if (i - r.Value.Length >= 0 && input.Substring(i - r.Value.Length, r.Value.Length) != r.Value)
+					{
+						input = input.Remove(i, 1).Insert(i, r.Value);
+					}
+				}
+			}
+
+			return input;
 		}
 
 		internal ICollection<WebElement> GetElements(WebElement parent = null)

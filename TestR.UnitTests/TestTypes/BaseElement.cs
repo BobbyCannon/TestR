@@ -75,7 +75,7 @@ namespace TestR.UnitTests.TestTypes
 			throw new NotImplementedException();
 		}
 
-		public override ElementHost Refresh()
+		public override ElementHost Refresh<T>(Func<T, bool> condition)
 		{
 			return this;
 		}

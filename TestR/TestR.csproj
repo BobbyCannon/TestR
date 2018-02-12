@@ -109,6 +109,9 @@
     <Compile Include="Desktop\Elements\Tree.cs" />
     <Compile Include="Desktop\Elements\TreeItem.cs" />
     <Compile Include="Desktop\Elements\Window.cs" />
+    <Compile Include="Desktop\Pattern\ScrollPattern.cs" />
+    <Compile Include="Desktop\ScrollableDesktopElement.cs" />
+    <Compile Include="IScrollableElement.cs" />
     <Compile Include="Native\KeyConverter.cs" />
     <Compile Include="Native\ManagementObjectDisposer.cs" />
     <Compile Include="Desktop\Pattern\ExpandCollapsePattern.cs" />

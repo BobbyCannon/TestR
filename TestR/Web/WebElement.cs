@@ -1,5 +1,6 @@
 ﻿#region References
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -12,6 +13,7 @@ using TestR.Web.Elements;
 using Font = TestR.Web.Elements.Font;
 using Image = TestR.Web.Elements.Image;
 using Keyboard = TestR.Native.Keyboard;
+using Object = TestR.Web.Elements.Object;
 
 #endregion
 
@@ -474,7 +476,7 @@ namespace TestR.Web
 		}
 
 		/// <inheritdoc />
-		public override ElementHost Refresh()
+		public override ElementHost Refresh<T>(Func<T, bool> condition)
 		{
 			Children.Clear();
 			Children.AddRange(Browser.GetElements(this));

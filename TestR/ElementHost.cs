@@ -284,7 +284,7 @@ namespace TestR
 						return true;
 					}
 
-					Refresh();
+					Refresh(condition);
 					return false;
 				}
 				catch (Exception)
@@ -316,7 +316,7 @@ namespace TestR
 						return true;
 					}
 
-					Refresh();
+					Refresh<T>(y => true);
 					return false;
 				}
 				catch (Exception)
@@ -341,7 +341,15 @@ namespace TestR
 		/// <summary>
 		/// Refresh the children for this element host.
 		/// </summary>
-		public abstract ElementHost Refresh();
+		public ElementHost Refresh()
+		{
+			return Refresh<Element>(x => false);
+		}
+
+		/// <summary>
+		/// Refresh the children for this element host.
+		/// </summary>
+		public abstract ElementHost Refresh<T>(Func<T, bool> condition) where T : Element;
 
 		/// <summary>
 		/// Removes an element from a collection.

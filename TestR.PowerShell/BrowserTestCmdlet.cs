@@ -56,6 +56,7 @@ namespace TestR.PowerShell
 					}
 
 					x.BringToFront();
+					x.NavigateTo("about:blank");
 					action(x);
 				}
 				catch (Exception ex)

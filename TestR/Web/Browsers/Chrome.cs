@@ -14,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using TestR.Desktop.Elements;
 
 #endregion
 
@@ -48,7 +49,7 @@ namespace TestR.Web.Browsers
 		#endregion
 
 		#region Constructors
-		
+
 		/// <summary>
 		/// Initializes a new instance of the Chrome class.
 		/// </summary>
@@ -168,7 +169,7 @@ namespace TestR.Web.Browsers
 
 			browser.Connect();
 			browser.NavigateTo("about:blank");
-			browser.Refresh();
+			//browser.Refresh();
 			return browser;
 		}
 
@@ -282,6 +283,12 @@ namespace TestR.Web.Browsers
 			return document.result.root.documentURL;
 		}
 
+		/// <inheritdoc />
+		protected override IScrollableElement GetScrollableElement()
+		{
+			return Application.FirstOrDefault<Document>(x => x.IsScrollable);
+		}
+
 		/// <summary>
 		/// Connect to the Chrome browser debugger port.
 		/// </summary>
@@ -324,28 +331,28 @@ namespace TestR.Web.Browsers
 			}
 
 			Task.Run(() =>
+			{
+				while (_socket != null)
 				{
-					while (_socket != null)
+					if (!ReadResponseAsync())
 					{
-						if (!ReadResponseAsync())
+						if (_socket == null)
 						{
-							if (_socket == null)
-							{
-								break;
-							}
-
-							_socket?.Dispose();
-							_socket = new ClientWebSocket();
-
-							if (!_socket.ConnectAsync(sessionWsEndpoint, CancellationToken.None).Wait(Application.Timeout))
-							{
-								throw new TestRException("Failed to connect to the server.");
-							}
+							break;
 						}
 
-						Thread.Sleep(1);
+						_socket?.Dispose();
+						_socket = new ClientWebSocket();
+
+						if (!_socket.ConnectAsync(sessionWsEndpoint, CancellationToken.None).Wait(Application.Timeout))
+						{
+							throw new TestRException("Failed to connect to the server.");
+						}
 					}
-				});
+
+					Thread.Sleep(1);
+				}
+			});
 		}
 
 		private List<RemoteSessionsResponse> GetAvailableSessions()

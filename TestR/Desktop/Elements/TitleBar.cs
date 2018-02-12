@@ -25,17 +25,17 @@ namespace TestR.Desktop.Elements
 		/// <summary>
 		/// Gets the close button.
 		/// </summary>
-		public Button CloseButton => Children.First<Button>(x => x.Name == "Close");
+		public Button CloseButton => First<Button>(x => x.Name == "Close");
 
 		/// <summary>
 		/// Gets the maximize button.
 		/// </summary>
-		public Button MaximizeButton => Children.First<Button>(x => x.Name == "Maximize");
+		public Button MaximizeButton => First<Button>(x => x.Name == "Maximize");
 
 		/// <summary>
 		/// Gets the maximize button.
 		/// </summary>
-		public Button MinimizeButton => Children.First<Button>(x => x.Name == "Minimize");
+		public Button MinimizeButton => First<Button>(x => x.Name == "Minimize");
 
 		#endregion
 	}

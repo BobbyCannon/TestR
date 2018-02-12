@@ -8,6 +8,7 @@ using System.Threading;
 using System.Web;
 using mshtml;
 using SHDocVw;
+using TestR.Desktop.Elements;
 using TestR.Native;
 
 #endregion
@@ -32,6 +33,8 @@ namespace TestR.Web.Browsers
 
 		private SHDocVw.InternetExplorer _browser;
 
+		private Pane _scrollablePane;
+
 		#endregion
 
 		#region Constructors
@@ -40,6 +43,11 @@ namespace TestR.Web.Browsers
 			: base(Application.Attach(ProcessService.Where(BrowserName).First(x => x.MainWindowHandle == new IntPtr(browser.HWND)), false, bringToFront), windowsToIgnore)
 		{
 			_browser = browser;
+
+			if (Thread.CurrentThread.GetApartmentState() != ApartmentState.STA)
+			{
+				throw new InvalidOperationException("TestR browser automation must be executed on an STA thread.");
+			}
 		}
 
 		#endregion
@@ -140,7 +148,7 @@ namespace TestR.Web.Browsers
 			}
 
 			browser.NavigateTo("about:blank");
-			browser.Refresh();
+			//browser.Refresh();
 			return browser;
 		}
 
@@ -266,41 +274,40 @@ namespace TestR.Web.Browsers
 		/// <returns> The response from the execution. </returns>
 		protected override string ExecuteJavaScript(string script, bool expectResponse = true)
 		{
-			//LogManager.Write("Request: " + script, LogLevel.Verbose);
-
 			// If the URL is empty and is not initialized means browser is no page is loaded.
-			if (!(_browser.LocationURL.StartsWith("http", StringComparison.OrdinalIgnoreCase) || _browser.LocationURL.StartsWith("about:", StringComparison.OrdinalIgnoreCase)) 
-				|| _browser.ReadyState == tagREADYSTATE.READYSTATE_UNINITIALIZED)
+			if (_browser.ReadyState == tagREADYSTATE.READYSTATE_UNINITIALIZED)
 			{
 				return string.Empty;
 			}
 
-			var document = _browser.Document as IHTMLDocument2;
-			if (document == null)
+			if (!(_browser.Document is IHTMLDocument2 document))
 			{
 				throw new TestRException("Failed to run script because no document is loaded.");
 			}
 
 			try
 			{
+				var parent = document.Script as IHTMLWindow2 ?? document.parentWindow;
+
 				// See if we are injecting the test script.
 				if (script.Contains("var TestR=TestR") || script.Contains("var TestR = TestR"))
 				{
-					document.parentWindow.execScript(script, "javascript");
+					parent.execScript(script, "javascript");
 					return "Injected TestR Script";
 				}
 
-				script = script
-					//.Replace("\r", "\\r")
-					//.Replace("\n", "\\n")
-					//.Replace("\'", "\\\'")
-					//.Replace("\"", "\\\"")
-					.Replace("\\", "\\\\");
+				if (!expectResponse)
+				{
+					parent.execScript(script, "javascript");
+					return string.Empty;
+				}
+
+				script = Replace(script, new Dictionary<char, string> { { '\\', "\\\\" } });
 
 				// Run the script using TestR.
 				script = HttpUtility.HtmlEncode(script);
 				var wrappedScript = $"TestR.runScript('{script}');";
-				document.parentWindow.execScript(wrappedScript, "javascript");
+				parent.execScript(wrappedScript, "javascript");
 
 				return GetJavascriptResult((IHTMLDocument3) document);
 			}
@@ -322,6 +329,12 @@ namespace TestR.Web.Browsers
 		protected override string GetBrowserUri()
 		{
 			return _browser.LocationURL;
+		}
+
+		/// <inheritdoc />
+		protected override IScrollableElement GetScrollableElement()
+		{
+			return Application.FirstOrDefault<Pane>(x => x.IsScrollable);
 		}
 
 		/// <summary>

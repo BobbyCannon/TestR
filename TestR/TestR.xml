@@ -192,7 +192,7 @@
             <param name="width"> The width of the window. </param>
             <param name="height"> The height of the window. </param>
         </member>
-        <member name="M:TestR.Application.Refresh">
+        <member name="M:TestR.Application.Refresh``1(System.Func{``0,System.Boolean})">
             <inheritdoc />
         </member>
         <member name="M:TestR.Application.Resize(System.Int32,System.Int32)">
@@ -340,7 +340,7 @@
         <member name="M:TestR.Desktop.DesktopElement.MoveMouseTo(System.Int32,System.Int32)">
             <inheritdoc />
         </member>
-        <member name="M:TestR.Desktop.DesktopElement.Refresh">
+        <member name="M:TestR.Desktop.DesktopElement.Refresh``1(System.Func{``0,System.Boolean})">
             <inheritdoc />
         </member>
         <member name="M:TestR.Desktop.DesktopElement.RightClick(System.Int32,System.Int32)">
@@ -791,6 +791,35 @@
             Waits for the window to no longer be busy.
             </summary>
         </member>
+        <member name="T:TestR.Desktop.Pattern.ScrollPattern">
+            <summary>
+            Represents the Windows scroll pattern.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.Pattern.ScrollPattern.HorizontalScrollPercent">
+            <summary>
+            Gets the scroll percentage for the horizontal bar.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.Pattern.ScrollPattern.VerticalScrollPercent">
+            <summary>
+            Gets the scroll percentage for the vertical bar.
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.Pattern.ScrollPattern.Create(TestR.Desktop.DesktopElement)">
+            <summary>
+            Create a new pattern for the provided element.
+            </summary>
+            <param name="element"> The element that supports the pattern. </param>
+            <returns> The pattern if we could find one else null will be returned. </returns>
+        </member>
+        <member name="M:TestR.Desktop.Pattern.ScrollPattern.ScrollPercent(System.Double,System.Double)">
+            <summary>
+            Scroll the desktop element.
+            </summary>
+            <param name="horizontalPercent"> The percentage to scroll horizontally. </param>
+            <param name="verticalPercent"> The percentage to scroll vertically. </param>
+        </member>
         <member name="T:TestR.Desktop.Pattern.ExpandCollapsePattern">
             <summary>
             Represents the Windows expand / collapse pattern.
@@ -948,6 +977,50 @@
             Set the value of the pattern.
             </summary>
             <param name="value"> The value to set. </param>
+        </member>
+        <member name="T:TestR.Desktop.ScrollableDesktopElement">
+            <summary>
+            Represents a scrollable desktop application.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.ScrollableDesktopElement.HorizontalScrollPercent">
+            <inheritdoc />
+        </member>
+        <member name="P:TestR.Desktop.ScrollableDesktopElement.IsScrollable">
+            <inheritdoc />
+        </member>
+        <member name="P:TestR.Desktop.ScrollableDesktopElement.VerticalScrollPercent">
+            <inheritdoc />
+        </member>
+        <member name="M:TestR.Desktop.ScrollableDesktopElement.Scroll(System.Double,System.Double)">
+            <inheritdoc />
+        </member>
+        <member name="T:TestR.IScrollableElement">
+            <summary>
+            Represents a scrollable element.
+            </summary>
+        </member>
+        <member name="P:TestR.IScrollableElement.HorizontalScrollPercent">
+            <summary>
+            Gets the scroll percentage for the horizontal bar.
+            </summary>
+        </member>
+        <member name="P:TestR.IScrollableElement.IsScrollable">
+            <summary>
+            Gets a flag indicating the element is scrollable.
+            </summary>
+        </member>
+        <member name="P:TestR.IScrollableElement.VerticalScrollPercent">
+            <summary>
+            Gets the scroll percentage for the vertical bar.
+            </summary>
+        </member>
+        <member name="M:TestR.IScrollableElement.Scroll(System.Double,System.Double)">
+            <summary>
+            Scroll the browser window.
+            </summary>
+            <param name="horizontalPercent"> The percentage to scroll horizontally. </param>
+            <param name="verticalPercent"> The percentage to scroll vertically. </param>
         </member>
         <member name="T:TestR.Native.KeyConverter">
             <summary>
@@ -1864,6 +1937,13 @@
             read-only.
             </exception>
         </member>
+        <member name="M:TestR.ElementCollection.Any``1(System.Func{``0,System.Boolean})">
+            <summary>
+            First a collection of element of a specific type from the collection using the provided condition.
+            </summary>
+            <param name="condition"> A function to test each element for a condition. </param>
+            <returns> The child elements for the condition. </returns>
+        </member>
         <member name="M:TestR.ElementCollection.Contains(System.String)">
             <summary>
             Check to see if this collection contains an element.
@@ -2188,6 +2268,11 @@
             Refresh the children for this element host.
             </summary>
         </member>
+        <member name="M:TestR.ElementHost.Refresh``1(System.Func{``0,System.Boolean})">
+            <summary>
+            Refresh the children for this element host.
+            </summary>
+        </member>
         <member name="M:TestR.ElementHost.Remove``1(``0,System.Boolean)">
             <summary>
             Removes an element from a collection.
@@ -2379,10 +2464,16 @@
         <member name="P:TestR.Web.Browser.FocusedElement">
             <inheritdoc />
         </member>
+        <member name="P:TestR.Web.Browser.HorizontalScrollPercent">
+            <inheritdoc />
+        </member>
         <member name="P:TestR.Web.Browser.Id">
             <summary>
             Gets the ID of the browser.
             </summary>
+        </member>
+        <member name="P:TestR.Web.Browser.IsScrollable">
+            <inheritdoc />
         </member>
         <member name="P:TestR.Web.Browser.JavascriptLibraries">
             <summary>
@@ -2404,9 +2495,17 @@
             Gets the URI of the current page.
             </summary>
         </member>
+        <member name="P:TestR.Web.Browser.VerticalScrollPercent">
+            <inheritdoc />
+        </member>
         <member name="P:TestR.Web.Browser.Window">
             <summary>
             The main windows for the browser.
+            </summary>
+        </member>
+        <member name="P:TestR.Web.Browser.ScrollableElement">
+            <summary>
+            Gets the scrollable element to
             </summary>
         </member>
         <member name="M:TestR.Web.Browser.AttachBrowsers(TestR.Web.BrowserType,System.Boolean)">
@@ -2501,7 +2600,7 @@
             <param name="uri"> The URI to navigate to. </param>
             <param name="expectedUri"> The expected URI to navigate to. </param>
         </member>
-        <member name="M:TestR.Web.Browser.Refresh">
+        <member name="M:TestR.Web.Browser.Refresh``1(System.Func{``0,System.Boolean})">
             <inheritdoc />
         </member>
         <member name="M:TestR.Web.Browser.RemoveElement(TestR.Web.WebElement)">
@@ -2523,6 +2622,13 @@
             </summary>
             <param name="width"> The width to set. </param>
             <param name="height"> The height to set. </param>
+        </member>
+        <member name="M:TestR.Web.Browser.Scroll(System.Double,System.Double)">
+            <summary>
+            Scroll the browser window.
+            </summary>
+            <param name="horizontalPercent"> The percentage to scroll horizontally. </param>
+            <param name="verticalPercent"> The percentage to scroll vertically. </param>
         </member>
         <member name="M:TestR.Web.Browser.SetHtml(System.String)">
             <summary>
@@ -2566,11 +2672,33 @@
             </summary>
             <returns> The current URI that was read from the browser. </returns>
         </member>
+        <member name="M:TestR.Web.Browser.GetScrollableElement">
+            <summary>
+            Gets the scrollable element to scrole browser content.
+            </summary>
+            <returns> </returns>
+        </member>
         <member name="M:TestR.Web.Browser.InjectTestScript(System.Int32)">
             <summary>
             Injects the test script into the browser.
             </summary>
             <param name="count"> The count of how many times this method has been called. </param>
+        </member>
+        <member name="M:TestR.Web.Browser.Replace(System.String,System.Collections.Generic.Dictionary{System.Char,System.String})">
+            <summary>
+            Replaces a character with a string. Does not replace if the string replacement matches at starting character.
+            </summary>
+            <param name="input"> The string to parse. </param>
+            <param name="replacements"> The collection of trigger characters and replacements. </param>
+            <returns> The updated string. </returns>
+        </member>
+        <member name="M:TestR.Web.Browser.ReplaceInReverse(System.String,System.Collections.Generic.Dictionary{System.Char,System.String})">
+            <summary>
+            Replaces a character with a string processing input in reverse. Does not replace if the string replacement matches at starting character.
+            </summary>
+            <param name="input"> The string to parse. </param>
+            <param name="replacements"> The collection of trigger characters and replacements. </param>
+            <returns> The updated string. </returns>
         </member>
         <member name="M:TestR.Web.Browser.DetectJavascriptLibraries">
             <summary>
@@ -2665,6 +2793,9 @@
             </summary>
             <returns> The current URI that was read from the browser. </returns>
         </member>
+        <member name="M:TestR.Web.Browsers.Chrome.GetScrollableElement">
+            <inheritdoc />
+        </member>
         <member name="M:TestR.Web.Browsers.Chrome.Connect">
             <summary>
             Connect to the Chrome browser debugger port.
@@ -2755,6 +2886,9 @@
             </summary>
             <returns> The current URI that was read from the browser. </returns>
         </member>
+        <member name="M:TestR.Web.Browsers.Edge.GetScrollableElement">
+            <inheritdoc />
+        </member>
         <member name="T:TestR.Web.Browsers.Firefox">
             <summary>
             Represents a Firefox browser.
@@ -2841,6 +2975,9 @@
             </summary>
             <returns> The current URI that was read from the browser. </returns>
         </member>
+        <member name="M:TestR.Web.Browsers.Firefox.GetScrollableElement">
+            <inheritdoc />
+        </member>
         <member name="M:TestR.Web.Browsers.Firefox.Connect">
             <summary>
             Connect to the Firefox browser debugger port.
@@ -2924,6 +3061,9 @@
             Reads the current URI directly from the browser.
             </summary>
             <returns> The current URI that was read from the browser. </returns>
+        </member>
+        <member name="M:TestR.Web.Browsers.InternetExplorer.GetScrollableElement">
+            <inheritdoc />
         </member>
         <member name="M:TestR.Web.Browsers.InternetExplorer.CreateInternetExplorerClass">
             <summary>
@@ -5466,7 +5606,7 @@
         <member name="M:TestR.Web.WebElement.MoveMouseTo(System.Int32,System.Int32)">
             <inheritdoc />
         </member>
-        <member name="M:TestR.Web.WebElement.Refresh">
+        <member name="M:TestR.Web.WebElement.Refresh``1(System.Func{``0,System.Boolean})">
             <inheritdoc />
         </member>
         <member name="M:TestR.Web.WebElement.RemoveAttribute(System.String)">

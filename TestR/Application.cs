@@ -169,7 +169,7 @@ namespace TestR
 
 			if (refresh)
 			{
-				application.Refresh();
+				application.Refresh<Element>(x => false);
 				application.WaitForComplete();
 			}
 
@@ -335,7 +335,7 @@ namespace TestR
 		}
 
 		/// <inheritdoc />
-		public override ElementHost Refresh()
+		public override ElementHost Refresh<T>(Func<T, bool> condition)
 		{
 			try
 			{
@@ -346,8 +346,13 @@ namespace TestR
 					return Children.Any();
 				}, Timeout.TotalMilliseconds, 10);
 
+				if (Children.Any(condition))
+				{
+					return this;
+				}
+
 				WaitForComplete();
-				Children.ForEach(x => x.Refresh());
+				Children.ForEach(x => x.Refresh(condition));
 				WaitForComplete();
 				return this;
 			}
@@ -355,7 +360,7 @@ namespace TestR
 			{
 				// A window close while trying to enumerate it. Wait for a second then try again.
 				Thread.Sleep(250);
-				return Refresh();
+				return Refresh(condition);
 			}
 		}
 

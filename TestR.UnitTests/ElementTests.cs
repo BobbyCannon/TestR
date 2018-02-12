@@ -1,7 +1,9 @@
 ﻿#region References
 
 using System;
+using System.Linq.Expressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using TestR.Native;
 using TestR.UnitTests.TestTypes;
 
@@ -36,7 +38,7 @@ namespace TestR.UnitTests
 			var triggered = false;
 
 			host.Object.Application.Timeout = TimeSpan.Zero;
-			host.Setup(x => x.Refresh())
+			host.Setup(x => x.Refresh(It.IsAny<Func<Element, bool>>()))
 				.Returns(() =>
 				{
 					triggered = true;
@@ -58,7 +60,7 @@ namespace TestR.UnitTests
 
 			host.Object.Application.Timeout = TimeSpan.FromSeconds(1);
 
-			host.Setup(x => x.Refresh())
+			host.Setup(x => x.Refresh(It.IsAny<Func<Element, bool>>()))
 				.Returns(() =>
 				{
 					trigger = !trigger;
