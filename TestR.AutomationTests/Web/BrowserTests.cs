@@ -33,6 +33,8 @@ namespace TestR.AutomationTests.Web
 
 		#region Properties
 
+		public static bool CleanupBrowsers { get; set; }
+
 		public static TimeSpan DefaultTimeout { get; set; }
 
 		public static string TestSite { get; }
@@ -157,13 +159,19 @@ namespace TestR.AutomationTests.Web
 		[ClassCleanup]
 		public static void ClassCleanup()
 		{
-			Browser.CloseBrowsers();
+			if (CleanupBrowsers)
+			{
+				Browser.CloseBrowsers();
+			}
 		}
 
 		[ClassInitialize]
 		public static void ClassInitialize(TestContext context)
 		{
-			Browser.CloseBrowsers();
+			if (CleanupBrowsers)
+			{
+				Browser.CloseBrowsers();
+			}
 		}
 
 		[TestMethod]
@@ -598,6 +606,46 @@ namespace TestR.AutomationTests.Web
 				Assert.AreEqual(expected, actual);
 			});
 		}
+		
+		[TestMethod]
+		public void GetAndSetHtmlOfCodeBlock()
+		{
+			ForEachBrowser(browser =>
+			{
+				var guid = Guid.NewGuid().ToString();
+				browser.NavigateTo(TestSite + "/main.html");
+
+				var button = browser.FirstOrDefault<Button>("button");
+				Assert.IsNotNull(button);
+				var actual = browser.GetHtml();
+				Assert.IsFalse(actual.Contains(guid));
+
+				var expected = $"<html>\r\n<head>\r\n\t<link href=\"https://testr.local/Content/testr.css\" rel=\"stylesheet\">\r\n</head>\r\n<body>\r\n\t{guid}\r\n<pre><code>\r\naoeu\r\nblah\r\n\r\n\'testing\'\r\n</code></pre>\r\n</body>\r\n</html>";
+				browser.SetHtml(expected);
+				actual = browser.GetHtml();
+				Assert.IsTrue(actual.Contains(guid));
+			});
+		}
+
+		[TestMethod]
+		public void GetAndSetHtmlForElement()
+		{
+			ForEachBrowser(browser =>
+			{
+				var guid = Guid.NewGuid().ToString();
+				var input = $"Special characters like \", ', \0, \", \n, \r, \r\n, <, >, should not break html... however &amp; must be already encoded! \n{guid}";
+				browser.NavigateTo(TestSite + "/main.html");
+
+				var body = browser.FirstOrDefault<Body>();
+				Assert.IsNotNull(body);
+				var original = body.GetHtml();
+				body.SetHtml(input);
+				var actual = body.GetHtml();
+
+				Assert.AreNotEqual(original, actual);
+				Assert.IsTrue(actual.Contains(guid));
+			});
+		}
 
 		[TestMethod]
 		public void GetAndSetHtmlOnAboutBlankPage()
@@ -612,7 +660,7 @@ namespace TestR.AutomationTests.Web
 				var expected = $"<html><head><link href=\"https://testr.local/Content/testr.css\" rel=\"stylesheet\"></head><body>{guid}</body></html>";
 				browser.SetHtml(expected);
 				Assert.AreEqual(expected, browser.GetHtml());
-				
+
 				guid = Guid.NewGuid().ToString();
 				expected = $"<html><head></head><body>{guid}</body></html>";
 				browser.SetHtml(expected);
@@ -1138,7 +1186,7 @@ namespace TestR.AutomationTests.Web
 				Assert.IsTrue(actual.Contains(guid));
 			});
 		}
-		
+
 		[TestMethod]
 		public void SetThenGetHtmlOnAboutBlankPageWithAllCharacters()
 		{
@@ -1162,7 +1210,7 @@ namespace TestR.AutomationTests.Web
 				Assert.IsTrue(actual.Contains(guid));
 			});
 		}
-		
+
 		[TestMethod]
 		public void SetThenGetHtmlOnAboutBlankPageWithRandomCharacters()
 		{
@@ -1182,7 +1230,7 @@ namespace TestR.AutomationTests.Web
 				Assert.IsTrue(actual.Contains(guid));
 			});
 		}
-		
+
 		[TestMethod]
 		public void SetValueWithNewLine()
 		{
@@ -1432,6 +1480,7 @@ namespace TestR.AutomationTests.Web
 
 		private void ForEachBrowser(Action<Browser> action)
 		{
+			CleanupBrowsers = true;
 			BrowserType = BrowserType.All;
 			base.ForEachBrowser(action);
 		}

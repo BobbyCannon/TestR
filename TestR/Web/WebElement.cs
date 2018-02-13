@@ -385,6 +385,14 @@ namespace TestR.Web
 		}
 
 		/// <summary>
+		/// Gets the HTML displayed in the element.
+		/// </summary>
+		public string GetHtml()
+		{
+			return Browser.ExecuteScript("document.getElementById('" + Id + "').innerHTML");
+		}
+
+		/// <summary>
 		/// Gets an attribute style value by the provided name.
 		/// </summary>
 		/// <param name="name"> The name of the attribute style to read. </param>
@@ -434,14 +442,6 @@ namespace TestR.Web
 			{
 				Thread.Sleep(150);
 			}
-		}
-
-		/// <summary>
-		/// Gets Raw HTML.
-		/// </summary>
-		public string Html()
-		{
-			return Browser.ExecuteScript("document.getElementById('" + Id + "').innerHTML");
 		}
 
 		/// <inheritdoc />
@@ -509,7 +509,7 @@ namespace TestR.Web
 		/// </summary>
 		public WebElement ScrollIntoView()
 		{
-			Browser.ExecuteScript("$('#" + Id + "')[0].scrollIntoView()");
+			Browser.ExecuteScript($"$(\'#{Id}\')[0].scrollIntoView()");
 			return this;
 		}
 
@@ -521,16 +521,21 @@ namespace TestR.Web
 		public void SetAttributeValue(string name, string value)
 		{
 			name = _propertiesToRename.ContainsKey(name) ? _propertiesToRename[name] : name;
-			value = value
-				.Replace("\r", "\\r")
-				.Replace("\n", "\\n")
-				.Replace("\'", "\\\'")
-				.Replace("\"", "\\\"");
+			value = Browser.CleanupScriptForJavascriptString(value);
 
 			var script = $"TestR.setElementValue(\'{Id}\',{GetFrameIdInsert()},\'{name}\',\'{value}\')";
 			Browser.ExecuteScript(script);
 			AddOrUpdateElementAttribute(name, value);
 			TriggerElement();
+		}
+
+		/// <summary>
+		/// Sets the HTML displayed in the element.
+		/// </summary>
+		public void SetHtml(string html)
+		{
+			html = Browser.CleanupScriptForJavascriptString(html);
+			Browser.ExecuteScript($"document.getElementById(\'{Id}\').innerHTML = \'{html}\'", false);
 		}
 
 		/// <summary>

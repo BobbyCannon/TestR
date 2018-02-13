@@ -510,7 +510,7 @@ namespace TestR.Web
 		/// <param name="html"> The HTML to apply to the browser. </param>
 		public void SetHtml(string html)
 		{
-			var innerHtml = ReplaceInReverse(html, new Dictionary<char, string> { { '\'', "\\'" }, { '\n', "\\\n" }, { '\r', "\\\r" }, { '\0', "\\0" } });
+			var innerHtml = CleanupScriptForJavascriptString(html);
 			ExecuteScript($"document.open(); document.write('{innerHtml}'); document.close();", false);
 		}
 
@@ -680,6 +680,11 @@ namespace TestR.Web
 			}
 
 			return input;
+		}
+
+		internal string CleanupScriptForJavascriptString(string html)
+		{
+			return ReplaceInReverse(html, new Dictionary<char, string> { { '\'', "\\'" }, { '\"', "\\\"" }, { '\n', "\\n" }, { '\r', "\\r" }, { '\0', "\\0" } });
 		}
 
 		internal ICollection<WebElement> GetElements(WebElement parent = null)

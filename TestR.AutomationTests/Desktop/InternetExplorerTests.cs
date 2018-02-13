@@ -11,6 +11,7 @@ using TestR.Desktop.Elements;
 using TestR.PowerShell;
 using TestR.Web;
 using TestR.Web.Browsers;
+using TestR.Web.Elements;
 
 #endregion
 
@@ -27,6 +28,7 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var browser = InternetExplorer.AttachOrCreate())
 			{
+				var body = browser.FirstOrDefault<Body>();
 				var builder = new StringBuilder();
 
 				for (var i = 0; i < 1000; i++)
@@ -34,7 +36,7 @@ namespace TestR.AutomationTests.Desktop
 					builder.AppendLine($"Item {i}<br />");
 				}
 
-				browser.SetHtml(builder.ToString());
+				body.SetHtml(builder.ToString());
 
 				for (var i = 0; i <= 75; i++)
 				{
@@ -46,7 +48,7 @@ namespace TestR.AutomationTests.Desktop
 				}
 
 				builder.AppendLine("aoeu");
-				browser.SetHtml(builder.ToString());
+				body.SetHtml(builder.ToString());
 				browser.Scroll(0, 100);
 				Assert.AreEqual(0, browser.HorizontalScrollPercent);
 				Assert.AreEqual(100, browser.VerticalScrollPercent);

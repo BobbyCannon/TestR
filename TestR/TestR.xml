@@ -5568,6 +5568,11 @@
             <param name="refresh"> A flag to force the element to refresh. </param>
             <returns> The attribute value. </returns>
         </member>
+        <member name="M:TestR.Web.WebElement.GetHtml">
+            <summary>
+            Gets the HTML displayed in the element.
+            </summary>
+        </member>
         <member name="M:TestR.Web.WebElement.GetStyleAttributeValue(System.String)">
             <summary>
             Gets an attribute style value by the provided name.
@@ -5591,11 +5596,6 @@
             If true the element is highlight yellow. If false the element is returned to its original
             color.
             </param>
-        </member>
-        <member name="M:TestR.Web.WebElement.Html">
-            <summary>
-            Gets Raw HTML.
-            </summary>
         </member>
         <member name="M:TestR.Web.WebElement.LeftClick(System.Int32,System.Int32)">
             <inheritdoc />
@@ -5629,6 +5629,11 @@
             </summary>
             <param name="name"> The name of the attribute to write. </param>
             <param name="value"> The value to be written. </param>
+        </member>
+        <member name="M:TestR.Web.WebElement.SetHtml(System.String)">
+            <summary>
+            Sets the HTML displayed in the element.
+            </summary>
         </member>
         <member name="M:TestR.Web.WebElement.SetStyleAttributeValue(System.String,System.String)">
             <summary>
