@@ -6,7 +6,6 @@ using System.Management.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop.Elements;
 using TestR.Native;
-using TestR.PowerShell;
 using TestR.UnitTests;
 
 #endregion
@@ -68,6 +67,13 @@ namespace TestR.AutomationTests.Desktop
 
 				application.Close();
 			}
+		}
+
+		[ClassCleanup]
+		public static void ClassCleanup()
+		{
+			Application.CloseAll(_applicationPath);
+			Application.CloseAll(_applicationPathX86);
 		}
 
 		[TestMethod]

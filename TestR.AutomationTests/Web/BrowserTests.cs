@@ -734,8 +734,11 @@ namespace TestR.AutomationTests.Web
 
 				foreach (var element in elements)
 				{
+					var originalColor = element.GetStyleAttributeValue("background-color");
 					element.Highlight(true);
+					Assert.AreEqual("yellow", element.GetStyleAttributeValue("background-color"));
 					element.Highlight(false);
+					Assert.AreEqual(originalColor, element.GetStyleAttributeValue("background-color"));
 				}
 			});
 		}
@@ -1170,6 +1173,25 @@ namespace TestR.AutomationTests.Web
 
 		[TestMethod]
 		public void SetThenGetHtmlOnAboutBlankPage()
+		{
+			ForEachBrowser(browser =>
+			{
+				browser.SetHtml("aoeu");
+				Assert.IsTrue(browser.GetHtml().Contains("aoeu"));
+
+				var guid = Guid.NewGuid().ToString();
+				guid.Dump();
+				var body = $"{guid}";
+				var input = $"<html><head><link href=\"https://testr.local/Content/testr.css\" rel=\"stylesheet\"></head><body>{body}</body></html>";
+				browser.SetHtml(input);
+				var actual = browser.GetHtml();
+				actual.Dump();
+				Assert.IsTrue(actual.Contains(guid));
+			});
+		}
+		
+		[TestMethod]
+		public void SetThenGetHtmlOnAboutBlankPageMoreCharacters()
 		{
 			ForEachBrowser(browser =>
 			{

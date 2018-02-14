@@ -192,13 +192,6 @@ namespace TestR.AutomationTests.Desktop
 			}
 		}
 
-		[ClassCleanup]
-		public static void ClassCleanup()
-		{
-			Application.CloseAll(_applicationPath);
-			Application.CloseAll(_applicationPathX86);
-		}
-
 		[TestMethod]
 		public void CloseAll()
 		{

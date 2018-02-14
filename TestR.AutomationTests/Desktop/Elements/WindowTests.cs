@@ -16,12 +16,6 @@ namespace TestR.AutomationTests.Desktop.Elements
 	{
 		#region Methods
 
-		[ClassCleanup]
-		public static void ClassCleanup()
-		{
-			Application.CloseAll(_applicationPath);
-		}
-
 		[TestMethod]
 		public void MoveChildWindow()
 		{

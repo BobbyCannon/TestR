@@ -1,6 +1,5 @@
 ﻿#region References
 
-using System;
 using System.Drawing;
 using System.Management.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -125,12 +124,6 @@ namespace TestR.AutomationTests.Desktop.Elements
 				var checkbox = application.First<CheckBox>("checkBox1");
 				Assert.AreEqual(ToggleState.Off, checkbox.CheckedState);
 			}
-		}
-
-		[ClassCleanup]
-		public static void ClassCleanup()
-		{
-			Application.CloseAll(_applicationPath);
 		}
 
 		[TestMethod]

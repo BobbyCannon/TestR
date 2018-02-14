@@ -26,7 +26,7 @@ namespace TestR.AutomationTests.Desktop
 			var assembly = Assembly.GetExecutingAssembly();
 			var path = Path.GetDirectoryName(assembly.Location);
 			var info = new DirectoryInfo(path ?? "/");
-			
+
 			_applicationPath = info.FullName.Replace("TestR.AutomationTests", "TestR.TestWinForms") + "\\TestR.TestWinForms.exe";
 			_applicationPathX86 = info.FullName.Replace("TestR.AutomationTests", "TestR.TestWinForms") + "\\TestR.TestWinForms-x86.exe";
 			Application.CloseAll(_applicationPath);
@@ -44,6 +44,13 @@ namespace TestR.AutomationTests.Desktop
 			var response = Application.AttachOrCreate(path);
 			response.Timeout = TimeSpan.FromSeconds(5);
 			return response;
+		}
+
+		[TestCleanup]
+		public void TestCleanup()
+		{
+			Application.CloseAll(_applicationPath);
+			Application.CloseAll(_applicationPathX86);
 		}
 
 		[TestInitialize]

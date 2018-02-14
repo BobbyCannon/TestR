@@ -308,7 +308,7 @@ namespace TestR.Web
 			var response = ExecuteJavaScript(script, expectResponse);
 
 			// Check the response to see if the TestR script has been injected.
-			if (response.Contains(TestrNotDefinedMessage))
+			if (response?.Contains(TestrNotDefinedMessage) == true)
 			{
 				InjectTestScript();
 				return ExecuteJavaScript(script, expectResponse);
@@ -389,8 +389,8 @@ namespace TestR.Web
 		/// <param name="y"> The y coordinate to move to. </param>
 		public virtual Browser MoveWindow(int x, int y)
 		{
-			Window.Focus();
-			Window.Move(x, y);
+			Application.Focus();
+			Application.MoveWindow(x, y);
 			return this;
 		}
 
@@ -403,8 +403,8 @@ namespace TestR.Web
 		/// <param name="height"> The height of the window. </param>
 		public virtual Browser MoveWindow(int x, int y, int width, int height)
 		{
-			Window.Focus();
-			Window.Move(x, y, width, height);
+			Application.Focus();
+			Application.MoveWindow(x, y, width, height);
 			return this;
 		}
 
@@ -479,7 +479,7 @@ namespace TestR.Web
 		/// <param name="height"> The height to set. </param>
 		public ElementHost Resize(int width, int height)
 		{
-			Window.Resize(width, height);
+			Application.Resize(width, height);
 			return this;
 		}
 

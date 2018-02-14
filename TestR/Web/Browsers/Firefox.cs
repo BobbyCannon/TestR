@@ -240,7 +240,7 @@ namespace TestR.Web.Browsers
 			}
 
 			var result = ((object) response.result).ToString();
-			return result.Contains("\"type\": \"longString\"") ? ReadLongResponse(result) : result;
+			return result.Contains("\"type\": \"null\"") ? null : result.Contains("\"type\": \"longString\"") ? ReadLongResponse(result) : result;
 		}
 
 		/// <summary>

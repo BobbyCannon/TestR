@@ -33,8 +33,6 @@ namespace TestR.Web.Browsers
 
 		private SHDocVw.InternetExplorer _browser;
 
-		private Pane _scrollablePane;
-
 		#endregion
 
 		#region Constructors
