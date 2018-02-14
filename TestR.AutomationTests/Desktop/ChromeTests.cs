@@ -102,23 +102,23 @@ namespace TestR.AutomationTests.Desktop
 		{
 			using (var browser = Chrome.Create())
 			{
+				var expected = "https://testr.local/Forms.html";
+				Assert.IsNotNull(browser);
+				browser.NavigateTo(expected);
+				Assert.AreEqual(expected, browser.Uri);
+				browser.MoveWindow(100, 110, 800, 600);
+				Assert.AreEqual(100, browser.Window.Location.X);
+				Assert.AreEqual(110, browser.Window.Location.Y);
+				Assert.AreEqual(800, browser.Window.Size.Width);
+				Assert.AreEqual(600, browser.Window.Size.Height);
+				browser.Resize(400, 300);
+				Assert.AreEqual(400, browser.Window.Size.Width);
+				Assert.AreEqual(300, browser.Window.Size.Height);
+				Assert.AreEqual(400, browser.Application.Size.Width);
+				Assert.AreEqual(300, browser.Application.Size.Height);
+
 				using (var browser2 = Chrome.Create())
 				{
-					var expected = "https://testr.local/Forms.html";
-					Assert.IsNotNull(browser);
-					browser.NavigateTo(expected);
-					Assert.AreEqual(expected, browser.Uri);
-					browser.MoveWindow(100, 110, 800, 600);
-					Assert.AreEqual(100, browser.Window.Location.X);
-					Assert.AreEqual(110, browser.Window.Location.Y);
-					Assert.AreEqual(800, browser.Window.Size.Width);
-					Assert.AreEqual(600, browser.Window.Size.Height);
-					browser.Resize(400, 300);
-					Assert.AreEqual(400, browser.Window.Size.Width);
-					Assert.AreEqual(300, browser.Window.Size.Height);
-					Assert.AreEqual(400, browser.Application.Size.Width);
-					Assert.AreEqual(300, browser.Application.Size.Height);
-
 					var expected2 = "https://testr.local/Forms2.html";
 					Assert.IsNotNull(browser2);
 					browser2.NavigateTo(expected2);

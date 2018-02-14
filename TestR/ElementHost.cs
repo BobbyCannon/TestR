@@ -144,7 +144,7 @@ namespace TestR
 		/// Get the child from the children.
 		/// </summary>
 		/// <param name="id"> An ID of the element to get. </param>
-		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <param name="includeDescendants"> Flag to determine to search descendants or not. </param>
 		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
 		/// <remarks>
 		/// The First method throws an exception if source contains no elements. To instead return a default value
@@ -160,7 +160,7 @@ namespace TestR
 		/// Get the child from the children.
 		/// </summary>
 		/// <param name="condition"> A function to test each element for a condition. </param>
-		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <param name="includeDescendants"> Flag to determine to search descendants or not. </param>
 		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
 		/// <remarks>
 		/// The First method throws an exception if source contains no elements. To instead return a default value
@@ -175,7 +175,7 @@ namespace TestR
 		/// <summary>
 		/// Get the child from the children.
 		/// </summary>
-		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <param name="includeDescendants"> Flag to determine to search descendants or not. </param>
 		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
 		/// <remarks>
 		/// The First method throws an exception if source contains no elements. To instead return a default value
@@ -191,7 +191,7 @@ namespace TestR
 		/// Get the child from the children.
 		/// </summary>
 		/// <param name="id"> An ID of the element to get. </param>
-		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <param name="includeDescendants"> Flag to determine to search descendants or not. </param>
 		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
 		/// <remarks>
 		/// The First method throws an exception if source contains no elements. To instead return a default value
@@ -207,7 +207,7 @@ namespace TestR
 		/// Get the child from the children.
 		/// </summary>
 		/// <param name="condition"> A function to test each element for a condition. </param>
-		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <param name="includeDescendants"> Flag to determine to search descendants or not. </param>
 		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
 		/// <remarks>
 		/// The First method throws an exception if source contains no elements. To instead return a default value
@@ -231,7 +231,7 @@ namespace TestR
 		/// Get the child from the children.
 		/// </summary>
 		/// <param name="id"> An ID of the element to get. </param>
-		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <param name="includeDescendants"> Flag to determine to search descendants or not. </param>
 		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
 		/// <returns> The child element for the ID or null if no child found. </returns>
 		public Element FirstOrDefault(string id, bool includeDescendants = true, bool wait = true)
@@ -243,7 +243,7 @@ namespace TestR
 		/// Get the child from the children.
 		/// </summary>
 		/// <param name="condition"> A function to test each element for a condition. </param>
-		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <param name="includeDescendants"> Flag to determine to search descendants or not. </param>
 		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
 		/// <returns> The child element for the condition or null if no child found. </returns>
 		public Element FirstOrDefault(Func<Element, bool> condition, bool includeDescendants = true, bool wait = true)
@@ -255,7 +255,7 @@ namespace TestR
 		/// Get the child from the children.
 		/// </summary>
 		/// <param name="id"> An ID of the element to get. </param>
-		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <param name="includeDescendants"> Flag to determine to search descendants or not. </param>
 		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
 		/// <returns> The child element for the ID or null if no child found. </returns>
 		public T FirstOrDefault<T>(string id, bool includeDescendants = true, bool wait = true) where T : Element
@@ -267,7 +267,7 @@ namespace TestR
 		/// Get the child from the children.
 		/// </summary>
 		/// <param name="condition"> A function to test each element for a condition. </param>
-		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <param name="includeDescendants"> Flag to determine to search descendants or not. </param>
 		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
 		/// <returns> The child element for the condition or null if no child found. </returns>
 		public T FirstOrDefault<T>(Func<T, bool> condition, bool includeDescendants = true, bool wait = true) where T : Element
@@ -299,7 +299,7 @@ namespace TestR
 		/// <summary>
 		/// Get the child from the children.
 		/// </summary>
-		/// <param name="includeDescendants"> Flag to determine to include descendants or not. </param>
+		/// <param name="includeDescendants"> Flag to determine to search descendants or not. </param>
 		/// <param name="wait"> Wait for the child to be available. Will auto refresh on each pass. </param>
 		/// <returns> The child element for the condition or null if no child found. </returns>
 		public T FirstOrDefault<T>(bool includeDescendants = true, bool wait = true) where T : Element
@@ -355,7 +355,7 @@ namespace TestR
 		/// Removes an element from a collection.
 		/// </summary>
 		/// <param name="element"> The element to be removed. </param>
-		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
+		/// <param name="includeDescendants"> The flag that determines to search descendants or not. </param>
 		/// <returns> true if item is successfully removed; otherwise, false. This method also returns false if item was not found. </returns>
 		public bool Remove<T>(T element, bool includeDescendants = true) where T : Element
 		{

@@ -760,20 +760,27 @@ namespace TestR.Web
 		{
 			//LogManager.Write("Refresh the elements.", LogLevel.Verbose);
 			Children.Clear();
+			
+			var elements = GetElements();
+			var elementLookup = elements.GroupBy(x => x.Id).ToDictionary(x => x.Key, x => x.First());
+			var parents = new Dictionary<string, Element>();
 
-			var webElements = GetElements(null);
-
-			foreach (var element in webElements)
+			// Locate parents
+			foreach (var element in elements)
 			{
-				element.Children.AddRange(webElements.Where(x => x.ParentId == element.Id));
-
-				foreach (var child in element.Children)
+				if (string.IsNullOrWhiteSpace(element.ParentId))
 				{
-					child.Parent = element;
+					parents.Add(element.Id, element);
+				}
+				else
+				{
+					var parent = elementLookup.ContainsKey(element.ParentId) ? elementLookup[element.ParentId] : null;
+					parent?.Children.Add(element);
+					element.Parent = parent;
 				}
 			}
 
-			Children.AddRange(webElements.Where(x => x.Parent == null));
+			Children.AddRange(parents.Values);
 		}
 
 		#endregion

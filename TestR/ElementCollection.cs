@@ -147,7 +147,7 @@ namespace TestR
 		/// Get an element from the collection using the provided ID.
 		/// </summary>
 		/// <param name="id"> An ID of the element to get. </param>
-		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
+		/// <param name="includeDescendants"> The flag that determines to search descendants or not. </param>
 		/// <remarks>
 		/// The First method throws an exception if source contains no elements. To instead return a default value
 		/// when the source sequence is empty, use the FirstOrDefault method.
@@ -162,7 +162,7 @@ namespace TestR
 		/// Get an element from the collection using the provided condition.
 		/// </summary>
 		/// <param name="condition"> A function to test each element for a condition. </param>
-		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
+		/// <param name="includeDescendants"> The flag that determines to search descendants or not. </param>
 		/// <remarks>
 		/// The First method throws an exception if source contains no elements. To instead return a default value
 		/// when the source sequence is empty, use the FirstOrDefault method.
@@ -177,7 +177,7 @@ namespace TestR
 		/// Get an element from the collection using the provided ID.
 		/// </summary>
 		/// <param name="id"> An ID of the element to get. </param>
-		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
+		/// <param name="includeDescendants"> The flag that determines to search descendants or not. </param>
 		/// <remarks>
 		/// The First method throws an exception if source contains no elements. To instead return a default value
 		/// when the source sequence is empty, use the FirstOrDefault method.
@@ -192,7 +192,7 @@ namespace TestR
 		/// Get an element from the collection using the provided condition.
 		/// </summary>
 		/// <param name="condition"> A function to test each element for a condition. </param>
-		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
+		/// <param name="includeDescendants"> The flag that determines to search descendants or not. </param>
 		/// <remarks>
 		/// The First method throws an exception if source contains no elements. To instead return a default value
 		/// when the source sequence is empty, use the FirstOrDefault method.
@@ -214,7 +214,7 @@ namespace TestR
 		/// Get an element from the collection using the provided ID.
 		/// </summary>
 		/// <param name="id"> An ID of the element to get. </param>
-		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
+		/// <param name="includeDescendants"> The flag that determines to search descendants or not. </param>
 		/// <returns> The child element for the ID or null if otherwise. </returns>
 		public T FirstOrDefault<T>(string id, bool includeDescendants = true) where T : Element
 		{
@@ -225,7 +225,7 @@ namespace TestR
 		/// Get an element from the collection using the provided condition.
 		/// </summary>
 		/// <param name="condition"> A function to test each element for a condition. </param>
-		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
+		/// <param name="includeDescendants"> The flag that determines to search descendants or not. </param>
 		/// <returns> The child element for the condition or null if otherwise. </returns>
 		public T FirstOrDefault<T>(Func<T, bool> condition, bool includeDescendants = true) where T : Element
 		{
@@ -257,7 +257,7 @@ namespace TestR
 		/// <summary>
 		/// Get an element from the collection using the provided condition.
 		/// </summary>
-		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
+		/// <param name="includeDescendants"> The flag that determines to search descendants or not. </param>
 		/// <returns> The child element for the condition or null if otherwise. </returns>
 		public T FirstOrDefault<T>(bool includeDescendants = true) where T : Element
 		{
@@ -300,7 +300,7 @@ namespace TestR
 		/// Removes an element from a collection.
 		/// </summary>
 		/// <param name="element"> The element to be removed. </param>
-		/// <param name="includeDescendants"> The flag that determines to include descendants or not. </param>
+		/// <param name="includeDescendants"> The flag that determines to search descendants or not. </param>
 		/// <returns> true if item is successfully removed; otherwise, false. This method also returns false if item was not found. </returns>
 		public bool Remove<T>(T element, bool includeDescendants = true) where T : Element
 		{

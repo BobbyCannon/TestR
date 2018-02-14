@@ -40,7 +40,7 @@ namespace TestR.Web.Browsers
 		#region Constructors
 
 		private InternetExplorer(SHDocVw.InternetExplorer browser, ICollection<IntPtr> windowsToIgnore = null, bool bringToFront = true)
-			: base(Application.Attach(ProcessService.Where(BrowserName).First(x => x.MainWindowHandle == new IntPtr(browser.HWND)), false, bringToFront), windowsToIgnore)
+			: base(Application.Attach(ProcessService.Wait(BrowserName, x => x.MainWindowHandle == new IntPtr(browser.HWND)), false, bringToFront), windowsToIgnore)
 		{
 			_browser = browser;
 

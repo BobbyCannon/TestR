@@ -109,6 +109,19 @@ namespace TestR.Native
 			}
 		}
 
+		internal static SafeProcess Wait(string name, Func<SafeProcess, bool> func)
+		{
+			SafeProcess response = null;
+
+			var result = Utility.Wait(() => (response = Where(name).FirstOrDefault(func)) != null, 2000, 10);
+			if (!result || response == null)
+			{
+				throw new Exception("Failed to find the process...");
+			}
+
+			return response;
+		}
+
 		private static bool PopulateProcess(SafeProcess safeProcess)
 		{
 			using (var searcher = new ManagementObjectDisposer())

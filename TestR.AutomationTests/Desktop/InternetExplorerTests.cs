@@ -1,13 +1,12 @@
 #region References
 
-using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Management.Automation;
 using System.Text;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TestR.Desktop.Elements;
+using TestR.AutomationTests.Web;
 using TestR.PowerShell;
 using TestR.Web;
 using TestR.Web.Browsers;
@@ -22,38 +21,6 @@ namespace TestR.AutomationTests.Desktop
 	public class InternetExplorerTests : TestCmdlet
 	{
 		#region Methods
-
-		[TestMethod]
-		public void Scrolling()
-		{
-			using (var browser = InternetExplorer.AttachOrCreate())
-			{
-				var body = browser.FirstOrDefault<Body>();
-				var builder = new StringBuilder();
-
-				for (var i = 0; i < 1000; i++)
-				{
-					builder.AppendLine($"Item {i}<br />");
-				}
-
-				body.SetHtml(builder.ToString());
-
-				for (var i = 0; i <= 75; i++)
-				{
-					browser.Scroll(0, i);
-					Thread.Sleep(10);
-
-					Assert.AreEqual(0, browser.HorizontalScrollPercent);
-					Assert.IsTrue(browser.VerticalScrollPercent >= i - 1 && browser.VerticalScrollPercent <= i + 1);
-				}
-
-				builder.AppendLine("aoeu");
-				body.SetHtml(builder.ToString());
-				browser.Scroll(0, 100);
-				Assert.AreEqual(0, browser.HorizontalScrollPercent);
-				Assert.AreEqual(100, browser.VerticalScrollPercent);
-			}
-		}
 
 		[TestMethod]
 		public void AttachOneBrowser()
@@ -109,6 +76,20 @@ namespace TestR.AutomationTests.Desktop
 			{
 				Assert.IsNotNull(browser2);
 				Assert.AreEqual(typeof(InternetExplorer), browser2.GetType());
+			}
+		}
+
+		[TestMethod]
+		public void Children()
+		{
+			using (var browser = InternetExplorer.AttachOrCreate())
+			{
+				browser.NavigateTo(BrowserTests.TestSite);
+				var watch = Stopwatch.StartNew();
+				browser.Application.Refresh();
+				watch.Stop();
+				watch.Elapsed.Dump();
+				Assert.IsTrue(watch.Elapsed.TotalMilliseconds < 500);
 			}
 		}
 
@@ -183,6 +164,75 @@ namespace TestR.AutomationTests.Desktop
 					Assert.AreEqual(browser.Application.Process.Id, browser2.Application.Process.Id);
 					Assert.AreNotEqual(browser.Window.Handle, browser2.Window.Handle);
 				}
+			}
+		}
+
+		[TestMethod]
+		public void ScrollingWithAttach()
+		{
+			Browser.CloseBrowsers(BrowserType.InternetExplorer);
+			InternetExplorer.Create().Dispose();
+
+			using (var browser = InternetExplorer.Attach())
+			{
+				var body = browser.FirstOrDefault<Body>();
+				var builder = new StringBuilder();
+
+				for (var i = 0; i < 1000; i++)
+				{
+					builder.AppendLine($"Item {i}<br />");
+				}
+
+				body.SetHtml(builder.ToString());
+
+				for (var i = 0; i <= 75; i++)
+				{
+					browser.Scroll(0, i);
+					Thread.Sleep(10);
+
+					Assert.AreEqual(0, browser.HorizontalScrollPercent);
+					Assert.IsTrue(browser.VerticalScrollPercent >= i - 1 && browser.VerticalScrollPercent <= i + 1);
+				}
+
+				builder.AppendLine("aoeu");
+				body.SetHtml(builder.ToString());
+				browser.Scroll(0, 100);
+				Assert.AreEqual(0, browser.HorizontalScrollPercent);
+				Assert.AreEqual(100, browser.VerticalScrollPercent);
+			}
+		}
+
+		[TestMethod]
+		public void ScrollingWithCreate()
+		{
+			Browser.CloseBrowsers(BrowserType.InternetExplorer);
+
+			using (var browser = InternetExplorer.AttachOrCreate())
+			{
+				var body = browser.FirstOrDefault<Body>();
+				var builder = new StringBuilder();
+
+				for (var i = 0; i < 1000; i++)
+				{
+					builder.AppendLine($"Item {i}<br />");
+				}
+
+				body.SetHtml(builder.ToString());
+
+				for (var i = 0; i <= 75; i++)
+				{
+					browser.Scroll(0, i);
+					Thread.Sleep(10);
+
+					Assert.AreEqual(0, browser.HorizontalScrollPercent);
+					Assert.IsTrue(browser.VerticalScrollPercent >= i - 1 && browser.VerticalScrollPercent <= i + 1);
+				}
+
+				builder.AppendLine("aoeu");
+				body.SetHtml(builder.ToString());
+				browser.Scroll(0, 100);
+				Assert.AreEqual(0, browser.HorizontalScrollPercent);
+				Assert.AreEqual(100, browser.VerticalScrollPercent);
 			}
 		}
 
