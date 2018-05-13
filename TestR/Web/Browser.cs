@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -116,9 +117,19 @@ namespace TestR.Web
 		public IEnumerable<JavaScriptLibrary> JavascriptLibraries { get; set; }
 
 		/// <summary>
+		/// Gets the location of the browser.
+		/// </summary>
+		public Point Location => Application.Location;
+
+		/// <summary>
 		/// Gets the raw HTML of the page.
 		/// </summary>
 		public virtual string RawHtml => GetHtml();
+
+		/// <summary>
+		/// Gets the size of the browser.
+		/// </summary>
+		public Size Size => Application.Size;
 
 		/// <summary>
 		/// Gets or sets the time out for delay request. Defaults to 60 seconds.
@@ -598,7 +609,7 @@ namespace TestR.Web
 		protected abstract string GetBrowserUri();
 
 		/// <summary>
-		/// Gets the scrollable element to scrole browser content.
+		/// Gets the scrollable element to scroll browser content.
 		/// </summary>
 		/// <returns> </returns>
 		protected abstract IScrollableElement GetScrollableElement();
@@ -760,7 +771,7 @@ namespace TestR.Web
 		{
 			//LogManager.Write("Refresh the elements.", LogLevel.Verbose);
 			Children.Clear();
-			
+
 			var elements = GetElements();
 			var elementLookup = elements.GroupBy(x => x.Id).ToDictionary(x => x.Key, x => x.First());
 			var parents = new Dictionary<string, Element>();

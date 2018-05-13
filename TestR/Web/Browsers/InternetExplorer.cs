@@ -79,7 +79,6 @@ namespace TestR.Web.Browsers
 				return null;
 			}
 
-			//browser.NavigateTo("about:blank");
 			browser.Refresh();
 			return browser;
 		}
@@ -103,7 +102,6 @@ namespace TestR.Web.Browsers
 				return null;
 			}
 
-			//browser.NavigateTo("about:blank");
 			browser.Refresh();
 			return browser;
 		}
@@ -146,7 +144,6 @@ namespace TestR.Web.Browsers
 			}
 
 			browser.NavigateTo("about:blank");
-			//browser.Refresh();
 			return browser;
 		}
 

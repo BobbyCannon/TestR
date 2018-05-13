@@ -29,7 +29,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{FEA4
 		IncrementVersion.ps1 = IncrementVersion.ps1
 		Publish.ps1 = Publish.ps1
 		ResetAssemblyInfos.ps1 = ResetAssemblyInfos.ps1
-		Test.ps1 = Test.ps1
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestR.TestSite", "TestR.TestSite\TestR.TestSite.csproj", "{689336E4-7AD5-4FDF-9637-2E3CE835B75E}"

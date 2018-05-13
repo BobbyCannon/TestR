@@ -91,7 +91,6 @@ namespace TestR.Web.Browsers
 
 			var browser = new Chrome(application);
 			browser.Connect();
-			//browser.NavigateTo("about:blank");
 			browser.Refresh();
 			return browser;
 		}
@@ -117,7 +116,6 @@ namespace TestR.Web.Browsers
 			var application = Application.Attach(process, false, bringToFront);
 			var browser = new Chrome(application);
 			browser.Connect();
-			//browser.NavigateTo("about:blank");
 			browser.Refresh();
 			return browser;
 		}
@@ -151,15 +149,8 @@ namespace TestR.Web.Browsers
 			var application = Application.Attach(BrowserName, DebugArgument, false, bringToFront);
 			if (application != null)
 			{
-				// Start process but connect to current process and new window.
-				var existing = application.GetWindows().Select(x =>
-				{
-					x.Dispose();
-					return x.Handle;
-				}).ToList();
-
 				Application.Create(BrowserName, DebugArgument, false, bringToFront).Dispose();
-				browser = new Chrome(application, existing);
+				browser = new Chrome(application);
 			}
 			else
 			{
@@ -169,7 +160,6 @@ namespace TestR.Web.Browsers
 
 			browser.Connect();
 			browser.NavigateTo("about:blank");
-			//browser.Refresh();
 			return browser;
 		}
 

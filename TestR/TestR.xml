@@ -2480,9 +2480,19 @@
             Gets a list of JavaScript libraries that were detected on the page.
             </summary>
         </member>
+        <member name="P:TestR.Web.Browser.Location">
+            <summary>
+            Gets the location of the browser.
+            </summary>
+        </member>
         <member name="P:TestR.Web.Browser.RawHtml">
             <summary>
             Gets the raw HTML of the page.
+            </summary>
+        </member>
+        <member name="P:TestR.Web.Browser.Size">
+            <summary>
+            Gets the size of the browser.
             </summary>
         </member>
         <member name="P:TestR.Web.Browser.Timeout">
@@ -2674,7 +2684,7 @@
         </member>
         <member name="M:TestR.Web.Browser.GetScrollableElement">
             <summary>
-            Gets the scrollable element to scrole browser content.
+            Gets the scrollable element to scroll browser content.
             </summary>
             <returns> </returns>
         </member>

@@ -37,7 +37,6 @@ namespace TestR.Web.Browsers
 		#region Fields
 
 		private string _consoleActor;
-
 		private readonly JsonSerializerSettings _jsonSerializerSettings;
 		private readonly FirefoxBuffer _messageBuffer;
 		private readonly List<dynamic> _responses;
@@ -92,7 +91,6 @@ namespace TestR.Web.Browsers
 
 			var browser = new Firefox(application);
 			browser.Connect();
-			//browser.NavigateTo("about:blank");
 			browser.Refresh();
 			return browser;
 		}
@@ -118,7 +116,6 @@ namespace TestR.Web.Browsers
 			var application = Application.Attach(process, false, bringToFront);
 			var browser = new Firefox(application);
 			browser.Connect();
-			//browser.NavigateTo("about:blank");
 			browser.Refresh();
 			return browser;
 		}
@@ -146,7 +143,7 @@ namespace TestR.Web.Browsers
 		{
 			Firefox browser;
 
-			// See if chrome is already running
+			// See if Firefox is already running
 			var application = Application.Attach(BrowserName, DebugArgument, false, bringToFront);
 			if (application != null)
 			{
@@ -175,8 +172,6 @@ namespace TestR.Web.Browsers
 			}
 
 			browser.Connect();
-			browser.NavigateTo("about:blank");
-			//browser.Refresh();
 			return browser;
 		}
 
@@ -277,7 +272,7 @@ namespace TestR.Web.Browsers
 				{
 					return false;
 				}
-			}, Application.Timeout.TotalMilliseconds, 250);
+			}, Application.Timeout.TotalMilliseconds, 10);
 
 			Task.Run(() =>
 			{
@@ -424,7 +419,7 @@ namespace TestR.Web.Browsers
 				{
 					return _responses.Any(action);
 				}
-			}, Application.Timeout.TotalMilliseconds, 1);
+			}, Application.Timeout.TotalMilliseconds, 10);
 
 			lock (_responses)
 			{

@@ -359,7 +359,7 @@ namespace TestR
 			catch (COMException)
 			{
 				// A window close while trying to enumerate it. Wait for a second then try again.
-				Thread.Sleep(250);
+				Thread.Sleep(100);
 				return Refresh(condition);
 			}
 		}

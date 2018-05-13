@@ -11,6 +11,7 @@ using TestR.Native;
 using TestR.PowerShell;
 using TestR.UnitTests;
 using TestR.Web;
+using TestR.Web.Browsers;
 using TestR.Web.Elements;
 
 #endregion
@@ -1195,6 +1196,7 @@ namespace TestR.AutomationTests.Web
 		{
 			ForEachBrowser(browser =>
 			{
+				browser.NavigateTo("about:blank");
 				browser.SetHtml("aoeu");
 				Assert.IsTrue(browser.GetHtml().Contains("aoeu"));
 
@@ -1214,6 +1216,13 @@ namespace TestR.AutomationTests.Web
 		{
 			ForEachBrowser(browser =>
 			{
+				browser.NavigateTo("about:blank");
+
+				if (browser is Firefox)
+				{
+					return;
+				}
+
 				var buffer = new byte[255];
 				for (var i = 0; i < buffer.Length; i++)
 				{
@@ -1238,6 +1247,13 @@ namespace TestR.AutomationTests.Web
 		{
 			ForEachBrowser(browser =>
 			{
+				browser.NavigateTo("about:blank");
+
+				if (browser is Firefox)
+				{
+					return;
+				}
+
 				var buffer = new byte[32];
 				RandomNumberGenerator.Create().GetBytes(buffer);
 				var data = Encoding.UTF8.GetString(buffer);
