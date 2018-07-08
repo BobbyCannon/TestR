@@ -178,7 +178,16 @@ namespace TestR.Native
 		/// <summary>
 		/// Types text as keyboard input.
 		/// </summary>
-		/// <param name="value"> </param>
+		/// <param name="value"> The value to type. </param>
+		public static void TypeText(char value)
+		{
+			TypeText(new string(value, 1));
+		}
+
+		/// <summary>
+		/// Types text as keyboard input.
+		/// </summary>
+		/// <param name="value"> The value to type. </param>
 		public static void TypeText(string value)
 		{
 			SendKeys.SendWait(value);

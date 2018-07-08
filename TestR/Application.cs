@@ -237,7 +237,7 @@ namespace TestR
 				processes = ProcessService.Where(executablePath)
 					.Where(x => exceptProcessId == 0 || x.Id != exceptProcessId)
 					.ToList();
-					
+
 				processes.ForEach(x => x.Close());
 
 				if (watch.Elapsed.TotalMilliseconds >= timeout)
@@ -331,6 +331,17 @@ namespace TestR
 		public Application MoveWindow(int x, int y, int width, int height)
 		{
 			NativeMethods.MoveWindow(Handle, x, y, width, height, true);
+			return this;
+		}
+
+		/// <summary>
+		/// Move the window and resize it.
+		/// </summary>
+		/// <param name="location"> The location to move to. </param>
+		/// <param name="size"> The size of the window. </param>
+		public Application MoveWindow(Point location, Size size)
+		{
+			NativeMethods.MoveWindow(Handle, location.X, location.Y, size.Width, size.Height, true);
 			return this;
 		}
 

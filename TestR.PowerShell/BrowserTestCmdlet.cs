@@ -55,6 +55,7 @@ namespace TestR.PowerShell
 						x.MoveWindow(screen.WorkingArea.Left + browserOffset++ * browserWidth, 0, browserWidth, screen.WorkingArea.Height);
 					}
 
+					//x.Timeout = TimeSpan.FromSeconds(2);
 					x.BringToFront();
 					x.NavigateTo("about:blank");
 					action(x);

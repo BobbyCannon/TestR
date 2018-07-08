@@ -192,6 +192,13 @@
             <param name="width"> The width of the window. </param>
             <param name="height"> The height of the window. </param>
         </member>
+        <member name="M:TestR.Application.MoveWindow(System.Drawing.Point,System.Drawing.Size)">
+            <summary>
+            Move the window and resize it.
+            </summary>
+            <param name="location"> The location to move to. </param>
+            <param name="size"> The size of the window. </param>
+        </member>
         <member name="M:TestR.Application.Refresh``1(System.Func{``0,System.Boolean})">
             <inheritdoc />
         </member>
@@ -1251,11 +1258,17 @@
             Stop monitoring the keyboard for keystrokes.
             </summary>
         </member>
+        <member name="M:TestR.Native.Keyboard.TypeText(System.Char)">
+            <summary>
+            Types text as keyboard input.
+            </summary>
+            <param name="value"> The value to type. </param>
+        </member>
         <member name="M:TestR.Native.Keyboard.TypeText(System.String)">
             <summary>
             Types text as keyboard input.
             </summary>
-            <param name="value"> </param>
+            <param name="value"> The value to type. </param>
         </member>
         <member name="E:TestR.Native.Keyboard.KeyPressed">
             <summary>
@@ -2472,6 +2485,11 @@
             Gets the ID of the browser.
             </summary>
         </member>
+        <member name="P:TestR.Web.Browser.IsClosed">
+            <summary>
+            Gets the value indicating if the browser is closed.
+            </summary>
+        </member>
         <member name="P:TestR.Web.Browser.IsScrollable">
             <inheritdoc />
         </member>
@@ -2544,6 +2562,11 @@
             Brings the application to the front and makes it the top window.
             </summary>
         </member>
+        <member name="M:TestR.Web.Browser.Close">
+            <summary>
+            Closes the browser.
+            </summary>
+        </member>
         <member name="M:TestR.Web.Browser.CloseBrowsers(TestR.Web.BrowserType)">
             <summary>
             Closes all browsers of the provided type.
@@ -2602,6 +2625,13 @@
             <param name="y"> The y coordinate to move to. </param>
             <param name="width"> The width of the window. </param>
             <param name="height"> The height of the window. </param>
+        </member>
+        <member name="M:TestR.Web.Browser.MoveWindow(System.Drawing.Point,System.Drawing.Size)">
+            <summary>
+            Move the window and resize it.
+            </summary>
+            <param name="location"> The location to move to. </param>
+            <param name="size"> The size of the window. </param>
         </member>
         <member name="M:TestR.Web.Browser.NavigateTo(System.String,System.String)">
             <summary>
@@ -5363,6 +5393,11 @@
             Bootstrap 3
             </summary>
         </member>
+        <member name="F:TestR.Web.JavaScriptLibrary.Vue">
+            <summary>
+            Vue
+            </summary>
+        </member>
         <member name="T:TestR.Web.WebElement">
             <summary>
             Represents an element for a browser.
@@ -5551,6 +5586,12 @@
         <member name="M:TestR.Web.WebElement.Click(System.Int32,System.Int32)">
             <inheritdoc />
         </member>
+        <member name="M:TestR.Web.WebElement.FireEvent(System.String)">
+            <summary>
+            Fires an event on the element.
+            </summary>
+            <param name="eventName"> The events name to fire. </param>
+        </member>
         <member name="M:TestR.Web.WebElement.FireEvent(System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
             <summary>
             Fires an event on the element.
@@ -5679,7 +5720,7 @@
         </member>
         <member name="M:TestR.Web.WebElement.TriggerElement">
             <summary>
-            Triggers the element via the Angular function "trigger".
+            Triggers the element to ensure the element detect changes.
             </summary>
         </member>
         <member name="M:TestR.Web.WebElement.Create(Newtonsoft.Json.Linq.JToken,TestR.Web.Browser,TestR.ElementHost)">

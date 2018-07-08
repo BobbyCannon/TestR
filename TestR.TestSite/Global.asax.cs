@@ -14,6 +14,23 @@ namespace TestR.TestSite
 	{
 		#region Methods
 
+		protected void Application_BeginRequest(object sender, EventArgs e)
+		{
+			var uri = Request.Url.AbsoluteUri.ToLower();
+			var newUri = uri;
+
+			if (!Request.IsSecureConnection)
+			{
+				newUri = newUri.Replace("http://", "https://");
+			}
+			
+			if (newUri != uri)
+			{
+				Response.Redirect(newUri);
+			}
+		}
+
+
 		protected void Application_Start(object sender, EventArgs e)
 		{
 			AreaRegistration.RegisterAllAreas();

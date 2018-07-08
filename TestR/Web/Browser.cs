@@ -85,7 +85,11 @@ namespace TestR.Web
 		/// <summary>
 		/// Gets or sets a flag to auto close the browser when disposed of. Defaults to false.
 		/// </summary>
-		public bool AutoClose => Application.AutoClose;
+		public bool AutoClose
+		{
+			get => Application.AutoClose;
+			set => Application.AutoClose = value;
+		}
 
 		/// <summary>
 		/// Gets or sets a flag that allows elements to refresh when reading properties. Defaults to true.
@@ -107,6 +111,11 @@ namespace TestR.Web
 		/// Gets the ID of the browser.
 		/// </summary>
 		public override string Id => (Application?.Handle.ToInt32() ?? 0).ToString();
+
+		/// <summary>
+		/// Gets the value indicating if the browser is closed.
+		/// </summary>
+		public bool IsClosed => Application == null || !Application.IsRunning;
 
 		/// <inheritdoc />
 		public bool IsScrollable => (ScrollableElement ?? (ScrollableElement = GetScrollableElement()))?.IsScrollable ?? false;
@@ -247,6 +256,14 @@ namespace TestR.Web
 		{
 			Application.BringToFront();
 			return this;
+		}
+
+		/// <summary>
+		/// Closes the browser.
+		/// </summary>
+		public void Close()
+		{
+			Application?.Close();
 		}
 
 		/// <summary>
@@ -416,6 +433,18 @@ namespace TestR.Web
 		{
 			Application.Focus();
 			Application.MoveWindow(x, y, width, height);
+			return this;
+		}
+
+		/// <summary>
+		/// Move the window and resize it.
+		/// </summary>
+		/// <param name="location"> The location to move to. </param>
+		/// <param name="size"> The size of the window. </param>
+		public virtual Browser MoveWindow(Point location, Size size)
+		{
+			Application.Focus();
+			Application.MoveWindow(location, size);
 			return this;
 		}
 
@@ -728,6 +757,12 @@ namespace TestR.Web
 			if (hasLibrary.Equals("true", StringComparison.OrdinalIgnoreCase))
 			{
 				libraries.Add(JavaScriptLibrary.JQuery);
+			}
+
+			hasLibrary = ExecuteScript("typeof Vue !== 'undefined'");
+			if (hasLibrary.Equals("true", StringComparison.OrdinalIgnoreCase))
+			{
+				libraries.Add(JavaScriptLibrary.Vue);
 			}
 
 			hasLibrary = ExecuteScript("typeof angular !== 'undefined'");

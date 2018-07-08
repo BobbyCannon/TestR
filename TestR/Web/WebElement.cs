@@ -321,6 +321,15 @@ namespace TestR.Web
 		/// Fires an event on the element.
 		/// </summary>
 		/// <param name="eventName"> The events name to fire. </param>
+		public void FireEvent(string eventName)
+		{
+			FireEvent(eventName, new Dictionary<string, string>());
+		}
+
+		/// <summary>
+		/// Fires an event on the element.
+		/// </summary>
+		/// <param name="eventName"> The events name to fire. </param>
 		/// <param name="eventProperties"> The properties for the event. </param>
 		public void FireEvent(string eventName, Dictionary<string, string> eventProperties)
 		{
@@ -635,7 +644,7 @@ namespace TestR.Web
 		}
 
 		/// <summary>
-		/// Triggers the element via the Angular function "trigger".
+		/// Triggers the element to ensure the element detect changes.
 		/// </summary>
 		protected void TriggerElement()
 		{
@@ -644,6 +653,12 @@ namespace TestR.Web
 				Browser.ExecuteScript("angular.element(document.querySelector('#" + Id + "')).triggerHandler('input');", false);
 				Browser.ExecuteScript("angular.element(document.querySelector('#" + Id + "')).trigger('input');", false);
 				Browser.ExecuteScript("angular.element(document.querySelector('#" + Id + "')).trigger('change');", false);
+			}
+
+			if (Browser.JavascriptLibraries.Contains(JavaScriptLibrary.Vue))
+			{
+				FireEvent("input");
+				FireEvent("change");
 			}
 		}
 

@@ -162,6 +162,8 @@ namespace TestR.Web.Elements
 				SetAttributeValue("value", newValue);
 				FireEvent("keyPress", eventProperty);
 				FireEvent("keyUp", eventProperty);
+				FireEvent("input", eventProperty);
+				FireEvent("change", eventProperty);
 				Thread.Sleep(TypingDelay);
 			}
 

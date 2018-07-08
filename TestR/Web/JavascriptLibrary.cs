@@ -28,6 +28,11 @@
 		/// <summary>
 		/// Bootstrap 3
 		/// </summary>
-		Bootstrap3
+		Bootstrap3,
+
+		/// <summary>
+		/// Vue
+		/// </summary>
+		Vue
 	}
 }

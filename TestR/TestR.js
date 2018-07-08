@@ -18,20 +18,16 @@
 		if (hostDocument.createEvent) {
 			event = hostDocument.createEvent('HTMLEvents');
 			event.initEvent(eventName, true, true);
-		} else {
-			event = hostDocument.createEventObject();
-			event.eventType = eventName;
 		}
 
-		event.eventName = eventName;
-		for (var i = 0; i < values.length; i++) {
-			event[values[i].key] = values[i].value;
-		}
-
-		if (hostDocument.createEvent) {
+		if (event) {
+			//event.eventName = eventName;
+			for (var i = 0; i < values.length; i++) {
+				event[values[i].key] = values[i].value;
+			}
 			element.dispatchEvent(event);
 		} else {
-			element.fireEvent('on' + event.eventType, event);
+			element.fireEvent('on' + eventName, event);
 		}
 	},
 	getElementLocation: function (id, frameId) {

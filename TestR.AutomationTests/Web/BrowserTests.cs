@@ -54,13 +54,13 @@ namespace TestR.AutomationTests.Web
 				var email = browser.First<TextInput>("email");
 				email.TypeText("user", true);
 
-				var expected = "ng-untouched ng-scope ng-invalid ng-not-empty ng-dirty ng-invalid-email ng-valid-required".Split(' ');
+				var expected = "ng-valid-parse ng-untouched ng-scope ng-invalid ng-not-empty ng-dirty ng-invalid-email ng-valid-required".Split(' ');
 				var actual = email.GetAttributeValue("class", true).Split(' ');
 				TestHelper.AreEqual("user", email.Text);
 				TestHelper.AreEqual(expected, actual);
 
 				email.TypeText("@domain.com");
-				expected = "ng-untouched ng-scope ng-not-empty ng-dirty ng-valid-required ng-valid ng-valid-email".Split(' ');
+				expected = "ng-valid-parse ng-untouched ng-scope ng-not-empty ng-dirty ng-valid-required ng-valid ng-valid-email".Split(' ');
 				actual = email.GetAttributeValue("class", true).Split(' ');
 				TestHelper.AreEqual("user@domain.com", email.Text);
 				TestHelper.AreEqual(expected, actual);
@@ -263,6 +263,17 @@ namespace TestR.AutomationTests.Web
 		}
 
 		[TestMethod]
+		public void Close()
+		{
+			ForEachBrowser(browser =>
+			{
+				Assert.IsFalse(browser.IsClosed, "The browser should not be closed.");
+				browser.Close();
+				Assert.IsTrue(browser.IsClosed, "The browser should be closed but was not.");
+			});
+		}
+
+		[TestMethod]
 		public void DeepDescendants()
 		{
 			ForEachBrowser(browser =>
@@ -334,6 +345,16 @@ namespace TestR.AutomationTests.Web
 			{
 				browser.NavigateTo(TestSite + "/Inputs.html");
 				Assert.AreEqual(0, browser.JavascriptLibraries.Count());
+			});
+		}
+
+		[TestMethod]
+		public void DetectVueJavaScriptLibrary()
+		{
+			ForEachBrowser(browser =>
+			{
+				browser.NavigateTo(TestSite + "/Vue.html");
+				Assert.IsTrue(browser.JavascriptLibraries.Contains(JavaScriptLibrary.Vue));
 			});
 		}
 
@@ -607,26 +628,6 @@ namespace TestR.AutomationTests.Web
 				Assert.AreEqual(expected, actual);
 			});
 		}
-		
-		[TestMethod]
-		public void GetAndSetHtmlOfCodeBlock()
-		{
-			ForEachBrowser(browser =>
-			{
-				var guid = Guid.NewGuid().ToString();
-				browser.NavigateTo(TestSite + "/main.html");
-
-				var button = browser.FirstOrDefault<Button>("button");
-				Assert.IsNotNull(button);
-				var actual = browser.GetHtml();
-				Assert.IsFalse(actual.Contains(guid));
-
-				var expected = $"<html>\r\n<head>\r\n\t<link href=\"https://testr.local/Content/testr.css\" rel=\"stylesheet\">\r\n</head>\r\n<body>\r\n\t{guid}\r\n<pre><code>\r\naoeu\r\nblah\r\n\r\n\'testing\'\r\n</code></pre>\r\n</body>\r\n</html>";
-				browser.SetHtml(expected);
-				actual = browser.GetHtml();
-				Assert.IsTrue(actual.Contains(guid));
-			});
-		}
 
 		[TestMethod]
 		public void GetAndSetHtmlForElement()
@@ -644,6 +645,26 @@ namespace TestR.AutomationTests.Web
 				var actual = body.GetHtml();
 
 				Assert.AreNotEqual(original, actual);
+				Assert.IsTrue(actual.Contains(guid));
+			});
+		}
+
+		[TestMethod]
+		public void GetAndSetHtmlOfCodeBlock()
+		{
+			ForEachBrowser(browser =>
+			{
+				var guid = Guid.NewGuid().ToString();
+				browser.NavigateTo(TestSite + "/main.html");
+
+				var button = browser.FirstOrDefault<Button>("button");
+				Assert.IsNotNull(button);
+				var actual = browser.GetHtml();
+				Assert.IsFalse(actual.Contains(guid));
+
+				var expected = $"<html>\r\n<head>\r\n\t<link href=\"https://testr.local/Content/testr.css\" rel=\"stylesheet\">\r\n</head>\r\n<body>\r\n\t{guid}\r\n<pre><code>\r\naoeu\r\nblah\r\n\r\n\'testing\'\r\n</code></pre>\r\n</body>\r\n</html>";
+				browser.SetHtml(expected);
+				actual = browser.GetHtml();
 				Assert.IsTrue(actual.Contains(guid));
 			});
 		}
@@ -769,11 +790,11 @@ namespace TestR.AutomationTests.Web
 			ForEachBrowser(browser =>
 			{
 				browser.NavigateTo(TestSite + "/iframe.html");
-				browser.First("id").TypeText("hello");
+				browser.First<TextInput>("id").TypeText("hello", true);
 
 				var frame = browser.First("frame");
 				var email = frame.First<TextInput>("email");
-				email.TypeText("world");
+				email.TypeText("world", true);
 
 				Assert.AreEqual("world", email.Text);
 				Assert.AreEqual("world", email.GetAttributeValue("value"));
@@ -820,9 +841,9 @@ namespace TestR.AutomationTests.Web
 				var button = browser.First("button");
 				button.Location.Dump();
 				button.LeftClick();
-				browser.WaitForComplete(100);
 
-				Assert.AreEqual("button", browser.First<TextArea>("textarea").Text);
+				var result = Utility.Wait(() => "button".Equals(browser.First<TextArea>("textarea").Text), 1000, 100);
+				Assert.IsTrue(result, "The text should have been button but was not.");
 			});
 		}
 
@@ -1065,14 +1086,24 @@ namespace TestR.AutomationTests.Web
 		{
 			ForEachBrowser(browser =>
 			{
-				browser.NavigateTo(TestSite + "/main.html");
-				browser.MoveWindow(0, 0, 400, 300);
-				browser.BringToFront();
+				var location = browser.Location;
+				var size = browser.Size;
 
-				var button = browser.First<WebElement>("button");
-				button.ScrollIntoView();
-				Assert.IsTrue(button.Location.X < 120, $"x:{button.Location.X} should be less than 100.");
-				Assert.IsTrue(button.Location.Y < 120, $"y:{button.Location.Y} should be less than 100.");
+				try
+				{
+					browser.NavigateTo(TestSite + "/main.html");
+					browser.MoveWindow(0, 0, 400, 300);
+					browser.BringToFront();
+
+					var button = browser.First<WebElement>("button");
+					button.ScrollIntoView();
+					Assert.IsTrue(button.Location.X < 120, $"x:{button.Location.X} should be less than 100.");
+					Assert.IsTrue(button.Location.Y < 120, $"y:{button.Location.Y} should be less than 100.");
+				}
+				finally
+				{
+					browser.MoveWindow(location, size);
+				}
 			});
 		}
 
@@ -1190,7 +1221,7 @@ namespace TestR.AutomationTests.Web
 				Assert.IsTrue(actual.Contains(guid));
 			});
 		}
-		
+
 		[TestMethod]
 		public void SetThenGetHtmlOnAboutBlankPageMoreCharacters()
 		{
@@ -1497,6 +1528,26 @@ namespace TestR.AutomationTests.Web
 		}
 
 		[TestMethod]
+		public void VueInputTrigger()
+		{
+			ForEachBrowser(browser =>
+			{
+				browser.NavigateTo(TestSite + "/Vue.html");
+				Assert.AreEqual(false, browser.First<Button>("submit").Enabled);
+
+				browser.First<TextInput>("emailAddress").TypeText("user");
+				var expected = "user";
+				var actual = browser.First<WebElement>("emailAddressLabel").GetHtml();
+				Assert.AreEqual(expected, actual);
+
+				expected = "keydown: 117(u)<br>keypress: 117(u)<br>keyup: 117(u)<br>keydown: 115(s)<br>keypress: 115(s)<br>keyup: 115(s)<br>keydown: 101(e)<br>keypress: 101(e)<br>keyup: 101(e)<br>keydown: 114(r)<br>keypress: 114(r)<br>keyup: 114(r)<br>";
+				actual = browser.First<WebElement>("log").GetHtml();
+				Assert.AreEqual(expected, actual);
+				Assert.AreEqual(true, browser.First<Button>("submit").Enabled);
+			});
+		}
+
+		[TestMethod]
 		public void WebElementRefresh()
 		{
 			ForEachBrowser(browser =>
@@ -1520,7 +1571,7 @@ namespace TestR.AutomationTests.Web
 		{
 			CleanupBrowsers = true;
 			BrowserType = BrowserType.All;
-			base.ForEachBrowser(action);
+			ForEachBrowser(action, false);
 		}
 
 		#endregion
