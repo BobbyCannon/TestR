@@ -115,6 +115,26 @@ namespace TestR.UnitTests
 			literal.Append("\"");
 			return literal.ToString();
 		}
+		
+		/// <summary>
+		/// To literal version of the byte array.
+		/// </summary>
+		/// <param name="input"> The byte array input. </param>
+		/// <returns> The literal version of the data. </returns>
+		public static string ToLiteral(this byte[] input)
+		{
+			var literal = new StringBuilder(input.Length);
+			literal.Append("new [] { ");
+
+			foreach (var c in input)
+			{
+				literal.Append($"0x{c:X2}, ");
+			}
+
+			literal.Remove(literal.Length - 2, 2);
+			literal.Append(" }");
+			return literal.ToString();
+		}
 
 		#endregion
 	}

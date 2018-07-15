@@ -130,6 +130,7 @@
     <Compile Include="Native\Mouse.cs" />
     <Compile Include="Native\MouseCursor.cs" />
     <Compile Include="Native\MouseMessageFilter.cs" />
+    <Compile Include="Native\Screen.cs" />
     <Compile Include="TestRException.cs" />
     <Compile Include="Utility.cs" />
     <Compile Include="Native\NativeMethods.cs" />

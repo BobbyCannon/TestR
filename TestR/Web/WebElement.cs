@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -10,6 +12,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TestR.Native;
 using TestR.Web.Elements;
+using Directory = TestR.Web.Elements.Directory;
 using Font = TestR.Web.Elements.Font;
 using Image = TestR.Web.Elements.Image;
 using Keyboard = TestR.Native.Keyboard;
@@ -302,13 +305,6 @@ namespace TestR.Web
 		#endregion
 
 		#region Methods
-
-		/// <inheritdoc />
-		public override Element CaptureSnippet(string filePath)
-		{
-			// todo: Implement this :)
-			return this;
-		}
 
 		/// <inheritdoc />
 		public override Element Click(int x = 0, int y = 0)

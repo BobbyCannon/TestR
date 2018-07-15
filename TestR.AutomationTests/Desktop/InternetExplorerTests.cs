@@ -141,6 +141,9 @@ namespace TestR.AutomationTests.Desktop
 			{
 				using (var browser2 = InternetExplorer.Create())
 				{
+					browser.WaitForComplete(500);
+					browser2.WaitForComplete(500);
+
 					var expected = "https://testr.local/Forms.html";
 					Assert.IsNotNull(browser);
 					browser.NavigateTo(expected);

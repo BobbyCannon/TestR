@@ -1,6 +1,7 @@
 ﻿#region References
 
 using System.Drawing;
+using System.IO;
 using System.Text;
 using TestR.Native;
 
@@ -101,7 +102,19 @@ namespace TestR
 		/// <summary>
 		/// Takes a snippet of the element.
 		/// </summary>
-		public abstract Element CaptureSnippet(string filePath);
+		public virtual byte[] CaptureSnippet()
+		{
+			return Screen.Capture(Location, Size);
+		}
+
+		/// <summary>
+		/// Takes a snippet of the element.
+		/// </summary>
+		public virtual Element CaptureSnippet(string filePath)
+		{
+			File.WriteAllBytes(filePath, CaptureSnippet());
+			return this;
+		}
 
 		/// <summary>
 		/// Performs mouse click at the center of the element.

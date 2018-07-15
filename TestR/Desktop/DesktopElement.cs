@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -154,20 +155,6 @@ namespace TestR.Desktop
 		#endregion
 
 		#region Methods
-
-		/// <inheritdoc />
-		public override Element CaptureSnippet(string filePath)
-		{
-			var result = new Bitmap(Width, Height);
-
-			using (var graphics = Graphics.FromImage(result))
-			{
-				graphics.CopyFromScreen(Location, Point.Empty, Size);
-			}
-
-			result.Save(filePath, ImageFormat.Png);
-			return this;
-		}
 
 		/// <inheritdoc />
 		public override Element Click(int x = 0, int y = 0)

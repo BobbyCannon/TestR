@@ -304,9 +304,6 @@
         <member name="P:TestR.Desktop.DesktopElement.Width">
             <inheritdoc />
         </member>
-        <member name="M:TestR.Desktop.DesktopElement.CaptureSnippet(System.String)">
-            <inheritdoc />
-        </member>
         <member name="M:TestR.Desktop.DesktopElement.Click(System.Int32,System.Int32)">
             <inheritdoc />
         </member>
@@ -1779,6 +1776,58 @@
             The mouse was moved.
             </summary>
         </member>
+        <member name="T:TestR.Native.Screen">
+            <summary>
+            Represents the screen and allows for capturing of screen data.
+            </summary>
+        </member>
+        <member name="F:TestR.Native.Screen.DataUrlPrefix">
+            <summary>
+            The prefix for a data url.
+            </summary>
+        </member>
+        <member name="M:TestR.Native.Screen.Capture(System.Drawing.Point,System.Drawing.Size)">
+            <summary>
+            Captures a section of the screen.
+            </summary>
+            <param name="location"> The upper left starting location. </param>
+            <param name="size"> The size to capture. </param>
+            <returns> The image of the screen section. </returns>
+        </member>
+        <member name="M:TestR.Native.Screen.ConvertFromDataUrl(System.String)">
+            <summary>
+            Converts a image to a data url.
+            </summary>
+            <returns> The data url for the image. </returns>
+        </member>
+        <member name="M:TestR.Native.Screen.ConvertToByteArray(System.Drawing.Image)">
+            <summary>
+            Converts a image to a byte array.
+            </summary>
+            <param name="image"> The image to convert. </param>
+            <returns> The data for the image. </returns>
+        </member>
+        <member name="M:TestR.Native.Screen.ConvertToDataUrl(System.String)">
+            <summary>
+            Converts a image to a data url.
+            </summary>
+            <param name="filePath"> The file path to the image to convert. </param>
+            <returns> The data url for the image. </returns>
+        </member>
+        <member name="M:TestR.Native.Screen.ConvertToDataUrl(System.Drawing.Image)">
+            <summary>
+            Converts a image to a data url.
+            </summary>
+            <param name="image"> The image to convert. </param>
+            <returns> The data url for the image. </returns>
+        </member>
+        <member name="M:TestR.Native.Screen.ConvertToDataUrl(System.Byte[])">
+            <summary>
+            Converts a image data to a data url.
+            </summary>
+            <param name="data"> The image data to convert. </param>
+            <returns> The data url for the image. </returns>
+        </member>
         <member name="F:TestR.Native.NativeMethods.SetWindowPosFlags.NoMove">
             <summary>
             Retains the current position (ignores X and Y parameters).
@@ -1848,6 +1897,11 @@
         <member name="P:TestR.Element.Width">
             <summary>
             Gets the width of the element.
+            </summary>
+        </member>
+        <member name="M:TestR.Element.CaptureSnippet">
+            <summary>
+            Takes a snippet of the element.
             </summary>
         </member>
         <member name="M:TestR.Element.CaptureSnippet(System.String)">
@@ -5578,9 +5632,6 @@
             </remarks>
         </member>
         <member name="P:TestR.Web.WebElement.Width">
-            <inheritdoc />
-        </member>
-        <member name="M:TestR.Web.WebElement.CaptureSnippet(System.String)">
             <inheritdoc />
         </member>
         <member name="M:TestR.Web.WebElement.Click(System.Int32,System.Int32)">
