@@ -15,7 +15,6 @@
 		<references>
 			<reference file="TestR.dll" />
 			<reference file="TestR.PowerShell.dll" />
-			<reference file="Interop.SHDocVw.dll" />
 			<reference file="Interop.UIAutomationClient.dll" />
 		</references>
 	</metadata>

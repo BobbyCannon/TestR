@@ -15,7 +15,6 @@
 		<references>
 			<reference file="TestR.dll" />
 			<reference file="Interop.UIAutomationClient.dll" />
-			<reference file="Interop.SHDocVw.dll" />
 		</references>
 	</metadata>
 	<files>

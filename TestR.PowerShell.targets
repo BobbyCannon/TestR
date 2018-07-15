@@ -4,9 +4,11 @@
 		<ItemGroup>
 			<ReferencePath Condition="'%(FileName)' == 'Interop.UIAutomationClient'">
 				<EmbedInteropTypes>false</EmbedInteropTypes>
+				<Private>true</Private>
 			</ReferencePath>
 			<ReferencePath Condition="'%(FileName)' == 'Interop.SHDocVw'">
 				<EmbedInteropTypes>false</EmbedInteropTypes>
+				<Private>true</Private>
 			</ReferencePath>
 		</ItemGroup>
 	</Target>
