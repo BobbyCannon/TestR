@@ -572,6 +572,28 @@ namespace TestR.AutomationTests.Web
 		}
 
 		[TestMethod]
+		public void ForAllBrowserExceptions()
+		{
+			Browser.CloseBrowsers();
+
+			try
+			{
+				ForAllBrowsers(x => throw new Exception(x.BrowserType.ToString()));
+			}
+			catch (AggregateException ex)
+			{
+				Assert.AreEqual(3, ex.InnerExceptions.Count);
+				Assert.AreEqual("Test failed using Chrome.", ex.InnerExceptions[0].Message);
+				Assert.AreEqual("Test failed using Firefox.", ex.InnerExceptions[1].Message);
+				Assert.AreEqual("Test failed using InternetExplorer.", ex.InnerExceptions[2].Message);
+			}
+			catch (Exception ex)
+			{
+				Assert.Fail("Invalid exception: " + ex.GetType().FullName);
+			}
+		}
+
+		[TestMethod]
 		public void FormWithSubInputsWithNamesOfFormAttributeNames()
 		{
 			ForAllBrowsers(browser =>
@@ -1592,6 +1614,13 @@ namespace TestR.AutomationTests.Web
 			CleanupBrowsers = true;
 			BrowserType = BrowserType.All;
 			base.ForAllBrowsers(action);
+		}
+
+		private void ForEachBrowser(Action<Browser> action)
+		{
+			CleanupBrowsers = true;
+			BrowserType = BrowserType.All;
+			base.ForEachBrowser(action);
 		}
 
 		#endregion

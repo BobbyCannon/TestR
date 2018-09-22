@@ -383,24 +383,16 @@ namespace TestR.Web
 		public static void ForAllBrowsers(Action<Browser> action, BrowserType type, TimeSpan timeout)
 		{
 			var types = type.GetTypeArray();
-			Task[] tasks = types.Select(x => StartStaTask(() =>
+			var tasks = types.Select(x => StartStaTask(() =>
 				{
 					using (var browser = AttachOrCreate(x).First())
 					{
 						action(browser);
 					}
-				}).Task
+				})
 			).ToArray();
 
 			Task.WaitAll(tasks, TimeSpan.FromMinutes(5));
-
-			if (!tasks.Any(x => x.IsFaulted))
-			{
-				return;
-			}
-
-			var exceptions = tasks.SelectMany(x => x.Exception?.InnerExceptions).Where(x => x != null).ToList();
-			throw new AggregateException("Failed to run test for all browsers", exceptions);
 		}
 
 		/// <summary>
@@ -408,7 +400,7 @@ namespace TestR.Web
 		/// </summary>
 		/// <param name="action"> The action to run. </param>
 		/// <returns> The task started as STA thread running the action. </returns>
-		private static TaskCompletionSource<object> StartStaTask(Action action)
+		private static Task StartStaTask(Action action)
 		{
 			var tcs = new TaskCompletionSource<object>();
 			var thread = new Thread(() =>
@@ -427,7 +419,7 @@ namespace TestR.Web
 			thread.SetApartmentState(ApartmentState.STA);
 			thread.Start();
 
-			return tcs;
+			return tcs.Task;
 		}
 
 		/// <summary>
