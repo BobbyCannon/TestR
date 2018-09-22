@@ -1,7 +1,6 @@
 ﻿#region References
 
 using System.Drawing;
-using System.Management.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop.Elements;
 using TestR.Desktop.Pattern;
@@ -12,7 +11,6 @@ using TestR.Native;
 namespace TestR.AutomationTests.Desktop.Elements
 {
 	[TestClass]
-	[Cmdlet(VerbsDiagnostic.Test, "CheckBox")]
 	public class CheckBoxTests : BaseTest
 	{
 		#region Methods

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Forms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -55,29 +56,7 @@ namespace TestR
 		/// <returns> The number of browsers configured in the type. </returns>
 		public static int Count(this BrowserType type)
 		{
-			var response = 0;
-
-			if ((type & BrowserType.Chrome) == BrowserType.Chrome)
-			{
-				response++;
-			}
-
-			//if ((type & BrowserType.Edge) == BrowserType.Edge)
-			//{
-			//	response++;
-			//}
-
-			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)
-			{
-				response++;
-			}
-
-			if ((type & BrowserType.Firefox) == BrowserType.Firefox)
-			{
-				response++;
-			}
-
-			return response;
+			return type.GetTypeArray().Length;
 		}
 
 		/// <summary>
@@ -87,6 +66,80 @@ namespace TestR
 		public static string FirstValue(this IEnumerable<string> collection)
 		{
 			return collection.FirstOrDefault(item => !string.IsNullOrEmpty(item));
+		}
+
+		/// <summary>
+		/// Run a test against each browser. BrowserType property will determine which browsers to run the test against.
+		/// </summary>
+		/// <param name="browserType"> The browser types to run the action against. </param>
+		/// <param name="action"> The action to run each browser against. </param>
+		/// <param name="useSecondaryMonitor"> The flag to determine to attempt to use secondary monitor. </param>
+		/// <param name="resizeBrowsers"> The flag to determine to resize the browsers. </param>
+		/// <param name="timeout"> The timeout in milliseconds. </param>
+		/// <seealso cref="BrowserType" />
+		public static void ForAllBrowsers(this BrowserType browserType, Action<Browser> action, bool useSecondaryMonitor = true, bool resizeBrowsers = true, int timeout = 30000)
+		{
+			var screen = useSecondaryMonitor ? Screen.AllScreens.FirstOrDefault(x => x.Primary == false) ?? Screen.AllScreens.First(x => x.Primary) : Screen.AllScreens.First(x => x.Primary);
+			var browserTypes = browserType.GetTypeArray();
+			var browserWidth = screen.WorkingArea.Width / browserTypes.Length;
+
+			Browser.ForAllBrowsers(x =>
+			{
+				try
+				{
+					if (resizeBrowsers)
+					{
+						var browserOffset = Array.IndexOf(browserTypes, x.BrowserType);
+						x.MoveWindow(screen.WorkingArea.Left + browserOffset * browserWidth, screen.WorkingArea.Top, browserWidth, screen.WorkingArea.Height);
+						x.Application.MoveWindow(screen.WorkingArea.Left + browserOffset * browserWidth, screen.WorkingArea.Top);
+						x.Application.Resize(browserWidth, screen.WorkingArea.Height);
+					}
+
+					x.BringToFront();
+					x.NavigateTo("about:blank");
+					action(x);
+				}
+				catch (Exception ex)
+				{
+					throw new Exception("Test failed using " + x.GetType().Name + ".", ex);
+				}
+			}, browserType, TimeSpan.FromMilliseconds(timeout));
+		}
+
+		/// <summary>
+		/// Run a test against each browser. BrowserType property will determine which browsers to run the test against.
+		/// </summary>
+		/// <param name="browserType"> The browser types to run the action against. </param>
+		/// <param name="action"> The action to run each browser against. </param>
+		/// <param name="useSecondaryMonitor"> The flag to determine to attempt to use secondary monitor. </param>
+		/// <param name="resizeBrowsers"> The flag to determine to resize the browsers. </param>
+		/// <seealso cref="BrowserType" />
+		public static void ForEachBrowser(this BrowserType browserType, Action<Browser> action, bool useSecondaryMonitor = true, bool resizeBrowsers = true)
+		{
+			var screen = useSecondaryMonitor ? Screen.AllScreens.FirstOrDefault(x => x.Primary == false) ?? Screen.AllScreens.First(x => x.Primary) : Screen.AllScreens.First(x => x.Primary);
+			var browserTypes = browserType.GetTypeArray();
+			var browserWidth = screen.WorkingArea.Width / browserTypes.Length;
+
+			Browser.ForEachBrowser(x =>
+			{
+				try
+				{
+					if (resizeBrowsers)
+					{
+						var browserOffset = Array.IndexOf(browserTypes, x.BrowserType);
+						x.MoveWindow(screen.WorkingArea.Left + browserOffset * browserWidth, screen.WorkingArea.Top, browserWidth, screen.WorkingArea.Height);
+						x.Application.MoveWindow(screen.WorkingArea.Left + browserOffset * browserWidth, screen.WorkingArea.Top);
+						x.Application.Resize(browserWidth, screen.WorkingArea.Height);
+					}
+
+					x.BringToFront();
+					action(x);
+				}
+				catch (Exception ex)
+				{
+					throw new Exception("Test failed using " + x.GetType().Name + ".", ex);
+				}
+			}, browserType);
 		}
 
 		/// <summary>

@@ -192,14 +192,14 @@ namespace TestR.Web
 				response.Add(Edge.Attach(bringToFront));
 			}
 
-			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)
-			{
-				response.Add(InternetExplorer.Attach(bringToFront));
-			}
-
 			if ((type & BrowserType.Firefox) == BrowserType.Firefox)
 			{
 				response.Add(Firefox.Attach(bringToFront));
+			}
+
+			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)
+			{
+				response.Add(InternetExplorer.Attach(bringToFront));
 			}
 
 			return response;
@@ -225,16 +225,16 @@ namespace TestR.Web
 			//	response.Add(edge);
 			//}
 
-			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)
-			{
-				var explorer = InternetExplorer.AttachOrCreate();
-				response.Add(explorer);
-			}
-
 			if ((type & BrowserType.Firefox) == BrowserType.Firefox)
 			{
 				var firefox = Firefox.AttachOrCreate();
 				response.Add(firefox);
+			}
+
+			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)
+			{
+				var explorer = InternetExplorer.AttachOrCreate();
+				response.Add(explorer);
 			}
 
 			return response;
@@ -284,14 +284,14 @@ namespace TestR.Web
 			//	Application.CloseAll(Edge.Name);
 			//}
 
-			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)
-			{
-				Application.CloseAll(InternetExplorer.BrowserName);
-			}
-
 			if ((type & BrowserType.Firefox) == BrowserType.Firefox)
 			{
 				Application.CloseAll(Firefox.BrowserName);
+			}
+
+			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)
+			{
+				Application.CloseAll(InternetExplorer.BrowserName);
 			}
 		}
 
@@ -314,14 +314,14 @@ namespace TestR.Web
 			//	response.Add(Edge.Create());
 			//}
 
-			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)
-			{
-				response.Add(InternetExplorer.Create(bringToFront));
-			}
-
 			if ((type & BrowserType.Firefox) == BrowserType.Firefox)
 			{
 				response.Add(Firefox.Create(bringToFront));
+			}
+
+			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)
+			{
+				response.Add(InternetExplorer.Create(bringToFront));
 			}
 
 			return response;
@@ -392,7 +392,7 @@ namespace TestR.Web
 				})
 			).ToArray();
 
-			Task.WaitAll(tasks, TimeSpan.FromMinutes(5));
+			Task.WaitAll(tasks, timeout);
 		}
 
 		/// <summary>

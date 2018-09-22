@@ -4,13 +4,12 @@ using System;
 using System.IO;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TestR.PowerShell;
 
 #endregion
 
 namespace TestR.AutomationTests.Desktop
 {
-	public class BaseTest : TestCmdlet
+	public class BaseTest
 	{
 		#region Fields
 

@@ -74,9 +74,7 @@ try {
 	New-Item $destination\TestR -ItemType Directory | Out-Null
 	Copy-Item Install.ps1 $destination\TestR\
 	Copy-Item TestR.targets $destination\TestR\
-	Copy-Item TestR.PowerShell.targets $destination\TestR\
 	Copy-Item TestR\bin\$Configuration\* $destination\TestR\
-	Copy-Item TestR.PowerShell\bin\$Configuration\* $destination\TestR\
 	
 	New-Item $destination\TestR.AutomationTests -ItemType Directory | Out-Null
 	Copy-Item TestR.AutomationTests\bin\$configuration\* $destination\TestR.AutomationTests\
@@ -85,10 +83,6 @@ try {
 	& $nuget pack TestR.nuspec -Prop Configuration="$Configuration" -Version $version
 	Move-Item "TestR.$version.nupkg" "$destination" -force
 	Copy-Item "$destination\TestR.$version.nupkg" "$nugetDestination" -force
-	
-	& $nuget pack TestR.PowerShell.nuspec -Prop Configuration="$Configuration" -Version $version
-	Move-Item "TestR.PowerShell.$version.nupkg" "$destination" -force
-	Copy-Item "$destination\TestR.PowerShell.$version.nupkg" "$nugetDestination" -force
 	
 	Write-Host
 	Write-Host "Build v$($version):" $watch.Elapsed -ForegroundColor Yellow

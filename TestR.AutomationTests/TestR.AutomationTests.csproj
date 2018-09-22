@@ -86,10 +86,6 @@
     <Compile Include="Desktop\EdgeTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TestR.PowerShell\TestR.PowerShell.csproj">
-      <Project>{0896d938-1426-4d1a-8c06-649650404693}</Project>
-      <Name>TestR.PowerShell</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TestR.UnitTests\TestR.UnitTests.csproj">
       <Project>{0ed4605c-594e-4e63-9112-84141a30e189}</Project>
       <Name>TestR.UnitTests</Name>

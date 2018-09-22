@@ -2,19 +2,16 @@
 
 using System;
 using System.Linq;
-using System.Management.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop.Elements;
 using TestR.Native;
-using TestR.PowerShell;
 
 #endregion
 
 namespace TestR.AutomationTests.Desktop
 {
 	[TestClass]
-	[Cmdlet(VerbsDiagnostic.Test, "Notepad")]
-	public class NotepadTests : TestCmdlet
+	public class NotepadTests
 	{
 		#region Constants
 

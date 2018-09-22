@@ -2,13 +2,11 @@
 
 using System;
 using System.Linq;
-using System.Management.Automation;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop;
 using TestR.Native;
-using TestR.PowerShell;
 using TestR.UnitTests;
 using TestR.Web;
 using TestR.Web.Browsers;
@@ -19,8 +17,7 @@ using TestR.Web.Elements;
 namespace TestR.AutomationTests.Web
 {
 	[TestClass]
-	[Cmdlet(VerbsDiagnostic.Test, "Browsers")]
-	public class BrowserTests : BrowserTestCmdlet
+	public class BrowserTests
 	{
 		#region Constructors
 
@@ -1609,18 +1606,16 @@ namespace TestR.AutomationTests.Web
 			});
 		}
 
-		private void ForAllBrowsers(Action<Browser> action)
+		private void ForAllBrowsers(Action<Browser> action, BrowserType browserTypes = BrowserType.All)
 		{
-			CleanupBrowsers = true;
-			BrowserType = BrowserType.All;
-			base.ForAllBrowsers(action);
+			CleanupBrowsers = false;
+			browserTypes.ForAllBrowsers(action);
 		}
 
-		private void ForEachBrowser(Action<Browser> action)
+		private void ForEachBrowser(Action<Browser> action, BrowserType browserTypes = BrowserType.All)
 		{
-			CleanupBrowsers = true;
-			BrowserType = BrowserType.All;
-			base.ForEachBrowser(action);
+			CleanupBrowsers = false;
+			browserTypes.ForEachBrowser(action);
 		}
 
 		#endregion

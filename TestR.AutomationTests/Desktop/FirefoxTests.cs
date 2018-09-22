@@ -2,9 +2,7 @@
 
 using System;
 using System.Diagnostics;
-using System.Management.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TestR.PowerShell;
 using TestR.Web;
 using TestR.Web.Browsers;
 
@@ -13,8 +11,7 @@ using TestR.Web.Browsers;
 namespace TestR.AutomationTests.Desktop
 {
 	[TestClass]
-	[Cmdlet(VerbsDiagnostic.Test, "Firefox")]
-	public class FirefoxTests : TestCmdlet
+	public class FirefoxTests
 	{
 		#region Methods
 

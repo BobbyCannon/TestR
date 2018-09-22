@@ -2,12 +2,10 @@
 
 using System.Diagnostics;
 using System.Linq;
-using System.Management.Automation;
 using System.Text;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.AutomationTests.Web;
-using TestR.PowerShell;
 using TestR.Web;
 using TestR.Web.Browsers;
 using TestR.Web.Elements;
@@ -17,8 +15,7 @@ using TestR.Web.Elements;
 namespace TestR.AutomationTests.Desktop
 {
 	[TestClass]
-	[Cmdlet(VerbsDiagnostic.Test, "InternetExplorer")]
-	public class InternetExplorerTests : TestCmdlet
+	public class InternetExplorerTests
 	{
 		#region Methods
 
@@ -137,6 +134,8 @@ namespace TestR.AutomationTests.Desktop
 		[TestMethod]
 		public void CreateTwoInstances()
 		{
+			Browser.CloseBrowsers(BrowserType.InternetExplorer);
+
 			using (var browser = InternetExplorer.Create())
 			{
 				using (var browser2 = InternetExplorer.Create())

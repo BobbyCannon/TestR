@@ -1,6 +1,5 @@
 ﻿#region References
 
-using System.Management.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop.Elements;
 
@@ -9,7 +8,6 @@ using TestR.Desktop.Elements;
 namespace TestR.AutomationTests.Desktop.Elements
 {
 	[TestClass]
-	[Cmdlet(VerbsDiagnostic.Test, "ComboBox")]
 	public class ComboBoxTests : BaseTest
 	{
 		#region Methods

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -437,6 +438,7 @@ namespace TestR
 
 			Process.Process.Refresh();
 			var automation = new CUIAutomationClass();
+			var watch = Stopwatch.StartNew();
 
 			foreach (var handle in EnumerateProcessWindowHandles())
 			{
@@ -445,10 +447,30 @@ namespace TestR
 					continue;
 				}
 
-				var automationElement = automation.ElementFromHandle(handle);
-				if (DesktopElement.Create(automationElement, this, null) is Window element)
+				watch.Restart();
+
+				while (watch.ElapsedMilliseconds < 1000)
 				{
-					yield return element;
+					Window response;
+
+					try
+					{
+						var automationElement = automation.ElementFromHandle(handle);
+						var element = DesktopElement.Create(automationElement, this, null);
+						if (!(element is Window window))
+						{
+							break;
+						}
+
+						response = window;
+					}
+					catch
+					{
+						continue;
+					}
+
+					yield return response;
+					break;
 				}
 			}
 		}

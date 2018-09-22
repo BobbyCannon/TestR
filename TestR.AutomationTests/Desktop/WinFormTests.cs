@@ -2,7 +2,6 @@
 
 using System.Drawing;
 using System.Linq;
-using System.Management.Automation;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop;
@@ -15,7 +14,6 @@ using TestR.Native;
 namespace TestR.AutomationTests.Desktop
 {
 	[TestClass]
-	[Cmdlet(VerbsDiagnostic.Test, "WinForms")]
 	public class WinFormTests : BaseTest
 	{
 		#region Methods

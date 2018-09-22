@@ -4,7 +4,6 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TestR.PowerShell;
 using TestR.Web;
 using TestR.Web.Browsers;
 
@@ -13,8 +12,7 @@ using TestR.Web.Browsers;
 namespace TestR.AutomationTests.Desktop
 {
 	//[TestClass]
-	//[Cmdlet(VerbsDiagnostic.Test, "Edge")]
-	public class EdgeTests : TestCmdlet
+	public class EdgeTests
 	{
 		#region Methods
 

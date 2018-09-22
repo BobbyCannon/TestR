@@ -2403,6 +2403,27 @@
             </summary>
             <param name="collection"> The collection of string to parse. </param>
         </member>
+        <member name="M:TestR.Extensions.ForAllBrowsers(TestR.Web.BrowserType,System.Action{TestR.Web.Browser},System.Boolean,System.Boolean,System.Int32)">
+            <summary>
+            Run a test against each browser. BrowserType property will determine which browsers to run the test against.
+            </summary>
+            <param name="browserType"> The browser types to run the action against. </param>
+            <param name="action"> The action to run each browser against. </param>
+            <param name="useSecondaryMonitor"> The flag to determine to attempt to use secondary monitor. </param>
+            <param name="resizeBrowsers"> The flag to determine to resize the browsers. </param>
+            <param name="timeout"> The timeout in milliseconds. </param>
+            <seealso cref="T:TestR.Web.BrowserType" />
+        </member>
+        <member name="M:TestR.Extensions.ForEachBrowser(TestR.Web.BrowserType,System.Action{TestR.Web.Browser},System.Boolean,System.Boolean)">
+            <summary>
+            Run a test against each browser. BrowserType property will determine which browsers to run the test against.
+            </summary>
+            <param name="browserType"> The browser types to run the action against. </param>
+            <param name="action"> The action to run each browser against. </param>
+            <param name="useSecondaryMonitor"> The flag to determine to attempt to use secondary monitor. </param>
+            <param name="resizeBrowsers"> The flag to determine to resize the browsers. </param>
+            <seealso cref="T:TestR.Web.BrowserType" />
+        </member>
         <member name="M:TestR.Extensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
             <summary>
             Performs an action on each item in the collection.

@@ -2,9 +2,7 @@
 
 using System;
 using System.Diagnostics;
-using System.Management.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TestR.PowerShell;
 using TestR.Web;
 using TestR.Web.Browsers;
 
@@ -13,8 +11,7 @@ using TestR.Web.Browsers;
 namespace TestR.AutomationTests.Desktop
 {
 	[TestClass]
-	[Cmdlet(VerbsDiagnostic.Test, "Chrome")]
-	public class ChromeTests : TestCmdlet
+	public class ChromeTests
 	{
 		#region Methods
 
@@ -114,7 +111,7 @@ namespace TestR.AutomationTests.Desktop
 					Assert.AreEqual(800, browser.Size.Width);
 					Assert.AreEqual(600, browser.Size.Height);
 					browser.Resize(400, 300);
-					Assert.AreEqual(400, browser.Size.Width);
+					Assert.AreEqual(438, browser.Size.Width);
 					Assert.AreEqual(300, browser.Size.Height);
 
 					var expected2 = "https://testr.local/Forms2.html";

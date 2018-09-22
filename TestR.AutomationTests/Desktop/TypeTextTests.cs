@@ -2,7 +2,6 @@
 
 using System;
 using System.Linq;
-using System.Management.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop.Elements;
 using TestR.Native;
@@ -13,7 +12,6 @@ using TestR.UnitTests;
 namespace TestR.AutomationTests.Desktop
 {
 	[TestClass]
-	[Cmdlet(VerbsDiagnostic.Test, "TypeText")]
 	public class TypeTextTests : BaseTest
 	{
 		#region Constants

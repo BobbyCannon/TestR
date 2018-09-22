@@ -2,7 +2,6 @@
 
 using System;
 using System.Linq;
-using System.Management.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop.Elements;
 
@@ -11,7 +10,6 @@ using TestR.Desktop.Elements;
 namespace TestR.AutomationTests.Desktop.Elements
 {
 	[TestClass]
-	[Cmdlet(VerbsDiagnostic.Test, "Window")]
 	public class WindowTests : BaseTest
 	{
 		#region Methods
