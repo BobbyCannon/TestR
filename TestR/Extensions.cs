@@ -132,6 +132,17 @@ namespace TestR
 		}
 
 		/// <summary>
+		/// Converts a browser type enum into an array of only individual browser types.
+		/// </summary>
+		/// <param name="browserType"> The browser type to convert. </param>
+		/// <returns> The individual browser type values in the provided type. </returns>
+		public static BrowserType[] GetTypeArray(this BrowserType browserType)
+		{
+			var types = new[] { BrowserType.Chrome, BrowserType.Firefox, BrowserType.InternetExplorer };
+			return types.Where(type => (browserType & type) == type).ToArray();
+		}
+
+		/// <summary>
 		/// Checks to see if the assembly passed in is a debug build.
 		/// </summary>
 		/// <param name="assembly"> The assembly to test. </param>
@@ -170,7 +181,7 @@ namespace TestR
 		/// <returns> The JSON data of the object. </returns>
 		public static int ToInt(this string item)
 		{
-			return int.TryParse(item, out int response) ? response : 0;
+			return int.TryParse(item, out var response) ? response : 0;
 		}
 
 		/// <summary>

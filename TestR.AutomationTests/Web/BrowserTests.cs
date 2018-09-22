@@ -1,7 +1,6 @@
 #region References
 
 using System;
-using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Security.Cryptography;
@@ -48,7 +47,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void AngularInputTrigger()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/Angular.html");
 
@@ -71,7 +70,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void AngularNewElementCount()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/Angular.html");
 
@@ -95,7 +94,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void AngularNewElements()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/Angular.html");
 				var elementCount = browser.Descendants().Count();
@@ -121,7 +120,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void AngularSetTextInputs()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/Angular.html#!/form");
 				Assert.AreEqual("true", browser.First<Button>("saveButton").Disabled);
@@ -136,7 +135,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void AngularSwitchPageByNavigateTo()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/Angular.html#!/");
 				Assert.AreEqual(TestSite + "/Angular.html#!/", browser.Uri);
@@ -164,7 +163,7 @@ namespace TestR.AutomationTests.Web
 			var expected = new byte[] { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x08, 0x06, 0x00, 0x00, 0x00, 0x5C, 0x72, 0xA8, 0x66, 0x00, 0x00, 0x00, 0x01, 0x73, 0x52, 0x47, 0x42, 0x00, 0xAE, 0xCE, 0x1C, 0xE9, 0x00, 0x00, 0x00, 0x04, 0x67, 0x41, 0x4D, 0x41, 0x00, 0x00, 0xB1, 0x8F, 0x0B, 0xFC, 0x61, 0x05, 0x00, 0x00, 0x00, 0x09, 0x70, 0x48, 0x59, 0x73, 0x00, 0x00, 0x0E, 0xC3, 0x00, 0x00, 0x0E, 0xC3, 0x01, 0xC7, 0x6F, 0xA8, 0x64, 0x00, 0x00, 0x06, 0x7A, 0x49, 0x44, 0x41, 0x54, 0x78, 0x5E, 0xED, 0xDC, 0xB1, 0x6D, 0x1C, 0x4B, 0x14, 0x45, 0x41, 0x25, 0xC9, 0x0C, 0x15, 0x09, 0x53, 0xA1, 0xBB, 0x39, 0xF0, 0x73, 0xF4, 0x5D, 0x59, 0x7B, 0x8D, 0x03, 0xE1, 0xD5, 0x01, 0xAE, 0xBF, 0xE8, 0xE9, 0x29, 0x6F, 0xF6, 0xD7, 0xB7, 0xA4, 0xB3, 0x01, 0x40, 0x3A, 0x1C, 0x00, 0xA4, 0xC3, 0x01, 0x40, 0x3A, 0x1C, 0x00, 0xA4, 0xC3, 0x01, 0x40, 0x3A, 0x1C, 0x00, 0xA4, 0xC3, 0x01, 0x40, 0x3A, 0x1C, 0x00, 0xA4, 0xC3, 0x01, 0x40, 0x3A, 0x1C, 0x00, 0xA4, 0xC3, 0x01, 0x40, 0x3A, 0x1C, 0x00, 0xA4, 0xC3, 0x01, 0x40, 0x3A, 0x1C, 0x00, 0xA4, 0xC3, 0x4D, 0x00, 0xBC, 0x5E, 0xAF, 0xEF, 0xCF, 0xCF, 0xCF, 0xD3, 0x7B, 0xCE, 0xE0, 0xED, 0xBE, 0xBE, 0xBE, 0xBF, 0x7F, 0xFF, 0xBE, 0xBD, 0xE7, 0x0C, 0xDE, 0xCC, 0xFD, 0x1B, 0xEF, 0xDF, 0x4F, 0x13, 0x00, 0xCF, 0x0F, 0xF8, 0xF8, 0xF8, 0x38, 0xBD, 0xE7, 0x0C, 0xDE, 0xEE, 0x79, 0x01, 0x7E, 0xFD, 0x3C, 0x82, 0xCB, 0x7B, 0xCE, 0xE0, 0xCD, 0xDC, 0xBF, 0xF1, 0xFE, 0xFD, 0xF4, 0xF3, 0x04, 0xDE, 0xCF, 0x03, 0x00, 0xC0, 0x3C, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x03, 0x40, 0x3C, 0x00, 0x8C, 0x03, 0xC0, 0x34, 0x00, 0xC4, 0x03, 0xC0, 0x38, 0x00, 0x4C, 0x4B, 0x01, 0x78, 0xBD, 0x5E, 0x7F, 0x7E, 0xC0, 0xE5, 0x3D, 0x67, 0xF0, 0x76, 0x5F, 0x5F, 0xFF, 0xBF, 0x00, 0x97, 0xF7, 0x9C, 0xC1, 0x9B, 0xB9, 0x7F, 0xE3, 0xFD, 0xFB, 0x69, 0x02, 0x40, 0xD2, 0xBF, 0x1D, 0x00, 0xA4, 0xC3, 0x01, 0x40, 0x3A, 0x1C, 0x00, 0xA4, 0xC3, 0x01, 0x40, 0x3A, 0x1C, 0x00, 0xA4, 0xC3, 0x01, 0x40, 0x3A, 0x1C, 0x00, 0xA4, 0xC3, 0x01, 0x40, 0x3A, 0x1C, 0x00, 0xA4, 0xC3, 0x01, 0x40, 0x3A, 0x1C, 0x00, 0xA4, 0xC3, 0x01, 0x40, 0x3A, 0x1C, 0x00, 0xA4, 0xC3, 0x01, 0x20, 0xCC, 0xE7, 0xAC, 0xFB, 0xE7, 0xAC, 0xDA, 0x02, 0x40, 0xD8, 0xF3, 0x02, 0xFC, 0xED, 0x4F, 0x1E, 0x2E, 0xED, 0x39, 0x03, 0x75, 0x01, 0x20, 0x0C, 0x00, 0x00, 0xA8, 0x03, 0x40, 0x18, 0x00, 0x00, 0x50, 0x07, 0x80, 0x30, 0x00, 0x00, 0xA0, 0x0E, 0x00, 0x61, 0x00, 0x00, 0x40, 0x1D, 0x00, 0xC2, 0x00, 0x00, 0x80, 0x3A, 0x00, 0x84, 0x01, 0x00, 0x00, 0x75, 0x00, 0x08, 0x03, 0x00, 0x00, 0xEA, 0x00, 0x10, 0x06, 0x00, 0x00, 0xD4, 0x01, 0x20, 0x0C, 0x00, 0x00, 0xA8, 0x03, 0x40, 0x18, 0x00, 0x00, 0x50, 0x07, 0x80, 0x30, 0x00, 0x00, 0xA0, 0x0E, 0x00, 0x61, 0x00, 0x00, 0x40, 0x1D, 0x00, 0xC2, 0x00, 0x00, 0x80, 0x3A, 0x00, 0x84, 0x01, 0x00, 0x00, 0x75, 0x00, 0x08, 0x03, 0x00, 0x00, 0xEA, 0x00, 0x10, 0x06, 0x00, 0x00, 0xD4, 0x01, 0x20, 0x0C, 0x00, 0x00, 0xA8, 0x03, 0x40, 0x18, 0x00, 0x00, 0x50, 0x07, 0x80, 0x30, 0x00, 0x00, 0xA0, 0x0E, 0x00, 0x61, 0x00, 0x00, 0x40, 0x1D, 0x00, 0xC2, 0x00, 0x00, 0x80, 0x3A, 0x00, 0x84, 0x01, 0x00, 0x00, 0x75, 0x00, 0x08, 0x03, 0x00, 0x00, 0xEA, 0x00, 0x10, 0x06, 0x00, 0x00, 0xD4, 0x01, 0x20, 0x0C, 0x00, 0x00, 0xA8, 0x03, 0x40, 0x18, 0x00, 0x00, 0x50, 0x07, 0x80, 0x30, 0x00, 0x00, 0xA0, 0x0E, 0x00, 0x61, 0x00, 0x00, 0x40, 0x1D, 0x00, 0xC2, 0x00, 0x00, 0x80, 0x3A, 0x00, 0x84, 0x01, 0x00, 0x00, 0x75, 0x00, 0x08, 0x03, 0x00, 0x00, 0xEA, 0x00, 0x10, 0x06, 0x00, 0x00, 0xD4, 0x01, 0x20, 0x0C, 0x00, 0x00, 0xA8, 0x03, 0x40, 0x18, 0x00, 0x00, 0x50, 0x07, 0x80, 0x30, 0x00, 0x00, 0xA0, 0x0E, 0x00, 0x61, 0x00, 0x00, 0x40, 0x1D, 0x00, 0xC2, 0x00, 0x00, 0x80, 0x3A, 0x00, 0x84, 0x01, 0x00, 0x00, 0x75, 0x00, 0x08, 0x03, 0x00, 0x00, 0xEA, 0x00, 0x10, 0x06, 0x00, 0x00, 0xD4, 0x01, 0x20, 0x0C, 0x00, 0x00, 0xA8, 0x03, 0x40, 0x18, 0x00, 0x00, 0x50, 0x07, 0x80, 0x30, 0x00, 0x00, 0xA0, 0x0E, 0x00, 0x61, 0x00, 0x00, 0x40, 0x1D, 0x00, 0xC2, 0x00, 0x00, 0x80, 0x3A, 0x00, 0x84, 0x01, 0x00, 0x00, 0x75, 0x00, 0x08, 0x03, 0x00, 0x00, 0xEA, 0x00, 0x10, 0x06, 0x00, 0x00, 0xD4, 0x01, 0x20, 0x0C, 0x00, 0x00, 0xA8, 0x03, 0x40, 0x18, 0x00, 0x00, 0x50, 0x07, 0x80, 0x30, 0x00, 0x00, 0xA0, 0x0E, 0x00, 0x61, 0x00, 0x00, 0x40, 0x1D, 0x00, 0xC2, 0x00, 0x00, 0x80, 0x3A, 0x00, 0x84, 0x01, 0x00, 0x00, 0x75, 0x00, 0x08, 0x03, 0x00, 0x00, 0xEA, 0x00, 0x10, 0x06, 0x00, 0x00, 0xD4, 0x01, 0x20, 0x0C, 0x00, 0x00, 0xA8, 0x03, 0x40, 0x18, 0x00, 0x00, 0x50, 0x07, 0x80, 0x30, 0x00, 0x00, 0xA0, 0x0E, 0x00, 0x61, 0x00, 0x00, 0x40, 0x1D, 0x00, 0xC2, 0x00, 0x00, 0x80, 0x3A, 0x00, 0x84, 0x01, 0x00, 0x00, 0x75, 0x00, 0x08, 0x03, 0x00, 0x00, 0xEA, 0x00, 0x10, 0xF6, 0x7A, 0xBD, 0xFE, 0xBC, 0x00, 0x97, 0xF7, 0x9C, 0x81, 0xBA, 0x00, 0x20, 0x1D, 0x0E, 0x00, 0xD2, 0xE1, 0x00, 0x20, 0x1D, 0x0E, 0x00, 0xD2, 0xE1, 0x00, 0x20, 0x1D, 0x0E, 0x00, 0xD2, 0xE1, 0x00, 0x20, 0x1D, 0x0E, 0x00, 0xD2, 0xE1, 0x00, 0x20, 0x1D, 0x0E, 0x00, 0xD2, 0xE1, 0x00, 0x20, 0x1D, 0x0E, 0x00, 0xD2, 0xE1, 0x00, 0x20, 0x1D, 0x0E, 0x00, 0xD2, 0xE1, 0x00, 0x10, 0xE6, 0x73, 0x60, 0x9F, 0x03, 0xD7, 0x01, 0x20, 0xEC, 0x79, 0x01, 0xFE, 0xF6, 0x27, 0x19, 0x97, 0xF6, 0x9C, 0x81, 0xBA, 0x00, 0x10, 0x06, 0x00, 0x00, 0xD4, 0x01, 0x20, 0x0C, 0x00, 0x00, 0xA8, 0x03, 0x40, 0x18, 0x00, 0x00, 0x50, 0x07, 0x80, 0x30, 0x00, 0x00, 0xA0, 0x0E, 0x00, 0x61, 0x00, 0x00, 0x40, 0x1D, 0x00, 0xC2, 0x00, 0x00, 0x80, 0x3A, 0x00, 0x84, 0x01, 0x00, 0x00, 0x75, 0x00, 0x08, 0x03, 0x00, 0x00, 0xEA, 0x00, 0x10, 0x06, 0x00, 0x00, 0xD4, 0x01, 0x20, 0x0C, 0x00, 0x00, 0xA8, 0x03, 0x40, 0x18, 0x00, 0x00, 0x50, 0x07, 0x80, 0x30, 0x00, 0x00, 0xA0, 0x0E, 0x00, 0x61, 0x00, 0x00, 0x40, 0x1D, 0x00, 0xC2, 0x00, 0x00, 0x80, 0x3A, 0x00, 0x84, 0x01, 0x00, 0x00, 0x75, 0x00, 0x08, 0x03, 0x00, 0x00, 0xEA, 0x00, 0x10, 0x06, 0x00, 0x00, 0xD4, 0x01, 0x20, 0x0C, 0x00, 0x00, 0xA8, 0x03, 0x40, 0x18, 0x00, 0x00, 0x50, 0x07, 0x80, 0x30, 0x00, 0x00, 0xA0, 0x0E, 0x00, 0x61, 0x00, 0x00, 0x40, 0x1D, 0x00, 0xC2, 0x00, 0x00, 0x80, 0x3A, 0x00, 0x84, 0x01, 0x00, 0x00, 0x75, 0x00, 0x08, 0x03, 0x00, 0x00, 0xEA, 0x00, 0x10, 0x06, 0x00, 0x00, 0xD4, 0x01, 0x20, 0x0C, 0x00, 0x00, 0xA8, 0x03, 0x40, 0x18, 0x00, 0x00, 0x50, 0x07, 0x80, 0x30, 0x00, 0x00, 0xA0, 0x0E, 0x00, 0x61, 0x00, 0x00, 0x40, 0x1D, 0x00, 0xC2, 0x00, 0x00, 0x80, 0x3A, 0x00, 0x84, 0x01, 0x00, 0x00, 0x75, 0x00, 0x08, 0x03, 0x00, 0x00, 0xEA, 0x00, 0x10, 0x06, 0x00, 0x00, 0xD4, 0x01, 0x20, 0x0C, 0x00, 0x00, 0xA8, 0x03, 0x40, 0x18, 0x00, 0x00, 0x50, 0x07, 0x80, 0x30, 0x00, 0x00, 0xA0, 0x0E, 0x00, 0x61, 0x00, 0x00, 0x40, 0x1D, 0x00, 0xC2, 0x00, 0x00, 0x80, 0x3A, 0x00, 0x84, 0x01, 0x00, 0x00, 0x75, 0x00, 0x08, 0x03, 0x00, 0x00, 0xEA, 0x00, 0x10, 0x06, 0x00, 0x00, 0xD4, 0x01, 0x20, 0x0C, 0x00, 0x00, 0xA8, 0x03, 0x40, 0x18, 0x00, 0x00, 0x50, 0x07, 0x80, 0x30, 0x00, 0x00, 0xA0, 0x0E, 0x00, 0x61, 0x00, 0x00, 0x40, 0x1D, 0x00, 0xC2, 0x00, 0x00, 0x80, 0x3A, 0x00, 0x84, 0x01, 0x00, 0x00, 0x75, 0x00, 0x08, 0x03, 0x00, 0x00, 0xEA, 0x00, 0x10, 0x06, 0x00, 0x00, 0xD4, 0x01, 0x20, 0x0C, 0x00, 0x00, 0xA8, 0x03, 0x40, 0x18, 0x00, 0x00, 0x50, 0x07, 0x80, 0x30, 0x00, 0x00, 0xA0, 0x0E, 0x00, 0x61, 0x00, 0x00, 0x40, 0x1D, 0x00, 0xC2, 0x00, 0x00, 0x80, 0x3A, 0x00, 0x84, 0x01, 0x00, 0x00, 0x75, 0x00, 0x08, 0x03, 0x00, 0x00, 0xEA, 0x00, 0x10, 0x06, 0x00, 0x00, 0xD4, 0x01, 0x20, 0x0C, 0x00, 0x00, 0xA8, 0x03, 0x40, 0x18, 0x00, 0x00, 0x50, 0x07, 0x80, 0x30, 0x00, 0x00, 0xA0, 0x0E, 0x00, 0x61, 0x00, 0x00, 0x40, 0x1D, 0x00, 0xC2, 0x00, 0x00, 0x80, 0x3A, 0x00, 0x84, 0x01, 0x00, 0x00, 0x75, 0x00, 0x08, 0x7B, 0xBD, 0x5E, 0x7F, 0x5E, 0x80, 0xCB, 0x7B, 0xCE, 0x40, 0x5D, 0x00, 0x90, 0x0E, 0x07, 0x00, 0xE9, 0x70, 0x00, 0x90, 0x0E, 0x07, 0x00, 0xE9, 0x70, 0x00, 0x90, 0x0E, 0x07, 0x00, 0xE9, 0x70, 0x00, 0x90, 0x0E, 0x07, 0x00, 0xE9, 0x70, 0x00, 0x90, 0x0E, 0x07, 0x00, 0xE9, 0x70, 0x00, 0x90, 0x0E, 0x07, 0x00, 0xE9, 0x70, 0x00, 0x90, 0x0E, 0x07, 0x00, 0xE9, 0x70, 0x00, 0x90, 0xCE, 0xF6, 0xFD, 0xFD, 0x1F, 0x71, 0x3E, 0x3B, 0xC8, 0x6B, 0xA5, 0x95, 0x25, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82 };
 			//File.WriteAllBytes(@"C:\Users\Bobby\Desktop\test.png", expected);
 
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 				var logo1 = browser.First<Image>("logo1");
@@ -198,7 +197,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void ClickButton()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 				Assert.AreEqual("Text Area's \"Quotes\" Data", browser.First<TextArea>("textarea").Text);
@@ -210,7 +209,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void ClickButtonByName()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 				browser.First(x => x.Name == "buttonByName").Click();
@@ -223,7 +222,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void ClickCheckbox()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/inputs.html");
 
@@ -240,7 +239,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void ClickInputButton()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 				browser.First<Button>("inputButton").Click();
@@ -253,7 +252,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void ClickLink()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 				browser.First("link").Click();
@@ -266,7 +265,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void ClickRadioButton()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/inputs.html");
 
@@ -285,7 +284,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void Close()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				Assert.IsFalse(browser.IsClosed, "The browser should not be closed.");
 				browser.Close();
@@ -296,7 +295,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void DeepDescendants()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/relationships.html");
 				Assert.AreEqual(4043, browser.Descendants().Count());
@@ -311,7 +310,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void DetectAngularJavaScriptLibrary()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/Angular.html#!/");
 				Assert.IsTrue(browser.JavascriptLibraries.Contains(JavaScriptLibrary.Angular));
@@ -321,7 +320,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void DetectBootstrap2JavaScriptLibrary()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/Bootstrap2.html");
 				Assert.IsTrue(browser.JavascriptLibraries.Contains(JavaScriptLibrary.Bootstrap2));
@@ -331,7 +330,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void DetectBootstrap3JavaScriptLibrary()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/Bootstrap3.html");
 				Assert.IsTrue(browser.JavascriptLibraries.Contains(JavaScriptLibrary.Bootstrap3));
@@ -341,7 +340,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void DetectJQueryJavaScriptLibrary()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/JQuery.html");
 				Assert.IsTrue(browser.JavascriptLibraries.Contains(JavaScriptLibrary.JQuery));
@@ -351,7 +350,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void DetectMomentJavaScriptLibrary()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/Moment.html");
 				Assert.IsTrue(browser.JavascriptLibraries.Contains(JavaScriptLibrary.Moment));
@@ -361,7 +360,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void DetectNoJavaScriptLibrary()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/Inputs.html");
 				Assert.AreEqual(0, browser.JavascriptLibraries.Count());
@@ -371,7 +370,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void DetectVueJavaScriptLibrary()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/Vue.html");
 				Assert.IsTrue(browser.JavascriptLibraries.Contains(JavaScriptLibrary.Vue));
@@ -381,7 +380,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void ElementChildren()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/relationships.html");
 				Assert.AreEqual(4043, browser.Descendants().Count());
@@ -396,7 +395,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void ElementParent()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/relationships.html");
 				var element = browser.First("child1div").Parent;
@@ -407,7 +406,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void Enabled()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/inputs.html");
 				Assert.AreEqual(true, browser.First<Button>("button").Enabled);
@@ -418,7 +417,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void EnumerateDivisions()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 				var elements = browser.Descendants<Division>().ToList();
@@ -434,7 +433,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void EnumerateHeaders()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 				var elements = browser.Descendants<Header>().ToList();
@@ -450,7 +449,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void FilterElementByTextElements()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/inputs.html");
 				var inputs = browser.Descendants<TextInput>().ToList();
@@ -463,7 +462,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void FindElementByClass()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 				var elements = browser.Descendants()
@@ -476,7 +475,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void FindElementByClassByValueAccessor()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 				var elements = browser.Descendants()
@@ -488,7 +487,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void FindElementByClassProperty()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 				var elements = browser.Descendants<Link>().Where(x => x.Class == "bold");
@@ -499,7 +498,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void FindElementByDataAttribute()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 
@@ -513,7 +512,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void FindHeadersByText()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 				var elements = browser.Descendants<Header>().Where(x => x.Text.Contains("Header"));
@@ -524,7 +523,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void FindSpanElementByText()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 				var elements = browser.Descendants<Span>(x => x.Text == "SPAN with ID of 1");
@@ -535,7 +534,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void FindTextInputsByText()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 				var elements = browser.Descendants<TextInput>().Where(x => x.Text == "Hello World");
@@ -546,7 +545,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void Focus()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/inputs.html");
 
@@ -560,7 +559,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void FocusEvent()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 
@@ -575,7 +574,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void FormWithSubInputsWithNamesOfFormAttributeNames()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/forms.html");
 				Assert.AreEqual(10, browser.Descendants().Count());
@@ -604,7 +603,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void FormWithSubInputsWithNamesOfFormAttributeNamesButMainFormHasNoId()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/forms2.html");
 				Assert.AreEqual(10, browser.Descendants().Count());
@@ -631,7 +630,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void GetAndSetHtml()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				var guid = Guid.NewGuid().ToString();
 				browser.NavigateTo(TestSite + "/main.html");
@@ -652,7 +651,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void GetAndSetHtmlForElement()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				var guid = Guid.NewGuid().ToString();
 				var input = $"Special characters like \", ', \0, \", \n, \r, \r\n, <, >, should not break html... however &amp; must be already encoded! \n{guid}";
@@ -672,7 +671,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void GetAndSetHtmlOfCodeBlock()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				var guid = Guid.NewGuid().ToString();
 				browser.NavigateTo(TestSite + "/main.html");
@@ -692,7 +691,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void GetAndSetHtmlOnAboutBlankPage()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo("about:blank");
 				var actual = browser.GetHtml();
@@ -713,7 +712,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void GetElementByNameIndex()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 				var actual = browser.First(x => x.Name == "inputName").Name;
@@ -724,7 +723,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void GetNextSibling()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/Angular.html#!/");
 
@@ -747,7 +746,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void GetPreviousSibling()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/Angular.html#!/");
 
@@ -769,7 +768,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void HighlightAllElements()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 				var elements = browser.OfType<WebElement>();
@@ -788,7 +787,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void HighlightElement()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/inputs.html");
 
@@ -807,7 +806,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void IframesShouldHaveAccess()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/iframe.html");
 				browser.First<TextInput>("id").TypeText("hello", true);
@@ -826,7 +825,7 @@ namespace TestR.AutomationTests.Web
 		{
 			Browser.CloseBrowsers();
 
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo("https://www.bing.com");
 				browser.Descendants().ToList().Count.Dump();
@@ -843,7 +842,7 @@ namespace TestR.AutomationTests.Web
 		{
 			Browser.CloseBrowsers();
 
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo("https://epiccoders.com");
 				browser.Descendants().ToList().Count.Dump();
@@ -855,7 +854,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void Location()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 				var button = browser.First("button");
@@ -870,7 +869,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void MiddleClickButton()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 				var button = browser.First("button");
@@ -886,7 +885,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void NavigateThenRunJavascript()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 
@@ -901,7 +900,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void NavigateTo()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				var expected = TestSite + "/main.html";
 				browser.NavigateTo(expected);
@@ -912,7 +911,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void NavigateToFromHttpToHttps()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				var expected = TestSite.Replace("https://", "http://") + "/main.html";
 				Assert.IsFalse(expected.StartsWith("https://"));
@@ -925,7 +924,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void NavigateToFromHttpToHttpsWhenAlreadyOnExpectedUri()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo($"{TestSite}/main.html");
 				var expected = TestSite.Replace("https://", "http://") + "/main.html";
@@ -939,7 +938,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void NavigateToSameUri()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				var expected = TestSite + "/main.html";
 				browser.NavigateTo(expected);
@@ -952,7 +951,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void NavigateToSameUriWithEndingForwardSlash()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				var expected = TestSite + "/";
 				browser.NavigateTo(expected);
@@ -965,7 +964,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void NavigateToWithDifferentFinalUri()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/Angular.html");
 				Assert.AreEqual(TestSite + "/Angular.html#!/", browser.Uri);
@@ -975,7 +974,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void RawHtml()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/Jquery.html");
 				var test = browser.RawHtml.Trim();
@@ -987,7 +986,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void RedirectByLink()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				var expected = TestSite + "/main.html";
 				browser.NavigateTo(expected);
@@ -1005,7 +1004,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void RedirectByLinkWithoutProvidingExpectedUri()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				var expected = TestSite + "/main.html";
 				browser.NavigateTo(expected);
@@ -1023,7 +1022,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void RedirectByScript()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				var expected = TestSite + "/main.html";
 				browser.NavigateTo(expected);
@@ -1042,7 +1041,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void RedirectByScriptWithoutProvidedExpectedUri()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				var expected = TestSite + "/main.html";
 				browser.NavigateTo(expected);
@@ -1061,7 +1060,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void Refresh()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				var expected = TestSite + "/angular.html";
 				browser.NavigateTo(expected);
@@ -1094,7 +1093,8 @@ namespace TestR.AutomationTests.Web
 				var location = button.Location;
 				Mouse.MoveTo(location.X + 60, location.Y + 22);
 
-				var result = Utility.Wait(() => DesktopElement.FromCursor()?.TypeName == "menu item", Application.DefaultTimeout, 50);
+				// had to add "pane" as a valid option because FF uses a custom control now.
+				var result = Utility.Wait(() => DesktopElement.FromCursor()?.TypeName == "menu item" || DesktopElement.FromCursor()?.TypeName == "pane", 1000, 50);
 				Assert.IsTrue(result, "Failed to find menu.");
 
 				Mouse.LeftClick(button.Location);
@@ -1104,7 +1104,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void ScrollIntoView()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				var location = browser.Location;
 				var size = browser.Size;
@@ -1130,7 +1130,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void SelectSelectedOption()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 				var select = browser.First<Select>("select");
@@ -1143,7 +1143,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void SetButtonText()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 				browser.First<Button>("button").Text = "Hello";
@@ -1156,7 +1156,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void SetInputButtonText()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 				browser.First<Button>("inputButton").Text = "Hello";
@@ -1169,7 +1169,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void SetSelectText()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 				var select = browser.First<Select>("select");
@@ -1185,7 +1185,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void SetTextAllInputs()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/inputs.html");
 
@@ -1214,7 +1214,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void SetTextWithNewLine()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/inputs.html");
 				var input = browser.First<TextArea>("textarea");
@@ -1226,7 +1226,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void SetThenGetHtmlOnAboutBlankPage()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.SetHtml("aoeu");
 				Assert.IsTrue(browser.GetHtml().Contains("aoeu"));
@@ -1245,7 +1245,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void SetThenGetHtmlOnAboutBlankPageMoreCharacters()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo("about:blank");
 				browser.SetHtml("aoeu");
@@ -1265,7 +1265,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void SetThenGetHtmlOnAboutBlankPageWithAllCharacters()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo("about:blank");
 
@@ -1296,7 +1296,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void SetThenGetHtmlOnAboutBlankPageWithRandomCharacters()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo("about:blank");
 
@@ -1323,7 +1323,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void SetValueWithNewLine()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/inputs.html");
 				var input = browser.First<TextArea>("textarea");
@@ -1335,7 +1335,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void TestContentForInputText()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/TextContent.html");
 
@@ -1347,7 +1347,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void TextAreaValue()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 
@@ -1362,7 +1362,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void TextContentForDiv()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/TextContent.html");
 
@@ -1374,7 +1374,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void TextContentForDivWithChildren()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/TextContent.html");
 
@@ -1386,7 +1386,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void TextContentForHeader1()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/TextContent.html");
 
@@ -1398,7 +1398,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void TextContentForHeader2()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/TextContent.html");
 
@@ -1410,7 +1410,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void TextContentForHeader3()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/TextContent.html");
 
@@ -1422,7 +1422,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void TextContentForHeader4()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/TextContent.html");
 
@@ -1434,7 +1434,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void TextContentForHeader5()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/TextContent.html");
 
@@ -1446,7 +1446,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void TypeTextAllInputs()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/inputs.html");
 
@@ -1475,7 +1475,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void TypeTextAppendInput()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/inputs.html");
 				var input = browser.First<TextInput>("text");
@@ -1488,7 +1488,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void TypeTextPasswordInput()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/inputs.html");
 				var input = browser.First<TextInput>("password");
@@ -1500,7 +1500,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void TypeTextSelectInput()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 				var select = browser.First<Select>("select");
@@ -1513,7 +1513,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void TypeTextSetInput()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/inputs.html");
 				var input = browser.First<TextInput>("text");
@@ -1526,7 +1526,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void TypeTextUsingKeyboard()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/inputs.html");
 				var input = browser.First("text");
@@ -1538,7 +1538,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void TypeTextWithNewLine()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/inputs.html");
 				var input = browser.First<TextArea>("textarea");
@@ -1550,7 +1550,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void VueInputTrigger()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/Vue.html");
 				Assert.AreEqual(false, browser.First<Button>("submit").Enabled);
@@ -1570,7 +1570,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void WebElementRefresh()
 		{
-			ForEachBrowser(browser =>
+			ForAllBrowsers(browser =>
 			{
 				browser.Timeout = DefaultTimeout;
 				browser.NavigateTo(TestSite + "/Angular.html#!/");
@@ -1587,11 +1587,11 @@ namespace TestR.AutomationTests.Web
 			});
 		}
 
-		private void ForEachBrowser(Action<Browser> action)
+		private void ForAllBrowsers(Action<Browser> action)
 		{
 			CleanupBrowsers = true;
 			BrowserType = BrowserType.All;
-			ForEachBrowser(action, false);
+			base.ForAllBrowsers(action);
 		}
 
 		#endregion

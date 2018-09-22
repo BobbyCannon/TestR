@@ -7,6 +7,8 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TestR.Desktop.Elements;
@@ -356,7 +358,7 @@ namespace TestR.Web
 		}
 
 		/// <summary>
-		/// Process an action against a new instance of each browser type provided.
+		/// Process an action against a new instance of each browser type provided (serial).
 		/// </summary>
 		/// <param name="action"> The action to perform against each browser. </param>
 		/// <param name="type"> The type of the browser to process against. </param>
@@ -370,6 +372,62 @@ namespace TestR.Web
 					action(browser);
 				}
 			}
+		}
+
+		/// <summary>
+		/// Process an action against a new instance of each browser type provided at the same time (parallel).
+		/// </summary>
+		/// <param name="action"> The action to perform against each browser. </param>
+		/// <param name="type"> The type of the browser to process against. </param>
+		/// <param name="timeout"> The timeout to wait for browsers to complete </param>
+		public static void ForAllBrowsers(Action<Browser> action, BrowserType type, TimeSpan timeout)
+		{
+			var types = type.GetTypeArray();
+			Task[] tasks = types.Select(x => StartStaTask(() =>
+				{
+					using (var browser = AttachOrCreate(x).First())
+					{
+						action(browser);
+					}
+				}).Task
+			).ToArray();
+
+			Task.WaitAll(tasks, TimeSpan.FromMinutes(5));
+
+			if (!tasks.Any(x => x.IsFaulted))
+			{
+				return;
+			}
+
+			var exceptions = tasks.SelectMany(x => x.Exception?.InnerExceptions).Where(x => x != null).ToList();
+			throw new AggregateException("Failed to run test for all browsers", exceptions);
+		}
+
+		/// <summary>
+		/// Runs a task in an STA thread.
+		/// </summary>
+		/// <param name="action"> The action to run. </param>
+		/// <returns> The task started as STA thread running the action. </returns>
+		private static TaskCompletionSource<object> StartStaTask(Action action)
+		{
+			var tcs = new TaskCompletionSource<object>();
+			var thread = new Thread(() =>
+			{
+				try
+				{
+					action();
+					tcs.SetResult(null);
+				}
+				catch (Exception e)
+				{
+					tcs.TrySetException(e);
+				}
+			});
+
+			thread.SetApartmentState(ApartmentState.STA);
+			thread.Start();
+
+			return tcs;
 		}
 
 		/// <summary>

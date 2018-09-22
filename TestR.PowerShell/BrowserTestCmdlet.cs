@@ -17,6 +17,7 @@ namespace TestR.PowerShell
 		protected BrowserTestCmdlet()
 		{
 			BrowserType = BrowserType.All;
+			Timeout = TimeSpan.FromSeconds(30);
 		}
 
 		#endregion
@@ -29,9 +30,49 @@ namespace TestR.PowerShell
 		[Parameter]
 		public BrowserType BrowserType { get; set; }
 
+		/// <summary>
+		/// Gets or sets the browser timeout to run each test with.
+		/// </summary>
+		[Parameter]
+		public TimeSpan Timeout { get; set; }
+
 		#endregion
 
 		#region Methods
+
+		/// <summary>
+		/// Run a test against each browser. BrowserType property will determine which browsers to run the test against.
+		/// </summary>
+		/// <param name="action"> The action to run each browser against. </param>
+		/// <param name="useSecondaryMonitor"> The flag to determine to attempt to use secondary monitor. </param>
+		/// <param name="resizeBrowsers"> The flag to determine to resize the browsers. </param>
+		/// <seealso cref="BrowserType" />
+		public void ForAllBrowsers(Action<Browser> action, bool useSecondaryMonitor = true, bool resizeBrowsers = true)
+		{
+			var screen = useSecondaryMonitor ? Screen.AllScreens.FirstOrDefault(x => x.Primary == false) ?? Screen.AllScreens.First(x => x.Primary) : Screen.AllScreens.First(x => x.Primary);
+			var browserOffset = 0;
+			var browserWidth = screen.WorkingArea.Width / BrowserType.Count();
+
+			Browser.ForAllBrowsers(x =>
+			{
+				try
+				{
+					if (resizeBrowsers)
+					{
+						x.MoveWindow(screen.WorkingArea.Left + browserOffset++ * browserWidth, 0, browserWidth, screen.WorkingArea.Height);
+					}
+
+					//x.Timeout = TimeSpan.FromSeconds(2);
+					x.BringToFront();
+					x.NavigateTo("about:blank");
+					action(x);
+				}
+				catch (Exception ex)
+				{
+					throw new Exception("Test failed using " + x.GetType().Name + ".", ex);
+				}
+			}, BrowserType, Timeout);
+		}
 
 		/// <summary>
 		/// Run a test against each browser. BrowserType property will determine which browsers to run the test against.

@@ -2426,6 +2426,13 @@
             <param name="source"> The source string value. </param>
             <returns> The string formatted to be place inside inner string. </returns>
         </member>
+        <member name="M:TestR.Extensions.GetTypeArray(TestR.Web.BrowserType)">
+            <summary>
+            Converts a browser type enum into an array of only individual browser types.
+            </summary>
+            <param name="browserType"> The browser type to convert. </param>
+            <returns> The individual browser type values in the provided type. </returns>
+        </member>
         <member name="M:TestR.Extensions.IsAssemblyDebugBuild(System.Reflection.Assembly)">
             <summary>
             Checks to see if the assembly passed in is a debug build.
@@ -2649,10 +2656,25 @@
         </member>
         <member name="M:TestR.Web.Browser.ForEachBrowser(System.Action{TestR.Web.Browser},TestR.Web.BrowserType)">
             <summary>
-            Process an action against a new instance of each browser type provided.
+            Process an action against a new instance of each browser type provided (serial).
             </summary>
             <param name="action"> The action to perform against each browser. </param>
             <param name="type"> The type of the browser to process against. </param>
+        </member>
+        <member name="M:TestR.Web.Browser.ForAllBrowsers(System.Action{TestR.Web.Browser},TestR.Web.BrowserType,System.TimeSpan)">
+            <summary>
+            Process an action against a new instance of each browser type provided at the same time (parallel).
+            </summary>
+            <param name="action"> The action to perform against each browser. </param>
+            <param name="type"> The type of the browser to process against. </param>
+            <param name="timeout"> The timeout to wait for browsers to complete </param>
+        </member>
+        <member name="M:TestR.Web.Browser.StartStaTask(System.Action)">
+            <summary>
+            Runs a task in an STA thread.
+            </summary>
+            <param name="action"> The action to run. </param>
+            <returns> The task started as STA thread running the action. </returns>
         </member>
         <member name="M:TestR.Web.Browser.GetHtml">
             <summary>
