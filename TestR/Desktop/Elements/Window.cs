@@ -6,6 +6,7 @@ using System.Windows;
 using TestR.Native;
 using UIAutomationClient;
 using Point = System.Drawing.Point;
+using Size = System.Drawing.Size;
 
 #endregion
 
@@ -150,6 +151,16 @@ namespace TestR.Desktop.Elements
 		public void Move(int x, int y, int width, int height)
 		{
 			NativeMethods.MoveWindow(NativeElement.CurrentNativeWindowHandle, x, y, width, height, true);
+		}
+
+		/// <summary>
+		/// Move the window and resize it.
+		/// </summary>
+		/// <param name="location"> The location to move to. </param>
+		/// <param name="size"> The size of the window. </param>
+		public void Move(Point location, Size size)
+		{
+			NativeMethods.MoveWindow(NativeElement.CurrentNativeWindowHandle, location.X, location.Y, size.Width, size.Height, true);
 		}
 
 		/// <summary>

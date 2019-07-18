@@ -177,7 +177,7 @@ namespace TestR.Web
 		/// Attach browsers for each type provided.
 		/// </summary>
 		/// <param name="type"> The type of the browser to attach to. </param>
-		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+		/// <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
 		public static IEnumerable<Browser> AttachBrowsers(BrowserType type = BrowserType.All, bool bringToFront = true)
 		{
 			var response = new List<Browser>();
@@ -244,7 +244,7 @@ namespace TestR.Web
 		/// Attach process as a browser.
 		/// </summary>
 		/// <param name="process"> The process of the browser to attach to. </param>
-		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+		/// <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
 		/// <returns> The browser if successfully attached or otherwise null. </returns>
 		public static Browser AttachToBrowser(Process process, bool bringToFront = true)
 		{
@@ -299,7 +299,7 @@ namespace TestR.Web
 		/// Create browsers for each type provided.
 		/// </summary>
 		/// <param name="type"> The type of the browser to create. </param>
-		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+		/// <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
 		public static IEnumerable<Browser> CreateBrowsers(BrowserType type = BrowserType.All, bool bringToFront = true)
 		{
 			var response = new List<Browser>();
@@ -469,6 +469,8 @@ namespace TestR.Web
 		{
 			Application.Focus();
 			Application.MoveWindow(x, y);
+			Window.Focus();
+			Window.Move(x, y);
 			return this;
 		}
 
@@ -483,6 +485,8 @@ namespace TestR.Web
 		{
 			Application.Focus();
 			Application.MoveWindow(x, y, width, height);
+			Window.Focus();
+			Window.Move(x, y, width, height);
 			return this;
 		}
 
@@ -495,6 +499,8 @@ namespace TestR.Web
 		{
 			Application.Focus();
 			Application.MoveWindow(location, size);
+			Window.Focus();
+			Window.Move(location, size);
 			return this;
 		}
 

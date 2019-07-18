@@ -119,7 +119,7 @@ namespace TestR.Native
 		/// <summary>
 		/// Wait for the process to close if not then kill the process.
 		/// </summary>
-		/// <param name="timeout"> The timout to wait for graceful close. If the timeout is reached then kill the process. The timeout is in milliseconds. </param>
+		/// <param name="timeout"> The timeout to wait for graceful close. If the timeout is reached then kill the process. The timeout is in milliseconds. </param>
 		public void Close(int timeout = 0)
 		{
 			try
@@ -190,7 +190,7 @@ namespace TestR.Native
 		/// <summary>
 		/// Wait for the process to close if not then kill the process.
 		/// </summary>
-		/// <param name="timeout"> The timout to wait for graceful close. If the timeout is reached then kill the process. The timeout is in milliseconds. </param>
+		/// <param name="timeout"> The timeout to wait for graceful close. If the timeout is reached then kill the process. The timeout is in milliseconds. </param>
 		public void Kill(int timeout = 0)
 		{
 			try
@@ -214,7 +214,7 @@ namespace TestR.Native
 		/// <summary>
 		/// Wait for the process to exit.
 		/// </summary>
-		/// <param name="timeout"> The timout to wait for exit. The timeout is in milliseconds. </param>
+		/// <param name="timeout"> The timeout to wait for exit. The timeout is in milliseconds. </param>
 		public void WaitForExit(int timeout = 10000)
 		{
 			try

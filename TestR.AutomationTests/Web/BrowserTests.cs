@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop;
 using TestR.Native;
@@ -1111,11 +1112,13 @@ namespace TestR.AutomationTests.Web
 
 				var location = button.Location;
 				Mouse.MoveTo(location.X + 60, location.Y + 22);
+				Thread.Sleep(1000);
 
 				// had to add "pane" as a valid option because FF uses a custom control now.
-				var result = Utility.Wait(() => DesktopElement.FromCursor()?.TypeName == "menu item" || DesktopElement.FromCursor()?.TypeName == "pane", 1000, 50);
-				Assert.IsTrue(result, "Failed to find menu.");
+				var result = Utility.Wait(() => DesktopElement.FromCursor()?.TypeName.Equals("menu item", StringComparison.OrdinalIgnoreCase) == true 
+					|| DesktopElement.FromCursor()?.TypeName.Equals("pane", StringComparison.OrdinalIgnoreCase) == true, 1000, 50);
 
+				Assert.IsTrue(result, "Failed to find menu.");
 				Mouse.LeftClick(button.Location);
 			});
 		}
@@ -1123,7 +1126,7 @@ namespace TestR.AutomationTests.Web
 		[TestMethod]
 		public void ScrollIntoView()
 		{
-			ForAllBrowsers(browser =>
+			ForEachBrowser(browser =>
 			{
 				var location = browser.Location;
 				var size = browser.Size;
@@ -1143,7 +1146,7 @@ namespace TestR.AutomationTests.Web
 				{
 					browser.MoveWindow(location, size);
 				}
-			});
+			}, resizeBrowsers: false);
 		}
 
 		[TestMethod]
@@ -1606,16 +1609,16 @@ namespace TestR.AutomationTests.Web
 			});
 		}
 
-		private void ForAllBrowsers(Action<Browser> action, BrowserType browserTypes = BrowserType.All)
+		private void ForAllBrowsers(Action<Browser> action, BrowserType browserTypes = BrowserType.All, bool resizeBrowsers = true)
 		{
 			CleanupBrowsers = false;
-			browserTypes.ForAllBrowsers(action);
+			browserTypes.ForAllBrowsers(action, resizeBrowsers: resizeBrowsers);
 		}
 
-		private void ForEachBrowser(Action<Browser> action, BrowserType browserTypes = BrowserType.All)
+		private void ForEachBrowser(Action<Browser> action, BrowserType browserTypes = BrowserType.All, bool resizeBrowsers = true)
 		{
 			CleanupBrowsers = false;
-			browserTypes.ForEachBrowser(action);
+			browserTypes.ForEachBrowser(action, resizeBrowsers: resizeBrowsers);
 		}
 
 		#endregion

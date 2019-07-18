@@ -1,5 +1,6 @@
 ﻿#region References
 
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
@@ -220,6 +221,20 @@ namespace TestR.AutomationTests.Desktop
 				Assert.AreEqual("menuStrip", mainMenu.Id);
 				Assert.AreEqual("MenuStrip", mainMenu.Name);
 				application.Close();
+			}
+		}
+
+		[TestMethod]
+		public void ClickMainMenu()
+		{
+			using (var application = GetApplication())
+			{
+				var window = application.First<Window>("ParentForm");
+				var mainMenu = window.First("menuStrip");
+				var file = mainMenu.First<MenuItem>("File").Click();
+				file.First("Exit").Click(refresh: false);
+
+
 			}
 		}
 

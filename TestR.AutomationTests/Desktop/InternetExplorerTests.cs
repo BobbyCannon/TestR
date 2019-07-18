@@ -140,31 +140,28 @@ namespace TestR.AutomationTests.Desktop
 			{
 				using (var browser2 = InternetExplorer.Create())
 				{
-					browser.WaitForComplete(500);
-					browser2.WaitForComplete(500);
+					Assert.AreEqual(browser.Application.Process.Id, browser2.Application.Process.Id);
+					Assert.AreNotEqual(browser.Window.Handle, browser2.Window.Handle);
 
 					var expected = "https://testr.local/Forms.html";
 					Assert.IsNotNull(browser);
 					browser.NavigateTo(expected);
 					Assert.AreEqual(expected, browser.Uri);
-					browser.MoveWindow(100, 110, 400, 300);
+					browser.MoveWindow(100, 110, 800, 600);
 					Assert.AreEqual(100, browser.Window.Location.X);
 					Assert.AreEqual(110, browser.Window.Location.Y);
-					Assert.AreEqual(400, browser.Window.Size.Width);
-					Assert.AreEqual(300, browser.Window.Size.Height);
+					Assert.AreEqual(800, browser.Window.Size.Width);
+					Assert.AreEqual(600, browser.Window.Size.Height);
 
 					var expected2 = "https://testr.local/Forms2.html";
 					Assert.IsNotNull(browser2);
 					browser2.NavigateTo(expected2);
 					Assert.AreEqual(expected2, browser2.Uri);
-					browser2.MoveWindow(500, 120, 500, 400);
-					Assert.AreEqual(500, browser2.Window.Location.X);
+					browser2.MoveWindow(900, 120, 900, 700);
+					Assert.AreEqual(900, browser2.Window.Location.X);
 					Assert.AreEqual(120, browser2.Window.Location.Y);
-					Assert.AreEqual(500, browser2.Window.Size.Width);
-					Assert.AreEqual(400, browser2.Window.Size.Height);
-
-					Assert.AreEqual(browser.Application.Process.Id, browser2.Application.Process.Id);
-					Assert.AreNotEqual(browser.Window.Handle, browser2.Window.Handle);
+					Assert.AreEqual(900, browser2.Window.Size.Width);
+					Assert.AreEqual(700, browser2.Window.Size.Height);
 				}
 			}
 		}

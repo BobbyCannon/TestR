@@ -121,7 +121,8 @@ namespace TestR
 		/// </summary>
 		/// <param name="x"> Optional X offset when clicking. </param>
 		/// <param name="y"> Optional Y offset when clicking. </param>
-		public abstract Element Click(int x = 0, int y = 0);
+		/// <param name="refresh"> Optional value to refresh the element's children. </param>
+		public abstract Element Click(int x = 0, int y = 0, bool refresh = true);
 
 		/// <summary>
 		/// Set focus on the element.

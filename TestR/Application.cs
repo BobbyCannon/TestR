@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -125,7 +123,7 @@ namespace TestR
 		/// <param name="executablePath"> The path to the executable. </param>
 		/// <param name="arguments"> The arguments for the executable. Arguments are optional. </param>
 		/// <param name="refresh"> The setting to determine to refresh children now. </param>
-		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+		/// <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
 		/// <returns> The instance that represents the application. </returns>
 		public static Application Attach(string executablePath, string arguments = null, bool refresh = true, bool bringToFront = true)
 		{
@@ -138,7 +136,7 @@ namespace TestR
 		/// </summary>
 		/// <param name="handle"> The main window handle of the executable. </param>
 		/// <param name="refresh"> The setting to determine to refresh children now. </param>
-		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+		/// <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
 		/// <returns> The instance that represents the application. </returns>
 		public static Application Attach(IntPtr handle, bool refresh = true, bool bringToFront = true)
 		{
@@ -151,7 +149,7 @@ namespace TestR
 		/// </summary>
 		/// <param name="process"> The process to attach to. </param>
 		/// <param name="refresh"> The setting to determine to refresh children now. </param>
-		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+		/// <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
 		/// <returns> The instance that represents the application. </returns>
 		public static Application Attach(Process process, bool refresh = true, bool bringToFront = true)
 		{
@@ -163,7 +161,7 @@ namespace TestR
 		/// </summary>
 		/// <param name="process"> The process to attach to. </param>
 		/// <param name="refresh"> The setting to determine to refresh children now. </param>
-		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+		/// <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
 		/// <returns> The instance that represents the application. </returns>
 		public static Application Attach(SafeProcess process, bool refresh = true, bool bringToFront = true)
 		{
@@ -192,7 +190,7 @@ namespace TestR
 		/// <param name="executablePath"> The path to the executable. </param>
 		/// <param name="arguments"> The arguments for the executable. Arguments are optional. </param>
 		/// <param name="refresh"> The setting to determine to refresh children now. </param>
-		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+		/// <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
 		/// <returns> The instance that represents the application. </returns>
 		public static Application AttachOrCreate(string executablePath, string arguments = null, bool refresh = true, bool bringToFront = true)
 		{

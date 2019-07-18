@@ -105,7 +105,7 @@ namespace TestR.Native
 		internal static extern bool GetWindowRect(IntPtr hWnd, out Rect lpRect);
 
 		[DllImport("user32.dll", SetLastError = true)]
-		internal static extern bool GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+		internal static extern bool GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 
 		internal static int GetZoneId(string uri)
 		{

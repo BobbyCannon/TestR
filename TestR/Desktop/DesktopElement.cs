@@ -121,7 +121,8 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Gets the name of the control type.
 		/// </summary>
-		public string TypeName => NativeElement.CurrentLocalizedControlType;
+		public string TypeName => string.IsNullOrWhiteSpace(NativeElement.CurrentLocalizedControlType)
+			? GetTypeName(TypeId) : NativeElement.CurrentLocalizedControlType;
 
 		/// <summary>
 		/// Gets a value that indicates whether the element is visible.
@@ -157,7 +158,7 @@ namespace TestR.Desktop
 		#region Methods
 
 		/// <inheritdoc />
-		public override Element Click(int x = 0, int y = 0)
+		public override Element Click(int x = 0, int y = 0, bool refresh = true)
 		{
 			var point = GetClickablePoint(x, y);
 			Mouse.LeftClick(point);
@@ -213,7 +214,7 @@ namespace TestR.Desktop
 			{
 				var automation = new CUIAutomationClass();
 				var element = automation.ElementFromPoint(new tagPOINT { x = point.X, y = point.Y });
-				return element == null ? null : new DesktopElement(element, null, null);
+				return element == null ? null : Create(element, null, null);
 			}
 			catch (Exception)
 			{
@@ -261,8 +262,8 @@ namespace TestR.Desktop
 		public override ElementHost Refresh<T>(Func<T, bool> condition)
 		{
 			Children.Clear();
-			var test = GetChildren(this).Select(x => Create(x, Application, this)).ToList();
-			Children.AddRange(test);
+			
+			GetChildren(this).ForEach(x => Children.Add(Create(x, Application, this)));
 
 			if (Children.Any(condition))
 			{
@@ -270,6 +271,7 @@ namespace TestR.Desktop
 			}
 
 			Children.ForEach(x => x.Refresh(condition));
+
 			return this;
 		}
 
@@ -552,6 +554,141 @@ namespace TestR.Desktop
 			var location = BoundingRectangle;
 			var size = Size;
 			return new Point(location.X + size.Width / 2 + x, location.Y + Size.Height / 2 + y);
+		}
+
+		/// <summary>
+		/// Fallback for native element type text.
+		/// </summary>
+		/// <param name="typeId"> The ID of the type. </param>
+		/// <returns> The name of the type for the provided ID. </returns>
+		private string GetTypeName(int typeId)
+		{
+			switch (typeId)
+			{
+				case UIA_ControlTypeIds.UIA_ButtonControlTypeId:
+					return "Button";
+
+				case UIA_ControlTypeIds.UIA_CalendarControlTypeId:
+					return "Calendar";
+
+				case UIA_ControlTypeIds.UIA_CheckBoxControlTypeId:
+					return "Check Box";
+
+				case UIA_ControlTypeIds.UIA_ComboBoxControlTypeId:
+					return "Combo Box";
+
+				case UIA_ControlTypeIds.UIA_CustomControlTypeId:
+					return "Custom";
+
+				case UIA_ControlTypeIds.UIA_DataGridControlTypeId:
+					return "Data Grid";
+
+				case UIA_ControlTypeIds.UIA_DataItemControlTypeId:
+					return "Item";
+
+				case UIA_ControlTypeIds.UIA_DocumentControlTypeId:
+					return "Document";
+
+				case UIA_ControlTypeIds.UIA_EditControlTypeId:
+					return "Edit";
+
+				case UIA_ControlTypeIds.UIA_GroupControlTypeId:
+					return "Group";
+
+				case UIA_ControlTypeIds.UIA_HeaderControlTypeId:
+					return "Header";
+
+				case UIA_ControlTypeIds.UIA_HeaderItemControlTypeId:
+					return "Header Item";
+
+				case UIA_ControlTypeIds.UIA_HyperlinkControlTypeId:
+					return "Hyperlink";
+
+				case UIA_ControlTypeIds.UIA_ImageControlTypeId:
+					return "Image";
+
+				case UIA_ControlTypeIds.UIA_ListControlTypeId:
+					return "List";
+
+				case UIA_ControlTypeIds.UIA_ListItemControlTypeId:
+					return "List Item";
+
+				case UIA_ControlTypeIds.UIA_MenuControlTypeId:
+					return "Menu";
+
+				case UIA_ControlTypeIds.UIA_MenuBarControlTypeId:
+					return "Menu Bar";
+
+				case UIA_ControlTypeIds.UIA_MenuItemControlTypeId:
+					return "Menu Item";
+
+				case UIA_ControlTypeIds.UIA_PaneControlTypeId:
+					return "Pane";
+
+				case UIA_ControlTypeIds.UIA_ProgressBarControlTypeId:
+					return "Progress Bar";
+
+				case UIA_ControlTypeIds.UIA_RadioButtonControlTypeId:
+					return "Radio Button";
+
+				case UIA_ControlTypeIds.UIA_SeparatorControlTypeId:
+					return "Separator";
+
+				case UIA_ControlTypeIds.UIA_ScrollBarControlTypeId:
+					return "Scroll Bar";
+
+				case UIA_ControlTypeIds.UIA_SemanticZoomControlTypeId:
+					return "Sematic Zoom";
+
+				case UIA_ControlTypeIds.UIA_SliderControlTypeId:
+					return "Slidder";
+
+				case UIA_ControlTypeIds.UIA_SpinnerControlTypeId:
+					return "Spinner";
+
+				case UIA_ControlTypeIds.UIA_SplitButtonControlTypeId:
+					return "Split Button";
+
+				case UIA_ControlTypeIds.UIA_StatusBarControlTypeId:
+					return "Status Bar";
+
+				case UIA_ControlTypeIds.UIA_TabControlTypeId:
+					return "Tab";
+
+				case UIA_ControlTypeIds.UIA_TabItemControlTypeId:
+					return "Tab Item";
+
+				case UIA_ControlTypeIds.UIA_TableControlTypeId:
+					return "Table";
+
+				case UIA_ControlTypeIds.UIA_TextControlTypeId:
+					return "Text";
+
+				case UIA_ControlTypeIds.UIA_ThumbControlTypeId:
+					return "Thumb";
+
+				case UIA_ControlTypeIds.UIA_TitleBarControlTypeId:
+					return "Title Bar";
+
+				case UIA_ControlTypeIds.UIA_ToolBarControlTypeId:
+					return "Tool Bar";
+
+				case UIA_ControlTypeIds.UIA_ToolTipControlTypeId:
+					return "Tool Tip";
+
+				case UIA_ControlTypeIds.UIA_TreeControlTypeId:
+					return "Tree";
+
+				case UIA_ControlTypeIds.UIA_TreeItemControlTypeId:
+					return "Tree Item";
+
+				case UIA_ControlTypeIds.UIA_WindowControlTypeId:
+					return "Window";
+
+				default:
+					Debug.WriteLine("Need to add support for [" + typeId + "] element.");
+					return typeId.ToString();
+			}
 		}
 
 		/// <summary>

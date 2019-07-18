@@ -82,7 +82,7 @@
             <param name="executablePath"> The path to the executable. </param>
             <param name="arguments"> The arguments for the executable. Arguments are optional. </param>
             <param name="refresh"> The setting to determine to refresh children now. </param>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The instance that represents the application. </returns>
         </member>
         <member name="M:TestR.Application.Attach(System.IntPtr,System.Boolean,System.Boolean)">
@@ -91,7 +91,7 @@
             </summary>
             <param name="handle"> The main window handle of the executable. </param>
             <param name="refresh"> The setting to determine to refresh children now. </param>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The instance that represents the application. </returns>
         </member>
         <member name="M:TestR.Application.Attach(System.Diagnostics.Process,System.Boolean,System.Boolean)">
@@ -100,7 +100,7 @@
             </summary>
             <param name="process"> The process to attach to. </param>
             <param name="refresh"> The setting to determine to refresh children now. </param>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The instance that represents the application. </returns>
         </member>
         <member name="M:TestR.Application.Attach(TestR.Native.SafeProcess,System.Boolean,System.Boolean)">
@@ -109,7 +109,7 @@
             </summary>
             <param name="process"> The process to attach to. </param>
             <param name="refresh"> The setting to determine to refresh children now. </param>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The instance that represents the application. </returns>
         </member>
         <member name="M:TestR.Application.AttachOrCreate(System.String,System.String,System.Boolean,System.Boolean)">
@@ -119,7 +119,7 @@
             <param name="executablePath"> The path to the executable. </param>
             <param name="arguments"> The arguments for the executable. Arguments are optional. </param>
             <param name="refresh"> The setting to determine to refresh children now. </param>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The instance that represents the application. </returns>
         </member>
         <member name="M:TestR.Application.BringToFront">
@@ -304,7 +304,7 @@
         <member name="P:TestR.Desktop.DesktopElement.Width">
             <inheritdoc />
         </member>
-        <member name="M:TestR.Desktop.DesktopElement.Click(System.Int32,System.Int32)">
+        <member name="M:TestR.Desktop.DesktopElement.Click(System.Int32,System.Int32,System.Boolean)">
             <inheritdoc />
         </member>
         <member name="M:TestR.Desktop.DesktopElement.Focus">
@@ -395,6 +395,13 @@
             <param name="x"> Optional X offset when calculating. </param>
             <param name="y"> Optional Y offset when calculating. </param>
             <returns> The clickable point for the element. </returns>
+        </member>
+        <member name="M:TestR.Desktop.DesktopElement.GetTypeName(System.Int32)">
+            <summary>
+            Fallback for native element type text.
+            </summary>
+            <param name="typeId"> The ID of the type. </param>
+            <returns> The name of the type for the provided ID. </returns>
         </member>
         <member name="M:TestR.Desktop.DesktopElement.TryGetClickablePoint(System.Drawing.Point@,System.Int32,System.Int32)">
             <summary>
@@ -585,12 +592,13 @@
             Gets a value indicating whether this menu item supports expanding and collapsing pattern.
             </summary>
         </member>
-        <member name="M:TestR.Desktop.Elements.MenuItem.Click(System.Int32,System.Int32)">
+        <member name="M:TestR.Desktop.Elements.MenuItem.Click(System.Int32,System.Int32,System.Boolean)">
             <summary>
             Performs mouse click at the center of the element.
             </summary>
             <param name="x"> Optional X offset when clicking. </param>
             <param name="y"> Optional Y offset when clicking. </param>
+            <param name="refresh"> Optional value to refresh the element's children. </param>
         </member>
         <member name="M:TestR.Desktop.Elements.MenuItem.Collapse">
             <summary>
@@ -782,6 +790,13 @@
             <param name="y"> The y value of the position to move to. </param>
             <param name="width"> The width to set. </param>
             <param name="height"> The height to set. </param>
+        </member>
+        <member name="M:TestR.Desktop.Elements.Window.Move(System.Drawing.Point,System.Drawing.Size)">
+            <summary>
+            Move the window and resize it.
+            </summary>
+            <param name="location"> The location to move to. </param>
+            <param name="size"> The size of the window. </param>
         </member>
         <member name="M:TestR.Desktop.Elements.Window.Resize(System.Int32,System.Int32)">
             <summary>
@@ -1129,7 +1144,7 @@
             <summary>
             Wait for the process to close if not then kill the process.
             </summary>
-            <param name="timeout"> The timout to wait for graceful close. If the timeout is reached then kill the process. The timeout is in milliseconds. </param>
+            <param name="timeout"> The timeout to wait for graceful close. If the timeout is reached then kill the process. The timeout is in milliseconds. </param>
         </member>
         <member name="M:TestR.Native.SafeProcess.Dispose">
             <summary>
@@ -1158,13 +1173,13 @@
             <summary>
             Wait for the process to close if not then kill the process.
             </summary>
-            <param name="timeout"> The timout to wait for graceful close. If the timeout is reached then kill the process. The timeout is in milliseconds. </param>
+            <param name="timeout"> The timeout to wait for graceful close. If the timeout is reached then kill the process. The timeout is in milliseconds. </param>
         </member>
         <member name="M:TestR.Native.SafeProcess.WaitForExit(System.Int32)">
             <summary>
             Wait for the process to exit.
             </summary>
-            <param name="timeout"> The timout to wait for exit. The timeout is in milliseconds. </param>
+            <param name="timeout"> The timeout to wait for exit. The timeout is in milliseconds. </param>
         </member>
         <member name="M:TestR.Native.SafeProcess.WaitForInputIdle(System.Int32)">
             <summary>
@@ -1209,6 +1224,14 @@
             <summary>
             Gets a list of safe processes filtered by provided filter.
             </summary>
+            <param name="filter"> The filter to reduce collection. </param>
+            <returns> The processes that match the filter. </returns>
+        </member>
+        <member name="M:TestR.Native.ProcessService.WhereByName(System.String,System.Func{TestR.Native.SafeProcess,System.Boolean})">
+            <summary>
+            Gets a list of safe processes filtered by provided filter.
+            </summary>
+            <param name="name"> The name of the process. </param>
             <param name="filter"> The filter to reduce collection. </param>
             <returns> The processes that match the filter. </returns>
         </member>
@@ -1909,12 +1932,13 @@
             Takes a snippet of the element.
             </summary>
         </member>
-        <member name="M:TestR.Element.Click(System.Int32,System.Int32)">
+        <member name="M:TestR.Element.Click(System.Int32,System.Int32,System.Boolean)">
             <summary>
             Performs mouse click at the center of the element.
             </summary>
             <param name="x"> Optional X offset when clicking. </param>
             <param name="y"> Optional Y offset when clicking. </param>
+            <param name="refresh"> Optional value to refresh the element's children. </param>
         </member>
         <member name="M:TestR.Element.Focus">
             <summary>
@@ -2623,7 +2647,7 @@
             Attach browsers for each type provided.
             </summary>
             <param name="type"> The type of the browser to attach to. </param>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
         </member>
         <member name="M:TestR.Web.Browser.AttachOrCreate(TestR.Web.BrowserType)">
             <summary>
@@ -2636,7 +2660,7 @@
             Attach process as a browser.
             </summary>
             <param name="process"> The process of the browser to attach to. </param>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The browser if successfully attached or otherwise null. </returns>
         </member>
         <member name="M:TestR.Web.Browser.BringToFront">
@@ -2660,7 +2684,7 @@
             Create browsers for each type provided.
             </summary>
             <param name="type"> The type of the browser to create. </param>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
         </member>
         <member name="M:TestR.Web.Browser.ExecuteScript(System.String,System.Boolean)">
             <summary>
@@ -2878,7 +2902,7 @@
             <summary>
             Attempts to attach to an existing browser.
             </summary>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The browser instance or null if not found. </returns>
         </member>
         <member name="M:TestR.Web.Browsers.Chrome.Attach(System.Diagnostics.Process,System.Boolean)">
@@ -2886,14 +2910,14 @@
             Attempts to attach to an existing browser.
             </summary>
             <param name="process"> The process to attach to. </param>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The browser instance or null if not found. </returns>
         </member>
         <member name="M:TestR.Web.Browsers.Chrome.AttachOrCreate(System.Boolean)">
             <summary>
             Attempts to attach to an existing browser. If one is not found then create and return a new one.
             </summary>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The browser instance. </returns>
         </member>
         <member name="M:TestR.Web.Browsers.Chrome.Create(System.Boolean)">
@@ -2901,7 +2925,7 @@
             Attempts to create a new browser. If one is not found then we'll make sure it was started with the
             remote debugger argument. If not an exception will be thrown.
             </summary>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The browser instance. </returns>
         </member>
         <member name="M:TestR.Web.Browsers.Chrome.BrowserNavigateTo(System.String)">
@@ -2963,7 +2987,7 @@
             <summary>
             Attempts to attach to an existing browser.
             </summary>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> An instance of an Internet Explorer browser. </returns>
         </member>
         <member name="M:TestR.Web.Browsers.Edge.Attach(System.Diagnostics.Process,System.Boolean)">
@@ -2971,21 +2995,21 @@
             Attempts to attach to an existing browser.
             </summary>
             <param name="process"> The process to attach to. </param>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The browser instance or null if not found. </returns>
         </member>
         <member name="M:TestR.Web.Browsers.Edge.AttachOrCreate(System.Boolean)">
             <summary>
             Attempts to attach to an existing browser. If one is not found then create and return a new one.
             </summary>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> An instance of an Internet Explorer browser. </returns>
         </member>
         <member name="M:TestR.Web.Browsers.Edge.Create(System.Boolean)">
             <summary>
             Creates a new instance of an Edge browser.
             </summary>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> An instance of an Edge browser. </returns>
         </member>
         <member name="M:TestR.Web.Browsers.Edge.MoveWindow(System.Int32,System.Int32,System.Int32,System.Int32)">
@@ -3057,7 +3081,7 @@
             <summary>
             Attempts to attach to an existing browser.
             </summary>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The browser instance or null if not found. </returns>
         </member>
         <member name="M:TestR.Web.Browsers.Firefox.Attach(System.Diagnostics.Process,System.Boolean)">
@@ -3065,14 +3089,14 @@
             Attempts to attach to an existing browser.
             </summary>
             <param name="process"> The process to attach to. </param>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The browser instance or null if not found. </returns>
         </member>
         <member name="M:TestR.Web.Browsers.Firefox.AttachOrCreate(System.Boolean)">
             <summary>
             Attempts to attach to an existing browser. If one is not found then create and return a new one.
             </summary>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The browser instance. </returns>
         </member>
         <member name="M:TestR.Web.Browsers.Firefox.Create(System.Boolean)">
@@ -3083,7 +3107,7 @@
             The Firefox browser must have the "listen 6000" command run in the console to enable remote debugging. A newly created
             browser will not be able to connect until someone manually starts the remote debugger.
             </remarks>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The browser instance. </returns>
         </member>
         <member name="M:TestR.Web.Browsers.Firefox.BrowserNavigateTo(System.String)">
@@ -3145,7 +3169,7 @@
             <summary>
             Attempts to attach to an existing browser.
             </summary>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> An instance of an Internet Explorer browser. </returns>
         </member>
         <member name="M:TestR.Web.Browsers.InternetExplorer.Attach(System.Diagnostics.Process,System.Boolean)">
@@ -3153,21 +3177,21 @@
             Attempts to attach to an existing browser.
             </summary>
             <param name="process"> The process to attach to. </param>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The browser instance or null if not found. </returns>
         </member>
         <member name="M:TestR.Web.Browsers.InternetExplorer.AttachOrCreate(System.Boolean)">
             <summary>
             Attempts to attach to an existing browser. If one is not found then create and return a new one.
             </summary>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> An instance of an Internet Explorer browser. </returns>
         </member>
         <member name="M:TestR.Web.Browsers.InternetExplorer.Create(System.Boolean)">
             <summary>
             Creates a new instance of an Internet Explorer browser.
             </summary>
-            <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> An instance of an Internet Explorer browser. </returns>
         </member>
         <member name="M:TestR.Web.Browsers.InternetExplorer.WaitForComplete(System.Int32)">
@@ -5677,7 +5701,7 @@
         <member name="P:TestR.Web.WebElement.Width">
             <inheritdoc />
         </member>
-        <member name="M:TestR.Web.WebElement.Click(System.Int32,System.Int32)">
+        <member name="M:TestR.Web.WebElement.Click(System.Int32,System.Int32,System.Boolean)">
             <inheritdoc />
         </member>
         <member name="M:TestR.Web.WebElement.FireEvent(System.String)">

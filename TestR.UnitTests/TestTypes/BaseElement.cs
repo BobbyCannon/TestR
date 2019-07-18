@@ -50,7 +50,7 @@ namespace TestR.UnitTests.TestTypes
 			throw new NotImplementedException();
 		}
 
-		public override Element Click(int x = 0, int y = 0)
+		public override Element Click(int x = 0, int y = 0, bool refresh = true)
 		{
 			throw new NotImplementedException();
 		}

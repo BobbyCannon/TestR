@@ -15,6 +15,8 @@ using UIAutomationClient;
 using ExpandCollapseState = TestR.Desktop.Pattern.ExpandCollapseState;
 using ToggleState = TestR.Desktop.Pattern.ToggleState;
 
+#pragma warning disable 618
+
 #endregion
 
 namespace TestR

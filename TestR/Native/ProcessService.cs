@@ -109,11 +109,34 @@ namespace TestR.Native
 			}
 		}
 
-		internal static SafeProcess Wait(string name, Func<SafeProcess, bool> func)
+		/// <summary>
+		/// Gets a list of safe processes filtered by provided filter.
+		/// </summary>
+		/// <param name="name"> The name of the process. </param>
+		/// <param name="filter"> The filter to reduce collection. </param>
+		/// <returns> The processes that match the filter. </returns>
+		public static IEnumerable<SafeProcess> WhereByName(string name, Func<SafeProcess, bool> filter = null)
+		{
+			using (var searcher = new ManagementObjectDisposer())
+			{
+				foreach (var item in searcher.Search($"{_query} WHERE Name LIKE '%{name}%'"))
+				{
+					if (!ProcessItem(item, out SafeProcess safeProcess, filter ?? (x => true)))
+					{
+						continue;
+					}
+
+					yield return safeProcess;
+				}
+			}
+		}
+		
+
+		internal static SafeProcess Wait(string name, Func<SafeProcess, bool> func, int timeoutInMilliseconds = 2000, int waitDelay = 10)
 		{
 			SafeProcess response = null;
 
-			var result = Utility.Wait(() => (response = Where(name).FirstOrDefault(func)) != null, 2000, 10);
+			var result = Utility.Wait(() => (response = Where(name).FirstOrDefault(func)) != null, timeoutInMilliseconds, waitDelay);
 			if (!result || response == null)
 			{
 				throw new Exception("Failed to find the process...");

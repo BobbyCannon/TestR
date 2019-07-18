@@ -79,7 +79,7 @@ namespace TestR.Web.Browsers
 		/// <summary>
 		/// Attempts to attach to an existing browser.
 		/// </summary>
-		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+		/// <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
 		/// <returns> The browser instance or null if not found. </returns>
 		public static Browser Attach(bool bringToFront = true)
 		{
@@ -99,7 +99,7 @@ namespace TestR.Web.Browsers
 		/// Attempts to attach to an existing browser.
 		/// </summary>
 		/// <param name="process"> The process to attach to. </param>
-		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+		/// <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
 		/// <returns> The browser instance or null if not found. </returns>
 		public static Browser Attach(Process process, bool bringToFront = true)
 		{
@@ -123,7 +123,7 @@ namespace TestR.Web.Browsers
 		/// <summary>
 		/// Attempts to attach to an existing browser. If one is not found then create and return a new one.
 		/// </summary>
-		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+		/// <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
 		/// <returns> The browser instance. </returns>
 		public static Browser AttachOrCreate(bool bringToFront = true)
 		{
@@ -137,7 +137,7 @@ namespace TestR.Web.Browsers
 		/// The Firefox browser must have the "listen 6000" command run in the console to enable remote debugging. A newly created
 		/// browser will not be able to connect until someone manually starts the remote debugger.
 		/// </remarks>
-		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+		/// <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
 		/// <returns> The browser instance. </returns>
 		public static Browser Create(bool bringToFront = true)
 		{

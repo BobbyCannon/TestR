@@ -42,10 +42,16 @@ namespace TestR.Desktop.Elements
 		/// </summary>
 		/// <param name="x"> Optional X offset when clicking. </param>
 		/// <param name="y"> Optional Y offset when clicking. </param>
-		public override Element Click(int x = 0, int y = 0)
+		/// <param name="refresh"> Optional value to refresh the element's children. </param>
+		public override Element Click(int x = 0, int y = 0, bool refresh = true)
 		{
 			base.Click(x, y);
-			Refresh();
+
+			if (refresh)
+			{
+				Refresh();
+			}
+
 			return this;
 		}
 

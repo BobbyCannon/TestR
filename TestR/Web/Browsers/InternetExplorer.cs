@@ -69,7 +69,7 @@ namespace TestR.Web.Browsers
 		/// <summary>
 		/// Attempts to attach to an existing browser.
 		/// </summary>
-		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+		/// <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
 		/// <returns> An instance of an Internet Explorer browser. </returns>
 		public static Browser Attach(bool bringToFront = true)
 		{
@@ -87,7 +87,7 @@ namespace TestR.Web.Browsers
 		/// Attempts to attach to an existing browser.
 		/// </summary>
 		/// <param name="process"> The process to attach to. </param>
-		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+		/// <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
 		/// <returns> The browser instance or null if not found. </returns>
 		public static Browser Attach(Process process, bool bringToFront = true)
 		{
@@ -109,7 +109,7 @@ namespace TestR.Web.Browsers
 		/// <summary>
 		/// Attempts to attach to an existing browser. If one is not found then create and return a new one.
 		/// </summary>
-		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+		/// <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
 		/// <returns> An instance of an Internet Explorer browser. </returns>
 		public static Browser AttachOrCreate(bool bringToFront = true)
 		{
@@ -119,30 +119,14 @@ namespace TestR.Web.Browsers
 		/// <summary>
 		/// Creates a new instance of an Internet Explorer browser.
 		/// </summary>
-		/// <param name="bringToFront"> The option to bring the application to the front. This argment is optional and defaults to true. </param>
+		/// <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
 		/// <returns> An instance of an Internet Explorer browser. </returns>
 		public static Browser Create(bool bringToFront = true)
 		{
-			// See if chrome is already running
-			InternetExplorer browser;
-			var foundBrowser = GetBrowserToAttachTo();
-
-			if (foundBrowser != null)
-			{
-				// Start process but connect to current process and new window.
-				var existing = foundBrowser.Application.GetWindows().Select(x =>
-				{
-					x.Dispose();
-					return x.Handle;
-				}).ToList();
-
-				browser = new InternetExplorer(CreateInternetExplorerClass(), existing, bringToFront);
-			}
-			else
-			{
-				browser = new InternetExplorer(CreateInternetExplorerClass(), null, bringToFront);
-			}
-
+			// See if Internet Explorer is already running
+			var existing = ProcessService.WhereByName("iexplore.exe").Select(x => x.MainWindowHandle).ToList();
+			var browserClass = CreateInternetExplorerClass();
+			var browser = new InternetExplorer(browserClass, existing, bringToFront);
 			browser.NavigateTo("about:blank");
 			return browser;
 		}
@@ -358,7 +342,7 @@ namespace TestR.Web.Browsers
 			}
 		}
 
-		private static InternetExplorer GetBrowserToAttachTo(int processId = 0, bool bringToFront = true)
+		private static InternetExplorer GetBrowserToAttachTo(int processId = 0, bool bringToFront = true, params int[] exclusions)
 		{
 			var explorers = new ShellWindowsClass()
 				.Cast<SHDocVw.InternetExplorer>()
@@ -369,12 +353,18 @@ namespace TestR.Web.Browsers
 			{
 				try
 				{
-					if (processId > 0)
+					var result = NativeMethods.GetWindowThreadProcessId(new IntPtr(explorer.HWND), out var foundProcessId);
+
+					// Check to see if the exclusions contains 
+					if (result && exclusions.Contains(foundProcessId))
 					{
-						if (!NativeMethods.GetWindowThreadProcessId(new IntPtr(explorer.HWND), out uint foundProcessId) || foundProcessId != processId)
-						{
-							continue;
-						}
+						continue;
+					}
+
+					// Check too see if we are trying to attach to a specific process id
+					if (processId > 0 && result && foundProcessId != processId)
+					{
+						continue;
 					}
 
 					return new InternetExplorer(explorer, null, bringToFront);
