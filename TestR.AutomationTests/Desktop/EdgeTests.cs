@@ -11,7 +11,7 @@ using TestR.Web.Browsers;
 
 namespace TestR.AutomationTests.Desktop
 {
-	//[TestClass]
+	[TestClass]
 	public class EdgeTests
 	{
 		#region Methods
@@ -28,7 +28,7 @@ namespace TestR.AutomationTests.Desktop
 			{
 				Assert.IsNotNull(browser);
 				Console.WriteLine(browser.Id);
-				browser.NavigateTo("http://localhost:8080");
+				browser.NavigateTo("http://testr.local");
 				browser.Descendants().Count().Dump();
 				browser.ExecuteScript("window.location.href").Dump();
 			}
@@ -41,7 +41,7 @@ namespace TestR.AutomationTests.Desktop
 			{
 				Assert.IsNotNull(browser);
 				Console.WriteLine(browser.Id);
-				browser.NavigateTo("http://localhost:8080");
+				browser.NavigateTo("http://testr.local");
 				browser.Descendants().Count().Dump();
 				browser.ExecuteScript("window.location.href").Dump();
 			}
@@ -79,7 +79,7 @@ namespace TestR.AutomationTests.Desktop
 			{
 				Assert.IsNotNull(browser);
 				Console.WriteLine(browser.Id);
-				browser.NavigateTo("http://localhost:8080");
+				browser.NavigateTo("http://testr.local");
 				browser.Descendants().Count().Dump();
 				browser.ExecuteScript("window.location.href").Dump();
 			}

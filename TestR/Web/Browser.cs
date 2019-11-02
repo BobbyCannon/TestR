@@ -219,11 +219,11 @@ namespace TestR.Web
 				response.Add(chrome);
 			}
 
-			//if ((type & BrowserType.Edge) == BrowserType.Edge)
-			//{
-			//	var edge = Edge.AttachOrCreate();
-			//	response.Add(edge);
-			//}
+			if ((type & BrowserType.Edge) == BrowserType.Edge)
+			{
+				var edge = Edge.AttachOrCreate();
+				response.Add(edge);
+			}
 
 			if ((type & BrowserType.Firefox) == BrowserType.Firefox)
 			{
@@ -279,10 +279,10 @@ namespace TestR.Web
 				Application.CloseAll(Chrome.BrowserName);
 			}
 
-			//if ((type & BrowserType.Edge) == BrowserType.Edge)
-			//{
-			//	Application.CloseAll(Edge.Name);
-			//}
+			if ((type & BrowserType.Edge) == BrowserType.Edge)
+			{
+				Application.CloseAll(Edge.BrowserName);
+			}
 
 			if ((type & BrowserType.Firefox) == BrowserType.Firefox)
 			{
@@ -309,10 +309,10 @@ namespace TestR.Web
 				response.Add(Chrome.Create(bringToFront));
 			}
 
-			//if ((type & BrowserType.Edge) == BrowserType.Edge)
-			//{
-			//	response.Add(Edge.Create());
-			//}
+			if ((type & BrowserType.Edge) == BrowserType.Edge)
+			{
+				response.Add(Edge.Create());
+			}
 
 			if ((type & BrowserType.Firefox) == BrowserType.Firefox)
 			{

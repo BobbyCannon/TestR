@@ -104,7 +104,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetPath)" "$(TargetDir)$(TargetName)-x86.exe" /y
-"C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6.1 Tools\CorFlags.exe" "$(TargetDir)\$(TargetName)-x86.exe" /32BITREQ+
+"C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.7.2 Tools\CorFlags.exe" "$(TargetDir)\$(TargetName)-x86.exe" /32BITREQ+
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

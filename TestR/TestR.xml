@@ -2871,6 +2871,98 @@
             Refreshes the element collection for the current page.
             </summary>
         </member>
+        <member name="T:TestR.Web.Browsers.Edge">
+            <summary>
+            Represents an Edge browser.
+            </summary>
+        </member>
+        <member name="F:TestR.Web.Browsers.Edge.BrowserName">
+            <summary>
+            The name of the browser.
+            </summary>
+        </member>
+        <member name="F:TestR.Web.Browsers.Edge.DebugArgument">
+            <summary>
+            The debugging argument for starting the browser.
+            </summary>
+        </member>
+        <member name="M:TestR.Web.Browsers.Edge.#ctor(TestR.Application,System.Collections.Generic.ICollection{System.IntPtr})">
+            <summary>
+            Initializes a new instance of the Edge class.
+            </summary>
+            <param name="application"> The window of the existing browser. </param>
+            <param name="windowsToIgnore"> The windows to ignore. Optional. </param>
+        </member>
+        <member name="P:TestR.Web.Browsers.Edge.BrowserType">
+            <summary>
+            Gets the type of the browser.
+            </summary>
+        </member>
+        <member name="M:TestR.Web.Browsers.Edge.Attach(System.Boolean)">
+            <summary>
+            Attempts to attach to an existing browser.
+            </summary>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
+            <returns> The browser instance or null if not found. </returns>
+        </member>
+        <member name="M:TestR.Web.Browsers.Edge.Attach(System.Diagnostics.Process,System.Boolean)">
+            <summary>
+            Attempts to attach to an existing browser.
+            </summary>
+            <param name="process"> The process to attach to. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
+            <returns> The browser instance or null if not found. </returns>
+        </member>
+        <member name="M:TestR.Web.Browsers.Edge.AttachOrCreate(System.Boolean)">
+            <summary>
+            Attempts to attach to an existing browser. If one is not found then create and return a new one.
+            </summary>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
+            <returns> The browser instance. </returns>
+        </member>
+        <member name="M:TestR.Web.Browsers.Edge.Create(System.Boolean)">
+            <summary>
+            Attempts to create a new browser. If one is not found then we'll make sure it was started with the
+            remote debugger argument. If not an exception will be thrown.
+            </summary>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
+            <returns> The browser instance. </returns>
+        </member>
+        <member name="M:TestR.Web.Browsers.Edge.BrowserNavigateTo(System.String)">
+            <summary>
+            Navigates the browser to the provided URI.
+            </summary>
+            <param name="uri"> The URI to navigate to. </param>
+        </member>
+        <member name="M:TestR.Web.Browsers.Edge.Dispose(System.Boolean)">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <param name="disposing"> True if disposing and false if otherwise. </param>
+        </member>
+        <member name="M:TestR.Web.Browsers.Edge.ExecuteJavaScript(System.String,System.Boolean)">
+            <summary>
+            Execute JavaScript code in the current document.
+            </summary>
+            <param name="script"> The code script to execute. </param>
+            <param name="expectResponse"> The script will return response. </param>
+            <returns> The response from the execution. </returns>
+        </member>
+        <member name="M:TestR.Web.Browsers.Edge.GetBrowserUri">
+            <summary>
+            Reads the current URI directly from the browser.
+            </summary>
+            <returns> The current URI that was read from the browser. </returns>
+        </member>
+        <member name="M:TestR.Web.Browsers.Edge.GetScrollableElement">
+            <inheritdoc />
+        </member>
+        <member name="M:TestR.Web.Browsers.Edge.Connect">
+            <summary>
+            Connect to the Edge browser debugger port.
+            </summary>
+            <exception cref="T:System.Exception"> All debugging sessions are taken. </exception>
+        </member>
         <member name="T:TestR.Web.Browsers.Chrome">
             <summary>
             Represents an Chrome browser.
@@ -2962,93 +3054,6 @@
             Connect to the Chrome browser debugger port.
             </summary>
             <exception cref="T:System.Exception"> All debugging sessions are taken. </exception>
-        </member>
-        <member name="T:TestR.Web.Browsers.Edge">
-            <summary>
-            Represents an Edge browser.
-            </summary>
-        </member>
-        <member name="F:TestR.Web.Browsers.Edge.BrowserName">
-            <summary>
-            The name of the browser.
-            </summary>
-        </member>
-        <member name="M:TestR.Web.Browsers.Edge.#ctor(TestR.Application,System.String)">
-            <summary>
-            Initializes a new instance of the Browser class.
-            </summary>
-        </member>
-        <member name="P:TestR.Web.Browsers.Edge.BrowserType">
-            <summary>
-            Gets the type of the browser.
-            </summary>
-        </member>
-        <member name="M:TestR.Web.Browsers.Edge.Attach(System.Boolean)">
-            <summary>
-            Attempts to attach to an existing browser.
-            </summary>
-            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
-            <returns> An instance of an Internet Explorer browser. </returns>
-        </member>
-        <member name="M:TestR.Web.Browsers.Edge.Attach(System.Diagnostics.Process,System.Boolean)">
-            <summary>
-            Attempts to attach to an existing browser.
-            </summary>
-            <param name="process"> The process to attach to. </param>
-            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
-            <returns> The browser instance or null if not found. </returns>
-        </member>
-        <member name="M:TestR.Web.Browsers.Edge.AttachOrCreate(System.Boolean)">
-            <summary>
-            Attempts to attach to an existing browser. If one is not found then create and return a new one.
-            </summary>
-            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
-            <returns> An instance of an Internet Explorer browser. </returns>
-        </member>
-        <member name="M:TestR.Web.Browsers.Edge.Create(System.Boolean)">
-            <summary>
-            Creates a new instance of an Edge browser.
-            </summary>
-            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
-            <returns> An instance of an Edge browser. </returns>
-        </member>
-        <member name="M:TestR.Web.Browsers.Edge.MoveWindow(System.Int32,System.Int32,System.Int32,System.Int32)">
-            <summary>
-            Move the window and resize it.
-            </summary>
-            <param name="x"> The x coordinate to move to. </param>
-            <param name="y"> The y coordinate to move to. </param>
-            <param name="width"> The width of the window. </param>
-            <param name="height"> The height of the window. </param>
-        </member>
-        <member name="M:TestR.Web.Browsers.Edge.BrowserNavigateTo(System.String)">
-            <summary>
-            Browser implementation of navigate to
-            </summary>
-            <param name="uri"> The URI to navigate to. </param>
-        </member>
-        <member name="M:TestR.Web.Browsers.Edge.Dispose(System.Boolean)">
-            <summary>
-            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-            </summary>
-            <param name="disposing"> True if disposing and false if otherwise. </param>
-        </member>
-        <member name="M:TestR.Web.Browsers.Edge.ExecuteJavaScript(System.String,System.Boolean)">
-            <summary>
-            Execute JavaScript code in the current document.
-            </summary>
-            <param name="script"> The code script to execute. </param>
-            <param name="expectResponse"> The script will return response. </param>
-            <returns> The response from the execution. </returns>
-        </member>
-        <member name="M:TestR.Web.Browsers.Edge.GetBrowserUri">
-            <summary>
-            Reads the current URI directly from the browser.
-            </summary>
-            <returns> The current URI that was read from the browser. </returns>
-        </member>
-        <member name="M:TestR.Web.Browsers.Edge.GetScrollableElement">
-            <inheritdoc />
         </member>
         <member name="T:TestR.Web.Browsers.Firefox">
             <summary>

@@ -6,11 +6,14 @@
 		<version>1.0</version>
 		<authors>Bobby Cannon</authors>
 		<description>Integration testing framework for developers. TestR allows automating testing of web applications.</description>
+		<icon>build\TestR.png</icon>
 		<iconUrl>https://raw.githubusercontent.com/BobbyCannon/TestR/master/TestR.png</iconUrl>
 		<projectUrl>http://bobbycannon.github.io/TestR/</projectUrl>
-		<tags>TestR Test UnitTest IntegrationTest Automation Testing Web InternetExplorer FireFox Chrome</tags>
+		<tags>TestR Test UnitTest IntegrationTest Automation Testing Web InternetExplorer Edge FireFox Chrome</tags>
 		<dependencies>
-			<dependency id="Newtonsoft.Json" version="11.0.2" />
+			<group targetFramework=".NETFramework4.5.2">
+				<dependency id="Newtonsoft.Json" version="11.0.2" />
+			</group>
 		</dependencies>
 		<references>
 			<reference file="TestR.dll" />
@@ -20,6 +23,7 @@
 	<files>
 		<file src=".\Binaries\TestR\Install.ps1" target="tools" />
 		<file src=".\Binaries\TestR\TestR.targets" target="build" />
+		<file src=".\TestR.png" target="build" />
 		<file src=".\Binaries\TestR\TestR.dll" target="lib\net452" />
 		<file src=".\Binaries\TestR\Interop.SHDocVw.dll" target="lib\net452" />
 		<file src=".\Binaries\TestR\Interop.UIAutomationClient.dll" target="lib\net452" />

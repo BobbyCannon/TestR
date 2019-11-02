@@ -193,7 +193,7 @@ namespace TestR
 		/// <returns> The individual browser type values in the provided type. </returns>
 		public static BrowserType[] GetTypeArray(this BrowserType browserType)
 		{
-			var types = new[] { BrowserType.Chrome, BrowserType.Firefox, BrowserType.InternetExplorer };
+			var types = new[] { BrowserType.Chrome, BrowserType.Edge, BrowserType.Firefox, BrowserType.InternetExplorer };
 			return types.Where(type => (browserType & type) == type).ToArray();
 		}
 

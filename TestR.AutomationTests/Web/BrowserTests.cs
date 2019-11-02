@@ -580,10 +580,11 @@ namespace TestR.AutomationTests.Web
 			}
 			catch (AggregateException ex)
 			{
-				Assert.AreEqual(3, ex.InnerExceptions.Count);
+				Assert.AreEqual(4, ex.InnerExceptions.Count);
 				Assert.AreEqual("Test failed using Chrome.", ex.InnerExceptions[0].Message);
-				Assert.AreEqual("Test failed using Firefox.", ex.InnerExceptions[1].Message);
-				Assert.AreEqual("Test failed using InternetExplorer.", ex.InnerExceptions[2].Message);
+				Assert.AreEqual("Test failed using Edge.", ex.InnerExceptions[1].Message);
+				Assert.AreEqual("Test failed using Firefox.", ex.InnerExceptions[2].Message);
+				Assert.AreEqual("Test failed using InternetExplorer.", ex.InnerExceptions[3].Message);
 			}
 			catch (Exception ex)
 			{
