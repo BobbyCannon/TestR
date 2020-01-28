@@ -138,9 +138,8 @@ namespace TestR.Web.Browsers
 		/// browser will not be able to connect until someone manually starts the remote debugger.
 		/// </remarks>
 		/// <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
-		/// <param name="newWindowDelay"> An optional delay due to Firefox closing initial new window. </param>
 		/// <returns> The browser instance. </returns>
-		public static Browser Create(bool bringToFront = true, int newWindowDelay = 500)
+		public static Browser Create(bool bringToFront = true)
 		{
 			Firefox browser;
 
@@ -169,18 +168,11 @@ namespace TestR.Web.Browsers
 			else
 			{
 				application = Application.Create(BrowserName, DebugArgument, false, bringToFront);
-
-				Thread.Sleep(newWindowDelay);
-
-				if (application.Process.HasExited)
-				{
-					application = Application.Attach(BrowserName, DebugArgument, false, bringToFront);
-				}
-
 				browser = new Firefox(application);
 			}
 
 			browser.Connect();
+			browser.NavigateTo("about:blank");
 			return browser;
 		}
 

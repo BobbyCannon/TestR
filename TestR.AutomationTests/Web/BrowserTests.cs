@@ -598,6 +598,19 @@ namespace TestR.AutomationTests.Web
 				Assert.Fail("Invalid exception: " + ex.GetType().FullName);
 			}
 		}
+		
+		[TestMethod]
+		public void ForAllBrowserShouldTimeoutFast()
+		{
+			try
+			{
+				ForAllBrowsers(x => Thread.Sleep(5000), timeout: 1000);
+			}
+			catch (Exception ex)
+			{
+				Assert.AreEqual("ForAllBrowsers has timed out.", ex.Message);
+			}
+		}
 
 		[TestMethod]
 		public void FormWithSubInputsWithNamesOfFormAttributeNames()
@@ -741,18 +754,29 @@ namespace TestR.AutomationTests.Web
 		public void GetAndSetStyle()
 		{
 			ForAllBrowsers(browser =>
+			//ForEachBrowser(browser =>
 			{
-				browser.NavigateTo(TestSite + "/main.html");
+				browser.NavigateTo(TestSite + "/invalid.html");
 
-				var input = browser.FirstOrDefault<TextInput>("text");
-				Assert.IsNotNull(input);
-				Assert.AreEqual("", input.Style);
-				Assert.AreEqual("", input.GetAttributeValue("Style", true));
-				input.Style = "color: red";
+				var span1 = browser.FirstOrDefault<WebElement>("span1");
+				Assert.IsNotNull(span1);
+				Assert.AreEqual("", span1.Style);
+				Assert.AreEqual("", span1.GetAttributeValue("Style", true));
+				span1.Style = "color: red";
 
-				var actual = input.GetStyleAttributeValue("color", true);
+				var actual = span1.GetStyleAttributeValue("color", true);
 				Assert.AreEqual("red", actual);
-				Assert.IsTrue(input.GetAttributeValue("Style", true).Contains("color: red"));
+				Assert.IsTrue(span1.GetAttributeValue("Style", true).Contains("color: red"));
+				
+				var input1 = browser.FirstOrDefault<WebElement>("input1");
+				Assert.IsNotNull(input1);
+				Assert.AreEqual("", input1.Style);
+				Assert.AreEqual("", input1.GetAttributeValue("Style", true));
+				input1.Style = "color: red";
+
+				actual = input1.GetStyleAttributeValue("color", true);
+				Assert.AreEqual("red", actual);
+				Assert.IsTrue(input1.GetAttributeValue("Style", true).Contains("color: red"));
 			});
 		}
 
@@ -1636,10 +1660,10 @@ namespace TestR.AutomationTests.Web
 			});
 		}
 
-		private void ForAllBrowsers(Action<Browser> action, BrowserType browserTypes = BrowserType.All, bool resizeBrowsers = true)
+		private void ForAllBrowsers(Action<Browser> action, BrowserType browserTypes = BrowserType.All, bool resizeBrowsers = true, int? timeout = null)
 		{
 			CleanupBrowsers = false;
-			browserTypes.ForAllBrowsers(action, resizeBrowsers: resizeBrowsers, resizeType: BrowserResizeType.LeftSideBySide);
+			browserTypes.ForAllBrowsers(action, false, resizeBrowsers, timeout ?? (int) DefaultTimeout.TotalMilliseconds, BrowserResizeType.LeftSideBySide);
 		}
 
 		private void ForEachBrowser(Action<Browser> action, BrowserType browserTypes = BrowserType.All, bool resizeBrowsers = true)

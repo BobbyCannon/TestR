@@ -169,9 +169,17 @@
 			if ((value === null || value === undefined) || (element.nodeType === 1 && typeof (value) === 'object')) {
 				value = element.attributes[name];
 			}
-
+			
 			if (value !== null && value !== undefined) {
-				return (value.value || value.nodeValue || value).toString();
+				if (value.value !== undefined && value.value !== null) {
+					return value.value.toString();
+				}
+				
+				if (value.nodeValue !== undefined && value.nodeValue !== null) {
+					return value.nodeValue.toString();
+				}
+
+				return value.toString();
 			}
 		} catch (e) {
 			return null;

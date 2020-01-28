@@ -387,12 +387,35 @@ namespace TestR.Web
 				{
 					using (var browser = AttachOrCreate(x).First())
 					{
+						browser.Application.Timeout = timeout;
 						action(browser);
 					}
 				})
 			).ToArray();
 
-			Task.WaitAll(tasks, timeout);
+			// Add 20% time to ensure the thread doesn't timeout first.
+			var milliseconds = (int) (timeout.TotalMilliseconds * 1.2);
+			if (milliseconds < 10000)
+			{
+				milliseconds = 10000;
+			}
+
+			var wait = Task.WaitAll(tasks, milliseconds);
+			if (wait)
+			{
+				return;
+			}
+
+			// If we did timeout then capture the exceptions and throw a timeout error
+			var errors = tasks.Where(x => x.Exception != null).Select(x => x.Exception.Message);
+			var error = string.Join(Environment.NewLine, errors);
+
+			if (string.IsNullOrWhiteSpace(error))
+			{
+				throw new TestRException($"{nameof(ForAllBrowsers)} has timed out.");
+			}
+
+			throw new TestRException($"{nameof(ForAllBrowsers)} has timed out.{error}");
 		}
 
 		/// <summary>

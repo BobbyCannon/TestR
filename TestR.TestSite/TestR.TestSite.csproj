@@ -111,6 +111,9 @@
       <Link>Scripts\TestR.js</Link>
     </Content>
     <Content Include="Content\TestR.png" />
+    <Content Include="Invalid.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Scripts\angular-mocks.js" />
     <Content Include="Scripts\angular-route.js" />
     <Content Include="Scripts\angular-route.min.js" />

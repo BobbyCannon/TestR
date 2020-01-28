@@ -2897,6 +2897,66 @@
             If more than two browsers then it will create quarters.
             </summary>
         </member>
+        <member name="T:TestR.Web.Browsers.ChromiumBrowser">
+            <summary>
+            Represents a chromium based browser.
+            </summary>
+        </member>
+        <member name="F:TestR.Web.Browsers.ChromiumBrowser.DebugArgument">
+            <summary>
+            The debugging argument for starting the browser.
+            </summary>
+        </member>
+        <member name="M:TestR.Web.Browsers.ChromiumBrowser.#ctor(System.Int32,TestR.Application,System.Collections.Generic.ICollection{System.IntPtr})">
+            <summary>
+            Initializes a new instance of the Chrome class.
+            </summary>
+            <param name="port"> The debug port number for the browser. </param>
+            <param name="application"> The window of the existing browser. </param>
+            <param name="windowsToIgnore"> The windows to ignore. Optional. </param>
+        </member>
+        <member name="M:TestR.Web.Browsers.ChromiumBrowser.BrowserNavigateTo(System.String)">
+            <summary>
+            Navigates the browser to the provided URI.
+            </summary>
+            <param name="uri"> The URI to navigate to. </param>
+        </member>
+        <member name="M:TestR.Web.Browsers.ChromiumBrowser.Connect">
+            <summary>
+            Connect to the Chrome browser debugger port.
+            </summary>
+            <exception cref="T:System.Exception"> All debugging sessions are taken. </exception>
+        </member>
+        <member name="M:TestR.Web.Browsers.ChromiumBrowser.Dispose(System.Boolean)">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <param name="disposing"> True if disposing and false if otherwise. </param>
+        </member>
+        <member name="M:TestR.Web.Browsers.ChromiumBrowser.ExecuteJavaScript(System.String,System.Boolean)">
+            <summary>
+            Execute JavaScript code in the current document.
+            </summary>
+            <param name="script"> The code script to execute. </param>
+            <param name="expectResponse"> The script will return response. </param>
+            <returns> The response from the execution. </returns>
+        </member>
+        <member name="M:TestR.Web.Browsers.ChromiumBrowser.GetBrowserUri">
+            <summary>
+            Reads the current URI directly from the browser.
+            </summary>
+            <returns> The current URI that was read from the browser. </returns>
+        </member>
+        <member name="M:TestR.Web.Browsers.ChromiumBrowser.GetDebugArguments(System.Int32)">
+            <summary>
+            Gets the debug arguments for the chromium browser.
+            </summary>
+            <param name="port"> The debug port number for the browser. </param>
+            <returns> The command arguments for the browser. </returns>
+        </member>
+        <member name="M:TestR.Web.Browsers.ChromiumBrowser.GetScrollableElement">
+            <inheritdoc />
+        </member>
         <member name="T:TestR.Web.Browsers.Edge">
             <summary>
             Represents an Edge browser.
@@ -2907,9 +2967,9 @@
             The name of the browser.
             </summary>
         </member>
-        <member name="F:TestR.Web.Browsers.Edge.DebugArgument">
+        <member name="F:TestR.Web.Browsers.Edge.DebugPort">
             <summary>
-            The debugging argument for starting the browser.
+            The debug port for the browser.
             </summary>
         </member>
         <member name="M:TestR.Web.Browsers.Edge.#ctor(TestR.Application,System.Collections.Generic.ICollection{System.IntPtr})">
@@ -2954,41 +3014,6 @@
             <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The browser instance. </returns>
         </member>
-        <member name="M:TestR.Web.Browsers.Edge.BrowserNavigateTo(System.String)">
-            <summary>
-            Navigates the browser to the provided URI.
-            </summary>
-            <param name="uri"> The URI to navigate to. </param>
-        </member>
-        <member name="M:TestR.Web.Browsers.Edge.Dispose(System.Boolean)">
-            <summary>
-            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-            </summary>
-            <param name="disposing"> True if disposing and false if otherwise. </param>
-        </member>
-        <member name="M:TestR.Web.Browsers.Edge.ExecuteJavaScript(System.String,System.Boolean)">
-            <summary>
-            Execute JavaScript code in the current document.
-            </summary>
-            <param name="script"> The code script to execute. </param>
-            <param name="expectResponse"> The script will return response. </param>
-            <returns> The response from the execution. </returns>
-        </member>
-        <member name="M:TestR.Web.Browsers.Edge.GetBrowserUri">
-            <summary>
-            Reads the current URI directly from the browser.
-            </summary>
-            <returns> The current URI that was read from the browser. </returns>
-        </member>
-        <member name="M:TestR.Web.Browsers.Edge.GetScrollableElement">
-            <inheritdoc />
-        </member>
-        <member name="M:TestR.Web.Browsers.Edge.Connect">
-            <summary>
-            Connect to the Edge browser debugger port.
-            </summary>
-            <exception cref="T:System.Exception"> All debugging sessions are taken. </exception>
-        </member>
         <member name="T:TestR.Web.Browsers.Chrome">
             <summary>
             Represents an Chrome browser.
@@ -2999,9 +3024,9 @@
             The name of the browser.
             </summary>
         </member>
-        <member name="F:TestR.Web.Browsers.Chrome.DebugArgument">
+        <member name="F:TestR.Web.Browsers.Chrome.DebugPort">
             <summary>
-            The debugging argument for starting the browser.
+            The debug port for the browser.
             </summary>
         </member>
         <member name="M:TestR.Web.Browsers.Chrome.#ctor(TestR.Application,System.Collections.Generic.ICollection{System.IntPtr})">
@@ -3045,41 +3070,6 @@
             </summary>
             <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The browser instance. </returns>
-        </member>
-        <member name="M:TestR.Web.Browsers.Chrome.BrowserNavigateTo(System.String)">
-            <summary>
-            Navigates the browser to the provided URI.
-            </summary>
-            <param name="uri"> The URI to navigate to. </param>
-        </member>
-        <member name="M:TestR.Web.Browsers.Chrome.Dispose(System.Boolean)">
-            <summary>
-            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-            </summary>
-            <param name="disposing"> True if disposing and false if otherwise. </param>
-        </member>
-        <member name="M:TestR.Web.Browsers.Chrome.ExecuteJavaScript(System.String,System.Boolean)">
-            <summary>
-            Execute JavaScript code in the current document.
-            </summary>
-            <param name="script"> The code script to execute. </param>
-            <param name="expectResponse"> The script will return response. </param>
-            <returns> The response from the execution. </returns>
-        </member>
-        <member name="M:TestR.Web.Browsers.Chrome.GetBrowserUri">
-            <summary>
-            Reads the current URI directly from the browser.
-            </summary>
-            <returns> The current URI that was read from the browser. </returns>
-        </member>
-        <member name="M:TestR.Web.Browsers.Chrome.GetScrollableElement">
-            <inheritdoc />
-        </member>
-        <member name="M:TestR.Web.Browsers.Chrome.Connect">
-            <summary>
-            Connect to the Chrome browser debugger port.
-            </summary>
-            <exception cref="T:System.Exception"> All debugging sessions are taken. </exception>
         </member>
         <member name="T:TestR.Web.Browsers.Firefox">
             <summary>
@@ -3130,7 +3120,7 @@
             <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The browser instance. </returns>
         </member>
-        <member name="M:TestR.Web.Browsers.Firefox.Create(System.Boolean,System.Int32)">
+        <member name="M:TestR.Web.Browsers.Firefox.Create(System.Boolean)">
             <summary>
             Attempts to create a new browser.
             </summary>
@@ -3139,7 +3129,6 @@
             browser will not be able to connect until someone manually starts the remote debugger.
             </remarks>
             <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
-            <param name="newWindowDelay"> An optional delay due to Firefox closing initial new window. </param>
             <returns> The browser instance. </returns>
         </member>
         <member name="M:TestR.Web.Browsers.Firefox.BrowserNavigateTo(System.String)">
