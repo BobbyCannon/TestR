@@ -112,7 +112,7 @@ namespace TestR.AutomationTests.Desktop
 					Assert.AreEqual(1024, browser.Size.Width);
 					Assert.AreEqual(800, browser.Size.Height);
 					
-					var expected2 = "https://testr.local/Forms2.html";
+					var expected2 = "https://testr.local/main.html";
 					Assert.IsNotNull(browser2);
 					browser2.NavigateTo(expected2);
 					Assert.AreEqual(expected2, browser2.Uri);

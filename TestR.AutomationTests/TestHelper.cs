@@ -35,12 +35,23 @@ namespace TestR.AutomationTests
 		/// <param name="label"> The label to prefix the value. </param>
 		public static void Dump(this object value, string label = "")
 		{
-			var enumerable = value as IEnumerable;
-			if (enumerable != null && value.GetType() != typeof(string))
+			if (value is IEnumerable enumerable && value.GetType() != typeof(string))
 			{
-				foreach (var x in enumerable)
+				if (value is byte[] bArray)
 				{
-					x.Dump();
+					Console.Write("new byte[] { ");
+					foreach (var x in bArray)
+					{
+						Console.Write($"0x{x:X2}, ");
+					}
+					Console.Write("};");
+				}
+				else
+				{
+					foreach (var x in enumerable)
+					{
+						x.Dump();
+					}
 				}
 			}
 			else

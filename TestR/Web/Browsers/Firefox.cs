@@ -138,8 +138,9 @@ namespace TestR.Web.Browsers
 		/// browser will not be able to connect until someone manually starts the remote debugger.
 		/// </remarks>
 		/// <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
+		/// <param name="newWindowDelay"> An optional delay due to Firefox closing initial new window. </param>
 		/// <returns> The browser instance. </returns>
-		public static Browser Create(bool bringToFront = true)
+		public static Browser Create(bool bringToFront = true, int newWindowDelay = 500)
 		{
 			Firefox browser;
 
@@ -168,6 +169,14 @@ namespace TestR.Web.Browsers
 			else
 			{
 				application = Application.Create(BrowserName, DebugArgument, false, bringToFront);
+
+				Thread.Sleep(newWindowDelay);
+
+				if (application.Process.HasExited)
+				{
+					application = Application.Attach(BrowserName, DebugArgument, false, bringToFront);
+				}
+
 				browser = new Firefox(application);
 			}
 
@@ -181,17 +190,7 @@ namespace TestR.Web.Browsers
 		/// <param name="uri"> The URI to navigate to. </param>
 		protected override void BrowserNavigateTo(string uri)
 		{
-			if (Uri == uri)
-			{
-				ExecuteJavaScript("window.location.reload(true)");
-			}
-			else
-			{
-				// First redirect then make a second request so we get back our "action->stop" message. I expected Firefox
-				// to just send us the stop but it doesn't happen unless we make another request to the browser. 
-				ExecuteJavaScript("window.location.href = \"" + uri + "\"");
-			}
-
+			ExecuteJavaScript(Uri == uri ? "window.location.reload(true)" : $"window.location.href = \"{uri}\"");
 			SendRequest("Wake up, Neo...");
 
 			// todo: There must be a better way to determine when Chrome and Firefox is done processing.
@@ -221,15 +220,10 @@ namespace TestR.Web.Browsers
 		/// <returns> The response from the execution. </returns>
 		protected override string ExecuteJavaScript(string script, bool expectResponse = true)
 		{
-			var request = new
-			{
-				To = _consoleActor,
-				Type = "evaluateJS",
-				Text = script
-			};
-
+			var request = new { To = _consoleActor, Type = "evaluateJSAsync", Text = script };
 			var response = SendRequestAndReadResponse(request, x => x.from == _consoleActor && x.input == script);
-			if (!string.IsNullOrEmpty(((object) response.exception).ToString()))
+
+			if (!string.IsNullOrEmpty(((object) response.exception)?.ToString()))
 			{
 				return TestrNotDefinedMessage;
 			}
@@ -413,19 +407,36 @@ namespace TestR.Web.Browsers
 
 		private dynamic WaitForResponse(Func<dynamic, bool> action)
 		{
+			dynamic result = null;
+
 			Utility.Wait(() =>
 			{
 				lock (_responses)
 				{
-					return _responses.Any(action);
+					for (var i = 0; i < _responses.Count; i++)
+					{
+						if (!action(_responses[i]))
+						{
+							continue;
+						}
+
+						result = _responses[i];
+						return true;
+					}
+
+					return false;
 				}
-			}, Application.Timeout.TotalMilliseconds, 10);
+			}, Application.Timeout.TotalMilliseconds, 1);
+
+			if (result == null)
+			{
+				return null;
+			}
 
 			lock (_responses)
 			{
-				var item = _responses.First(action);
-				_responses.Remove(item);
-				return item;
+				_responses.Remove(result);
+				return result;
 			}
 		}
 

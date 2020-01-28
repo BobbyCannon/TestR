@@ -2427,7 +2427,7 @@
             </summary>
             <param name="collection"> The collection of string to parse. </param>
         </member>
-        <member name="M:TestR.Extensions.ForAllBrowsers(TestR.Web.BrowserType,System.Action{TestR.Web.Browser},System.Boolean,System.Boolean,System.Int32)">
+        <member name="M:TestR.Extensions.ForAllBrowsers(TestR.Web.BrowserType,System.Action{TestR.Web.Browser},System.Boolean,System.Boolean,System.Int32,TestR.Web.BrowserResizeType)">
             <summary>
             Run a test against each browser. BrowserType property will determine which browsers to run the test against.
             </summary>
@@ -2436,17 +2436,9 @@
             <param name="useSecondaryMonitor"> The flag to determine to attempt to use secondary monitor. </param>
             <param name="resizeBrowsers"> The flag to determine to resize the browsers. </param>
             <param name="timeout"> The timeout in milliseconds. </param>
+            <param name="resizeType"> The resize type if browser resizing is enabled. </param>
             <seealso cref="T:TestR.Web.BrowserType" />
-        </member>
-        <member name="M:TestR.Extensions.ForEachBrowser(TestR.Web.BrowserType,System.Action{TestR.Web.Browser},System.Boolean,System.Boolean)">
-            <summary>
-            Run a test against each browser. BrowserType property will determine which browsers to run the test against.
-            </summary>
-            <param name="browserType"> The browser types to run the action against. </param>
-            <param name="action"> The action to run each browser against. </param>
-            <param name="useSecondaryMonitor"> The flag to determine to attempt to use secondary monitor. </param>
-            <param name="resizeBrowsers"> The flag to determine to resize the browsers. </param>
-            <seealso cref="T:TestR.Web.BrowserType" />
+            <seealso cref="T:TestR.Web.BrowserResizeType" />
         </member>
         <member name="M:TestR.Extensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
             <summary>
@@ -2455,6 +2447,18 @@
             <param name="collection"> The collection of items to run the action with. </param>
             <param name="action"> The action to run against each item in the collection. </param>
             <typeparam name="T"> The type of the item in the collection. </typeparam>
+        </member>
+        <member name="M:TestR.Extensions.ForEachBrowser(TestR.Web.BrowserType,System.Action{TestR.Web.Browser},System.Boolean,System.Boolean,TestR.Web.BrowserResizeType)">
+            <summary>
+            Run a test against each browser. BrowserType property will determine which browsers to run the test against.
+            </summary>
+            <param name="browserType"> The browser types to run the action against. </param>
+            <param name="action"> The action to run each browser against. </param>
+            <param name="useSecondaryMonitor"> The flag to determine to attempt to use secondary monitor. </param>
+            <param name="resizeBrowsers"> The flag to determine to resize the browsers. </param>
+            <param name="resizeType"> The resize type if browser resizing is enabled. </param>
+            <seealso cref="T:TestR.Web.BrowserType" />
+            <seealso cref="T:TestR.Web.BrowserResizeType" />
         </member>
         <member name="M:TestR.Extensions.ForEachDisposable``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
             <summary>
@@ -2871,6 +2875,28 @@
             Refreshes the element collection for the current page.
             </summary>
         </member>
+        <member name="T:TestR.Web.BrowserResizeType">
+            <summary>
+            Represents browser resize types
+            </summary>
+        </member>
+        <member name="F:TestR.Web.BrowserResizeType.SideBySide">
+            <summary>
+            Places browser side by side horizontally across the whole screen.
+            </summary>
+        </member>
+        <member name="F:TestR.Web.BrowserResizeType.LeftSideBySide">
+            <summary>
+            Places browser side by side horizontally across the left side screen.
+            If more than two browsers then it will create quarters.
+            </summary>
+        </member>
+        <member name="F:TestR.Web.BrowserResizeType.RightSideBySide">
+            <summary>
+            Places browser side by side horizontally across the right side screen.
+            If more than two browsers then it will create quarters.
+            </summary>
+        </member>
         <member name="T:TestR.Web.Browsers.Edge">
             <summary>
             Represents an Edge browser.
@@ -3104,7 +3130,7 @@
             <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The browser instance. </returns>
         </member>
-        <member name="M:TestR.Web.Browsers.Firefox.Create(System.Boolean)">
+        <member name="M:TestR.Web.Browsers.Firefox.Create(System.Boolean,System.Int32)">
             <summary>
             Attempts to create a new browser.
             </summary>
@@ -3113,6 +3139,7 @@
             browser will not be able to connect until someone manually starts the remote debugger.
             </remarks>
             <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
+            <param name="newWindowDelay"> An optional delay due to Firefox closing initial new window. </param>
             <returns> The browser instance. </returns>
         </member>
         <member name="M:TestR.Web.Browsers.Firefox.BrowserNavigateTo(System.String)">

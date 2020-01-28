@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
@@ -78,70 +79,35 @@ namespace TestR
 		/// <param name="useSecondaryMonitor"> The flag to determine to attempt to use secondary monitor. </param>
 		/// <param name="resizeBrowsers"> The flag to determine to resize the browsers. </param>
 		/// <param name="timeout"> The timeout in milliseconds. </param>
+		/// <param name="resizeType"> The resize type if browser resizing is enabled. </param>
 		/// <seealso cref="BrowserType" />
-		public static void ForAllBrowsers(this BrowserType browserType, Action<Browser> action, bool useSecondaryMonitor = true, bool resizeBrowsers = true, int timeout = 30000)
+		/// <seealso cref="BrowserResizeType" />
+		public static void ForAllBrowsers(this BrowserType browserType, Action<Browser> action, bool useSecondaryMonitor = true, bool resizeBrowsers = true, int timeout = 30000, BrowserResizeType resizeType = BrowserResizeType.SideBySide)
 		{
-			var screen = useSecondaryMonitor ? Screen.AllScreens.FirstOrDefault(x => x.Primary == false) ?? Screen.AllScreens.First(x => x.Primary) : Screen.AllScreens.First(x => x.Primary);
 			var browserTypes = browserType.GetTypeArray();
-			var browserWidth = screen.WorkingArea.Width / browserTypes.Length;
+			var size = CalculateBrowserSize(useSecondaryMonitor, browserTypes, resizeType, out var leftOffset, out var topOffset);
 
-			Browser.ForAllBrowsers(x =>
+			Browser.ForAllBrowsers(browser =>
 			{
 				try
 				{
 					if (resizeBrowsers)
 					{
-						var browserOffset = Array.IndexOf(browserTypes, x.BrowserType);
-						x.MoveWindow(screen.WorkingArea.Left + browserOffset * browserWidth, screen.WorkingArea.Top, browserWidth, screen.WorkingArea.Height);
-						x.Application.MoveWindow(screen.WorkingArea.Left + browserOffset * browserWidth, screen.WorkingArea.Top);
-						x.Application.Resize(browserWidth, screen.WorkingArea.Height);
+						var offset = CalculateStart(resizeType, browserTypes, browser, leftOffset, size, topOffset);
+						//Debug.WriteLine($"{browser.BrowserType} X: {offset.X} Y: {offset.Y} W: {size.Width} H: {size.Height}");
+						browser.MoveWindow(offset.X, offset.Y, size.Width, size.Height);
+						browser.Application.MoveWindow(offset.X, offset.Y, size.Width, size.Height);
 					}
 
-					x.BringToFront();
-					x.NavigateTo("about:blank");
-					action(x);
+					browser.BringToFront();
+					browser.NavigateTo("about:blank");
+					action(browser);
 				}
 				catch (Exception ex)
 				{
-					throw new Exception("Test failed using " + x.GetType().Name + ".", ex);
+					throw new Exception($"Test failed using {browser.BrowserType}.", ex);
 				}
 			}, browserType, TimeSpan.FromMilliseconds(timeout));
-		}
-
-		/// <summary>
-		/// Run a test against each browser. BrowserType property will determine which browsers to run the test against.
-		/// </summary>
-		/// <param name="browserType"> The browser types to run the action against. </param>
-		/// <param name="action"> The action to run each browser against. </param>
-		/// <param name="useSecondaryMonitor"> The flag to determine to attempt to use secondary monitor. </param>
-		/// <param name="resizeBrowsers"> The flag to determine to resize the browsers. </param>
-		/// <seealso cref="BrowserType" />
-		public static void ForEachBrowser(this BrowserType browserType, Action<Browser> action, bool useSecondaryMonitor = true, bool resizeBrowsers = true)
-		{
-			var screen = useSecondaryMonitor ? Screen.AllScreens.FirstOrDefault(x => x.Primary == false) ?? Screen.AllScreens.First(x => x.Primary) : Screen.AllScreens.First(x => x.Primary);
-			var browserTypes = browserType.GetTypeArray();
-			var browserWidth = screen.WorkingArea.Width / browserTypes.Length;
-
-			Browser.ForEachBrowser(x =>
-			{
-				try
-				{
-					if (resizeBrowsers)
-					{
-						var browserOffset = Array.IndexOf(browserTypes, x.BrowserType);
-						x.MoveWindow(screen.WorkingArea.Left + browserOffset * browserWidth, screen.WorkingArea.Top, browserWidth, screen.WorkingArea.Height);
-						x.Application.MoveWindow(screen.WorkingArea.Left + browserOffset * browserWidth, screen.WorkingArea.Top);
-						x.Application.Resize(browserWidth, screen.WorkingArea.Height);
-					}
-
-					x.BringToFront();
-					action(x);
-				}
-				catch (Exception ex)
-				{
-					throw new Exception("Test failed using " + x.GetType().Name + ".", ex);
-				}
-			}, browserType);
 		}
 
 		/// <summary>
@@ -156,6 +122,44 @@ namespace TestR
 			{
 				action(item);
 			}
+		}
+
+		/// <summary>
+		/// Run a test against each browser. BrowserType property will determine which browsers to run the test against.
+		/// </summary>
+		/// <param name="browserType"> The browser types to run the action against. </param>
+		/// <param name="action"> The action to run each browser against. </param>
+		/// <param name="useSecondaryMonitor"> The flag to determine to attempt to use secondary monitor. </param>
+		/// <param name="resizeBrowsers"> The flag to determine to resize the browsers. </param>
+		/// <param name="resizeType"> The resize type if browser resizing is enabled. </param>
+		/// <seealso cref="BrowserType" />
+		/// <seealso cref="BrowserResizeType" />
+		public static void ForEachBrowser(this BrowserType browserType, Action<Browser> action, bool useSecondaryMonitor = true, bool resizeBrowsers = true, BrowserResizeType resizeType = BrowserResizeType.SideBySide)
+		{
+			var screen = useSecondaryMonitor ? Screen.AllScreens.FirstOrDefault(x => x.Primary == false) ?? Screen.AllScreens.First(x => x.Primary) : Screen.AllScreens.First(x => x.Primary);
+			var browserTypes = browserType.GetTypeArray();
+			var size = CalculateBrowserSize(useSecondaryMonitor, browserTypes, resizeType, out var leftOffset, out var topOffset);
+
+			Browser.ForEachBrowser(browser =>
+			{
+				try
+				{
+					if (resizeBrowsers)
+					{
+						var offset = CalculateStart(resizeType, browserTypes, browser, leftOffset, size, topOffset);
+						//Debug.WriteLine($"{browser.BrowserType} X: {offset.X} Y: {offset.Y} W: {size.Width} H: {size.Height}");
+						browser.MoveWindow(offset.X, offset.Y, size.Width, size.Height);
+						browser.Application.MoveWindow(offset.X, offset.Y, size.Width, size.Height);
+					}
+
+					browser.BringToFront();
+					action(browser);
+				}
+				catch (Exception ex)
+				{
+					throw new Exception($"Test failed using {browser.BrowserType}.", ex);
+				}
+			}, browserType);
 		}
 
 		/// <summary>
@@ -295,6 +299,58 @@ namespace TestR
 			var automation = new CUIAutomationClass();
 			var walker = automation.CreateTreeWalker(automation.RawViewCondition);
 			return walker.GetParentElement(element);
+		}
+
+		private static Size CalculateBrowserSize(bool useSecondaryMonitor, BrowserType[] browserTypes, BrowserResizeType resizeType, out int leftOffset, out int topOffset)
+		{
+			var screen = useSecondaryMonitor
+				? Screen.AllScreens.FirstOrDefault(x => x.Primary == false) ?? Screen.AllScreens.First(x => x.Primary)
+				: Screen.AllScreens.First(x => x.Primary);
+
+			topOffset = screen.WorkingArea.Top;
+
+			switch (resizeType)
+			{
+				case BrowserResizeType.LeftSideBySide:
+				case BrowserResizeType.RightSideBySide:
+				{
+					var horizontalCount = browserTypes.Length > 2 ? 2 : browserTypes.Length;
+					var verticalCount = browserTypes.Length > 2 ? 2 : 1;
+					var browserHeight = screen.WorkingArea.Height / verticalCount;
+					var browserWidth = screen.WorkingArea.Width / 2 / horizontalCount;
+					leftOffset = resizeType == BrowserResizeType.RightSideBySide
+						? screen.WorkingArea.Left + screen.WorkingArea.Width / 2
+						: screen.WorkingArea.Left;
+					return new Size(browserWidth, browserHeight);
+				}
+				case BrowserResizeType.SideBySide:
+				default:
+				{
+					var browserWidth = screen.WorkingArea.Width / browserTypes.Length;
+					leftOffset = screen.WorkingArea.Left;
+					return new Size(browserWidth, screen.WorkingArea.Height);
+				}
+			}
+		}
+
+		private static Point CalculateStart(BrowserResizeType resizeType, BrowserType[] browserTypes, Browser browser, int leftOffset, Size size, int topOffset)
+		{
+			var xOffset = Array.IndexOf(browserTypes, browser.BrowserType);
+			var yOffset = 0;
+
+			if (resizeType != BrowserResizeType.SideBySide)
+			{
+				yOffset = xOffset / 2;
+			}
+
+			if (resizeType != BrowserResizeType.SideBySide && xOffset >= 2)
+			{
+				xOffset -= 2;
+			}
+
+			var x = leftOffset + xOffset * size.Width;
+			var y = topOffset + yOffset * size.Height;
+			return new Point(x, y);
 		}
 
 		private static JsonSerializerSettings GetSerializerSettings(bool camelCase = false)

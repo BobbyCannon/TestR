@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using TestR.Desktop.Elements;
 
@@ -149,7 +150,15 @@ namespace TestR.Web.Browsers
 			var application = Application.Attach(BrowserName, DebugArgument, false, bringToFront);
 			if (application != null)
 			{
-				Application.Create(BrowserName, DebugArgument, false, bringToFront).Dispose();
+				try
+				{
+					Application.Create(BrowserName, DebugArgument, false, bringToFront).Dispose();
+				}
+				catch
+				{
+					// Process may close during creation causing error.
+				}
+
 				browser = new Chrome(application);
 			}
 			else
@@ -237,16 +246,29 @@ namespace TestR.Web.Browsers
 				return data;
 			}
 
-			var result = response.result.result;
-			if (result.value != null && result.value.GetType().Name == "JValue")
+			var result = response?.result?.result;
+			if (result?.value != null && result.value.GetType().Name == "JValue")
 			{
 				return result.value;
 			}
 
-			var typeName = result.GetType().Name;
-			return typeName != "JValue"
-				? JsonConvert.SerializeObject(result, Formatting.Indented)
-				: (string) result.value;
+			switch (result)
+			{
+				case JValue jValue:
+				{
+					return jValue.Value.ToString();
+				}
+				case JObject jObject:
+				{
+					return jObject.TryGetValue("value", out var value)
+						? value.ToString()
+						: JsonConvert.SerializeObject(result, Formatting.Indented);
+				}
+				default:
+				{
+					return JsonConvert.SerializeObject(result, Formatting.Indented);
+				}
+			}
 		}
 
 		/// <summary>
