@@ -122,6 +122,14 @@
             <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The instance that represents the application. </returns>
         </member>
+        <member name="M:TestR.Application.AttachOrCreateUniversal(System.String,System.String)">
+            <summary>
+            Attaches or creates a new instance of the universal application.
+            </summary>
+            <param name="applicationName"> The universal application name. </param>
+            <param name="packageFamilyName"> The application package family name. </param>
+            <returns> The instance that represents the application. </returns>
+        </member>
         <member name="M:TestR.Application.BringToFront">
             <summary>
             Brings the application to the front and makes it the top window.
@@ -150,6 +158,13 @@
             <param name="refresh"> The flag to trigger loading to load state when creating the application. Defaults to true. </param>
             <param name="bringToFront"> Bring the process to the front. </param>
             <returns> The instance that represents an application. </returns>
+        </member>
+        <member name="M:TestR.Application.CreateUniversal(System.String)">
+            <summary>
+            Creates a new instance of the universal application.
+            </summary>
+            <param name="packageFamilyName"> The application package family name. </param>
+            <returns> The instance that represents the application. </returns>
         </member>
         <member name="M:TestR.Application.Exists(System.String,System.String)">
             <summary>
@@ -1211,6 +1226,13 @@
             <param name="filePath"> The file path for the application to start. </param>
             <param name="arguments"> The optional arguments for the application. </param>
             <returns> The safe process for the current process or null if an issue occurs. </returns>
+        </member>
+        <member name="M:TestR.Native.ProcessService.StartUniversal(System.String)">
+            <summary>
+            Creates a new instance of the universal application.
+            </summary>
+            <param name="packageFamilyName"> The application package family name. </param>
+            <returns> The instance that represents the application. </returns>
         </member>
         <member name="M:TestR.Native.ProcessService.Where(System.String,System.String)">
             <summary>

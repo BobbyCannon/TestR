@@ -208,6 +208,11 @@ namespace TestR.AutomationTests.Web
 				Assert.AreEqual("Text Area's \"Quotes\" Data", browser.First<TextArea>("textarea").Text);
 				browser.First("button").Click();
 				Assert.AreEqual("button", browser.First<TextArea>("textarea").Text);
+				
+				browser.NavigateTo(TestSite + "/vue.html");
+				Assert.AreEqual("", browser.First<Division>("error").Text);
+				browser.First<Button>("click").Click();
+				Assert.AreEqual("click", browser.First<Division>("error").Text);
 			});
 		}
 

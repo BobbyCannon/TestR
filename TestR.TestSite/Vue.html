@@ -16,7 +16,7 @@
 		<div id="app" v-cloak>
 			<form style="margin: 10px 0">
 				<input id="emailAddress" v-model="emailAddress" type="text" autocomplete="off" />
-				<button id="submit" v-on:click="post()" :disabled="isRequesting || !emailAddress">
+				<button id="submit" v-on:click="post()" v-bind:disabled="isRequesting || !emailAddress">
 					<span v-show="!isRequesting">Continue</span>
 					<span v-show="isRequesting">Processing</span>
 				</button>
@@ -25,6 +25,8 @@
 				<div id="error" class="red" v-show="error">{{ error }}</div>
 				<div id="log"></div>
 			</form>
+
+			<button id="click" v-on:click="click()">click</button>
 		</div>
 		<script src="./Scripts/jquery-3.4.1.js"></script>
 		<script src="./Scripts/Vue.js"></script>
@@ -42,6 +44,9 @@
 				el: '#app',
 				data: model,
 				methods: {
+					click: function() {
+						app.error = "click";
+					},
 					post: function() {
 						app.error = "nope";
 					}

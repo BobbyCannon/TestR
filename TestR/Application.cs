@@ -130,7 +130,7 @@ namespace TestR
 			var process = ProcessService.Where(executablePath, arguments).FirstOrDefault();
 			return process == null ? null : Attach(process, refresh, bringToFront);
 		}
-
+		
 		/// <summary>
 		/// Attaches the application to an existing process.
 		/// </summary>
@@ -195,6 +195,17 @@ namespace TestR
 		public static Application AttachOrCreate(string executablePath, string arguments = null, bool refresh = true, bool bringToFront = true)
 		{
 			return Attach(executablePath, arguments, refresh, bringToFront) ?? Create(executablePath, arguments, refresh, bringToFront);
+		}
+
+		/// <summary>
+		/// Attaches or creates a new instance of the universal application.
+		/// </summary>
+		/// <param name="applicationName"> The universal application name. </param>
+		/// <param name="packageFamilyName"> The application package family name. </param>
+		/// <returns> The instance that represents the application. </returns>
+		public static Application AttachOrCreateUniversal(string applicationName, string packageFamilyName)
+		{
+			return Attach(applicationName) ?? CreateUniversal(packageFamilyName);
 		}
 
 		/// <summary>
@@ -266,6 +277,22 @@ namespace TestR
 			}
 
 			return Attach(process, refresh, bringToFront);
+		}
+
+		/// <summary>
+		/// Creates a new instance of the universal application.
+		/// </summary>
+		/// <param name="packageFamilyName"> The application package family name. </param>
+		/// <returns> The instance that represents the application. </returns>
+		public static Application CreateUniversal(string packageFamilyName)
+		{
+			var process = ProcessService.StartUniversal(packageFamilyName);
+			if (process == null)
+			{
+				throw new InvalidOperationException("Failed to start the application.");
+			}
+
+			return Attach(process);
 		}
 
 		/// <summary>

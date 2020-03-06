@@ -55,13 +55,23 @@ namespace TestR.Native
 		{
 			var info = new ProcessStartInfo { FileName = filePath, Arguments = arguments ?? string.Empty, UseShellExecute = true };
 			var process = new SafeProcess(Process.Start(info));
-			
+
 			if (PopulateProcess(process))
 			{
 				return process;
 			}
 
 			return Wait(filePath, arguments);
+		}
+
+		/// <summary>
+		/// Creates a new instance of the universal application.
+		/// </summary>
+		/// <param name="packageFamilyName"> The application package family name. </param>
+		/// <returns> The instance that represents the application. </returns>
+		public static SafeProcess StartUniversal(string packageFamilyName)
+		{
+			return Start($@"shell:appsFolder\{packageFamilyName}!App");
 		}
 
 		/// <summary>
@@ -136,21 +146,7 @@ namespace TestR.Native
 				}
 			}
 		}
-		
 
-		private static SafeProcess Wait(string name, string arguments, int timeoutInMilliseconds = 2000, int waitDelay = 10)
-		{
-			SafeProcess response = null;
-
-			var result = Utility.Wait(() => (response = Where(name, arguments).FirstOrDefault()) != null, timeoutInMilliseconds, waitDelay);
-			if (!result || response == null)
-			{
-				throw new Exception("Failed to find the process...");
-			}
-
-			return response;
-		}
-		
 		internal static SafeProcess Wait(string name, Func<SafeProcess, bool> func, int timeoutInMilliseconds = 2000, int waitDelay = 10)
 		{
 			SafeProcess response = null;
@@ -232,6 +228,19 @@ namespace TestR.Native
 			}
 
 			return true;
+		}
+
+		private static SafeProcess Wait(string name, string arguments, int timeoutInMilliseconds = 2000, int waitDelay = 10)
+		{
+			SafeProcess response = null;
+
+			var result = Utility.Wait(() => (response = Where(name, arguments).FirstOrDefault()) != null, timeoutInMilliseconds, waitDelay);
+			if (!result || response == null)
+			{
+				throw new Exception("Failed to find the process...");
+			}
+
+			return response;
 		}
 
 		#endregion
