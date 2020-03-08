@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using TestR.Internal;
 
 #endregion
 
@@ -251,7 +252,7 @@ namespace TestR.Web.Browsers
 				try
 				{
 					_socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-					_socket.Connect("localhost", 6000);
+					_socket.Connect("127.0.0.1", 6000);
 					return true;
 				}
 				catch

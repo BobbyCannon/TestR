@@ -7,10 +7,11 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Interop.UIAutomationClient;
 using TestR.Desktop;
 using TestR.Desktop.Elements;
-using TestR.Native;
-using UIAutomationClient;
+using TestR.Internal;
+using TestR.Internal.Native;
 
 #endregion
 
@@ -178,7 +179,7 @@ namespace TestR
 				application.BringToFront();
 			}
 
-			NativeMethods.SetFocus(application.Handle);
+			NativeGeneral.SetFocus(application.Handle);
 
 			application.WaitForComplete();
 			return application;
@@ -214,9 +215,9 @@ namespace TestR
 		public Application BringToFront()
 		{
 			Focus();
-			NativeMethods.BringWindowToTop(Handle);
-			NativeMethods.SetForegroundWindow(Handle);
-			NativeMethods.BringToTop(Handle);
+			NativeGeneral.BringWindowToTop(Handle);
+			NativeGeneral.SetForegroundWindow(Handle);
+			NativeGeneral.BringToTop(Handle);
 			Focus();
 			return this;
 		}
@@ -313,7 +314,7 @@ namespace TestR
 		/// </summary>
 		public Application Focus()
 		{
-			NativeMethods.SetFocus(Handle);
+			NativeGeneral.SetFocus(Handle);
 			return this;
 		}
 
@@ -323,7 +324,7 @@ namespace TestR
 		/// <returns> </returns>
 		public bool IsInFront()
 		{
-			var handle = NativeMethods.GetForegroundWindow();
+			var handle = NativeGeneral.GetForegroundWindow();
 			return handle == Process.MainWindowHandle;
 		}
 
@@ -344,7 +345,7 @@ namespace TestR
 		/// <param name="y"> The y coordinate to move to. </param>
 		public Application MoveWindow(int x, int y)
 		{
-			NativeMethods.MoveWindow(Handle, x, y, Size.Width, Size.Height, true);
+			NativeGeneral.MoveWindow(Handle, x, y, Size.Width, Size.Height, true);
 			return this;
 		}
 
@@ -357,7 +358,7 @@ namespace TestR
 		/// <param name="height"> The height of the window. </param>
 		public Application MoveWindow(int x, int y, int width, int height)
 		{
-			NativeMethods.MoveWindow(Handle, x, y, width, height, true);
+			NativeGeneral.MoveWindow(Handle, x, y, width, height, true);
 			return this;
 		}
 
@@ -368,7 +369,7 @@ namespace TestR
 		/// <param name="size"> The size of the window. </param>
 		public Application MoveWindow(Point location, Size size)
 		{
-			NativeMethods.MoveWindow(Handle, location.X, location.Y, size.Width, size.Height, true);
+			NativeGeneral.MoveWindow(Handle, location.X, location.Y, size.Width, size.Height, true);
 			return this;
 		}
 
@@ -410,7 +411,7 @@ namespace TestR
 		public ElementHost Resize(int width, int height)
 		{
 			var location = Location;
-			NativeMethods.MoveWindow(Process.MainWindowHandle, location.X, location.Y, width, height, true);
+			NativeGeneral.MoveWindow(Process.MainWindowHandle, location.X, location.Y, width, height, true);
 			return this;
 		}
 
@@ -508,7 +509,7 @@ namespace TestR
 			{
 				using (thread)
 				{
-					NativeMethods.EnumThreadWindows(thread.Id, (hWnd, lParam) =>
+					NativeGeneral.EnumThreadWindows(thread.Id, (hWnd, lParam) =>
 					{
 						handles.Add(hWnd);
 						return true;

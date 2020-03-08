@@ -20,7 +20,7 @@
             </summary>
             <param name="process"> The process for the application. </param>
         </member>
-        <member name="M:TestR.Application.#ctor(TestR.Native.SafeProcess)">
+        <member name="M:TestR.Application.#ctor(TestR.Desktop.SafeProcess)">
             <summary>
             Creates an instance of the application.
             </summary>
@@ -103,7 +103,7 @@
             <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The instance that represents the application. </returns>
         </member>
-        <member name="M:TestR.Application.Attach(TestR.Native.SafeProcess,System.Boolean,System.Boolean)">
+        <member name="M:TestR.Application.Attach(TestR.Desktop.SafeProcess,System.Boolean,System.Boolean)">
             <summary>
             Attaches the application to an existing process.
             </summary>
@@ -252,7 +252,7 @@
             Properties that should not be included in <see cref="M:TestR.Desktop.DesktopElement.ToDetailString" />.
             </summary>
         </member>
-        <member name="M:TestR.Desktop.DesktopElement.#ctor(UIAutomationClient.IUIAutomationElement,TestR.Application,TestR.ElementHost)">
+        <member name="M:TestR.Desktop.DesktopElement.#ctor(Interop.UIAutomationClient.IUIAutomationElement,TestR.Application,TestR.ElementHost)">
             <summary>
             Creates an instance of a desktop element.
             </summary>
@@ -388,7 +388,7 @@
         <member name="M:TestR.Desktop.DesktopElement.Dispose(System.Boolean)">
             <inheritdoc />
         </member>
-        <member name="M:TestR.Desktop.DesktopElement.Create(UIAutomationClient.IUIAutomationElement,TestR.Application,TestR.Desktop.DesktopElement)">
+        <member name="M:TestR.Desktop.DesktopElement.Create(Interop.UIAutomationClient.IUIAutomationElement,TestR.Application,TestR.Desktop.DesktopElement)">
             <summary>
             Creates an element from the automation element.
             </summary>
@@ -825,34 +825,1332 @@
             Waits for the window to no longer be busy.
             </summary>
         </member>
-        <member name="T:TestR.Desktop.Pattern.ScrollPattern">
+        <member name="T:TestR.Desktop.Elements.WindowState">
             <summary>
-            Represents the Windows scroll pattern.
+            Specifies whether a window is minimized, maximized, or restored.
             </summary>
         </member>
-        <member name="P:TestR.Desktop.Pattern.ScrollPattern.HorizontalScrollPercent">
+        <member name="F:TestR.Desktop.Elements.WindowState.Normal">
             <summary>
-            Gets the scroll percentage for the horizontal bar.
+            The window is restored.
             </summary>
         </member>
-        <member name="P:TestR.Desktop.Pattern.ScrollPattern.VerticalScrollPercent">
+        <member name="F:TestR.Desktop.Elements.WindowState.Minimized">
             <summary>
-            Gets the scroll percentage for the vertical bar.
+            The window is minimized.
             </summary>
         </member>
-        <member name="M:TestR.Desktop.Pattern.ScrollPattern.Create(TestR.Desktop.DesktopElement)">
+        <member name="F:TestR.Desktop.Elements.WindowState.Maximized">
             <summary>
-            Create a new pattern for the provided element.
+            The window is maximized.
             </summary>
-            <param name="element"> The element that supports the pattern. </param>
-            <returns> The pattern if we could find one else null will be returned. </returns>
         </member>
-        <member name="M:TestR.Desktop.Pattern.ScrollPattern.ScrollPercent(System.Double,System.Double)">
+        <member name="T:TestR.Desktop.Keyboard">
             <summary>
-            Scroll the desktop element.
+            Represents the keyboard and allows for simulated input.
             </summary>
-            <param name="horizontalPercent"> The percentage to scroll horizontally. </param>
-            <param name="verticalPercent"> The percentage to scroll vertically. </param>
+        </member>
+        <member name="F:TestR.Desktop.Keyboard._messageDispatcher">
+            <summary>
+            The instance of the <see cref="T:TestR.Internal.Inputs.InputMessageDispatcher" /> to use for dispatching <see cref="T:TestR.Internal.Inputs.Input" /> messages.
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:TestR.Desktop.Keyboard" /> class using an instance of a <see cref="T:TestR.Internal.Inputs.InputMessageDispatcher" /> for dispatching <see cref="T:TestR.Internal.Inputs.Input" /> messages.
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.IsHardwareKeyDown(TestR.Desktop.KeyboardKeys)">
+            <summary>
+            Determines whether the physical key is up or down at the time the function is called regardless of whether the application thread has read the keyboard event from the message pump by calling the <see cref="M:TestR.Internal.Native.NativeInput.GetAsyncKeyState(System.UInt16)" /> function.
+            </summary>
+            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" /> for the key. </param>
+            <returns>
+            <c> true </c> if the key is down; otherwise, <c> false </c>.
+            </returns>
+            <remarks>
+            See: http://msdn.microsoft.com/en-us/library/ms646293(VS.85).aspx
+            </remarks>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.IsHardwareKeyUp(TestR.Desktop.KeyboardKeys)">
+            <summary>
+            Determines whether the physical key is up or down at the time the function is called regardless of whether the application thread has read the keyboard event from the message pump by calling the <see cref="M:TestR.Internal.Native.NativeInput.GetAsyncKeyState(System.UInt16)" /> function.
+            </summary>
+            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" /> for the key. </param>
+            <returns>
+            <c> true </c> if the key is up; otherwise, <c> false </c>.
+            </returns>
+            <remarks>
+            See: http://msdn.microsoft.com/en-us/library/ms646293(VS.85).aspx
+            </remarks>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.IsKeyDown(TestR.Desktop.KeyboardKeys)">
+            <summary>
+            Determines whether the specified key is up or down by calling the GetKeyState function.
+            </summary>
+            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" /> for the key. </param>
+            <returns>
+            <c> true </c> if the key is down; otherwise, <c> false </c>.
+            </returns>
+            <remarks>
+            See: http://msdn.microsoft.com/en-us/library/ms646301(VS.85).aspx
+            </remarks>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.IsKeyUp(TestR.Desktop.KeyboardKeys)">
+            <summary>
+            Determines whether the specified key is up or down by calling the GetKeyState function.
+            </summary>
+            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" /> for the key. </param>
+            <returns>
+            <c> true </c> if the key is up; otherwise, <c> false </c>.
+            </returns>
+            <remarks>
+            See: http://msdn.microsoft.com/en-us/library/ms646301(VS.85).aspx
+            </remarks>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.IsTogglingKeyInEffect(TestR.Desktop.KeyboardKeys)">
+            <summary>
+            Determines whether the toggling key is toggled on (in-effect) or not by calling the GetKeyState function.
+            </summary>
+            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" /> for the key. </param>
+            <returns>
+            <c> true </c> if the toggling key is toggled on (in-effect); otherwise, <c> false </c>.
+            </returns>
+            <remarks>
+            See: http://msdn.microsoft.com/en-us/library/ms646301(VS.85).aspx
+            </remarks>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.KeyDown(TestR.Desktop.KeyboardKeys)">
+            <summary>
+            Calls the Win32 SendInput method to simulate a KeyDown.
+            </summary>
+            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" /> to press </param>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.KeyPress(TestR.Desktop.KeyboardKeys)">
+            <summary>
+            Calls the Win32 SendInput method with a KeyDown and KeyUp message in the same input sequence in order to simulate a Key PRESS.
+            </summary>
+            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" /> to press </param>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.KeyPress(TestR.Desktop.KeyboardKeys[])">
+            <summary>
+            Simulates a key press for each of the specified key codes in the order they are specified.
+            </summary>
+            <param name="keyCodes"> </param>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.KeyUp(TestR.Desktop.KeyboardKeys)">
+            <summary>
+            Calls the Win32 SendInput method to simulate a KeyUp.
+            </summary>
+            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" /> to lift up. </param>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.ModifiedKeyStroke(TestR.Desktop.KeyboardKeys,TestR.Desktop.KeyboardKeys)">
+            <summary>
+            Simulates a simple modified keystroke like CTRL-C where CTRL is the modifierKey and C is the key.
+            The flow is Modifier KeyDown, Key Press, Modifier KeyUp.
+            </summary>
+            <param name="modifierKeyCode"> The modifier key. </param>
+            <param name="keyCode"> The key to simulate. </param>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.ModifiedKeyStroke(System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardKeys},TestR.Desktop.KeyboardKeys)">
+            <summary>
+            Simulates a modified keystroke where there are multiple modifiers and one key like CTRL-ALT-C where CTRL and ALT are the modifierKeys and C is the key.
+            The flow is Modifiers KeyDown in order, Key Press, Modifiers KeyUp in reverse order.
+            </summary>
+            <param name="modifierKeyCodes"> The list of modifier keys </param>
+            <param name="keyCode"> The key to simulate </param>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.ModifiedKeyStroke(TestR.Desktop.KeyboardKeys,System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardKeys})">
+            <summary>
+            Simulates a modified keystroke where there is one modifier and multiple keys like CTRL-K-C where CTRL is the modifierKey and K and C are the keys.
+            The flow is Modifier KeyDown, Keys Press in order, Modifier KeyUp.
+            </summary>
+            <param name="modifierKey"> The modifier key </param>
+            <param name="keyCodes"> The list of keys to simulate </param>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.ModifiedKeyStroke(System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardKeys},System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardKeys})">
+            <summary>
+            Simulates a modified keystroke where there are multiple modifiers and multiple keys like CTRL-ALT-K-C where CTRL and ALT are the modifierKeys and K and C are the keys.
+            The flow is Modifiers KeyDown in order, Keys Press in order, Modifiers KeyUp in reverse order.
+            </summary>
+            <param name="modifierKeyCodes"> The list of modifier keys </param>
+            <param name="keyCodes"> The list of keys to simulate </param>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.Sleep(System.Int32)">
+            <summary>
+            Sleeps the executing thread to create a pause between simulated inputs.
+            </summary>
+            <param name="timeoutInMilliseconds"> The number of milliseconds to wait. </param>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.Sleep(System.TimeSpan)">
+            <summary>
+            Sleeps the executing thread to create a pause between simulated inputs.
+            </summary>
+            <param name="timeout"> The time to wait. </param>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.TypeText(System.String)">
+            <summary>
+            Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted text entry via the keyboard.
+            </summary>
+            <param name="text"> The text to be simulated. </param>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.TypeText(System.Char)">
+            <summary>
+            Simulates a single character text entry via the keyboard.
+            </summary>
+            <param name="character"> The unicode character to be simulated. </param>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.SendSimulatedInput(TestR.Internal.Inputs.Input[])">
+            <summary>
+            Sends the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages using the <see cref="T:TestR.Internal.Inputs.InputMessageDispatcher" /> instance.
+            </summary>
+            <param name="inputList"> The <see cref="T:System.Array" /> of <see cref="T:TestR.Internal.Inputs.Input" /> messages to send. </param>
+        </member>
+        <member name="T:TestR.Desktop.KeyboardKeys">
+            <summary>
+            The list of VirtualKeyCodes (see: http://msdn.microsoft.com/en-us/library/ms645540(VS.85).aspx)
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.LeftMouseButton">
+            <summary>
+            Left mouse button
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.RightMouseButton">
+            <summary>
+            Right mouse button
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.ControlBreak">
+            <summary>
+            Control-break processing
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.MiddleMouseButton">
+            <summary>
+            Middle mouse button (three-button mouse) - NOT contiguous with LBUTTON and RBUTTON
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.XButton1">
+            <summary>
+            Windows 2000/XP: X1 mouse button - NOT contiguous with LBUTTON and RBUTTON
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.XButton2">
+            <summary>
+            Windows 2000/XP: X2 mouse button - NOT contiguous with LBUTTON and RBUTTON
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Back">
+            <summary>
+            BACKSPACE key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Tab">
+            <summary>
+            TAB key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Clear">
+            <summary>
+            CLEAR key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Return">
+            <summary>
+            ENTER key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Shift">
+            <summary>
+            SHIFT key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Control">
+            <summary>
+            CTRL key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Alt">
+            <summary>
+            ALT key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Pause">
+            <summary>
+            PAUSE key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Capital">
+            <summary>
+            CAPS LOCK key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Kana">
+            <summary>
+            Input Method Editor (IME) Kana mode
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Hangeul">
+            <summary>
+            IME Hanguel mode (maintained for compatibility; use HANGUL)
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Hangul">
+            <summary>
+            IME Hangul mode
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Junja">
+            <summary>
+            IME Junja mode
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Final">
+            <summary>
+            IME final mode
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Hanja">
+            <summary>
+            IME Hanja mode
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Kanji">
+            <summary>
+            IME Kanji mode
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Escape">
+            <summary>
+            ESC key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Convert">
+            <summary>
+            IME convert
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.NonConvert">
+            <summary>
+            IME nonconvert
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Accept">
+            <summary>
+            IME accept
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.ModeChange">
+            <summary>
+            IME mode change request
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Space">
+            <summary>
+            Space Bar
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Prior">
+            <summary>
+            PAGE UP key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Next">
+            <summary>
+            PAGE DOWN key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.End">
+            <summary>
+            END key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Home">
+            <summary>
+            HOME key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Left">
+            <summary>
+            LEFT ARROW key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Up">
+            <summary>
+            UP ARROW key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Right">
+            <summary>
+            RIGHT ARROW key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Down">
+            <summary>
+            DOWN ARROW key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Select">
+            <summary>
+            SELECT key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Print">
+            <summary>
+            PRINT key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Execute">
+            <summary>
+            EXECUTE key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Snapshot">
+            <summary>
+            PRINT SCREEN key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Insert">
+            <summary>
+            INS key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Delete">
+            <summary>
+            DEL key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Help">
+            <summary>
+            HELP key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Number0">
+            <summary>
+            0 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Number1">
+            <summary>
+            1 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Number2">
+            <summary>
+            2 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Number3">
+            <summary>
+            3 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Number4">
+            <summary>
+            4 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Number5">
+            <summary>
+            5 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Number6">
+            <summary>
+            6 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Number7">
+            <summary>
+            7 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Number8">
+            <summary>
+            8 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Number9">
+            <summary>
+            9 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.A">
+            <summary>
+            A key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.B">
+            <summary>
+            B key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.C">
+            <summary>
+            C key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.D">
+            <summary>
+            D key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.E">
+            <summary>
+            E key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F">
+            <summary>
+            F key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.G">
+            <summary>
+            G key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.H">
+            <summary>
+            H key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.I">
+            <summary>
+            I key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.J">
+            <summary>
+            J key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.K">
+            <summary>
+            K key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.L">
+            <summary>
+            L key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.M">
+            <summary>
+            M key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.N">
+            <summary>
+            N key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.O">
+            <summary>
+            O key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.P">
+            <summary>
+            P key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Q">
+            <summary>
+            Q key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.R">
+            <summary>
+            R key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.S">
+            <summary>
+            S key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.T">
+            <summary>
+            T key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.U">
+            <summary>
+            U key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.V">
+            <summary>
+            V key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.W">
+            <summary>
+            W key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.X">
+            <summary>
+            X key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Y">
+            <summary>
+            Y key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Z">
+            <summary>
+            Z key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.LeftWindows">
+            <summary>
+            Left Windows key (Microsoft Natural keyboard)
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.RightWindows">
+            <summary>
+            Right Windows key (Natural keyboard)
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Apps">
+            <summary>
+            Applications key (Natural keyboard)
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Sleep">
+            <summary>
+            Computer Sleep key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Numpad0">
+            <summary>
+            Numeric keypad 0 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Numpad1">
+            <summary>
+            Numeric keypad 1 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Numpad2">
+            <summary>
+            Numeric keypad 2 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Numpad3">
+            <summary>
+            Numeric keypad 3 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Numpad4">
+            <summary>
+            Numeric keypad 4 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Numpad5">
+            <summary>
+            Numeric keypad 5 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Numpad6">
+            <summary>
+            Numeric keypad 6 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Numpad7">
+            <summary>
+            Numeric keypad 7 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Numpad8">
+            <summary>
+            Numeric keypad 8 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Numpad9">
+            <summary>
+            Numeric keypad 9 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Multiply">
+            <summary>
+            Multiply key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Add">
+            <summary>
+            Add key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Separator">
+            <summary>
+            Separator key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Subtract">
+            <summary>
+            Subtract key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Decimal">
+            <summary>
+            Decimal key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Divide">
+            <summary>
+            Divide key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F1">
+            <summary>
+            F1 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F2">
+            <summary>
+            F2 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F3">
+            <summary>
+            F3 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F4">
+            <summary>
+            F4 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F5">
+            <summary>
+            F5 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F6">
+            <summary>
+            F6 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F7">
+            <summary>
+            F7 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F8">
+            <summary>
+            F8 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F9">
+            <summary>
+            F9 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F10">
+            <summary>
+            F10 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F11">
+            <summary>
+            F11 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F12">
+            <summary>
+            F12 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F13">
+            <summary>
+            F13 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F14">
+            <summary>
+            F14 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F15">
+            <summary>
+            F15 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F16">
+            <summary>
+            F16 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F17">
+            <summary>
+            F17 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F18">
+            <summary>
+            F18 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F19">
+            <summary>
+            F19 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F20">
+            <summary>
+            F20 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F21">
+            <summary>
+            F21 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F22">
+            <summary>
+            F22 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F23">
+            <summary>
+            F23 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.F24">
+            <summary>
+            F24 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.NumLock">
+            <summary>
+            NUM LOCK key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Scroll">
+            <summary>
+            SCROLL LOCK key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.LeftShift">
+            <summary>
+            Left SHIFT key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.RightShift">
+            <summary>
+            Right SHIFT key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.LeftControl">
+            <summary>
+            Left CONTROL key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.RightControl">
+            <summary>
+            Right CONTROL key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.LeftMenu">
+            <summary>
+            Left MENU key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.RightMenu">
+            <summary>
+            Right MENU key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.BrowserBack">
+            <summary>
+            Windows 2000/XP: Browser Back key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.BrowserForward">
+            <summary>
+            Windows 2000/XP: Browser Forward key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.BrowserRefresh">
+            <summary>
+            Windows 2000/XP: Browser Refresh key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.BrowserStop">
+            <summary>
+            Windows 2000/XP: Browser Stop key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.BrowserSearch">
+            <summary>
+            Windows 2000/XP: Browser Search key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.BrowserFavorites">
+            <summary>
+            Windows 2000/XP: Browser Favorites key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.BrowserHome">
+            <summary>
+            Windows 2000/XP: Browser Start and Home key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.VolumeMute">
+            <summary>
+            Windows 2000/XP: Volume Mute key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.VolumeDown">
+            <summary>
+            Windows 2000/XP: Volume Down key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.VolumeUp">
+            <summary>
+            Windows 2000/XP: Volume Up key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.MediaNextTrack">
+            <summary>
+            Windows 2000/XP: Next Track key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.MediaPrevTrack">
+            <summary>
+            Windows 2000/XP: Previous Track key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.MediaStop">
+            <summary>
+            Windows 2000/XP: Stop Media key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.MediaPlayPause">
+            <summary>
+            Windows 2000/XP: Play/Pause Media key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.LaunchMail">
+            <summary>
+            Windows 2000/XP: Start Mail key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.LaunchMediaSelect">
+            <summary>
+            Windows 2000/XP: Select Media key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.LaunchApp1">
+            <summary>
+            Windows 2000/XP: Start Application 1 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.LaunchApp2">
+            <summary>
+            Windows 2000/XP: Start Application 2 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Oem1">
+            <summary>
+            Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the ';:' key 
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.OemPlus">
+            <summary>
+            Windows 2000/XP: For any country/region, the '+' key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.OemComma">
+            <summary>
+            Windows 2000/XP: For any country/region, the ',' key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.OemMinus">
+            <summary>
+            Windows 2000/XP: For any country/region, the '-' key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.OemPeriod">
+            <summary>
+            Windows 2000/XP: For any country/region, the '.' key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Oem2">
+            <summary>
+            Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the '/?' key 
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Oem3">
+            <summary>
+            Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the '`~' key 
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Oem4">
+            <summary>
+            Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the '[{' key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Oem5">
+            <summary>
+            Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the '\|' key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Oem6">
+            <summary>
+            Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the ']}' key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Oem7">
+            <summary>
+            Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the 'single-quote/double-quote' key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Oem8">
+            <summary>
+            Used for miscellaneous characters; it can vary by keyboard.
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Oem102">
+            <summary>
+            Windows 2000/XP: Either the angle bracket key or the backslash key on the RT 102-key keyboard
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.ProcessKey">
+            <summary>
+            Windows 95/98/Me, Windows NT 4.0, Windows 2000/XP: IME PROCESS key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Packet">
+            <summary>
+            Windows 2000/XP: Used to pass Unicode characters as if they were keystrokes. The PACKET key is the low word of a 32-bit Virtual Key value used for non-keyboard input methods. For more information, see Remark in KEYBDINPUT, SendInput, WM_KEYDOWN, and WM_KEYUP
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Attn">
+            <summary>
+            Attn key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.CrSel">
+            <summary>
+            CrSel key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.ExSel">
+            <summary>
+            ExSel key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.ErEof">
+            <summary>
+            Erase EOF key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Play">
+            <summary>
+            Play key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Zoom">
+            <summary>
+            Zoom key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.NoName">
+            <summary>
+            Reserved
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.Pa1">
+            <summary>
+            PA1 key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKeys.OemClear">
+            <summary>
+            Clear key
+            </summary>
+        </member>
+        <member name="T:TestR.Desktop.Mouse">
+            <summary>
+            Represents the mouse and allows for simulated input.
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.Mouse._messageDispatcher">
+            <summary>
+            The instance of the <see cref="T:TestR.Internal.Inputs.InputMessageDispatcher" /> to use for dispatching <see cref="T:TestR.Internal.Inputs.Input" /> messages.
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:TestR.Desktop.Mouse" /> class.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.Mouse.Cursor">
+            <summary>
+            Gets the current cursor for the mouse.
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.GetCursorPosition">
+            <summary>
+            Gets the current position of the mouse.
+            </summary>
+            <returns> The point location of the mouse cursor. </returns>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.HorizontalScroll(System.Int32)">
+            <summary>
+            Simulates a mouse horizontal wheel scroll gesture. Supported by Windows Vista and later.
+            </summary>
+            <param name="scrollAmountInClicks"> The amount to scroll in clicks. A positive value indicates that the wheel was rotated to the right; a negative value indicates that the wheel was rotated to the left. </param>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.LeftButtonClick">
+            <summary>
+            Simulates a mouse left-click gesture.
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.LeftButtonClick(System.Drawing.Point)">
+            <summary>
+            Simulates a mouse left-click gesture.
+            </summary>
+            <param name="point"> The absolute X-coordinate and Y-coordinate for the click. </param>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.LeftButtonClick(System.Int32,System.Int32)">
+            <summary>
+            Simulates a mouse left-click gesture.
+            </summary>
+            <param name="x"> The absolute X-coordinate for the click. </param>
+            <param name="y"> The absolute Y-coordinate for the click. </param>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.LeftButtonDoubleClick">
+            <summary>
+            Simulates a mouse left button double-click gesture.
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.LeftButtonDown">
+            <summary>
+            Simulates a mouse left button down gesture.
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.LeftButtonUp">
+            <summary>
+            Simulates a mouse left button up gesture.
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.MiddleButtonClick">
+            <summary>
+            Simulates a mouse left-click gesture.
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.MiddleButtonClick(System.Drawing.Point)">
+            <summary>
+            Simulates a mouse middle-click gesture.
+            </summary>
+            <param name="point"> The absolute X-coordinate and Y-coordinate for the click. </param>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.MiddleButtonClick(System.Int32,System.Int32)">
+            <summary>
+            Simulates a mouse middle-click gesture.
+            </summary>
+            <param name="x"> The absolute X-coordinate for the click. </param>
+            <param name="y"> The absolute Y-coordinate for the click. </param>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.MoveBy(System.Int32,System.Int32)">
+            <summary>
+            Simulates mouse movement by the specified distance measured as a delta from the current mouse location in pixels.
+            </summary>
+            <param name="pixelDeltaX"> The distance in pixels to move the mouse horizontally. </param>
+            <param name="pixelDeltaY"> The distance in pixels to move the mouse vertically. </param>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.MoveTo(System.Drawing.Point)">
+            <summary>
+            Simulates mouse movement to the specified location on the primary display device.
+            </summary>
+            <param name="point"> The absolute X-coordinate and Y-coordinate to move the mouse to. </param>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.MoveTo(System.Drawing.PointF)">
+            <summary>
+            Simulates mouse movement to the specified location on the primary display device.
+            </summary>
+            <param name="point"> The absolute X-coordinate and Y-coordinate to move the mouse to. </param>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.MoveTo(System.Int32,System.Int32)">
+            <summary>
+            Simulates mouse movement to the specified location.
+            </summary>
+            <param name="x"> The absolute X-coordinate to move the mouse cursor to. </param>
+            <param name="y"> The absolute Y-coordinate to move the mouse cursor to. </param>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.RightButtonClick">
+            <summary>
+            Simulates a mouse right button click gesture.
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.RightButtonClick(System.Drawing.Point)">
+            <summary>
+            Simulates a mouse move to an absolute position then right button click gesture.
+            </summary>
+            <param name="point"> The absolute X-coordinate and Y-coordinate for the click. </param>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.RightButtonClick(System.Int32,System.Int32)">
+            <summary>
+            Simulates a mouse move to an absolute position then right button click gesture.
+            </summary>
+            <param name="x"> The absolute X-coordinate for the click. </param>
+            <param name="y"> The absolute Y-coordinate for the click. </param>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.RightButtonDoubleClick">
+            <summary>
+            Simulates a mouse right button double-click gesture.
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.RightButtonDown">
+            <summary>
+            Simulates a mouse right button down gesture.
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.RightButtonUp">
+            <summary>
+            Simulates a mouse right button up gesture.
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.Sleep(System.Int32)">
+            <summary>
+            Sleeps the executing thread to create a pause between simulated inputs.
+            </summary>
+            <param name="timeoutInMilliseconds"> The number of milliseconds to wait. </param>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.Sleep(System.TimeSpan)">
+            <summary>
+            Sleeps the executing thread to create a pause between simulated inputs.
+            </summary>
+            <param name="timeout"> The time to wait. </param>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.VerticalScroll(System.Int32)">
+            <summary>
+            Simulates mouse vertical wheel scroll gesture.
+            </summary>
+            <param name="scrollAmountInClicks">
+            The amount to scroll in clicks. A positive value indicates that the wheel was rotated forward, away from the user; a negative
+            value indicates that the wheel was rotated backward, toward the user.
+            </param>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.XButtonClick(System.Int32)">
+            <summary>
+            Simulates a mouse X button click gesture.
+            </summary>
+            <param name="buttonId"> The button id. </param>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.XButtonDoubleClick(System.Int32)">
+            <summary>
+            Simulates a mouse X button double-click gesture.
+            </summary>
+            <param name="buttonId"> The button id. </param>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.XButtonDown(System.Int32)">
+            <summary>
+            Simulates a mouse X button down gesture.
+            </summary>
+            <param name="buttonId"> The button id. </param>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.XButtonUp(System.Int32)">
+            <summary>
+            Simulates a mouse X button up gesture.
+            </summary>
+            <param name="buttonId"> The button id. </param>
+        </member>
+        <member name="M:TestR.Desktop.Mouse.SendSimulatedInput(TestR.Internal.Inputs.Input[])">
+            <summary>
+            Sends the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages using the <see cref="T:TestR.Internal.Inputs.InputMessageDispatcher" /> instance.
+            </summary>
+            <param name="inputList"> The <see cref="T:System.Array" /> of <see cref="T:TestR.Internal.Inputs.Input" /> messages to send. </param>
+        </member>
+        <member name="T:TestR.Desktop.MouseButton">
+            <summary>
+            The mouse button
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.MouseButton.LeftButton">
+            <summary>
+            Left mouse button
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.MouseButton.MiddleButton">
+            <summary>
+            Middle mouse button
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.MouseButton.RightButton">
+            <summary>
+            Right mouse button
+            </summary>
+        </member>
+        <member name="T:TestR.Desktop.MouseCursor">
+            <summary>
+            Represents a cursor for the mouse.
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.MouseCursor.DefaultAndWait">
+            <summary>
+            Gets the cursor that represents default and wait.
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.MouseCursor.Pointer">
+            <summary>
+            Gets the cursor that represents a pointer.
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.MouseCursor.ShapedCursor">
+            <summary>
+            Gets the cursor that represents text edit.
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.MouseCursor.Wait">
+            <summary>
+            Gets the cursor that represents wait.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.MouseCursor.Current">
+            <summary>
+            Gets the current cursor for the mouse.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.MouseCursor.WaitCursors">
+            <summary>
+            Gets a list of cursors that represent wait cursors.
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.MouseCursor.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />.
+            </summary>
+            <returns>
+            true if the specified object  is equal to the current object; otherwise, false.
+            </returns>
+            <param name="obj"> The object to compare with the current object. </param>
+            <filterpriority> 2 </filterpriority>
+        </member>
+        <member name="M:TestR.Desktop.MouseCursor.GetHashCode">
+            <summary>
+            Serves as a hash function for a particular type.
+            </summary>
+            <returns>
+            A hash code for the current <see cref="T:System.Object" />.
+            </returns>
+            <filterpriority> 2 </filterpriority>
+        </member>
+        <member name="M:TestR.Desktop.MouseCursor.ToString">
+            <summary>
+            Returns a string that represents the current object.
+            </summary>
+            <returns>
+            A string that represents the current object.
+            </returns>
+            <filterpriority> 2 </filterpriority>
         </member>
         <member name="T:TestR.Desktop.Pattern.ExpandCollapsePattern">
             <summary>
@@ -910,6 +2208,35 @@
             <summary>
             The element does not expand or collapse.
             </summary>
+        </member>
+        <member name="T:TestR.Desktop.Pattern.ScrollPattern">
+            <summary>
+            Represents the Windows scroll pattern.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.Pattern.ScrollPattern.HorizontalScrollPercent">
+            <summary>
+            Gets the scroll percentage for the horizontal bar.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.Pattern.ScrollPattern.VerticalScrollPercent">
+            <summary>
+            Gets the scroll percentage for the vertical bar.
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.Pattern.ScrollPattern.Create(TestR.Desktop.DesktopElement)">
+            <summary>
+            Create a new pattern for the provided element.
+            </summary>
+            <param name="element"> The element that supports the pattern. </param>
+            <returns> The pattern if we could find one else null will be returned. </returns>
+        </member>
+        <member name="M:TestR.Desktop.Pattern.ScrollPattern.ScrollPercent(System.Double,System.Double)">
+            <summary>
+            Scroll the desktop element.
+            </summary>
+            <param name="horizontalPercent"> The percentage to scroll horizontally. </param>
+            <param name="verticalPercent"> The percentage to scroll vertically. </param>
         </member>
         <member name="T:TestR.Desktop.Pattern.TogglePattern">
             <summary>
@@ -1012,6 +2339,243 @@
             </summary>
             <param name="value"> The value to set. </param>
         </member>
+        <member name="T:TestR.Desktop.ProcessService">
+            <summary>
+            Represents a service that handling processes.
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.ProcessService.GetCurrentProcess">
+            <summary>
+            Get the safe process for the current process.
+            </summary>
+            <returns> The safe process for the current process or null if an issue occurs. </returns>
+        </member>
+        <member name="M:TestR.Desktop.ProcessService.Start(System.String,System.String)">
+            <summary>
+            Start an application and return the safe process representing it.
+            </summary>
+            <param name="filePath"> The file path for the application to start. </param>
+            <param name="arguments"> The optional arguments for the application. </param>
+            <returns> The safe process for the current process or null if an issue occurs. </returns>
+        </member>
+        <member name="M:TestR.Desktop.ProcessService.StartUniversal(System.String)">
+            <summary>
+            Creates a new instance of the universal application.
+            </summary>
+            <param name="packageFamilyName"> The application package family name. </param>
+            <returns> The instance that represents the application. </returns>
+        </member>
+        <member name="M:TestR.Desktop.ProcessService.Where(System.String,System.String)">
+            <summary>
+            Gets a list of safe processes by executable path.
+            </summary>
+            <param name="executablePathOrName"> The executable file path or name of the processes to load. </param>
+            <param name="arguments"> The optional arguments the process was started with. </param>
+            <returns> The processes for the executable path. </returns>
+        </member>
+        <member name="M:TestR.Desktop.ProcessService.Where(System.Func{TestR.Desktop.SafeProcess,System.Boolean})">
+            <summary>
+            Gets a list of safe processes filtered by provided filter.
+            </summary>
+            <param name="filter"> The filter to reduce collection. </param>
+            <returns> The processes that match the filter. </returns>
+        </member>
+        <member name="M:TestR.Desktop.ProcessService.WhereByName(System.String,System.Func{TestR.Desktop.SafeProcess,System.Boolean})">
+            <summary>
+            Gets a list of safe processes filtered by provided filter.
+            </summary>
+            <param name="name"> The name of the process. </param>
+            <param name="filter"> The filter to reduce collection. </param>
+            <returns> The processes that match the filter. </returns>
+        </member>
+        <member name="T:TestR.Desktop.SafeProcess">
+            <summary>
+            Provided process details to safely work in x86 or x64 processes.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.SafeProcess.Arguments">
+            <summary>
+            Gets the arguments that were provided when the process started.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.SafeProcess.FileName">
+            <summary>
+            Gets the name of the file.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.SafeProcess.FilePath">
+            <summary>
+            Gets the path to the file.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.SafeProcess.Handle">
+            <summary>
+            Gets the handle to this process interaction.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.SafeProcess.HasExited">
+            <summary>
+            Gets a value indicating whether the associated process has been terminated.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.SafeProcess.Id">
+            <summary>
+            Gets the ID.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.SafeProcess.Is64Bit">
+            <summary>
+            Gets a flag indicating the process is 64 bit.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.SafeProcess.IsElevated">
+            <summary>
+            Gets a flag indicating the process is elevated.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.SafeProcess.MainWindowHandle">
+            <summary>
+            Gets the main window handle.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.SafeProcess.Name">
+            <summary>
+            Gets the name
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.SafeProcess.Process">
+            <summary>
+            Gets the details of the safe process.
+            </summary>
+            <seealso cref="T:System.Diagnostics.Process" />
+        </member>
+        <member name="M:TestR.Desktop.SafeProcess.Close(System.Int32)">
+            <summary>
+            Wait for the process to close if not then kill the process.
+            </summary>
+            <param name="timeout"> The timeout to wait for graceful close. If the timeout is reached then kill the process. The timeout is in milliseconds. </param>
+        </member>
+        <member name="M:TestR.Desktop.SafeProcess.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.SafeProcess.GetProcess">
+            <summary>
+            Gets the process for this safe process.
+            </summary>
+            <returns> </returns>
+        </member>
+        <member name="M:TestR.Desktop.SafeProcess.GetWindowLocation">
+            <summary>
+            First the main window location for the process.
+            </summary>
+            <returns> The location of the window. </returns>
+        </member>
+        <member name="M:TestR.Desktop.SafeProcess.GetWindowSize">
+            <summary>
+            Gets the size of the main window for the process.
+            </summary>
+            <returns> The size of the main window. </returns>
+        </member>
+        <member name="M:TestR.Desktop.SafeProcess.Kill(System.Int32)">
+            <summary>
+            Wait for the process to close if not then kill the process.
+            </summary>
+            <param name="timeout"> The timeout to wait for graceful close. If the timeout is reached then kill the process. The timeout is in milliseconds. </param>
+        </member>
+        <member name="M:TestR.Desktop.SafeProcess.WaitForExit(System.Int32)">
+            <summary>
+            Wait for the process to exit.
+            </summary>
+            <param name="timeout"> The timeout to wait for exit. The timeout is in milliseconds. </param>
+        </member>
+        <member name="M:TestR.Desktop.SafeProcess.WaitForInputIdle(System.Int32)">
+            <summary>
+            Wait for the process to go idle.
+            </summary>
+            <param name="milliseconds"> The time to wait for idle to occur. Time is in milliseconds. </param>
+        </member>
+        <member name="M:TestR.Desktop.SafeProcess.Dispose(System.Boolean)">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <param name="disposing"> True if disposing and false if otherwise. </param>
+        </member>
+        <member name="T:TestR.Desktop.Screen">
+            <summary>
+            Represents a display device or multiple display devices on a single system.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.Screen.AllScreens">
+            <summary>
+            All screens that were enumerated. See <see cref="M:TestR.Desktop.Screen.Refresh" /> to update.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.Screen.DeviceName">
+            <summary>
+            Gets the device name.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.Screen.IsPrimary">
+            <summary>
+            The screen is the primary screen.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.Screen.Location">
+            <summary>
+            Gets the location of the screen.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.Screen.MultipleScreenSupport">
+            <summary>
+            Returns true if multiple screens are supported.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.Screen.PrimaryScreen">
+            <summary>
+            Gets the primary screen.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.Screen.ScreenArea">
+            <summary>
+            Gets the bounds of the monitor.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.Screen.Size">
+            <summary>
+            Gets the size of the screen.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.Screen.VirtualScreenSize">
+            <summary> Gets the bounds of the virtual screen. </summary>
+            <returns> A <see cref="T:System.Drawing.Rectangle" /> that specifies the bounding rectangle of the entire virtual screen. </returns>
+        </member>
+        <member name="P:TestR.Desktop.Screen.WorkingArea">
+            <summary>
+            Gets the bounds of the monitor.
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.Screen.FromPoint(System.Drawing.Point)">
+            <summary>
+            Gets the screen from the provided point.
+            </summary>
+            <param name="point"> The point that is in the screen you want. </param>
+            <returns> The screen that contains the point. </returns>
+        </member>
+        <member name="M:TestR.Desktop.Screen.FromPoint(System.Int32,System.Int32)">
+            <summary>
+            Gets the screen from the provided point.
+            </summary>
+            <param name="x"> The x location that is in the screen you want. </param>
+            <param name="y"> The y location that is in the screen you want. </param>
+            <returns> The screen that contains the point. </returns>
+        </member>
+        <member name="M:TestR.Desktop.Screen.Refresh">
+            <summary>
+            Refresh the <see cref="P:TestR.Desktop.Screen.AllScreens" /> collection.
+            </summary>
+        </member>
         <member name="T:TestR.Desktop.ScrollableDesktopElement">
             <summary>
             Represents a scrollable desktop application.
@@ -1028,860 +2592,6 @@
         </member>
         <member name="M:TestR.Desktop.ScrollableDesktopElement.Scroll(System.Double,System.Double)">
             <inheritdoc />
-        </member>
-        <member name="T:TestR.IScrollableElement">
-            <summary>
-            Represents a scrollable element.
-            </summary>
-        </member>
-        <member name="P:TestR.IScrollableElement.HorizontalScrollPercent">
-            <summary>
-            Gets the scroll percentage for the horizontal bar.
-            </summary>
-        </member>
-        <member name="P:TestR.IScrollableElement.IsScrollable">
-            <summary>
-            Gets a flag indicating the element is scrollable.
-            </summary>
-        </member>
-        <member name="P:TestR.IScrollableElement.VerticalScrollPercent">
-            <summary>
-            Gets the scroll percentage for the vertical bar.
-            </summary>
-        </member>
-        <member name="M:TestR.IScrollableElement.Scroll(System.Double,System.Double)">
-            <summary>
-            Scroll the browser window.
-            </summary>
-            <param name="horizontalPercent"> The percentage to scroll horizontally. </param>
-            <param name="verticalPercent"> The percentage to scroll vertically. </param>
-        </member>
-        <member name="T:TestR.Native.KeyConverter">
-            <summary>
-            Converts key to and from ascii values.
-            </summary>
-        </member>
-        <member name="M:TestR.Native.KeyConverter.AsciiToKeyValue(System.Int32)">
-            <summary>
-            Converts the ascii value to key.
-            </summary>
-            <param name="value"> The ascii value to convert. </param>
-            <returns> The key value converted from value. </returns>
-        </member>
-        <member name="M:TestR.Native.KeyConverter.KeyToAsciiValue(System.Windows.Input.Key,System.Boolean)">
-            <summary>
-            Converts a key to the ascii value.
-            </summary>
-            <param name="key"> The key to convert. </param>
-            <param name="isShiftPressed"> The flag to indicate the shift button is pressed. </param>
-            <returns> The ascii value of the key. </returns>
-        </member>
-        <member name="M:TestR.Native.ManagementObjectDisposer.DisposeOne(System.IDisposable)">
-            <summary>
-            Workaround to dispose ManagementBaseObject properly.
-            See http://stackoverflow.com/questions/11896282
-            </summary>
-            <param name="disposable"> The IDisposable object to dispose. </param>
-        </member>
-        <member name="M:TestR.Native.ManagementObjectDisposer.EnumerateCollection(System.Management.ManagementObjectCollection)">
-            <summary>
-            Helper for adding ManagementObjectCollection and enumerating it.
-            </summary>
-        </member>
-        <member name="M:TestR.Native.ManagementObjectDisposer.Search(System.String)">
-            <summary>
-            Helper for ManagementObjectSearcher with adding all objects to the disposables.
-            </summary>
-            <param name="query"> The query string. </param>
-        </member>
-        <member name="T:TestR.Native.SafeProcess">
-            <summary>
-            Provided process details to safely work in x86 or x64 processes.
-            </summary>
-        </member>
-        <member name="P:TestR.Native.SafeProcess.Arguments">
-            <summary>
-            Gets the arguments that were provided when the process started.
-            </summary>
-        </member>
-        <member name="P:TestR.Native.SafeProcess.FileName">
-            <summary>
-            Gets the name of the file.
-            </summary>
-        </member>
-        <member name="P:TestR.Native.SafeProcess.FilePath">
-            <summary>
-            Gets the path to the file.
-            </summary>
-        </member>
-        <member name="P:TestR.Native.SafeProcess.Handle">
-            <summary>
-            Gets the handle to this proces interaction.
-            </summary>
-        </member>
-        <member name="P:TestR.Native.SafeProcess.HasExited">
-            <summary>
-            Gets a value indicating whether the associated process has been terminated.
-            </summary>
-        </member>
-        <member name="P:TestR.Native.SafeProcess.Id">
-            <summary>
-            Gets the ID.
-            </summary>
-        </member>
-        <member name="P:TestR.Native.SafeProcess.Is64Bit">
-            <summary>
-            Gets a flag indicating the process is 64 bit.
-            </summary>
-        </member>
-        <member name="P:TestR.Native.SafeProcess.IsElevated">
-            <summary>
-            Gets a flag indicating the process is elevated.
-            </summary>
-        </member>
-        <member name="P:TestR.Native.SafeProcess.MainWindowHandle">
-            <summary>
-            Gets the main window handle.
-            </summary>
-        </member>
-        <member name="P:TestR.Native.SafeProcess.Name">
-            <summary>
-            Gets the name
-            </summary>
-        </member>
-        <member name="P:TestR.Native.SafeProcess.Process">
-            <summary>
-            Gets the details of the safe process.
-            </summary>
-            <seealso cref="T:System.Diagnostics.Process" />
-        </member>
-        <member name="M:TestR.Native.SafeProcess.Close(System.Int32)">
-            <summary>
-            Wait for the process to close if not then kill the process.
-            </summary>
-            <param name="timeout"> The timeout to wait for graceful close. If the timeout is reached then kill the process. The timeout is in milliseconds. </param>
-        </member>
-        <member name="M:TestR.Native.SafeProcess.Dispose">
-            <summary>
-            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-            </summary>
-        </member>
-        <member name="M:TestR.Native.SafeProcess.GetProcess">
-            <summary>
-            Gets the process for this safe process.
-            </summary>
-            <returns> </returns>
-        </member>
-        <member name="M:TestR.Native.SafeProcess.GetWindowLocation">
-            <summary>
-            First the main window location for the process.
-            </summary>
-            <returns> The location of the window. </returns>
-        </member>
-        <member name="M:TestR.Native.SafeProcess.GetWindowSize">
-            <summary>
-            Gets the size of the main window for the process.
-            </summary>
-            <returns> The size of the main window. </returns>
-        </member>
-        <member name="M:TestR.Native.SafeProcess.Kill(System.Int32)">
-            <summary>
-            Wait for the process to close if not then kill the process.
-            </summary>
-            <param name="timeout"> The timeout to wait for graceful close. If the timeout is reached then kill the process. The timeout is in milliseconds. </param>
-        </member>
-        <member name="M:TestR.Native.SafeProcess.WaitForExit(System.Int32)">
-            <summary>
-            Wait for the process to exit.
-            </summary>
-            <param name="timeout"> The timeout to wait for exit. The timeout is in milliseconds. </param>
-        </member>
-        <member name="M:TestR.Native.SafeProcess.WaitForInputIdle(System.Int32)">
-            <summary>
-            Wait for the process to go idle.
-            </summary>
-            <param name="milliseconds"> The time to wait for idle to occur. Time is in milliseconds. </param>
-        </member>
-        <member name="M:TestR.Native.SafeProcess.Dispose(System.Boolean)">
-            <summary>
-            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-            </summary>
-            <param name="disposing"> True if disposing and false if otherwise. </param>
-        </member>
-        <member name="T:TestR.Native.ProcessService">
-            <summary>
-            Represents a service that handling processes.
-            </summary>
-        </member>
-        <member name="M:TestR.Native.ProcessService.GetCurrentProcess">
-            <summary>
-            Get the safe process for the current process.
-            </summary>
-            <returns> The safe process for the current process or null if an issue occurs. </returns>
-        </member>
-        <member name="M:TestR.Native.ProcessService.Start(System.String,System.String)">
-            <summary>
-            Start an application and return the safe process representing it.
-            </summary>
-            <param name="filePath"> The file path for the application to start. </param>
-            <param name="arguments"> The optional arguments for the application. </param>
-            <returns> The safe process for the current process or null if an issue occurs. </returns>
-        </member>
-        <member name="M:TestR.Native.ProcessService.StartUniversal(System.String)">
-            <summary>
-            Creates a new instance of the universal application.
-            </summary>
-            <param name="packageFamilyName"> The application package family name. </param>
-            <returns> The instance that represents the application. </returns>
-        </member>
-        <member name="M:TestR.Native.ProcessService.Where(System.String,System.String)">
-            <summary>
-            Gets a list of safe processes by executable path.
-            </summary>
-            <param name="executablePathOrName"> The executable file path or name of the processes to load. </param>
-            <param name="arguments"> The optional arguments the process was started with. </param>
-            <returns> The processes for the executable path. </returns>
-        </member>
-        <member name="M:TestR.Native.ProcessService.Where(System.Func{TestR.Native.SafeProcess,System.Boolean})">
-            <summary>
-            Gets a list of safe processes filtered by provided filter.
-            </summary>
-            <param name="filter"> The filter to reduce collection. </param>
-            <returns> The processes that match the filter. </returns>
-        </member>
-        <member name="M:TestR.Native.ProcessService.WhereByName(System.String,System.Func{TestR.Native.SafeProcess,System.Boolean})">
-            <summary>
-            Gets a list of safe processes filtered by provided filter.
-            </summary>
-            <param name="name"> The name of the process. </param>
-            <param name="filter"> The filter to reduce collection. </param>
-            <returns> The processes that match the filter. </returns>
-        </member>
-        <member name="T:TestR.Native.Keyboard">
-            <summary>
-            Represents the keyboard and allows for simulated input.
-            </summary>
-        </member>
-        <member name="P:TestR.Native.Keyboard.Codes">
-            <summary>
-            All special codes used when TypeText is called.
-            </summary>
-        </member>
-        <member name="M:TestR.Native.Keyboard.FormatTextForTypeText(System.String)">
-            <summary>
-            Updates the text in preparation for TypeText method.
-            </summary>
-            <param name="value"> The value to cleanup. </param>
-            <returns> The value that is ready to pass to SendKeys. </returns>
-        </member>
-        <member name="M:TestR.Native.Keyboard.IsControlPressed">
-            <summary>
-            Determines if the control key is pressed.
-            </summary>
-            <returns>
-            True if either control key is pressed and false if otherwise.
-            </returns>
-        </member>
-        <member name="M:TestR.Native.Keyboard.IsShiftPressed">
-            <summary>
-            Determines if the shift key is pressed.
-            </summary>
-            <returns>
-            True if either shift key is pressed and false if otherwise.
-            </returns>
-        </member>
-        <member name="M:TestR.Native.Keyboard.StartMonitoring">
-            <summary>
-            Start monitoring the keyboard for keystrokes.
-            </summary>
-        </member>
-        <member name="M:TestR.Native.Keyboard.StopMonitoring">
-            <summary>
-            Stop monitoring the keyboard for keystrokes.
-            </summary>
-        </member>
-        <member name="M:TestR.Native.Keyboard.TypeText(System.Char)">
-            <summary>
-            Types text as keyboard input.
-            </summary>
-            <param name="value"> The value to type. </param>
-        </member>
-        <member name="M:TestR.Native.Keyboard.TypeText(System.String)">
-            <summary>
-            Types text as keyboard input.
-            </summary>
-            <param name="value"> The value to type. </param>
-        </member>
-        <member name="E:TestR.Native.Keyboard.KeyPressed">
-            <summary>
-            Event for key press events when monitoring the keyboard.
-            </summary>
-        </member>
-        <member name="T:TestR.Native.Keyboard.SpecialKeys">
-            <summary>
-            Represents specials keys to send when typing text.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.Alt">
-            <summary>
-            Represents an CTRL key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.Backspace">
-            <summary>
-            Represents an BACKSPACE key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.Break">
-            <summary>
-            Represents an BREAK key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.CapsLock">
-            <summary>
-            Represents an CAPS LOCK key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.Control">
-            <summary>
-            Represents an CTRL key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.Delete">
-            <summary>
-            Represents an DELETE key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.DownArrow">
-            <summary>
-            Represents an DOWN ARROW key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.End">
-            <summary>
-            Represents an END key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.Enter">
-            <summary>
-            Represents an ENTER key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.Esc">
-            <summary>
-            Represents an ESC key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.F1">
-            <summary>
-            Represents an F1 key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.F10">
-            <summary>
-            Represents an F10 key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.F11">
-            <summary>
-            Represents an F11 key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.F12">
-            <summary>
-            Represents an F12 key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.F13">
-            <summary>
-            Represents an F13 key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.F14">
-            <summary>
-            Represents an F14 key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.F15">
-            <summary>
-            Represents an F15 key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.F16">
-            <summary>
-            Represents an F16 key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.F2">
-            <summary>
-            Represents an F2 key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.F3">
-            <summary>
-            Represents an F3 key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.F4">
-            <summary>
-            Represents an F4 key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.F5">
-            <summary>
-            Represents an F5 key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.F6">
-            <summary>
-            Represents an F6 key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.F7">
-            <summary>
-            Represents an F7 key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.F8">
-            <summary>
-            Represents an F8 key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.F9">
-            <summary>
-            Represents an F9 key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.Help">
-            <summary>
-            Represents an HELP key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.Home">
-            <summary>
-            Represents an HOME key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.Insert">
-            <summary>
-            Represents an INSERT key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.KeypadAdd">
-            <summary>
-            Represents an Keypad add key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.KeypadDivide">
-            <summary>
-            Represents an Keypad divide key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.KeypadMultiply">
-            <summary>
-            Represents an Keypad multiply key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.KeypadSubtract">
-            <summary>
-            Represents an Keypad subtract key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.LeftArrow">
-            <summary>
-            Represents an LEFT ARROW key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.NumLock">
-            <summary>
-            Represents an NUM LOCK key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.PageDown">
-            <summary>
-            Represents an PAGE DOWN key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.PageUp">
-            <summary>
-            Represents an PAGE UP key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.PrintScreen">
-            <summary>
-            Represents an PRINT SCREEN key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.RightArrow">
-            <summary>
-            Represents an RIGHT ARROW key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.ScrollLock">
-            <summary>
-            Represents an SCROLL LOCK key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.Shift">
-            <summary>
-            Represents an SHIFT key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.Tab">
-            <summary>
-            Represents an TAB key press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Keyboard.SpecialKeys.UpArrow">
-            <summary>
-            Represents an UP ARROW key press.
-            </summary>
-        </member>
-        <member name="T:TestR.Native.Mouse">
-            <summary>
-            Represents the mouse and allows for simulated input.
-            </summary>
-        </member>
-        <member name="P:TestR.Native.Mouse.Cursor">
-            <summary>
-            Gets the current cursor for the mouse.
-            </summary>
-        </member>
-        <member name="M:TestR.Native.Mouse.GetCursorPosition">
-            <summary>
-            Gets the current position of the mouse.
-            </summary>
-            <returns> The point location of the mouse cursor. </returns>
-        </member>
-        <member name="M:TestR.Native.Mouse.LeftClick">
-            <summary>
-            Left click at the current mouse location.
-            </summary>
-        </member>
-        <member name="M:TestR.Native.Mouse.LeftClick(System.Int32,System.Int32)">
-            <summary>
-            Left click at the provided point.
-            </summary>
-            <param name="x"> The x point in which to click. </param>
-            <param name="y"> The y point in which to click. </param>
-        </member>
-        <member name="M:TestR.Native.Mouse.LeftClick(System.Drawing.Point)">
-            <summary>
-            Left click at the provided point.
-            </summary>
-            <param name="point"> The point in which to click. </param>
-        </member>
-        <member name="M:TestR.Native.Mouse.LeftClickDown">
-            <summary>
-            Left click and hold.
-            </summary>
-        </member>
-        <member name="M:TestR.Native.Mouse.LeftClickDown(System.Int32,System.Int32)">
-            <summary>
-            Left click and hold.
-            </summary>
-            <param name="x"> The x point in which to click. </param>
-            <param name="y"> The y point in which to click. </param>
-        </member>
-        <member name="M:TestR.Native.Mouse.LeftClickUp">
-            <summary>
-            Left click release.
-            </summary>
-        </member>
-        <member name="M:TestR.Native.Mouse.LeftClickUp(System.Int32,System.Int32)">
-            <summary>
-            Left click release.
-            </summary>
-            <param name="x"> The x point in which to click. </param>
-            <param name="y"> The y point in which to click. </param>
-        </member>
-        <member name="M:TestR.Native.Mouse.MiddleClick">
-            <summary>
-            Middle click at the current mouse location.
-            </summary>
-        </member>
-        <member name="M:TestR.Native.Mouse.MiddleClick(System.Int32,System.Int32)">
-            <summary>
-            Middle click at the provided point.
-            </summary>
-            <param name="x"> The x point in which to click. </param>
-            <param name="y"> The y point in which to click. </param>
-        </member>
-        <member name="M:TestR.Native.Mouse.MiddleClick(System.Drawing.Point)">
-            <summary>
-            Middle click at the provided point.
-            </summary>
-            <param name="point"> The point in which to click. </param>
-        </member>
-        <member name="M:TestR.Native.Mouse.MiddleClickDown">
-            <summary>
-            Middle click and hold.
-            </summary>
-        </member>
-        <member name="M:TestR.Native.Mouse.MiddleClickUp">
-            <summary>
-            Middle click release.
-            </summary>
-        </member>
-        <member name="M:TestR.Native.Mouse.MoveTo(System.Int32,System.Int32)">
-            <summary>
-            Sets the mouse to the provide point.
-            </summary>
-            <param name="x"> The x point in which to move to. </param>
-            <param name="y"> The y point in which to move to. </param>
-        </member>
-        <member name="M:TestR.Native.Mouse.MoveTo(System.Drawing.Point)">
-            <summary>
-            Sets the mouse to the provide point.
-            </summary>
-            <param name="point"> The point in which to move to. </param>
-        </member>
-        <member name="M:TestR.Native.Mouse.RightClick">
-            <summary>
-            Right click at the current mouse location.
-            </summary>
-        </member>
-        <member name="M:TestR.Native.Mouse.RightClick(System.Int32,System.Int32)">
-            <summary>
-            Right click at the provided point.
-            </summary>
-            <param name="x"> The x point in which to click. </param>
-            <param name="y"> The y point in which to click. </param>
-        </member>
-        <member name="M:TestR.Native.Mouse.RightClick(System.Drawing.Point)">
-            <summary>
-            Right click at the provided point.
-            </summary>
-            <param name="point"> The point in which to click. </param>
-        </member>
-        <member name="M:TestR.Native.Mouse.RightClickDown">
-            <summary>
-            Right click and hold.
-            </summary>
-        </member>
-        <member name="M:TestR.Native.Mouse.RightClickUp">
-            <summary>
-            Right click release.
-            </summary>
-        </member>
-        <member name="M:TestR.Native.Mouse.Select(System.Int32,System.Int32,System.Int32,System.Int32)">
-            <summary>
-            Select a section of screen using the left mouse button.
-            </summary>
-            <param name="x1"> Start x location. </param>
-            <param name="y1"> Start y location. </param>
-            <param name="x2"> End x location. </param>
-            <param name="y2"> End y location. </param>
-        </member>
-        <member name="M:TestR.Native.Mouse.StartMonitoring">
-            <summary>
-            Start monitoring the mouse for events.
-            </summary>
-        </member>
-        <member name="M:TestR.Native.Mouse.StopMonitoring">
-            <summary>
-            Stop monitoring the mouse for events.
-            </summary>
-        </member>
-        <member name="E:TestR.Native.Mouse.Clicked">
-            <summary>
-            Event for key press events when monitoring the keyboard.
-            </summary>
-        </member>
-        <member name="E:TestR.Native.Mouse.Moved">
-            <summary>
-            The mouse was moved.
-            </summary>
-        </member>
-        <member name="T:TestR.Native.Mouse.MouseEvent">
-            <summary>
-            Represents a mouse event.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Mouse.MouseEvent.Unknown">
-            <summary>
-            Unknown event.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Mouse.MouseEvent.LeftButtonDown">
-            <summary>
-            Event for left button press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Mouse.MouseEvent.LeftButtonUp">
-            <summary>
-            Event for left button release.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Mouse.MouseEvent.MouseMove">
-            <summary>
-            Event for mouse moving.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Mouse.MouseEvent.MouseWheel">
-            <summary>
-            Event for mouse wheel moving.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Mouse.MouseEvent.RightButtonDown">
-            <summary>
-            Event for right button press.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Mouse.MouseEvent.RightButtonUp">
-            <summary>
-            Event for right button release.
-            </summary>
-        </member>
-        <member name="T:TestR.Native.MouseCursor">
-            <summary>
-            Represents a cursor for the mouse.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.MouseCursor.DefaultAndWait">
-            <summary>
-            Gets the cursor that represents default and wait.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.MouseCursor.Pointer">
-            <summary>
-            Gets the cursor that represents a pointer.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.MouseCursor.ShapedCursor">
-            <summary>
-            Gets the cursor that represents text edit.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.MouseCursor.Wait">
-            <summary>
-            Gets the cursor that represents wait.
-            </summary>
-        </member>
-        <member name="P:TestR.Native.MouseCursor.Current">
-            <summary>
-            Gets the current cursor for the mouse.
-            </summary>
-        </member>
-        <member name="P:TestR.Native.MouseCursor.WaitCursors">
-            <summary>
-            Gets a list of cursors that represent wait cursors.
-            </summary>
-        </member>
-        <member name="M:TestR.Native.MouseCursor.Equals(System.Object)">
-            <summary>
-            Determines whether the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />.
-            </summary>
-            <returns>
-            true if the specified object  is equal to the current object; otherwise, false.
-            </returns>
-            <param name="obj"> The object to compare with the current object. </param>
-            <filterpriority> 2 </filterpriority>
-        </member>
-        <member name="M:TestR.Native.MouseCursor.GetHashCode">
-            <summary>
-            Serves as a hash function for a particular type.
-            </summary>
-            <returns>
-            A hash code for the current <see cref="T:System.Object" />.
-            </returns>
-            <filterpriority> 2 </filterpriority>
-        </member>
-        <member name="M:TestR.Native.MouseCursor.ToString">
-            <summary>
-            Returns a string that represents the current object.
-            </summary>
-            <returns>
-            A string that represents the current object.
-            </returns>
-            <filterpriority> 2 </filterpriority>
-        </member>
-        <member name="T:TestR.Native.MouseMessageFilter">
-            <summary>
-            The filter to capture mouse messages.
-            </summary>
-        </member>
-        <member name="M:TestR.Native.MouseMessageFilter.PreFilterMessage(System.Windows.Forms.Message@)">
-            <summary>
-            Filters out a message before it is dispatched.
-            </summary>
-            <returns>
-            true to filter the message and stop it from being dispatched; false to allow the message to continue to the next filter
-            or control.
-            </returns>
-            <param name="m"> The message to be dispatched. You cannot modify this message. </param>
-        </member>
-        <member name="E:TestR.Native.MouseMessageFilter.Clicked">
-            <summary>
-            The mouse was clicked event.
-            </summary>
-        </member>
-        <member name="E:TestR.Native.MouseMessageFilter.Moved">
-            <summary>
-            The mouse was moved.
-            </summary>
-        </member>
-        <member name="T:TestR.Native.Screen">
-            <summary>
-            Represents the screen and allows for capturing of screen data.
-            </summary>
-        </member>
-        <member name="F:TestR.Native.Screen.DataUrlPrefix">
-            <summary>
-            The prefix for a data url.
-            </summary>
-        </member>
-        <member name="M:TestR.Native.Screen.Capture(System.Drawing.Point,System.Drawing.Size)">
-            <summary>
-            Captures a section of the screen.
-            </summary>
-            <param name="location"> The upper left starting location. </param>
-            <param name="size"> The size to capture. </param>
-            <returns> The image of the screen section. </returns>
-        </member>
-        <member name="M:TestR.Native.Screen.ConvertFromDataUrl(System.String)">
-            <summary>
-            Converts a image to a data url.
-            </summary>
-            <returns> The data url for the image. </returns>
-        </member>
-        <member name="M:TestR.Native.Screen.ConvertToByteArray(System.Drawing.Image)">
-            <summary>
-            Converts a image to a byte array.
-            </summary>
-            <param name="image"> The image to convert. </param>
-            <returns> The data for the image. </returns>
-        </member>
-        <member name="M:TestR.Native.Screen.ConvertToDataUrl(System.String)">
-            <summary>
-            Converts a image to a data url.
-            </summary>
-            <param name="filePath"> The file path to the image to convert. </param>
-            <returns> The data url for the image. </returns>
-        </member>
-        <member name="M:TestR.Native.Screen.ConvertToDataUrl(System.Drawing.Image)">
-            <summary>
-            Converts a image to a data url.
-            </summary>
-            <param name="image"> The image to convert. </param>
-            <returns> The data url for the image. </returns>
-        </member>
-        <member name="M:TestR.Native.Screen.ConvertToDataUrl(System.Byte[])">
-            <summary>
-            Converts a image data to a data url.
-            </summary>
-            <param name="data"> The image data to convert. </param>
-            <returns> The data url for the image. </returns>
-        </member>
-        <member name="F:TestR.Native.NativeMethods.SetWindowPosFlags.NoMove">
-            <summary>
-            Retains the current position (ignores X and Y parameters).
-            </summary>
-        </member>
-        <member name="F:TestR.Native.NativeMethods.SetWindowPosFlags.NoSize">
-            <summary>
-            Retains the current size (ignores the cx and cy parameters).
-            </summary>
         </member>
         <member name="T:TestR.Element">
             <summary>
@@ -1942,16 +2652,6 @@
         <member name="P:TestR.Element.Width">
             <summary>
             Gets the width of the element.
-            </summary>
-        </member>
-        <member name="M:TestR.Element.CaptureSnippet">
-            <summary>
-            Takes a snippet of the element.
-            </summary>
-        </member>
-        <member name="M:TestR.Element.CaptureSnippet(System.String)">
-            <summary>
-            Takes a snippet of the element.
             </summary>
         </member>
         <member name="M:TestR.Element.Click(System.Int32,System.Int32,System.Boolean)">
@@ -2420,36 +3120,7 @@
             Container for all extension methods.
             </summary>
         </member>
-        <member name="M:TestR.Extensions.AsJToken(System.String)">
-            <summary>
-            Deserialize JSON data into a JToken class.
-            </summary>
-            <param name="data"> The JSON data to deserialize. </param>
-            <returns> The JToken class of the data. </returns>
-        </member>
-        <member name="M:TestR.Extensions.Contains(System.String,System.String,System.StringComparison)">
-            <summary>
-            Check to see if the string contains the value.
-            </summary>
-            <param name="source"> The source string value. </param>
-            <param name="value"> The value to search for. </param>
-            <param name="comparisonType"> The type of comparison to use when searching. </param>
-            <returns> True if the value is found and false if otherwise. </returns>
-        </member>
-        <member name="M:TestR.Extensions.Count(TestR.Web.BrowserType)">
-            <summary>
-            Returns the number of browsers for this type.
-            </summary>
-            <param name="type"> The browser type that contains the configuration. </param>
-            <returns> The number of browsers configured in the type. </returns>
-        </member>
-        <member name="M:TestR.Extensions.FirstValue(System.Collections.Generic.IEnumerable{System.String})">
-            <summary>
-            Return the first string that is not null or empty.
-            </summary>
-            <param name="collection"> The collection of string to parse. </param>
-        </member>
-        <member name="M:TestR.Extensions.ForAllBrowsers(TestR.Web.BrowserType,System.Action{TestR.Web.Browser},System.Boolean,System.Boolean,System.Int32,TestR.Web.BrowserResizeType)">
+        <member name="M:TestR.Extensions.ForAllBrowsers(TestR.Web.BrowserType,System.Action{TestR.Web.Browser},System.Boolean,System.Boolean,TestR.Web.BrowserResizeType,System.Int32)">
             <summary>
             Run a test against each browser. BrowserType property will determine which browsers to run the test against.
             </summary>
@@ -2457,18 +3128,10 @@
             <param name="action"> The action to run each browser against. </param>
             <param name="useSecondaryMonitor"> The flag to determine to attempt to use secondary monitor. </param>
             <param name="resizeBrowsers"> The flag to determine to resize the browsers. </param>
-            <param name="timeout"> The timeout in milliseconds. </param>
             <param name="resizeType"> The resize type if browser resizing is enabled. </param>
+            <param name="timeout"> The timeout in milliseconds. </param>
             <seealso cref="T:TestR.Web.BrowserType" />
             <seealso cref="T:TestR.Web.BrowserResizeType" />
-        </member>
-        <member name="M:TestR.Extensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
-            <summary>
-            Performs an action on each item in the collection.
-            </summary>
-            <param name="collection"> The collection of items to run the action with. </param>
-            <param name="action"> The action to run against each item in the collection. </param>
-            <typeparam name="T"> The type of the item in the collection. </typeparam>
         </member>
         <member name="M:TestR.Extensions.ForEachBrowser(TestR.Web.BrowserType,System.Action{TestR.Web.Browser},System.Boolean,System.Boolean,TestR.Web.BrowserResizeType)">
             <summary>
@@ -2482,7 +3145,42 @@
             <seealso cref="T:TestR.Web.BrowserType" />
             <seealso cref="T:TestR.Web.BrowserResizeType" />
         </member>
-        <member name="M:TestR.Extensions.ForEachDisposable``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
+        <member name="T:TestR.Input">
+            <summary>
+            A static combination a keyboard and mouse instance.
+            </summary>
+        </member>
+        <member name="P:TestR.Input.Keyboard">
+            <summary>
+            Represents the keyboard and allows for simulated input.
+            </summary>
+        </member>
+        <member name="P:TestR.Input.Mouse">
+            <summary>
+            Represents the mouse and allows for simulated input.
+            </summary>
+        </member>
+        <member name="M:TestR.Internal.Extensions.ToInt(System.String)">
+            <summary>
+            Converts the string to an integer.
+            </summary>
+            <param name="item"> The item to convert to an integer. </param>
+            <returns> The JSON data of the object. </returns>
+        </member>
+        <member name="M:TestR.Internal.Extensions.AsJToken(System.String)">
+            <summary>
+            Deserialize JSON data into a JToken class.
+            </summary>
+            <param name="data"> The JSON data to deserialize. </param>
+            <returns> The JToken class of the data. </returns>
+        </member>
+        <member name="M:TestR.Internal.Extensions.FirstValue(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Return the first string that is not null or empty.
+            </summary>
+            <param name="collection"> The collection of string to parse. </param>
+        </member>
+        <member name="M:TestR.Internal.Extensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
             <summary>
             Performs an action on each item in the collection.
             </summary>
@@ -2490,51 +3188,620 @@
             <param name="action"> The action to run against each item in the collection. </param>
             <typeparam name="T"> The type of the item in the collection. </typeparam>
         </member>
-        <member name="M:TestR.Extensions.FormatForInnerString(System.String)">
+        <member name="M:TestR.Internal.Extensions.FormatForInnerString(System.String)">
             <summary>
             Formats the string to be able to include inside inner string.
             </summary>
             <param name="source"> The source string value. </param>
             <returns> The string formatted to be place inside inner string. </returns>
         </member>
-        <member name="M:TestR.Extensions.GetTypeArray(TestR.Web.BrowserType)">
+        <member name="M:TestR.Internal.Extensions.GetTypeArray(TestR.Web.BrowserType)">
             <summary>
             Converts a browser type enum into an array of only individual browser types.
             </summary>
             <param name="browserType"> The browser type to convert. </param>
             <returns> The individual browser type values in the provided type. </returns>
         </member>
-        <member name="M:TestR.Extensions.IsAssemblyDebugBuild(System.Reflection.Assembly)">
+        <member name="T:TestR.Internal.Inputs.HardwareInput">
             <summary>
-            Checks to see if the assembly passed in is a debug build.
+            The HardwareInput structure contains information about a simulated message generated by an input device other than a keyboard or mouse.  (see: http://msdn.microsoft.com/en-us/library/ms646269(VS.85).aspx)
+            Declared in Winuser.h, include Windows.h
             </summary>
-            <param name="assembly"> The assembly to test. </param>
-            <returns> True if is a debug build and false if a release build. </returns>
         </member>
-        <member name="M:TestR.Extensions.Split(System.String,System.String,System.StringSplitOptions)">
+        <member name="F:TestR.Internal.Inputs.HardwareInput.Msg">
             <summary>
-            Splits a by a single separator.
+            Value specifying the message generated by the input hardware.
             </summary>
-            <param name="value"> The string to be split. </param>
-            <param name="separator"> The character to deliminate the string. </param>
-            <param name="options"> The options to use when splitting. </param>
-            <returns> The array of strings. </returns>
         </member>
-        <member name="M:TestR.Extensions.ToInt(System.String)">
+        <member name="F:TestR.Internal.Inputs.HardwareInput.ParamL">
             <summary>
-            Converts the string to an integer.
+            Specifies the low-order word of the lParam parameter for uMsg.
             </summary>
-            <param name="item"> The item to convert to an integer. </param>
-            <returns> The JSON data of the object. </returns>
         </member>
-        <member name="M:TestR.Extensions.ToJson``1(``0,System.Boolean)">
+        <member name="F:TestR.Internal.Inputs.HardwareInput.ParamH">
             <summary>
-            Serializes the object to JSON.
+            Specifies the high-order word of the lParam parameter for uMsg.
             </summary>
-            <typeparam name="T"> The type of the item. </typeparam>
-            <param name="item"> The item to serialize. </param>
-            <param name="camelCase"> The flag to use camel case. If true then camel case else pascel case. </param>
-            <returns> The JSON data of the object. </returns>
+        </member>
+        <member name="T:TestR.Internal.Inputs.Input">
+            <summary>
+            The INPUT structure is used by SendInput to store information for synthesizing input events such as keystrokes, mouse movement, and mouse clicks. (see: http://msdn.microsoft.com/en-us/library/ms646270(VS.85).aspx)
+            Declared in Winuser.h, include Windows.h
+            </summary>
+            <remarks>
+            This structure contains information identical to that used in the parameter list of the keybd_event or mouse_event function.
+            Windows 2000/XP: INPUT_KEYBOARD supports nonkeyboard input methods, such as handwriting recognition or voice recognition, as if it were text input by using the KEYEVENTF_UNICODE flag. For more information, see the remarks section of KEYBDINPUT.
+            </remarks>
+        </member>
+        <member name="F:TestR.Internal.Inputs.Input.Type">
+            <summary>
+            Specifies the type of the input event. This member can be one of the following values.
+            <see cref="F:TestR.Internal.Inputs.InputType.Mouse" /> - The event is a mouse event. Use the mi structure of the union.
+            <see cref="F:TestR.Internal.Inputs.InputType.Keyboard" /> - The event is a keyboard event. Use the ki structure of the union.
+            <see cref="F:TestR.Internal.Inputs.InputType.Hardware" /> - Windows 95/98/Me: The event is from input hardware other than a keyboard or mouse. Use the hi structure of the union.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.Input.Data">
+            <summary>
+            The data structure that contains information about the simulated Mouse, Keyboard or Hardware event.
+            </summary>
+        </member>
+        <member name="T:TestR.Internal.Inputs.InputBuilder">
+            <summary>
+            A helper class for building a list of <see cref="T:TestR.Internal.Inputs.Input" /> messages ready to be sent to the native Windows API.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.InputBuilder._inputList">
+            <summary>
+            The public list of <see cref="T:TestR.Internal.Inputs.Input" /> messages being built by this instance.
+            </summary>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:TestR.Internal.Inputs.InputBuilder" /> class.
+            </summary>
+        </member>
+        <member name="P:TestR.Internal.Inputs.InputBuilder.Item(System.Int32)">
+            <summary>
+            Gets the <see cref="T:TestR.Internal.Inputs.Input" /> at the specified position.
+            </summary>
+            <value> The <see cref="T:TestR.Internal.Inputs.Input" /> message at the specified position. </value>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddAbsoluteMouseMovement(System.Int32,System.Int32)">
+            <summary>
+            Move the mouse to an absolute position.
+            </summary>
+            <param name="absoluteX"> </param>
+            <param name="absoluteY"> </param>
+            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddAbsoluteMouseMovementOnVirtualDesktop(System.Int32,System.Int32)">
+            <summary>
+            Move the mouse to the absolute position on the virtual desktop.
+            </summary>
+            <param name="absoluteX"> </param>
+            <param name="absoluteY"> </param>
+            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddCharacter(System.Char)">
+            <summary>
+            Adds the character to the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages.
+            </summary>
+            <param name="character"> The <see cref="T:System.Char" /> to be added to the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages. </param>
+            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddCharacters(System.Collections.Generic.IEnumerable{System.Char})">
+            <summary>
+            Adds all of the characters in the specified <see cref="T:System.Collections.Generic.IEnumerable`1" /> of <see cref="T:System.Char" />.
+            </summary>
+            <param name="characters"> The characters to add. </param>
+            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddCharacters(System.String)">
+            <summary>
+            Adds the characters in the specified <see cref="T:System.String" />.
+            </summary>
+            <param name="characters"> The string of <see cref="T:System.Char" /> to add. </param>
+            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddKeyDown(TestR.Desktop.KeyboardKeys)">
+            <summary>
+            Adds a key down to the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages.
+            </summary>
+            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" />. </param>
+            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddKeyPress(TestR.Desktop.KeyboardKeys)">
+            <summary>
+            Adds a key press to the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages which is equivalent to a key down followed by a key up.
+            </summary>
+            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" />. </param>
+            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddKeyUp(TestR.Desktop.KeyboardKeys)">
+            <summary>
+            Adds a key up to the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages.
+            </summary>
+            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" />. </param>
+            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddMouseButtonClick(TestR.Desktop.MouseButton)">
+            <summary>
+            Adds a single click of the specified button.
+            </summary>
+            <param name="button"> </param>
+            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddMouseButtonDoubleClick(TestR.Desktop.MouseButton)">
+            <summary>
+            Adds a double click of the specified button.
+            </summary>
+            <param name="button"> </param>
+            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddMouseButtonDown(TestR.Desktop.MouseButton)">
+            <summary>
+            Adds a mouse button down for the specified button.
+            </summary>
+            <param name="button"> </param>
+            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddMouseButtonUp(TestR.Desktop.MouseButton)">
+            <summary>
+            Adds a mouse button up for the specified button.
+            </summary>
+            <param name="button"> </param>
+            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddMouseHorizontalWheelScroll(System.Int32)">
+            <summary>
+            Scroll the horizontal mouse wheel by the specified amount.
+            </summary>
+            <param name="scrollAmount"> </param>
+            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddMouseVerticalWheelScroll(System.Int32)">
+            <summary>
+            Scroll the vertical mouse wheel by the specified amount.
+            </summary>
+            <param name="scrollAmount"> </param>
+            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddMouseXButtonClick(System.Int32)">
+            <summary>
+            Adds a single click of the specified button.
+            </summary>
+            <param name="xButtonId"> </param>
+            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddMouseXButtonDoubleClick(System.Int32)">
+            <summary>
+            Adds a double click of the specified button.
+            </summary>
+            <param name="xButtonId"> </param>
+            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddMouseXButtonDown(System.Int32)">
+            <summary>
+            Adds a mouse button down for the specified button.
+            </summary>
+            <param name="xButtonId"> </param>
+            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddMouseXButtonUp(System.Int32)">
+            <summary>
+            Adds a mouse button up for the specified button.
+            </summary>
+            <param name="xButtonId"> </param>
+            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddRelativeMouseMovement(System.Int32,System.Int32)">
+            <summary>
+            Moves the mouse relative to its current position.
+            </summary>
+            <param name="x"> </param>
+            <param name="y"> </param>
+            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages.
+            </summary>
+            <returns>
+            A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages.
+            </returns>
+            <filterpriority> 1 </filterpriority>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.IsExtendedKey(TestR.Desktop.KeyboardKeys)">
+            <summary>
+            Determines if the <see cref="T:TestR.Desktop.KeyboardKeys" /> is an ExtendedKey
+            </summary>
+            <param name="keyCode"> The key code. </param>
+            <returns> true if the key code is an extended key; otherwise, false. </returns>
+            <remarks>
+            The extended keys consist of the ALT and CTRL keys on the right-hand side of the keyboard; the INS, DEL, HOME, END, PAGE UP, PAGE DOWN, and arrow keys in the clusters to the left of the numeric keypad; the NUM LOCK key; the BREAK (CTRL+PAUSE) key; the PRINT SCRN key; and the divide (/) and ENTER keys in the numeric keypad.
+            See http://msdn.microsoft.com/en-us/library/ms646267(v=vs.85).aspx Section "Extended-Key Flag"
+            </remarks>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.ToArray">
+            <summary>
+            Returns the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages as a <see cref="T:System.Array" /> of <see cref="T:TestR.Internal.Inputs.Input" /> messages.
+            </summary>
+            <returns> The <see cref="T:System.Array" /> of <see cref="T:TestR.Internal.Inputs.Input" /> messages. </returns>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages.
+            </summary>
+            <returns>
+            An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages.
+            </returns>
+            <filterpriority> 2 </filterpriority>
+        </member>
+        <member name="T:TestR.Internal.Inputs.InputMessageDispatcher">
+            <summary>
+            Implements the <see cref="T:TestR.Internal.Inputs.InputMessageDispatcher" /> by calling <see cref="M:TestR.Internal.Native.NativeInput.SendInput(System.UInt32,TestR.Internal.Inputs.Input[],System.Int32)" />.
+            </summary>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputMessageDispatcher.DispatchInput(TestR.Internal.Inputs.Input[])">
+            <summary>
+            Dispatches the specified list of <see cref="T:TestR.Internal.Inputs.Input" /> messages in their specified order by issuing a single called to <see cref="M:TestR.Internal.Native.NativeInput.SendInput(System.UInt32,TestR.Internal.Inputs.Input[],System.Int32)" />.
+            </summary>
+            <param name="inputs"> The list of <see cref="T:TestR.Internal.Inputs.Input" /> messages to be dispatched. </param>
+            <exception cref="T:System.ArgumentException"> If the <paramref name="inputs" /> array is empty. </exception>
+            <exception cref="T:System.ArgumentNullException"> If the <paramref name="inputs" /> array is null. </exception>
+            <exception cref="T:System.Exception"> If the any of the commands in the <paramref name="inputs" /> array could not be sent successfully. </exception>
+        </member>
+        <member name="T:TestR.Internal.Inputs.InputType">
+            <summary>
+            Specifies the type of the input event. This member can be one of the following values.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.InputType.Mouse">
+            <summary>
+            INPUT_MOUSE = 0x00 (The event is a mouse event. Use the mi structure of the union.)
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.InputType.Keyboard">
+            <summary>
+            INPUT_KEYBOARD = 0x01 (The event is a keyboard event. Use the ki structure of the union.)
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.InputType.Hardware">
+            <summary>
+            INPUT_HARDWARE = 0x02 (Windows 95/98/Me: The event is from input hardware other than a keyboard or mouse. Use the hi structure of the union.)
+            </summary>
+        </member>
+        <member name="T:TestR.Internal.Inputs.KeyboardFlag">
+            <summary>
+            Specifies various aspects of a keystroke. This member can be certain combinations of the following values.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.KeyboardFlag.ExtendedKey">
+            <summary>
+            KEYEVENTF_EXTENDEDKEY = 0x0001 (If specified, the scan code was preceded by a prefix byte that has the value 0xE0 (224).)
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.KeyboardFlag.KeyUp">
+            <summary>
+            KEYEVENTF_KEYUP = 0x0002 (If specified, the key is being released. If not specified, the key is being pressed.)
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.KeyboardFlag.Unicode">
+            <summary>
+            KEYEVENTF_UNICODE = 0x0004 (If specified, wScan identifies the key and wVk is ignored.)
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.KeyboardFlag.ScanCode">
+            <summary>
+            KEYEVENTF_SCANCODE = 0x0008 (Windows 2000/XP: If specified, the system synthesizes a VK_PACKET keystroke. The wVk parameter must be zero. This flag can only be combined with the KEYEVENTF_KEYUP flag. For more information, see the Remarks section.)
+            </summary>
+        </member>
+        <member name="T:TestR.Internal.Inputs.KeyboardInput">
+            <summary>
+            The KEYBDINPUT structure contains information about a simulated keyboard event.  (see: http://msdn.microsoft.com/en-us/library/ms646271(VS.85).aspx)
+            Declared in Winuser.h, include Windows.h
+            </summary>
+            <remarks>
+            Windows 2000/XP: INPUT_KEYBOARD supports nonkeyboard-input methodssuch as handwriting recognition or voice recognitionas if it were text input by using the KEYEVENTF_UNICODE flag. If KEYEVENTF_UNICODE is specified, SendInput sends a WM_KEYDOWN or WM_KEYUP message to the foreground thread's message queue with wParam equal to VK_PACKET. Once GetMessage or PeekMessage obtains this message, passing the message to TranslateMessage posts a WM_CHAR message with the Unicode character originally specified by wScan. This Unicode character will automatically be converted to the appropriate ANSI value if it is posted to an ANSI window.
+            Windows 2000/XP: Set the KEYEVENTF_SCANCODE flag to define keyboard input in terms of the scan code. This is useful to simulate a physical keystroke regardless of which keyboard is currently being used. The virtual key value of a key may alter depending on the current keyboard layout or what other keys were pressed, but the scan code will always be the same.
+            </remarks>
+        </member>
+        <member name="F:TestR.Internal.Inputs.KeyboardInput.KeyCode">
+            <summary>
+            Specifies a virtual-key code. The code must be a value in the range 1 to 254. The Winuser.h header file provides macro definitions (VK_*) for each value. If the dwFlags member specifies KEYEVENTF_UNICODE, wVk must be 0.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.KeyboardInput.Scan">
+            <summary>
+            Specifies a hardware scan code for the key. If dwFlags specifies KEYEVENTF_UNICODE, wScan specifies a Unicode character which is to be sent to the foreground application.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.KeyboardInput.Flags">
+            <summary>
+            Specifies various aspects of a keystroke. This member can be certain combinations of the following values.
+            KEYEVENTF_EXTENDEDKEY - If specified, the scan code was preceded by a prefix byte that has the value 0xE0 (224).
+            KEYEVENTF_KEYUP - If specified, the key is being released. If not specified, the key is being pressed.
+            KEYEVENTF_SCANCODE - If specified, wScan identifies the key and wVk is ignored.
+            KEYEVENTF_UNICODE - Windows 2000/XP: If specified, the system synthesizes a VK_PACKET keystroke. The wVk parameter must be zero. This flag can only be combined with the KEYEVENTF_KEYUP flag. For more information, see the Remarks section.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.KeyboardInput.Time">
+            <summary>
+            Time stamp for the event, in milliseconds. If this parameter is zero, the system will provide its own time stamp.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.KeyboardInput.ExtraInfo">
+            <summary>
+            Specifies an additional value associated with the keystroke. Use the GetMessageExtraInfo function to obtain this information.
+            </summary>
+        </member>
+        <member name="T:TestR.Internal.Inputs.MouseFlag">
+             <summary>
+             The set of MouseFlags for use in the Flags property of the <see cref="T:TestR.Internal.Inputs.MouseInput" /> structure.
+             </summary>
+             <remarks>
+            See: http://msdn.microsoft.com/en-us/library/ms646273(VS.85).aspx
+             </remarks>
+        </member>
+        <member name="F:TestR.Internal.Inputs.MouseFlag.Move">
+            <summary>
+            Specifies that movement occurred.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.MouseFlag.LeftDown">
+            <summary>
+            Specifies that the left button was pressed.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.MouseFlag.LeftUp">
+            <summary>
+            Specifies that the left button was released.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.MouseFlag.RightDown">
+            <summary>
+            Specifies that the right button was pressed.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.MouseFlag.RightUp">
+            <summary>
+            Specifies that the right button was released.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.MouseFlag.MiddleDown">
+            <summary>
+            Specifies that the middle button was pressed.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.MouseFlag.MiddleUp">
+            <summary>
+            Specifies that the middle button was released.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.MouseFlag.XDown">
+            <summary>
+            Windows 2000/XP: Specifies that an X button was pressed.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.MouseFlag.XUp">
+            <summary>
+            Windows 2000/XP: Specifies that an X button was released.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.MouseFlag.VerticalWheel">
+            <summary>
+            Windows NT/2000/XP: Specifies that the wheel was moved, if the mouse has a wheel. The amount of movement is specified in mouseData.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.MouseFlag.HorizontalWheel">
+            <summary>
+            Specifies that the wheel was moved horizontally, if the mouse has a wheel. The amount of movement is specified in mouseData. Windows 2000/XP:  Not supported.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.MouseFlag.VirtualDesk">
+            <summary>
+            Windows 2000/XP: Maps coordinates to the entire desktop. Must be used with MOUSEEVENTF_ABSOLUTE.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.MouseFlag.Absolute">
+            <summary>
+            Specifies that the dx and dy members contain normalized absolute coordinates. If the flag is not set, dx and dy contain relative data (the change in position
+            since the last reported position). This flag can be set, or not set, regardless of what kind of mouse or other pointing device, if any, is connected to the system.
+            For further information about relative mouse motion, see the following Remarks section.
+            </summary>
+        </member>
+        <member name="T:TestR.Internal.Inputs.MouseInput">
+            <summary>
+            The MOUSEINPUT structure contains information about a simulated mouse event. (see: http://msdn.microsoft.com/en-us/library/ms646273(VS.85).aspx)
+            Declared in Winuser.h, include Windows.h
+            </summary>
+            <remarks>
+            If the mouse has moved, indicated by MOUSEEVENTF_MOVE, dx and dy specify information about that movement. The information is specified as absolute or relative integer values.
+            If MOUSEEVENTF_ABSOLUTE value is specified, dx and dy contain normalized absolute coordinates between 0 and 65,535. The event procedure maps these coordinates onto the display surface.
+            Coordinate (0,0) maps onto the upper-left corner of the display surface; coordinate (65535,65535) maps onto the lower-right corner. In a multimonitor system, the coordinates map to the
+            primary monitor.
+            Windows 2000/XP: If MOUSEEVENTF_VIRTUALDESK is specified, the coordinates map to the entire virtual desktop.
+            If the MOUSEEVENTF_ABSOLUTE value is not specified, dx and dy specify movement relative to the previous mouse event (the last reported position). Positive values mean the mouse moved right (or down); negative values mean the mouse moved left (or up).
+            Relative mouse motion is subject to the effects of the mouse speed and the two-mouse threshold values. A user sets these three values with the Pointer Speed slider of the Control Panel's Mouse Properties sheet. You can obtain and set these values using the SystemParametersInfo function.
+            The system applies two tests to the specified relative mouse movement. If the specified distance along either the x or y axis is greater than the first mouse threshold value, and the mouse speed is not zero, the system doubles the distance. If the specified distance along either the x or y axis is greater than the second mouse threshold value, and the mouse speed is equal to two, the system doubles the distance that resulted from applying the first threshold test. It is thus possible for the system to multiply specified relative mouse movement along the x or y axis by up to four times.
+            </remarks>
+        </member>
+        <member name="F:TestR.Internal.Inputs.MouseInput.X">
+            <summary>
+            Specifies the absolute position of the mouse, or the amount of motion since the last mouse event was generated, depending on the value of the dwFlags member.
+            Absolute data is specified as the x coordinate of the mouse; relative data is specified as the number of pixels moved.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.MouseInput.Y">
+            <summary>
+            Specifies the absolute position of the mouse, or the amount of motion since the last mouse event was generated, depending on the value of the dwFlags member.
+            Absolute data is specified as the y coordinate of the mouse; relative data is specified as the number of pixels moved.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.MouseInput.MouseData">
+            <summary>
+            If dwFlags contains MOUSEEVENTF_WHEEL, then mouseData specifies the amount of wheel movement. A positive value indicates that the wheel was rotated forward, away from the user; a negative value indicates that the wheel was rotated backward, toward the user. One wheel click is defined as WHEEL_DELTA, which is 120.
+            Windows Vista: If dwFlags contains MOUSEEVENTF_HWHEEL, then dwData specifies the amount of wheel movement. A positive value indicates that the wheel was rotated to the right; a negative value indicates that the wheel was rotated to the left. One wheel click is defined as WHEEL_DELTA, which is 120.
+            Windows 2000/XP: IfdwFlags does not contain MOUSEEVENTF_WHEEL, MOUSEEVENTF_XDOWN, or MOUSEEVENTF_XUP, then mouseData should be zero.
+            If dwFlags contains MOUSEEVENTF_XDOWN or MOUSEEVENTF_XUP, then mouseData specifies which X buttons were pressed or released. This value may be any combination of the following flags.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.MouseInput.Flags">
+            <summary>
+            A set of bit flags that specify various aspects of mouse motion and button clicks. The bits in this member can be any reasonable combination of the following values.
+            The bit flags that specify mouse button status are set to indicate changes in status, not ongoing conditions. For example, if the left mouse button is pressed and held down,
+            MOUSEEVENTF_LEFTDOWN is set when the left button is first pressed, but not for subsequent motions. Similarly, MOUSEEVENTF_LEFTUP is set only when the button is first released.
+            You cannot specify both the MOUSEEVENTF_WHEEL flag and either MOUSEEVENTF_XDOWN or MOUSEEVENTF_XUP flags simultaneously in the dwFlags parameter, because they both require use
+            of the mouseData field.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.MouseInput.Time">
+            <summary>
+            Time stamp for the event, in milliseconds. If this parameter is 0, the system will provide its own time stamp.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.MouseInput.ExtraInfo">
+            <summary>
+            Specifies an additional value associated with the mouse event. An application calls GetMessageExtraInfo to obtain this extra information.
+            </summary>
+        </member>
+        <member name="T:TestR.Internal.Inputs.MouseKeyboardInput">
+            <summary>
+            The combined/overlayed structure that includes Mouse, Keyboard and Hardware Input message data (see: http://msdn.microsoft.com/en-us/library/ms646270(VS.85).aspx)
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.MouseKeyboardInput.Mouse">
+            <summary>
+            The <see cref="T:TestR.Internal.Inputs.MouseInput" /> definition.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.MouseKeyboardInput.Keyboard">
+            <summary>
+            The <see cref="T:TestR.Internal.Inputs.KeyboardInput" /> definition.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.MouseKeyboardInput.Hardware">
+            <summary>
+            The <see cref="T:TestR.Internal.Inputs.HardwareInput" /> definition.
+            </summary>
+        </member>
+        <member name="T:TestR.Internal.Inputs.XButton">
+            <summary>
+            XButton definitions for use in the MouseData property of the <see cref="T:TestR.Internal.Inputs.MouseInput" /> structure. (See: http://msdn.microsoft.com/en-us/library/ms646273(VS.85).aspx)
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.XButton.XButton1">
+            <summary>
+            Set if the first X button is pressed or released.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.XButton.XButton2">
+            <summary>
+            Set if the second X button is pressed or released.
+            </summary>
+        </member>
+        <member name="M:TestR.Internal.ManagementObjectDisposer.DisposeOne(System.IDisposable)">
+            <summary>
+            Workaround to dispose ManagementBaseObject properly.
+            See http://stackoverflow.com/questions/11896282
+            </summary>
+            <param name="disposable"> The IDisposable object to dispose. </param>
+        </member>
+        <member name="M:TestR.Internal.ManagementObjectDisposer.EnumerateCollection(System.Management.ManagementObjectCollection)">
+            <summary>
+            Helper for adding ManagementObjectCollection and enumerating it.
+            </summary>
+        </member>
+        <member name="M:TestR.Internal.ManagementObjectDisposer.Search(System.String)">
+            <summary>
+            Helper for ManagementObjectSearcher with adding all objects to the disposables.
+            </summary>
+            <param name="query"> The query string. </param>
+        </member>
+        <member name="T:TestR.Internal.Native.NativeGeneral">
+            <summary>
+            References all of the Native Windows API methods for the WindowsInput functionality.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Native.NativeGeneral.SetWindowPosFlags.NoMove">
+            <summary>
+            Retains the current position (ignores X and Y parameters).
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Native.NativeGeneral.SetWindowPosFlags.NoSize">
+            <summary>
+            Retains the current size (ignores the cx and cy parameters).
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Native.NativeScreen.DisplayDeviceStateFlags.AttachedToDesktop">
+            <summary> The device is part of the desktop. </summary>
+        </member>
+        <member name="F:TestR.Internal.Native.NativeScreen.DisplayDeviceStateFlags.PrimaryDevice">
+            <summary> The device is part of the desktop. </summary>
+        </member>
+        <member name="F:TestR.Internal.Native.NativeScreen.DisplayDeviceStateFlags.MirroringDriver">
+            <summary> Represents a pseudo device used to mirror application drawing for remoting or other purposes. </summary>
+        </member>
+        <member name="F:TestR.Internal.Native.NativeScreen.DisplayDeviceStateFlags.VGACompatible">
+            <summary> The device is VGA compatible. </summary>
+        </member>
+        <member name="F:TestR.Internal.Native.NativeScreen.DisplayDeviceStateFlags.Removable">
+            <summary> The device is removable; it cannot be the primary display. </summary>
+        </member>
+        <member name="F:TestR.Internal.Native.NativeScreen.DisplayDeviceStateFlags.ModesPruned">
+            <summary> The device has more display modes than its output devices support. </summary>
+        </member>
+        <member name="T:TestR.Internal.Utility">
+            <summary>
+            Represents the Utility class.
+            </summary>
+        </member>
+        <member name="M:TestR.Internal.Utility.Wait(System.Func{System.Boolean},System.Double,System.Int32)">
+            <summary>
+            Runs the action until the action returns true or the timeout is reached. Will delay in between actions of the provided time.
+            </summary>
+            <param name="action"> The action to call. </param>
+            <param name="timeout"> The timeout to attempt the action. This value is in milliseconds. </param>
+            <param name="delay"> The delay in between actions. This value is in milliseconds. </param>
+            <returns> Returns true of the call completed successfully or false if it timed out. </returns>
+        </member>
+        <member name="M:TestR.Internal.Utility.Wait``1(``0,System.Func{``0,System.Boolean},System.Double,System.Int32)">
+            <summary>
+            Runs the action until the action returns true or the timeout is reached. Will delay in between actions of the provided time.
+            </summary>
+            <param name="input"> The input to pass to the action. </param>
+            <param name="action"> The action to call. </param>
+            <param name="timeout"> The timeout to attempt the action. This value is in milliseconds. </param>
+            <param name="delay"> The delay in between actions. This value is in milliseconds. </param>
+            <returns> Returns true of the call completed successfully or false if it timed out. </returns>
+        </member>
+        <member name="T:TestR.IScrollableElement">
+            <summary>
+            Represents a scrollable element.
+            </summary>
+        </member>
+        <member name="P:TestR.IScrollableElement.HorizontalScrollPercent">
+            <summary>
+            Gets the scroll percentage for the horizontal bar.
+            </summary>
+        </member>
+        <member name="P:TestR.IScrollableElement.IsScrollable">
+            <summary>
+            Gets a flag indicating the element is scrollable.
+            </summary>
+        </member>
+        <member name="P:TestR.IScrollableElement.VerticalScrollPercent">
+            <summary>
+            Gets the scroll percentage for the vertical bar.
+            </summary>
+        </member>
+        <member name="M:TestR.IScrollableElement.Scroll(System.Double,System.Double)">
+            <summary>
+            Scroll the browser window.
+            </summary>
+            <param name="horizontalPercent"> The percentage to scroll horizontally. </param>
+            <param name="verticalPercent"> The percentage to scroll vertically. </param>
         </member>
         <member name="T:TestR.TestRException">
             <summary>
@@ -2546,30 +3813,6 @@
             Custom TestR Exception instead of the generic Exception
             </summary>
             <param name="message"> </param>
-        </member>
-        <member name="T:TestR.Utility">
-            <summary>
-            Represents the Utility class.
-            </summary>
-        </member>
-        <member name="M:TestR.Utility.Wait(System.Func{System.Boolean},System.Double,System.Int32)">
-            <summary>
-            Runs the action until the action returns true or the timeout is reached. Will delay in between actions of the provided time.
-            </summary>
-            <param name="action"> The action to call. </param>
-            <param name="timeout"> The timeout to attempt the action. This value is in milliseconds. </param>
-            <param name="delay"> The delay in between actions. This value is in milliseconds. </param>
-            <returns> Returns true of the call completed successfully or false if it timed out. </returns>
-        </member>
-        <member name="M:TestR.Utility.Wait``1(``0,System.Func{``0,System.Boolean},System.Double,System.Int32)">
-            <summary>
-            Runs the action until the action returns true or the timeout is reached. Will delay in between actions of the provided time.
-            </summary>
-            <param name="input"> The input to pass to the action. </param>
-            <param name="action"> The action to call. </param>
-            <param name="timeout"> The timeout to attempt the action. This value is in milliseconds. </param>
-            <param name="delay"> The delay in between actions. This value is in milliseconds. </param>
-            <returns> Returns true of the call completed successfully or false if it timed out. </returns>
         </member>
         <member name="T:TestR.Web.Browser">
             <summary>
@@ -2919,6 +4162,63 @@
             If more than two browsers then it will create quarters.
             </summary>
         </member>
+        <member name="T:TestR.Web.Browsers.Chrome">
+            <summary>
+            Represents an Chrome browser.
+            </summary>
+        </member>
+        <member name="F:TestR.Web.Browsers.Chrome.BrowserName">
+            <summary>
+            The name of the browser.
+            </summary>
+        </member>
+        <member name="F:TestR.Web.Browsers.Chrome.DebugPort">
+            <summary>
+            The debug port for the browser.
+            </summary>
+        </member>
+        <member name="M:TestR.Web.Browsers.Chrome.#ctor(TestR.Application,System.Collections.Generic.ICollection{System.IntPtr})">
+            <summary>
+            Initializes a new instance of the Chrome class.
+            </summary>
+            <param name="application"> The window of the existing browser. </param>
+            <param name="windowsToIgnore"> The windows to ignore. Optional. </param>
+        </member>
+        <member name="P:TestR.Web.Browsers.Chrome.BrowserType">
+            <summary>
+            Gets the type of the browser.
+            </summary>
+        </member>
+        <member name="M:TestR.Web.Browsers.Chrome.Attach(System.Boolean)">
+            <summary>
+            Attempts to attach to an existing browser.
+            </summary>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
+            <returns> The browser instance or null if not found. </returns>
+        </member>
+        <member name="M:TestR.Web.Browsers.Chrome.Attach(System.Diagnostics.Process,System.Boolean)">
+            <summary>
+            Attempts to attach to an existing browser.
+            </summary>
+            <param name="process"> The process to attach to. </param>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
+            <returns> The browser instance or null if not found. </returns>
+        </member>
+        <member name="M:TestR.Web.Browsers.Chrome.AttachOrCreate(System.Boolean)">
+            <summary>
+            Attempts to attach to an existing browser. If one is not found then create and return a new one.
+            </summary>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
+            <returns> The browser instance. </returns>
+        </member>
+        <member name="M:TestR.Web.Browsers.Chrome.Create(System.Boolean)">
+            <summary>
+            Attempts to create a new browser. If one is not found then we'll make sure it was started with the
+            remote debugger argument. If not an exception will be thrown.
+            </summary>
+            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
+            <returns> The browser instance. </returns>
+        </member>
         <member name="T:TestR.Web.Browsers.ChromiumBrowser">
             <summary>
             Represents a chromium based browser.
@@ -3036,63 +4336,6 @@
             <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The browser instance. </returns>
         </member>
-        <member name="T:TestR.Web.Browsers.Chrome">
-            <summary>
-            Represents an Chrome browser.
-            </summary>
-        </member>
-        <member name="F:TestR.Web.Browsers.Chrome.BrowserName">
-            <summary>
-            The name of the browser.
-            </summary>
-        </member>
-        <member name="F:TestR.Web.Browsers.Chrome.DebugPort">
-            <summary>
-            The debug port for the browser.
-            </summary>
-        </member>
-        <member name="M:TestR.Web.Browsers.Chrome.#ctor(TestR.Application,System.Collections.Generic.ICollection{System.IntPtr})">
-            <summary>
-            Initializes a new instance of the Chrome class.
-            </summary>
-            <param name="application"> The window of the existing browser. </param>
-            <param name="windowsToIgnore"> The windows to ignore. Optional. </param>
-        </member>
-        <member name="P:TestR.Web.Browsers.Chrome.BrowserType">
-            <summary>
-            Gets the type of the browser.
-            </summary>
-        </member>
-        <member name="M:TestR.Web.Browsers.Chrome.Attach(System.Boolean)">
-            <summary>
-            Attempts to attach to an existing browser.
-            </summary>
-            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
-            <returns> The browser instance or null if not found. </returns>
-        </member>
-        <member name="M:TestR.Web.Browsers.Chrome.Attach(System.Diagnostics.Process,System.Boolean)">
-            <summary>
-            Attempts to attach to an existing browser.
-            </summary>
-            <param name="process"> The process to attach to. </param>
-            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
-            <returns> The browser instance or null if not found. </returns>
-        </member>
-        <member name="M:TestR.Web.Browsers.Chrome.AttachOrCreate(System.Boolean)">
-            <summary>
-            Attempts to attach to an existing browser. If one is not found then create and return a new one.
-            </summary>
-            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
-            <returns> The browser instance. </returns>
-        </member>
-        <member name="M:TestR.Web.Browsers.Chrome.Create(System.Boolean)">
-            <summary>
-            Attempts to create a new browser. If one is not found then we'll make sure it was started with the
-            remote debugger argument. If not an exception will be thrown.
-            </summary>
-            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
-            <returns> The browser instance. </returns>
-        </member>
         <member name="T:TestR.Web.Browsers.Firefox">
             <summary>
             Represents a Firefox browser.
@@ -3188,98 +4431,6 @@
             </summary>
             <exception cref="T:System.Exception"> All debugging sessions are taken. </exception>
         </member>
-        <member name="T:TestR.Web.Browsers.InternetExplorer">
-            <summary>
-            Represents an Internet Explorer browser.
-            </summary>
-        </member>
-        <member name="F:TestR.Web.Browsers.InternetExplorer.BrowserName">
-            <summary>
-            The name of the browser.
-            </summary>
-        </member>
-        <member name="P:TestR.Web.Browsers.InternetExplorer.BrowserType">
-            <summary>
-            Gets the type of the browser.
-            </summary>
-        </member>
-        <member name="P:TestR.Web.Browsers.InternetExplorer.RawHtml">
-            <summary>
-            Gets the raw HTML of the page.
-            </summary>
-        </member>
-        <member name="M:TestR.Web.Browsers.InternetExplorer.Attach(System.Boolean)">
-            <summary>
-            Attempts to attach to an existing browser.
-            </summary>
-            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
-            <returns> An instance of an Internet Explorer browser. </returns>
-        </member>
-        <member name="M:TestR.Web.Browsers.InternetExplorer.Attach(System.Diagnostics.Process,System.Boolean)">
-            <summary>
-            Attempts to attach to an existing browser.
-            </summary>
-            <param name="process"> The process to attach to. </param>
-            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
-            <returns> The browser instance or null if not found. </returns>
-        </member>
-        <member name="M:TestR.Web.Browsers.InternetExplorer.AttachOrCreate(System.Boolean)">
-            <summary>
-            Attempts to attach to an existing browser. If one is not found then create and return a new one.
-            </summary>
-            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
-            <returns> An instance of an Internet Explorer browser. </returns>
-        </member>
-        <member name="M:TestR.Web.Browsers.InternetExplorer.Create(System.Boolean)">
-            <summary>
-            Creates a new instance of an Internet Explorer browser.
-            </summary>
-            <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
-            <returns> An instance of an Internet Explorer browser. </returns>
-        </member>
-        <member name="M:TestR.Web.Browsers.InternetExplorer.WaitForComplete(System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:TestR.Web.Browsers.InternetExplorer.BrowserNavigateTo(System.String)">
-            <summary>
-            Navigates the browser to the provided URI.
-            </summary>
-            <param name="uri"> The URI to navigate to. </param>
-        </member>
-        <member name="M:TestR.Web.Browsers.InternetExplorer.Dispose(System.Boolean)">
-            <summary>
-            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-            </summary>
-            <param name="disposing"> True if disposing and false if otherwise. </param>
-        </member>
-        <member name="M:TestR.Web.Browsers.InternetExplorer.ExecuteJavaScript(System.String,System.Boolean)">
-            <summary>
-            Execute JavaScript code in the current document.
-            </summary>
-            <param name="script"> The code script to execute. </param>
-            <param name="expectResponse"> The script will return response. </param>
-            <returns> The response from the execution. </returns>
-        </member>
-        <member name="M:TestR.Web.Browsers.InternetExplorer.GetBrowserUri">
-            <summary>
-            Reads the current URI directly from the browser.
-            </summary>
-            <returns> The current URI that was read from the browser. </returns>
-        </member>
-        <member name="M:TestR.Web.Browsers.InternetExplorer.GetScrollableElement">
-            <inheritdoc />
-        </member>
-        <member name="M:TestR.Web.Browsers.InternetExplorer.CreateInternetExplorerClass">
-            <summary>
-            Creates an instance of the InternetExplorer.
-            </summary>
-            <returns> An instance of Internet Explorer. </returns>
-        </member>
-        <member name="M:TestR.Web.Browsers.InternetExplorer.ReinitializeBrowser">
-            <summary>
-            Disconnects from the current browser and finds the new instance.
-            </summary>
-        </member>
         <member name="T:TestR.Web.BrowserType">
             <summary>
             The type of the browser.
@@ -3290,19 +4441,14 @@
             Represents a Chrome browser.
             </summary>
         </member>
-        <member name="F:TestR.Web.BrowserType.InternetExplorer">
+        <member name="F:TestR.Web.BrowserType.Edge">
             <summary>
-            Represents an Internet Explorer browser.
+            Represents an Edge (Chromium) browser.
             </summary>
         </member>
         <member name="F:TestR.Web.BrowserType.Firefox">
             <summary>
             Represents a Firefox browser.
-            </summary>
-        </member>
-        <member name="F:TestR.Web.BrowserType.Edge">
-            <summary>
-            Represents an Edge browser.
             </summary>
         </member>
         <member name="F:TestR.Web.BrowserType.All">

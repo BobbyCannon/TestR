@@ -2,7 +2,6 @@
 
 using System;
 using System.Windows.Forms;
-using TestR.Native;
 
 #endregion
 
@@ -16,8 +15,8 @@ namespace TestR.TestWinForms
 		{
 			InitializeComponent();
 
-			Keyboard.KeyPressed += key => keyPress.Text = KeyConverter.KeyToAsciiValue(key, Keyboard.IsShiftPressed()).ToString("X2") + " - " + key.ToString();
-			Keyboard.StartMonitoring();
+			//Keyboard.KeyPressed += key => keyPress.Text = KeyConverter.KeyToAsciiValue(key, Keyboard.IsShiftPressed()).ToString("X2") + " - " + key.ToString();
+			//Keyboard.StartMonitoring();
 		}
 
 		#endregion

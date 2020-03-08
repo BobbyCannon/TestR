@@ -1,9 +1,8 @@
 ﻿#region References
 
 using System.Drawing;
-using System.IO;
 using System.Text;
-using TestR.Native;
+using TestR.Internal;
 
 #endregion
 
@@ -100,23 +99,6 @@ namespace TestR
 		#region Methods
 
 		/// <summary>
-		/// Takes a snippet of the element.
-		/// </summary>
-		public virtual byte[] CaptureSnippet()
-		{
-			return Screen.Capture(Location, Size);
-		}
-
-		/// <summary>
-		/// Takes a snippet of the element.
-		/// </summary>
-		public virtual Element CaptureSnippet(string filePath)
-		{
-			File.WriteAllBytes(filePath, CaptureSnippet());
-			return this;
-		}
-
-		/// <summary>
 		/// Performs mouse click at the center of the element.
 		/// </summary>
 		/// <param name="x"> Optional X offset when clicking. </param>
@@ -199,7 +181,7 @@ namespace TestR
 		{
 			Application.BringToFront();
 			Focus();
-			Keyboard.TypeText(value);
+			Input.Keyboard.TypeText(value);
 			return this;
 		}
 

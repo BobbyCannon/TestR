@@ -1,12 +1,11 @@
 ﻿#region References
 
 using System;
+using System.Drawing;
 using System.Linq;
-using System.Windows;
-using TestR.Native;
-using UIAutomationClient;
-using Point = System.Drawing.Point;
-using Size = System.Drawing.Size;
+using Interop.UIAutomationClient;
+using TestR.Internal;
+using TestR.Internal.Native;
 
 #endregion
 
@@ -50,18 +49,18 @@ namespace TestR.Desktop.Elements
 		{
 			get
 			{
-				NativeMethods.Rect parentRect;
-				var parentHandle = NativeMethods.GetParent(NativeElement.CurrentNativeWindowHandle);
+				NativeGeneral.Rect parentRect;
+				var parentHandle = NativeGeneral.GetParent(NativeElement.CurrentNativeWindowHandle);
 				if (parentHandle != IntPtr.Zero)
 				{
-					NativeMethods.GetWindowRect(parentHandle, out parentRect);
+					NativeGeneral.GetWindowRect(parentHandle, out parentRect);
 				}
 				else
 				{
-					parentRect = new NativeMethods.Rect();
+					parentRect = new NativeGeneral.Rect();
 				}
 
-				NativeMethods.GetWindowRect(NativeElement.CurrentNativeWindowHandle, out NativeMethods.Rect rect);
+				NativeGeneral.GetWindowRect(NativeElement.CurrentNativeWindowHandle, out var rect);
 				return new Point(rect.Left - parentRect.Left, rect.Top - parentRect.Top);
 			}
 		}
@@ -83,7 +82,7 @@ namespace TestR.Desktop.Elements
 		{
 			get
 			{
-				var state = NativeMethods.GetWindowPlacement(NativeElement.CurrentNativeWindowHandle).ShowState;
+				var state = NativeGeneral.GetWindowPlacement(NativeElement.CurrentNativeWindowHandle).ShowState;
 
 				switch (state)
 				{
@@ -110,8 +109,8 @@ namespace TestR.Desktop.Elements
 		public Window BringToFront()
 		{
 			var handle = NativeElement.CurrentNativeWindowHandle;
-			NativeMethods.SetForegroundWindow(handle);
-			NativeMethods.BringWindowToTop(handle);
+			NativeGeneral.SetForegroundWindow(handle);
+			NativeGeneral.BringWindowToTop(handle);
 			return this;
 		}
 
@@ -138,7 +137,7 @@ namespace TestR.Desktop.Elements
 		/// <param name="y"> The y value of the position to move to. </param>
 		public void Move(int x, int y)
 		{
-			NativeMethods.MoveWindow(NativeElement.CurrentNativeWindowHandle, x, y, Width, Height, true);
+			NativeGeneral.MoveWindow(NativeElement.CurrentNativeWindowHandle, x, y, Width, Height, true);
 		}
 
 		/// <summary>
@@ -150,7 +149,7 @@ namespace TestR.Desktop.Elements
 		/// <param name="height"> The height to set. </param>
 		public void Move(int x, int y, int width, int height)
 		{
-			NativeMethods.MoveWindow(NativeElement.CurrentNativeWindowHandle, x, y, width, height, true);
+			NativeGeneral.MoveWindow(NativeElement.CurrentNativeWindowHandle, x, y, width, height, true);
 		}
 
 		/// <summary>
@@ -160,7 +159,7 @@ namespace TestR.Desktop.Elements
 		/// <param name="size"> The size of the window. </param>
 		public void Move(Point location, Size size)
 		{
-			NativeMethods.MoveWindow(NativeElement.CurrentNativeWindowHandle, location.X, location.Y, size.Width, size.Height, true);
+			NativeGeneral.MoveWindow(NativeElement.CurrentNativeWindowHandle, location.X, location.Y, size.Width, size.Height, true);
 		}
 
 		/// <summary>
@@ -170,7 +169,7 @@ namespace TestR.Desktop.Elements
 		/// <param name="height"> The height to set. </param>
 		public void Resize(int width, int height)
 		{
-			NativeMethods.MoveWindow(NativeElement.CurrentNativeWindowHandle, Location.X, Location.Y, width, height, true);
+			NativeGeneral.MoveWindow(NativeElement.CurrentNativeWindowHandle, Location.X, Location.Y, width, height, true);
 		}
 
 		/// <summary>

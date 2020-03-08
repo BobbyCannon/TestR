@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TestR.Desktop.Elements;
+using TestR.Internal;
 using TestR.Web.Browsers;
 
 #endregion
@@ -197,11 +198,6 @@ namespace TestR.Web
 				response.Add(Firefox.Attach(bringToFront));
 			}
 
-			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)
-			{
-				response.Add(InternetExplorer.Attach(bringToFront));
-			}
-
 			return response;
 		}
 
@@ -231,12 +227,6 @@ namespace TestR.Web
 				response.Add(firefox);
 			}
 
-			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)
-			{
-				var explorer = InternetExplorer.AttachOrCreate();
-				response.Add(explorer);
-			}
-
 			return response;
 		}
 
@@ -248,7 +238,7 @@ namespace TestR.Web
 		/// <returns> The browser if successfully attached or otherwise null. </returns>
 		public static Browser AttachToBrowser(Process process, bool bringToFront = true)
 		{
-			return Chrome.Attach(process, bringToFront) ?? Edge.Attach(process, bringToFront) ?? InternetExplorer.Attach(process, bringToFront) ?? Firefox.Attach(process, bringToFront);
+			return Chrome.Attach(process, bringToFront) ?? Edge.Attach(process, bringToFront) ?? Firefox.Attach(process, bringToFront);
 		}
 
 		/// <summary>
@@ -288,11 +278,6 @@ namespace TestR.Web
 			{
 				Application.CloseAll(Firefox.BrowserName);
 			}
-
-			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)
-			{
-				Application.CloseAll(InternetExplorer.BrowserName);
-			}
 		}
 
 		/// <summary>
@@ -317,11 +302,6 @@ namespace TestR.Web
 			if ((type & BrowserType.Firefox) == BrowserType.Firefox)
 			{
 				response.Add(Firefox.Create(bringToFront));
-			}
-
-			if ((type & BrowserType.InternetExplorer) == BrowserType.InternetExplorer)
-			{
-				response.Add(InternetExplorer.Create(bringToFront));
 			}
 
 			return response;
@@ -383,7 +363,7 @@ namespace TestR.Web
 		public static void ForAllBrowsers(Action<Browser> action, BrowserType type, TimeSpan timeout)
 		{
 			var types = type.GetTypeArray();
-			var tasks = types.Select(x => StartStaTask(() =>
+			var tasks = types.Select(x => Task.Run(() =>
 				{
 					using (var browser = AttachOrCreate(x).First())
 					{
@@ -399,6 +379,8 @@ namespace TestR.Web
 			{
 				milliseconds = 10000;
 			}
+
+			milliseconds = 1200000;
 
 			var wait = Task.WaitAll(tasks, milliseconds);
 			if (wait)
@@ -468,7 +450,7 @@ namespace TestR.Web
 					using (var reader = new StreamReader(stream))
 					{
 						var data = reader.ReadToEnd();
-						var lines = data.Split(Environment.NewLine);
+						var lines = data.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 						for (var i = 0; i < lines.Length; i++)
 						{
 							lines[i] = lines[i].Trim();

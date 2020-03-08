@@ -4,16 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Interop.UIAutomationClient;
 using TestR.Desktop.Elements;
 using TestR.Desktop.Pattern;
-using TestR.Native;
-using UIAutomationClient;
-using Image = TestR.Desktop.Elements.Image;
+using TestR.Internal;
+using TestR.Internal.Native;
 
 #endregion
 
@@ -121,8 +119,10 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Gets the name of the control type.
 		/// </summary>
-		public string TypeName => string.IsNullOrWhiteSpace(NativeElement.CurrentLocalizedControlType)
-			? GetTypeName(TypeId) : NativeElement.CurrentLocalizedControlType;
+		public string TypeName =>
+			string.IsNullOrWhiteSpace(NativeElement.CurrentLocalizedControlType)
+				? GetTypeName(TypeId)
+				: NativeElement.CurrentLocalizedControlType;
 
 		/// <summary>
 		/// Gets a value that indicates whether the element is visible.
@@ -136,8 +136,7 @@ namespace TestR.Desktop
 					return true;
 				}
 
-				Point point;
-				var clickable = TryGetClickablePoint(out point) && point.Y != 0 && point.Y != 0;
+				var clickable = TryGetClickablePoint(out var point) && point.Y != 0 && point.Y != 0;
 				var focused = Focused || Children.Any(x => x.Focused);
 				return NativeElement.CurrentIsOffscreen == 0 && (clickable || focused);
 			}
@@ -161,8 +160,7 @@ namespace TestR.Desktop
 		public override Element Click(int x = 0, int y = 0, bool refresh = true)
 		{
 			var point = GetClickablePoint(x, y);
-			Mouse.LeftClick(point);
-			Thread.Sleep(100);
+			Input.Mouse.LeftButtonClick(point);
 			return this;
 		}
 
@@ -170,7 +168,7 @@ namespace TestR.Desktop
 		public override Element Focus()
 		{
 			NativeElement.SetFocus();
-			NativeMethods.SetFocus(NativeElement.CurrentNativeWindowHandle);
+			NativeGeneral.SetFocus(NativeElement.CurrentNativeWindowHandle);
 			return this;
 		}
 
@@ -180,7 +178,7 @@ namespace TestR.Desktop
 		/// <returns> The element if found or null if not found. </returns>
 		public static DesktopElement FromCursor()
 		{
-			var point = Mouse.GetCursorPosition();
+			var point = Input.Mouse.GetCursorPosition();
 			return FromPoint(point);
 		}
 
@@ -235,7 +233,7 @@ namespace TestR.Desktop
 		public override Element LeftClick(int x = 0, int y = 0)
 		{
 			var point = GetClickablePoint(x, y);
-			Mouse.LeftClick(point);
+			Input.Mouse.LeftButtonClick(point);
 			Thread.Sleep(100);
 			return this;
 		}
@@ -244,7 +242,7 @@ namespace TestR.Desktop
 		public override Element MiddleClick(int x = 0, int y = 0)
 		{
 			var point = GetClickablePoint(x, y);
-			Mouse.MiddleClick(point);
+			Input.Mouse.MiddleButtonClick(point);
 			Thread.Sleep(100);
 			return this;
 		}
@@ -253,7 +251,7 @@ namespace TestR.Desktop
 		public override Element MoveMouseTo(int x = 0, int y = 0)
 		{
 			var point = GetClickablePoint(x, y);
-			Mouse.MoveTo(point);
+			Input.Mouse.MoveTo(point);
 			Thread.Sleep(100);
 			return this;
 		}
@@ -262,7 +260,7 @@ namespace TestR.Desktop
 		public override ElementHost Refresh<T>(Func<T, bool> condition)
 		{
 			Children.Clear();
-			
+
 			GetChildren(this).ForEach(x => Children.Add(Create(x, Application, this)));
 
 			if (Children.Any(condition))
@@ -279,7 +277,7 @@ namespace TestR.Desktop
 		public override Element RightClick(int x = 0, int y = 0)
 		{
 			var point = GetClickablePoint(x, y);
-			Mouse.RightClick(point);
+			Input.Mouse.RightButtonClick(point);
 			Thread.Sleep(100);
 			return this;
 		}
@@ -300,8 +298,7 @@ namespace TestR.Desktop
 				throw new InvalidOperationException("The element is not enabled.");
 			}
 
-			var pattern = NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_ValuePatternId) as IUIAutomationValuePattern;
-			if (pattern != null)
+			if (NativeElement.GetCurrentPattern(UIA_PatternIds.UIA_ValuePatternId) is IUIAutomationValuePattern pattern)
 			{
 				// Control supports the ValuePattern pattern so we can use the SetValue method to insert content. 
 				pattern.SetValue(value);
@@ -318,7 +315,7 @@ namespace TestR.Desktop
 
 			// Pause before sending keyboard input.
 			Thread.Sleep(100);
-			Keyboard.TypeText(value);
+			Input.Keyboard.TypeText(value);
 			return this;
 		}
 
@@ -545,8 +542,7 @@ namespace TestR.Desktop
 		/// <returns> The clickable point for the element. </returns>
 		private Point GetClickablePoint(int x = 0, int y = 0)
 		{
-			tagPOINT point;
-			if (NativeElement.GetClickablePoint(out point) == 1)
+			if (NativeElement.GetClickablePoint(out var point) == 1)
 			{
 				return new Point(point.x + x, point.y + y);
 			}
@@ -702,8 +698,7 @@ namespace TestR.Desktop
 		{
 			try
 			{
-				tagPOINT point2;
-				if (NativeElement.GetClickablePoint(out point2) == 1)
+				if (NativeElement.GetClickablePoint(out var point2) == 1)
 				{
 					point = new Point(point2.x + x, point2.y + y);
 					return true;
@@ -732,11 +727,11 @@ namespace TestR.Desktop
 			}
 
 			Parent = new DesktopElement(parent, Application, null);
-			Debug.WriteLine("P: {0},{1},{2},{3}",
-				Parent.Id,
-				parent.CurrentName,
-				parent.CurrentAutomationId,
-				parent.CurrentFrameworkId);
+			//Debug.WriteLine("P: {0},{1},{2},{3}",
+			//	Parent.Id,
+			//	parent.CurrentName,
+			//	parent.CurrentAutomationId,
+			//	parent.CurrentFrameworkId);
 
 			return this;
 		}

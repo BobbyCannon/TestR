@@ -3,9 +3,11 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Cache;
+using System.Net.Http;
+using System.Net.Sockets;
 using System.Net.WebSockets;
 using System.Runtime.Serialization;
 using System.Text;
@@ -15,6 +17,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using TestR.Desktop.Elements;
+using TestR.Internal;
 
 #endregion
 
@@ -41,6 +44,7 @@ namespace TestR.Web.Browsers
 		private int _requestId;
 		private ClientWebSocket _socket;
 		private readonly ConcurrentDictionary<string, dynamic> _socketResponses;
+		private static readonly HttpClient _client;
 
 		#endregion
 
@@ -59,6 +63,11 @@ namespace TestR.Web.Browsers
 			_jsonSerializerSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 			_requestId = 0;
 			_socketResponses = new ConcurrentDictionary<string, dynamic>();
+		}
+
+		static ChromiumBrowser()
+		{
+			_client = new HttpClient();
 		}
 
 		#endregion
@@ -162,9 +171,9 @@ namespace TestR.Web.Browsers
 		/// <param name="disposing"> True if disposing and false if otherwise. </param>
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing && _socket != null)
+			if (disposing)
 			{
-				_socket.Dispose();
+				_socket?.Dispose();
 				_socket = null;
 			}
 
@@ -268,25 +277,12 @@ namespace TestR.Web.Browsers
 
 		private List<RemoteSessionsResponse> GetAvailableSessions()
 		{
-			var request = (HttpWebRequest) WebRequest.Create($"http://localhost:{_debugPort}/json");
-
-			using (var response = request.GetResponse())
-			{
-				var stream = response.GetResponseStream();
-				if (stream == null)
-				{
-					throw new TestRException("Failed to get a response.");
-				}
-
-				using (var reader = new StreamReader(stream))
-				{
-					var data = reader.ReadToEnd();
-					var sessions = JsonConvert.DeserializeObject<List<RemoteSessionsResponse>>(data);
-					sessions.RemoveAll(x => x.Url.StartsWith("chrome-extension"));
-					sessions.RemoveAll(x => x.Url.StartsWith("chrome-devtools"));
-					return sessions;
-				}
-			}
+			var location = $"http://127.0.0.1:{_debugPort}/json";
+			var data = _client.GetStringAsync(location).Result;
+			var sessions = JsonConvert.DeserializeObject<List<RemoteSessionsResponse>>(data);
+			sessions.RemoveAll(x => x.Url.StartsWith("chrome-extension"));
+			sessions.RemoveAll(x => x.Url.StartsWith("chrome-devtools"));
+			return sessions;
 		}
 
 		private bool ReadResponse(int id)

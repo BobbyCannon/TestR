@@ -1,6 +1,7 @@
 ﻿#region References
 
-using UIAutomationClient;
+using Interop.UIAutomationClient;
+using TestR.Internal;
 
 #endregion
 

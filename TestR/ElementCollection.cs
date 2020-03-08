@@ -54,7 +54,10 @@ namespace TestR
 		/// </exception>
 		public void Add(params Element[] items)
 		{
-			items.ForEach(Add);
+			foreach (var item in items)
+			{
+				base.Add(item);
+			}
 		}
 
 		/// <summary>

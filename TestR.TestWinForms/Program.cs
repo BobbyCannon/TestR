@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using TestR.Desktop;
-using TestR.Native;
 using FormApplication = System.Windows.Forms.Application;
 
 #endregion
@@ -40,8 +39,8 @@ namespace TestR.TestWinForms
 		[STAThread]
 		private static void Main()
 		{
-			Mouse.Clicked += MouseClick;
-			Mouse.StartMonitoring();
+			//Mouse.Clicked += MouseClick;
+			//Mouse.StartMonitoring();
 
 			FormApplication.EnableVisualStyles();
 			FormApplication.SetCompatibleTextRenderingDefault(false);

@@ -3,19 +3,15 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using TestR.Native;
 using TestR.Web.Elements;
 using Directory = TestR.Web.Elements.Directory;
 using Font = TestR.Web.Elements.Font;
 using Image = TestR.Web.Elements.Image;
-using Keyboard = TestR.Native.Keyboard;
 using Object = TestR.Web.Elements.Object;
 
 #endregion
@@ -457,7 +453,7 @@ namespace TestR.Web
 			var clickX = Location.X + x + (Width > 0 ? Width / 2 : 0);
 			var clickY = Location.Y + y + (Height > 0 ? Height / 2 : 0);
 
-			Mouse.LeftClick(clickX, clickY);
+			Input.Mouse.LeftButtonClick(clickX, clickY);
 			return this;
 		}
 
@@ -469,14 +465,14 @@ namespace TestR.Web
 			var clickX = Location.X + x + (Width > 0 ? Width / 2 : 0);
 			var clickY = Location.Y + y + (Height > 0 ? Height / 2 : 0);
 
-			Mouse.MiddleClick(clickX, clickY);
+			Input.Mouse.MiddleButtonClick(clickX, clickY);
 			return this;
 		}
 
 		/// <inheritdoc />
 		public override Element MoveMouseTo(int x = 0, int y = 0)
 		{
-			Mouse.MoveTo(Location.X + x, Location.Y + y);
+			Input.Mouse.MoveTo(Location.X + x, Location.Y + y);
 			return this;
 		}
 
@@ -505,7 +501,7 @@ namespace TestR.Web
 			var clickX = Location.X + x + (Width > 0 ? Width / 2 : 0);
 			var clickY = Location.Y + y + (Height > 0 ? Height / 2 : 0);
 
-			Mouse.RightClick(clickX, clickY);
+			Input.Mouse.RightButtonClick(clickX, clickY);
 			return this;
 		}
 
@@ -609,7 +605,7 @@ namespace TestR.Web
 		{
 			Browser.Focus();
 			Focus();
-			Keyboard.TypeText(value);
+			Input.Keyboard.TypeText(value);
 			return this;
 		}
 

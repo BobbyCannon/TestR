@@ -1,6 +1,6 @@
 ﻿#region References
 
-using UIAutomationClient;
+using Interop.UIAutomationClient;
 
 #endregion
 

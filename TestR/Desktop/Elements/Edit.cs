@@ -1,7 +1,7 @@
 #region References
 
+using Interop.UIAutomationClient;
 using TestR.Desktop.Pattern;
-using UIAutomationClient;
 
 #endregion
 

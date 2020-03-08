@@ -1,7 +1,8 @@
 ﻿#region References
 
 using System.Linq;
-using UIAutomationClient;
+using Interop.UIAutomationClient;
+using TestR.Internal;
 
 #endregion
 
