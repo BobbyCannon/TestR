@@ -562,14 +562,14 @@ namespace TestR.Tests.Web
 
 			try
 			{
-				ForAllBrowsers(x => throw new Exception(x.BrowserType.ToString()), BrowserType.All);
+				ForAllBrowsers(x => throw new Exception(x.BrowserType.ToString()), BrowserType.Chrome | BrowserType.Edge);
 			}
 			catch (AggregateException ex)
 			{
-				Assert.AreEqual(3, ex.InnerExceptions.Count);
+				Assert.AreEqual(2, ex.InnerExceptions.Count);
 				Assert.AreEqual("Test failed using Chrome.", ex.InnerExceptions[0].Message);
 				Assert.AreEqual("Test failed using Edge.", ex.InnerExceptions[1].Message);
-				Assert.AreEqual("Test failed using Firefox.", ex.InnerExceptions[2].Message);
+				//Assert.AreEqual("Test failed using Firefox.", ex.InnerExceptions[2].Message);
 			}
 			catch (Exception ex)
 			{
@@ -1628,13 +1628,13 @@ namespace TestR.Tests.Web
 			});
 		}
 
-		private void ForAllBrowsers(Action<Browser> action, BrowserType browserTypes = BrowserType.All, bool resizeBrowsers = true, bool useSecondaryMonitor = false, int? timeout = null)
+		private void ForAllBrowsers(Action<Browser> action, BrowserType browserTypes = BrowserType.Chrome | BrowserType.Edge, bool resizeBrowsers = true, bool useSecondaryMonitor = false, int? timeout = null)
 		{
 			CleanupBrowsers = false;
 			browserTypes.ForAllBrowsers(action, useSecondaryMonitor, resizeBrowsers, BrowserResizeType.LeftSideBySide, timeout ?? (int)DefaultTimeout.TotalMilliseconds);
 		}
 
-		private void ForEachBrowser(Action<Browser> action, BrowserType browserTypes = BrowserType.All, bool resizeBrowsers = true, bool useSecondaryMonitor = false)
+		private void ForEachBrowser(Action<Browser> action, BrowserType browserTypes = BrowserType.Chrome | BrowserType.Edge, bool resizeBrowsers = true, bool useSecondaryMonitor = false)
 		{
 			CleanupBrowsers = false;
 			browserTypes.ForEachBrowser(action, useSecondaryMonitor, resizeBrowsers, BrowserResizeType.LeftSideBySide);

@@ -90,11 +90,21 @@ namespace TestR.Desktop
 		{
 			get
 			{
-				while (Process.MainWindowHandle == IntPtr.Zero)
+				var count = 0;
+
+				try
 				{
-					var id = Process.Id;
-					Process?.Dispose();
-					Process = Process.GetProcessById(id);
+					while (Process.MainWindowHandle == IntPtr.Zero && count <= 2)
+					{
+						var id = Process.Id;
+						Process?.Dispose();
+						Process = Process.GetProcessById(id);
+						count++;
+					}
+				}
+				catch
+				{
+					return IntPtr.Zero;
 				}
 
 				return Process.MainWindowHandle;

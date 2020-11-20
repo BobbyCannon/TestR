@@ -31,6 +31,12 @@ namespace TestR
 
 		#endregion
 
+		#region Fields
+
+		private Window _uwpWindow;
+
+		#endregion
+
 		#region Constructors
 
 		/// <summary>
@@ -51,13 +57,6 @@ namespace TestR
 		{
 			Process = process;
 			Application = this;
-
-			if (Process != null)
-			{
-				//Process.Exited += (sender, args) => OnClosed();
-				Process.Process.EnableRaisingEvents = true;
-			}
-
 			Timeout = TimeSpan.FromMilliseconds(DefaultTimeout);
 		}
 
@@ -131,7 +130,7 @@ namespace TestR
 			var process = ProcessService.Where(executablePath, arguments).FirstOrDefault();
 			return process == null ? null : Attach(process, refresh, bringToFront);
 		}
-		
+
 		/// <summary>
 		/// Attaches the application to an existing process.
 		/// </summary>
@@ -167,6 +166,7 @@ namespace TestR
 		public static Application Attach(SafeProcess process, bool refresh = true, bool bringToFront = true)
 		{
 			var application = new Application(process);
+			application.Initialize();
 
 			if (refresh)
 			{
@@ -201,12 +201,12 @@ namespace TestR
 		/// <summary>
 		/// Attaches or creates a new instance of the universal application.
 		/// </summary>
-		/// <param name="applicationName"> The universal application name. </param>
+		/// <param name="executablePath"> The path to the executable. </param>
 		/// <param name="packageFamilyName"> The application package family name. </param>
 		/// <returns> The instance that represents the application. </returns>
-		public static Application AttachOrCreateUniversal(string applicationName, string packageFamilyName)
+		public static Application AttachOrCreateUniversal(string executablePath, string packageFamilyName)
 		{
-			return Attach(applicationName) ?? CreateUniversal(packageFamilyName);
+			return Attach(executablePath) ?? CreateUniversal(executablePath, packageFamilyName);
 		}
 
 		/// <summary>
@@ -214,6 +214,12 @@ namespace TestR
 		/// </summary>
 		public Application BringToFront()
 		{
+			if (_uwpWindow != null)
+			{
+				_uwpWindow.BringToFront();
+				return this;
+			}
+
 			Focus();
 			NativeGeneral.BringWindowToTop(Handle);
 			NativeGeneral.SetForegroundWindow(Handle);
@@ -283,16 +289,12 @@ namespace TestR
 		/// <summary>
 		/// Creates a new instance of the universal application.
 		/// </summary>
+		/// <param name="executablePath"> The path to the executable. </param>
 		/// <param name="packageFamilyName"> The application package family name. </param>
 		/// <returns> The instance that represents the application. </returns>
-		public static Application CreateUniversal(string packageFamilyName)
+		public static Application CreateUniversal(string executablePath, string packageFamilyName)
 		{
-			var process = ProcessService.StartUniversal(packageFamilyName);
-			if (process == null)
-			{
-				throw new InvalidOperationException("Failed to start the application.");
-			}
-
+			var process = ProcessService.StartUniversal(executablePath, packageFamilyName);
 			return Attach(process);
 		}
 
@@ -462,9 +464,34 @@ namespace TestR
 			// When you hit the last sibling it delays. For now we are simply going to return the main window and we'll roll this code
 			// back once the Windows 10 issue has been resolved.
 
+			if (_uwpWindow != null)
+			{
+				yield return _uwpWindow;
+				yield break;
+			}
+
 			Process.Process.Refresh();
 			var automation = new CUIAutomationClass();
 			var watch = Stopwatch.StartNew();
+
+			var rootWindow = automation.GetRootElement();
+			var walker = automation.CreateTreeWalker(automation.RawViewCondition);
+			var child = walker.GetFirstChildElement(rootWindow);
+
+			while (child != null)
+			{
+				if (child.CurrentProcessId == Process.Id)
+				{
+					var e = DesktopElement.Create(child, this, null);
+
+					if (e is Window window)
+					{
+						yield return window;
+					}
+				}
+
+				child = walker.GetNextSiblingElement(child);
+			}
 
 			foreach (var handle in EnumerateProcessWindowHandles())
 			{
@@ -505,19 +532,45 @@ namespace TestR
 		{
 			var handles = new List<IntPtr>();
 
-			foreach (ProcessThread thread in Process.Process.Threads)
+			try
 			{
-				using (thread)
+				foreach (ProcessThread thread in Process.Process.Threads)
 				{
-					NativeGeneral.EnumThreadWindows(thread.Id, (hWnd, lParam) =>
+					using (thread)
 					{
-						handles.Add(hWnd);
-						return true;
-					}, IntPtr.Zero);
+						NativeGeneral.EnumThreadWindows(thread.Id, (hWnd, lParam) =>
+						{
+							handles.Add(hWnd);
+							return true;
+						}, IntPtr.Zero);
+					}
 				}
+			}
+			catch
+			{
+				return new IntPtr[0];
 			}
 
 			return handles;
+		}
+
+		private void Initialize()
+		{
+			// Detect UWP
+			var windowHandle = ApplicationFrameHostManager.Refresh(Process);
+
+			if (windowHandle != IntPtr.Zero)
+			{
+				var automation = new CUIAutomationClass();
+				var element = automation.ElementFromHandle(windowHandle);
+				_uwpWindow = new Window(element, this, null);
+			}
+
+			if (Process != null)
+			{
+				//Process.Exited += (sender, args) => OnClosed();
+				Process.Process.EnableRaisingEvents = true;
+			}
 		}
 
 		#endregion

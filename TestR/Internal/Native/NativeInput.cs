@@ -1,5 +1,6 @@
 ﻿#region References
 
+using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 
@@ -10,6 +11,9 @@ namespace TestR.Internal.Native
 	internal class NativeInput
 	{
 		#region Methods
+
+		[DllImport("User32.dll")]
+		public static extern int CallNextHookEx(IntPtr idHook, int nCode, int wParam, ref KeyboardHookStruct lParam);
 
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern short GetAsyncKeyState(ushort virtualKeyCode);
@@ -23,12 +27,37 @@ namespace TestR.Internal.Native
 		[DllImport("user32.dll")]
 		public static extern uint MapVirtualKey(uint uCode, uint uMapType);
 
+		[DllImport("user32.dll", SetLastError = true)]
+		public static extern uint SendInput(uint numberOfInputs, Inputs.Input[] inputs, int sizeOfInputStructure);
+
 		[DllImport("user32.dll", SetLastError = true, EntryPoint = "SetCursorPos")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool SetCursorPosition(int x, int y);
 
-		[DllImport("user32.dll", SetLastError = true)]
-		public static extern uint SendInput(uint numberOfInputs, Inputs.Input[] inputs, int sizeOfInputStructure);
+		[DllImport("User32.dll")]
+		public static extern IntPtr SetWindowsHookEx(int idHook, KeyboardHookDelegate callback, IntPtr hInstance, uint threadId);
+
+		[DllImport("User32.dll")]
+		public static extern IntPtr UnhookWindowsHookEx(IntPtr hHook);
+
+		#endregion
+
+		#region Structures
+
+		public struct KeyboardHookStruct
+		{
+			public int vkCode;
+			public int scanCode;
+			public int flags;
+			public int time;
+			public int dwExtraInfo;
+		}
+
+		#endregion
+
+		#region Delegates
+
+		public delegate int KeyboardHookDelegate(int code, int wParam, ref KeyboardHookStruct lParam);
 
 		#endregion
 	}

@@ -28,10 +28,9 @@
 		<None Remove="TestR.xml" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Interop.UIAutomationClient" Version="10.18362.0" />
+		<PackageReference Include="Interop.UIAutomationClient" Version="10.19041.0" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-		<PackageReference Include="System.Management" Version="4.7.0" />
+		<PackageReference Include="System.Management" Version="5.0.0" />
 	</ItemGroup>
-	<ItemGroup></ItemGroup>
 </Project>

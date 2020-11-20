@@ -2,8 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
-using TestR.Internal;
 using TestR.Internal.Inputs;
 using TestR.Internal.Native;
 
@@ -18,6 +18,9 @@ namespace TestR.Desktop
 	{
 		#region Fields
 
+		private NativeInput.KeyboardHookDelegate _keyboardCallback;
+		private IntPtr _keyboardHandle;
+
 		/// <summary>
 		/// The instance of the <see cref="InputMessageDispatcher" /> to use for dispatching <see cref="Internal.Inputs.Input" /> messages.
 		/// </summary>
@@ -28,7 +31,8 @@ namespace TestR.Desktop
 		#region Constructors
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Keyboard" /> class using an instance of a <see cref="InputMessageDispatcher" /> for dispatching <see cref="Internal.Inputs.Input" /> messages.
+		/// Initializes a new instance of the <see cref="Keyboard" /> class using an instance of a
+		/// <see cref="InputMessageDispatcher" /> for dispatching <see cref="Internal.Inputs.Input" /> messages.
 		/// </summary>
 		public Keyboard()
 		{
@@ -40,7 +44,9 @@ namespace TestR.Desktop
 		#region Methods
 
 		/// <summary>
-		/// Determines whether the physical key is up or down at the time the function is called regardless of whether the application thread has read the keyboard event from the message pump by calling the <see cref="NativeInput.GetAsyncKeyState" /> function.
+		/// Determines whether the physical key is up or down at the time the function is called regardless of whether the
+		/// application thread has read the keyboard event from the message pump by calling the
+		/// <see cref="NativeInput.GetAsyncKeyState" /> function.
 		/// </summary>
 		/// <param name="keyCode"> The <see cref="KeyboardKeys" /> for the key. </param>
 		/// <returns>
@@ -56,7 +62,9 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
-		/// Determines whether the physical key is up or down at the time the function is called regardless of whether the application thread has read the keyboard event from the message pump by calling the <see cref="NativeInput.GetAsyncKeyState" /> function.
+		/// Determines whether the physical key is up or down at the time the function is called regardless of whether the
+		/// application thread has read the keyboard event from the message pump by calling the
+		/// <see cref="NativeInput.GetAsyncKeyState" /> function.
 		/// </summary>
 		/// <param name="keyCode"> The <see cref="KeyboardKeys" /> for the key. </param>
 		/// <returns>
@@ -175,7 +183,8 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
-		/// Simulates a modified keystroke where there are multiple modifiers and one key like CTRL-ALT-C where CTRL and ALT are the modifierKeys and C is the key.
+		/// Simulates a modified keystroke where there are multiple modifiers and one key like CTRL-ALT-C where CTRL and ALT
+		/// are the modifierKeys and C is the key.
 		/// The flow is Modifiers KeyDown in order, Key Press, Modifiers KeyUp in reverse order.
 		/// </summary>
 		/// <param name="modifierKeyCodes"> The list of modifier keys </param>
@@ -187,7 +196,8 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
-		/// Simulates a modified keystroke where there is one modifier and multiple keys like CTRL-K-C where CTRL is the modifierKey and K and C are the keys.
+		/// Simulates a modified keystroke where there is one modifier and multiple keys like CTRL-K-C where CTRL is the
+		/// modifierKey and K and C are the keys.
 		/// The flow is Modifier KeyDown, Keys Press in order, Modifier KeyUp.
 		/// </summary>
 		/// <param name="modifierKey"> The modifier key </param>
@@ -199,7 +209,8 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
-		/// Simulates a modified keystroke where there are multiple modifiers and multiple keys like CTRL-ALT-K-C where CTRL and ALT are the modifierKeys and K and C are the keys.
+		/// Simulates a modified keystroke where there are multiple modifiers and multiple keys like CTRL-ALT-K-C where CTRL
+		/// and ALT are the modifierKeys and K and C are the keys.
 		/// The flow is Modifiers KeyDown in order, Keys Press in order, Modifiers KeyUp in reverse order.
 		/// </summary>
 		/// <param name="modifierKeyCodes"> The list of modifier keys </param>
@@ -210,7 +221,6 @@ namespace TestR.Desktop
 			ModifiersDown(builder, modifierKeyCodes);
 			KeysPress(builder, keyCodes);
 			ModifiersUp(builder, modifierKeyCodes);
-
 			SendSimulatedInput(builder.ToArray());
 			return this;
 		}
@@ -236,7 +246,26 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
-		/// Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted text entry via the keyboard.
+		/// Start monitoring the keyboard input.
+		/// </summary>
+		public void StartMonitoring()
+		{
+			const int lowLevelKeyboardHook = 13;
+			_keyboardCallback = KeyboardHookCallback;
+			_keyboardHandle = NativeInput.SetWindowsHookEx(lowLevelKeyboardHook, _keyboardCallback, IntPtr.Zero, 0);
+		}
+
+		/// <summary>
+		/// Stop monitoring the keyboard input.
+		/// </summary>
+		public void StopMonitoring()
+		{
+			NativeInput.UnhookWindowsHookEx(_keyboardHandle);
+		}
+
+		/// <summary>
+		/// Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted
+		/// text entry via the keyboard.
 		/// </summary>
 		/// <param name="text"> The text to be simulated. </param>
 		public Keyboard TypeText(string text)
@@ -245,6 +274,7 @@ namespace TestR.Desktop
 			{
 				throw new ArgumentException($"The text parameter is too long. It must be less than {uint.MaxValue / 2} characters.", nameof(text));
 			}
+
 			var inputList = new InputBuilder().AddCharacters(text).ToArray();
 			SendSimulatedInput(inputList);
 			return this;
@@ -259,6 +289,18 @@ namespace TestR.Desktop
 			var inputList = new InputBuilder().AddCharacter(character).ToArray();
 			SendSimulatedInput(inputList);
 			return this;
+		}
+
+		private int KeyboardHookCallback(int code, int wParam, ref NativeInput.KeyboardHookStruct lParam)
+		{
+			if (code >= 0)
+			{
+				Debug.WriteLine($"Code: {code}, wParam: {wParam}, lParam.vkCode: {lParam.vkCode}; flags: {lParam.flags}");
+
+				KeyPressed?.Invoke(this, (KeyboardKeys) lParam.vkCode);
+			}
+
+			return NativeInput.CallNextHookEx(_keyboardHandle, code, wParam, ref lParam);
 		}
 
 		private void KeysPress(InputBuilder builder, IEnumerable<KeyboardKeys> keyCodes)
@@ -311,6 +353,15 @@ namespace TestR.Desktop
 		{
 			_messageDispatcher.DispatchInput(inputList);
 		}
+
+		#endregion
+
+		#region Events
+
+		/// <summary>
+		/// Called when monitoring keyboard and a key is pressed.
+		/// </summary>
+		public event EventHandler<KeyboardKeys> KeyPressed;
 
 		#endregion
 	}

@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Management;
-using System.Threading;
 using TestR.Internal;
 
 #endregion
@@ -70,11 +69,15 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Creates a new instance of the universal application.
 		/// </summary>
+		/// <param name="filePath"> The file path for the application to start. </param>
 		/// <param name="packageFamilyName"> The application package family name. </param>
 		/// <returns> The instance that represents the application. </returns>
-		public static SafeProcess StartUniversal(string packageFamilyName)
+		public static SafeProcess StartUniversal(string filePath, string packageFamilyName)
 		{
-			return Start($@"shell:appsFolder\{packageFamilyName}!App");
+			var shellPath = $@"shell:appsFolder\{packageFamilyName}!App";
+			var info = new ProcessStartInfo { FileName = shellPath, Arguments = string.Empty, UseShellExecute = true };
+			Process.Start(info);
+			return WhereUniversal(filePath).FirstOrDefault();
 		}
 
 		/// <summary>
@@ -85,25 +88,26 @@ namespace TestR.Desktop
 		/// <returns> The processes for the executable path. </returns>
 		public static IEnumerable<SafeProcess> Where(string executablePathOrName, string arguments = null)
 		{
-			using (var searcher = new ManagementObjectDisposer())
+			using var searcher = new ManagementObjectDisposer();
+			var hasExtension = _extensions.Any(x => executablePathOrName.EndsWith(x, StringComparison.OrdinalIgnoreCase));
+			var query = _query + (hasExtension
+					? $" WHERE ExecutablePath LIKE '%{executablePathOrName.FormatForInnerString()}%'"
+					: $" WHERE Name LIKE '{executablePathOrName}%'"
+				);
+
+			if (!string.IsNullOrWhiteSpace(arguments))
 			{
-				var hasExtension = _extensions.Any(x => executablePathOrName.EndsWith(x, StringComparison.OrdinalIgnoreCase));
-				var query = _query + (hasExtension ? $" WHERE ExecutablePath LIKE '%{executablePathOrName.FormatForInnerString()}%'" : $" WHERE Name LIKE '{executablePathOrName}%'");
+				query += $" AND CommandLine LIKE '%{arguments.FormatForInnerString()}%'";
+			}
 
-				if (!string.IsNullOrWhiteSpace(arguments))
+			foreach (var item in searcher.Search(query))
+			{
+				if (!ProcessItem(item, out var safeProcess, x => true))
 				{
-					query += $" AND CommandLine LIKE '%{arguments.FormatForInnerString()}%'";
+					continue;
 				}
 
-				foreach (var item in searcher.Search(query))
-				{
-					if (!ProcessItem(item, out SafeProcess safeProcess, x => true))
-					{
-						continue;
-					}
-
-					yield return safeProcess;
-				}
+				yield return safeProcess;
 			}
 		}
 
@@ -114,17 +118,16 @@ namespace TestR.Desktop
 		/// <returns> The processes that match the filter. </returns>
 		public static IEnumerable<SafeProcess> Where(Func<SafeProcess, bool> filter)
 		{
-			using (var searcher = new ManagementObjectDisposer())
-			{
-				foreach (var item in searcher.Search(_query))
-				{
-					if (!ProcessItem(item, out SafeProcess safeProcess, filter))
-					{
-						continue;
-					}
+			using var searcher = new ManagementObjectDisposer();
 
-					yield return safeProcess;
+			foreach (var item in searcher.Search(_query))
+			{
+				if (!ProcessItem(item, out var safeProcess, filter))
+				{
+					continue;
 				}
+
+				yield return safeProcess;
 			}
 		}
 
@@ -136,17 +139,39 @@ namespace TestR.Desktop
 		/// <returns> The processes that match the filter. </returns>
 		public static IEnumerable<SafeProcess> WhereByName(string name, Func<SafeProcess, bool> filter = null)
 		{
-			using (var searcher = new ManagementObjectDisposer())
-			{
-				foreach (var item in searcher.Search($"{_query} WHERE Name LIKE '%{name}%'"))
-				{
-					if (!ProcessItem(item, out SafeProcess safeProcess, filter ?? (x => true)))
-					{
-						continue;
-					}
+			using var searcher = new ManagementObjectDisposer();
 
-					yield return safeProcess;
+			foreach (var item in searcher.Search($"{_query} WHERE Name LIKE '%{name}%'"))
+			{
+				if (!ProcessItem(item, out var safeProcess, filter ?? (x => true)))
+				{
+					continue;
 				}
+
+				yield return safeProcess;
+			}
+		}
+
+		/// <summary>
+		/// Gets a list of safe processes by executable path.
+		/// </summary>
+		/// <param name="executablePathOrName"> The executable file path or name of the processes to load. </param>
+		/// <param name="arguments"> The optional arguments the process was started with. </param>
+		/// <returns> The processes for the executable path. </returns>
+		public static IEnumerable<SafeProcess> WhereUniversal(string executablePathOrName, string arguments = null)
+		{
+			using var searcher = new ManagementObjectDisposer();
+			var query = _query + $" WHERE CommandLine LIKE '\"{executablePathOrName.FormatForInnerString()}\"%'";
+			var items = searcher.Search(query).ToList();
+
+			foreach (var item in items)
+			{
+				if (!ProcessItem(item, out var safeProcess, x => true))
+				{
+					continue;
+				}
+
+				yield return safeProcess;
 			}
 		}
 
@@ -165,11 +190,9 @@ namespace TestR.Desktop
 
 		private static bool PopulateProcess(SafeProcess safeProcess)
 		{
-			using (var searcher = new ManagementObjectDisposer())
-			{
-				var item = searcher.Search($"{_query} WHERE ProcessID = {safeProcess.Id}").FirstOrDefault();
-				return item != null && PopulateProcess(item, safeProcess);
-			}
+			using var searcher = new ManagementObjectDisposer();
+			var item = searcher.Search($"{_query} WHERE ProcessID = {safeProcess.Id}").FirstOrDefault();
+			return item != null && PopulateProcess(item, safeProcess);
 		}
 
 		private static bool PopulateProcess(ManagementBaseObject item, SafeProcess response)
@@ -205,10 +228,10 @@ namespace TestR.Desktop
 		private static bool ProcessItem(ManagementBaseObject item, out SafeProcess safeProcess, Func<SafeProcess, bool> filter)
 		{
 			safeProcess = null;
-			var id = int.Parse(item["ProcessId"].ToString());
 
 			try
 			{
+				var id = int.Parse(item["ProcessId"].ToString());
 				var process = Process.GetProcessById(id);
 				safeProcess = new SafeProcess(process);
 

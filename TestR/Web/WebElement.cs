@@ -448,8 +448,6 @@ namespace TestR.Web
 		/// <inheritdoc />
 		public override Element LeftClick(int x = 0, int y = 0)
 		{
-			ScrollIntoView();
-
 			var clickX = Location.X + x + (Width > 0 ? Width / 2 : 0);
 			var clickY = Location.Y + y + (Height > 0 ? Height / 2 : 0);
 
@@ -460,8 +458,6 @@ namespace TestR.Web
 		/// <inheritdoc />
 		public override Element MiddleClick(int x = 0, int y = 0)
 		{
-			ScrollIntoView();
-
 			var clickX = Location.X + x + (Width > 0 ? Width / 2 : 0);
 			var clickY = Location.Y + y + (Height > 0 ? Height / 2 : 0);
 
@@ -496,8 +492,6 @@ namespace TestR.Web
 		/// <inheritdoc />
 		public override Element RightClick(int x = 0, int y = 0)
 		{
-			ScrollIntoView();
-
 			var clickX = Location.X + x + (Width > 0 ? Width / 2 : 0);
 			var clickY = Location.Y + y + (Height > 0 ? Height / 2 : 0);
 

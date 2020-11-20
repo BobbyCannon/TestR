@@ -183,15 +183,15 @@ namespace TestR.Tests.Desktop
 		[TestMethod]
 		public void CloseAll()
 		{
-			using var application1 = Application.Create(TestHelper.ApplicationPath);
-			using var application2 = Application.Create(TestHelper.ApplicationPath);
+			using var application1 = Application.Create(TestHelper.ApplicationPathForWinForms);
+			using var application2 = Application.Create(TestHelper.ApplicationPathForWinForms);
 			application1.AutoClose = false;
 			application2.AutoClose = false;
 			Assert.IsTrue(application1.IsRunning);
 			Assert.IsTrue(application2.IsRunning);
 			Assert.AreNotEqual(application1.Id, application2.Id);
 
-			Application.CloseAll(TestHelper.ApplicationPath, exceptProcessId: application2.Process.Id);
+			Application.CloseAll(TestHelper.ApplicationPathForWinForms, exceptProcessId: application2.Process.Id);
 
 			Assert.IsFalse(application1.IsRunning);
 			Assert.IsTrue(application2.IsRunning);

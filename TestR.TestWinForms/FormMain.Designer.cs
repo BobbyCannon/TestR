@@ -28,9 +28,9 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("One");
-			System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem("Two");
-			System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem("Three");
+			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("One");
+			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Two");
+			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("Three");
 			this.MenuStrip = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,6 +69,7 @@
 			this.textBox4 = new System.Windows.Forms.TextBox();
 			this.textBox5 = new System.Windows.Forms.TextBox();
 			this.textBox6 = new System.Windows.Forms.TextBox();
+			this.label4 = new System.Windows.Forms.Label();
 			this.MenuStrip.SuspendLayout();
 			this.StatusStrip.SuspendLayout();
 			this.SuspendLayout();
@@ -95,7 +96,7 @@
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(93, 22);
 			this.exitToolStripMenuItem.Text = "Exit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItemClick);
 			// 
@@ -117,7 +118,7 @@
 			// 
 			this.StatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabelReady});
-			this.StatusStrip.Location = new System.Drawing.Point(0, 364);
+			this.StatusStrip.Location = new System.Drawing.Point(0, 535);
 			this.StatusStrip.Name = "StatusStrip";
 			this.StatusStrip.Size = new System.Drawing.Size(639, 22);
 			this.StatusStrip.TabIndex = 9;
@@ -379,10 +380,11 @@
 			// 
 			// listView1
 			// 
+			this.listView1.HideSelection = false;
 			this.listView1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem4,
-            listViewItem5,
-            listViewItem6});
+            listViewItem1,
+            listViewItem2,
+            listViewItem3});
 			this.listView1.Location = new System.Drawing.Point(296, 158);
 			this.listView1.Name = "listView1";
 			this.listView1.Size = new System.Drawing.Size(121, 95);
@@ -392,60 +394,69 @@
 			// 
 			// keyPress
 			// 
-			this.keyPress.Location = new System.Drawing.Point(423, 158);
+			this.keyPress.Location = new System.Drawing.Point(12, 314);
+			this.keyPress.Multiline = true;
 			this.keyPress.Name = "keyPress";
-			this.keyPress.Size = new System.Drawing.Size(200, 20);
+			this.keyPress.Size = new System.Drawing.Size(611, 204);
 			this.keyPress.TabIndex = 26;
-			this.keyPress.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keyPress_KeyDown);
-			this.keyPress.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.keyPress_PreviewKeyDown);
 			// 
 			// textBox1
 			// 
-			this.textBox1.Location = new System.Drawing.Point(423, 184);
+			this.textBox1.Location = new System.Drawing.Point(423, 158);
 			this.textBox1.Name = "textBox1";
 			this.textBox1.Size = new System.Drawing.Size(200, 20);
 			this.textBox1.TabIndex = 27;
 			// 
 			// textBox2
 			// 
-			this.textBox2.Location = new System.Drawing.Point(423, 210);
+			this.textBox2.Location = new System.Drawing.Point(423, 184);
 			this.textBox2.Name = "textBox2";
 			this.textBox2.Size = new System.Drawing.Size(200, 20);
 			this.textBox2.TabIndex = 28;
 			// 
 			// textBox3
 			// 
-			this.textBox3.Location = new System.Drawing.Point(423, 236);
+			this.textBox3.Location = new System.Drawing.Point(423, 210);
 			this.textBox3.Name = "textBox3";
 			this.textBox3.Size = new System.Drawing.Size(200, 20);
 			this.textBox3.TabIndex = 29;
 			// 
 			// textBox4
 			// 
-			this.textBox4.Location = new System.Drawing.Point(423, 262);
+			this.textBox4.Location = new System.Drawing.Point(423, 236);
 			this.textBox4.Name = "textBox4";
 			this.textBox4.Size = new System.Drawing.Size(200, 20);
 			this.textBox4.TabIndex = 30;
 			// 
 			// textBox5
 			// 
-			this.textBox5.Location = new System.Drawing.Point(423, 288);
+			this.textBox5.Location = new System.Drawing.Point(423, 262);
 			this.textBox5.Name = "textBox5";
 			this.textBox5.Size = new System.Drawing.Size(200, 20);
 			this.textBox5.TabIndex = 31;
 			// 
 			// textBox6
 			// 
-			this.textBox6.Location = new System.Drawing.Point(423, 314);
+			this.textBox6.Location = new System.Drawing.Point(423, 288);
 			this.textBox6.Name = "textBox6";
 			this.textBox6.Size = new System.Drawing.Size(200, 20);
 			this.textBox6.TabIndex = 32;
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(12, 298);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(89, 13);
+			this.label4.TabIndex = 33;
+			this.label4.Text = "Key Press History";
 			// 
 			// FormMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(639, 386);
+			this.ClientSize = new System.Drawing.Size(639, 557);
+			this.Controls.Add(this.label4);
 			this.Controls.Add(this.textBox6);
 			this.Controls.Add(this.textBox5);
 			this.Controls.Add(this.textBox4);
@@ -532,6 +543,7 @@
 		private System.Windows.Forms.TextBox textBox4;
 		private System.Windows.Forms.TextBox textBox5;
 		private System.Windows.Forms.TextBox textBox6;
+		private System.Windows.Forms.Label label4;
 	}
 }
 

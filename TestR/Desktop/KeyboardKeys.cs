@@ -681,14 +681,14 @@
         RightControl = 0xA3,
 
         /// <summary>
-        /// Left MENU key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
+        /// Left ALT/MENU key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
         /// </summary>
-        LeftMenu = 0xA4,
+        LeftAlt = 0xA4,
 
         /// <summary>
-        /// Right MENU key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
+        /// Right ALT/MENU key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
         /// </summary>
-        RightMenu = 0xA5,
+        RightAlt = 0xA5,
 
         /// <summary>
         /// Windows 2000/XP: Browser Back key

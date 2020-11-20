@@ -6,7 +6,7 @@ using System.Threading;
 
 #endregion
 
-namespace TestR.Internal
+namespace TestR
 {
 	/// <summary>
 	/// Represents the Utility class.

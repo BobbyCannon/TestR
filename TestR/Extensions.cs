@@ -1,7 +1,6 @@
 ﻿#region References
 
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using TestR.Desktop;
@@ -114,7 +113,7 @@ namespace TestR
 					leftOffset = resizeType == BrowserResizeType.RightSideBySide
 						? screen.WorkingArea.Left + screen.WorkingArea.Width / 2
 						: screen.WorkingArea.Left;
-					
+
 					return new Size(browserWidth, browserHeight);
 				}
 				case BrowserResizeType.SideBySide:

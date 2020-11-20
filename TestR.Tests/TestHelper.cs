@@ -22,20 +22,26 @@ namespace TestR.Tests
 			var path = Path.GetDirectoryName(assembly.Location);
 			var info = new DirectoryInfo(path ?? "/");
 
-			ApplicationPath = info.FullName.Replace("TestR.Tests", "TestR.TestWinForms").Replace("netcoreapp3.1", "") + "TestR.TestWinForms.exe";
-			ApplicationPathX86 = info.FullName.Replace("TestR.Tests", "TestR.TestWinForms").Replace("netcoreapp3.1", "") + "TestR.TestWinForms-x86.exe";
+			ApplicationPathForWinForms = info.FullName.Replace("TestR.Tests", "TestR.TestWinForms").Replace("netcoreapp3.1", "") + "TestR.TestWinForms.exe";
+			ApplicationPathForWinFormX86 = info.FullName.Replace("TestR.Tests", "TestR.TestWinForms").Replace("netcoreapp3.1", "") + "TestR.TestWinForms-x86.exe";
 
-			Application.CloseAll(ApplicationPath);
-			Application.CloseAll(ApplicationPathX86);
+			// C:\Workspaces\GitHub\TestR\TestR.Tests\bin\Debug\netcoreapp3.1
+			// C:\Workspaces\GitHub\TestR\TestR.TestUwp\bin\Debug\AppX\TestR.TestUwp.exe
+			ApplicationPathForUwp = info.FullName.Replace("TestR.Tests", "TestR.TestUwp").Replace("Debug\\netcoreapp3.1", "x86\\Debug\\AppX") + "\\TestR.TestUwp.exe";
+
+			Application.CloseAll(ApplicationPathForWinForms);
+			Application.CloseAll(ApplicationPathForWinFormX86);
 		}
 
 		#endregion
 
 		#region Properties
 
-		public static string ApplicationPath { get; }
+		public static string ApplicationPathForUwp { get; set; }
 
-		public static string ApplicationPathX86 { get; }
+		public static string ApplicationPathForWinForms { get; }
+
+		public static string ApplicationPathForWinFormX86 { get; }
 
 		#endregion
 
@@ -82,7 +88,7 @@ namespace TestR.Tests
 
 		public static Application GetApplication(bool x86 = false)
 		{
-			var path = x86 ? ApplicationPathX86 : ApplicationPath;
+			var path = x86 ? ApplicationPathForWinFormX86 : ApplicationPathForWinForms;
 			Application.CloseAll(path);
 			var response = Application.AttachOrCreate(path);
 			response.Timeout = TimeSpan.FromSeconds(5);

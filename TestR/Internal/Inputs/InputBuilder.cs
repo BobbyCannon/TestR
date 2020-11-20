@@ -419,8 +419,8 @@ namespace TestR.Internal.Inputs
 		public static bool IsExtendedKey(KeyboardKeys keyCode)
 		{
 			if (keyCode == KeyboardKeys.Alt ||
-				keyCode == KeyboardKeys.LeftMenu ||
-				keyCode == KeyboardKeys.RightMenu ||
+				keyCode == KeyboardKeys.LeftAlt ||
+				keyCode == KeyboardKeys.RightAlt ||
 				keyCode == KeyboardKeys.Control ||
 				keyCode == KeyboardKeys.RightControl ||
 				keyCode == KeyboardKeys.Insert ||

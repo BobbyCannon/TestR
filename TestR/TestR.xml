@@ -126,7 +126,7 @@
             <summary>
             Attaches or creates a new instance of the universal application.
             </summary>
-            <param name="applicationName"> The universal application name. </param>
+            <param name="executablePath"> The path to the executable. </param>
             <param name="packageFamilyName"> The application package family name. </param>
             <returns> The instance that represents the application. </returns>
         </member>
@@ -159,10 +159,11 @@
             <param name="bringToFront"> Bring the process to the front. </param>
             <returns> The instance that represents an application. </returns>
         </member>
-        <member name="M:TestR.Application.CreateUniversal(System.String)">
+        <member name="M:TestR.Application.CreateUniversal(System.String,System.String)">
             <summary>
             Creates a new instance of the universal application.
             </summary>
+            <param name="executablePath"> The path to the executable. </param>
             <param name="packageFamilyName"> The application package family name. </param>
             <returns> The instance that represents the application. </returns>
         </member>
@@ -857,12 +858,15 @@
         </member>
         <member name="M:TestR.Desktop.Keyboard.#ctor">
             <summary>
-            Initializes a new instance of the <see cref="T:TestR.Desktop.Keyboard" /> class using an instance of a <see cref="T:TestR.Internal.Inputs.InputMessageDispatcher" /> for dispatching <see cref="T:TestR.Internal.Inputs.Input" /> messages.
+            Initializes a new instance of the <see cref="T:TestR.Desktop.Keyboard" /> class using an instance of a
+            <see cref="T:TestR.Internal.Inputs.InputMessageDispatcher" /> for dispatching <see cref="T:TestR.Internal.Inputs.Input" /> messages.
             </summary>
         </member>
         <member name="M:TestR.Desktop.Keyboard.IsHardwareKeyDown(TestR.Desktop.KeyboardKeys)">
             <summary>
-            Determines whether the physical key is up or down at the time the function is called regardless of whether the application thread has read the keyboard event from the message pump by calling the <see cref="M:TestR.Internal.Native.NativeInput.GetAsyncKeyState(System.UInt16)" /> function.
+            Determines whether the physical key is up or down at the time the function is called regardless of whether the
+            application thread has read the keyboard event from the message pump by calling the
+            <see cref="M:TestR.Internal.Native.NativeInput.GetAsyncKeyState(System.UInt16)" /> function.
             </summary>
             <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" /> for the key. </param>
             <returns>
@@ -874,7 +878,9 @@
         </member>
         <member name="M:TestR.Desktop.Keyboard.IsHardwareKeyUp(TestR.Desktop.KeyboardKeys)">
             <summary>
-            Determines whether the physical key is up or down at the time the function is called regardless of whether the application thread has read the keyboard event from the message pump by calling the <see cref="M:TestR.Internal.Native.NativeInput.GetAsyncKeyState(System.UInt16)" /> function.
+            Determines whether the physical key is up or down at the time the function is called regardless of whether the
+            application thread has read the keyboard event from the message pump by calling the
+            <see cref="M:TestR.Internal.Native.NativeInput.GetAsyncKeyState(System.UInt16)" /> function.
             </summary>
             <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" /> for the key. </param>
             <returns>
@@ -954,7 +960,8 @@
         </member>
         <member name="M:TestR.Desktop.Keyboard.ModifiedKeyStroke(System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardKeys},TestR.Desktop.KeyboardKeys)">
             <summary>
-            Simulates a modified keystroke where there are multiple modifiers and one key like CTRL-ALT-C where CTRL and ALT are the modifierKeys and C is the key.
+            Simulates a modified keystroke where there are multiple modifiers and one key like CTRL-ALT-C where CTRL and ALT
+            are the modifierKeys and C is the key.
             The flow is Modifiers KeyDown in order, Key Press, Modifiers KeyUp in reverse order.
             </summary>
             <param name="modifierKeyCodes"> The list of modifier keys </param>
@@ -962,7 +969,8 @@
         </member>
         <member name="M:TestR.Desktop.Keyboard.ModifiedKeyStroke(TestR.Desktop.KeyboardKeys,System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardKeys})">
             <summary>
-            Simulates a modified keystroke where there is one modifier and multiple keys like CTRL-K-C where CTRL is the modifierKey and K and C are the keys.
+            Simulates a modified keystroke where there is one modifier and multiple keys like CTRL-K-C where CTRL is the
+            modifierKey and K and C are the keys.
             The flow is Modifier KeyDown, Keys Press in order, Modifier KeyUp.
             </summary>
             <param name="modifierKey"> The modifier key </param>
@@ -970,7 +978,8 @@
         </member>
         <member name="M:TestR.Desktop.Keyboard.ModifiedKeyStroke(System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardKeys},System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardKeys})">
             <summary>
-            Simulates a modified keystroke where there are multiple modifiers and multiple keys like CTRL-ALT-K-C where CTRL and ALT are the modifierKeys and K and C are the keys.
+            Simulates a modified keystroke where there are multiple modifiers and multiple keys like CTRL-ALT-K-C where CTRL
+            and ALT are the modifierKeys and K and C are the keys.
             The flow is Modifiers KeyDown in order, Keys Press in order, Modifiers KeyUp in reverse order.
             </summary>
             <param name="modifierKeyCodes"> The list of modifier keys </param>
@@ -988,9 +997,20 @@
             </summary>
             <param name="timeout"> The time to wait. </param>
         </member>
+        <member name="M:TestR.Desktop.Keyboard.StartMonitoring">
+            <summary>
+            Start monitoring the keyboard input.
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.StopMonitoring">
+            <summary>
+            Stop monitoring the keyboard input.
+            </summary>
+        </member>
         <member name="M:TestR.Desktop.Keyboard.TypeText(System.String)">
             <summary>
-            Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted text entry via the keyboard.
+            Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted
+            text entry via the keyboard.
             </summary>
             <param name="text"> The text to be simulated. </param>
         </member>
@@ -1005,6 +1025,11 @@
             Sends the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages using the <see cref="T:TestR.Internal.Inputs.InputMessageDispatcher" /> instance.
             </summary>
             <param name="inputList"> The <see cref="T:System.Array" /> of <see cref="T:TestR.Internal.Inputs.Input" /> messages to send. </param>
+        </member>
+        <member name="E:TestR.Desktop.Keyboard.KeyPressed">
+            <summary>
+            Called when monitoring keyboard and a key is pressed.
+            </summary>
         </member>
         <member name="T:TestR.Desktop.KeyboardKeys">
             <summary>
@@ -1656,14 +1681,14 @@
             Right CONTROL key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.LeftMenu">
+        <member name="F:TestR.Desktop.KeyboardKeys.LeftAlt">
             <summary>
-            Left MENU key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
+            Left ALT/MENU key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.RightMenu">
+        <member name="F:TestR.Desktop.KeyboardKeys.RightAlt">
             <summary>
-            Right MENU key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
+            Right ALT/MENU key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKeys.BrowserBack">
@@ -2358,10 +2383,11 @@
             <param name="arguments"> The optional arguments for the application. </param>
             <returns> The safe process for the current process or null if an issue occurs. </returns>
         </member>
-        <member name="M:TestR.Desktop.ProcessService.StartUniversal(System.String)">
+        <member name="M:TestR.Desktop.ProcessService.StartUniversal(System.String,System.String)">
             <summary>
             Creates a new instance of the universal application.
             </summary>
+            <param name="filePath"> The file path for the application to start. </param>
             <param name="packageFamilyName"> The application package family name. </param>
             <returns> The instance that represents the application. </returns>
         </member>
@@ -2387,6 +2413,14 @@
             <param name="name"> The name of the process. </param>
             <param name="filter"> The filter to reduce collection. </param>
             <returns> The processes that match the filter. </returns>
+        </member>
+        <member name="M:TestR.Desktop.ProcessService.WhereUniversal(System.String,System.String)">
+            <summary>
+            Gets a list of safe processes by executable path.
+            </summary>
+            <param name="executablePathOrName"> The executable file path or name of the processes to load. </param>
+            <param name="arguments"> The optional arguments the process was started with. </param>
+            <returns> The processes for the executable path. </returns>
         </member>
         <member name="T:TestR.Desktop.SafeProcess">
             <summary>
@@ -3752,30 +3786,6 @@
         <member name="F:TestR.Internal.Native.NativeScreen.DisplayDeviceStateFlags.ModesPruned">
             <summary> The device has more display modes than its output devices support. </summary>
         </member>
-        <member name="T:TestR.Internal.Utility">
-            <summary>
-            Represents the Utility class.
-            </summary>
-        </member>
-        <member name="M:TestR.Internal.Utility.Wait(System.Func{System.Boolean},System.Double,System.Int32)">
-            <summary>
-            Runs the action until the action returns true or the timeout is reached. Will delay in between actions of the provided time.
-            </summary>
-            <param name="action"> The action to call. </param>
-            <param name="timeout"> The timeout to attempt the action. This value is in milliseconds. </param>
-            <param name="delay"> The delay in between actions. This value is in milliseconds. </param>
-            <returns> Returns true of the call completed successfully or false if it timed out. </returns>
-        </member>
-        <member name="M:TestR.Internal.Utility.Wait``1(``0,System.Func{``0,System.Boolean},System.Double,System.Int32)">
-            <summary>
-            Runs the action until the action returns true or the timeout is reached. Will delay in between actions of the provided time.
-            </summary>
-            <param name="input"> The input to pass to the action. </param>
-            <param name="action"> The action to call. </param>
-            <param name="timeout"> The timeout to attempt the action. This value is in milliseconds. </param>
-            <param name="delay"> The delay in between actions. This value is in milliseconds. </param>
-            <returns> Returns true of the call completed successfully or false if it timed out. </returns>
-        </member>
         <member name="T:TestR.IScrollableElement">
             <summary>
             Represents a scrollable element.
@@ -3813,6 +3823,30 @@
             Custom TestR Exception instead of the generic Exception
             </summary>
             <param name="message"> </param>
+        </member>
+        <member name="T:TestR.Utility">
+            <summary>
+            Represents the Utility class.
+            </summary>
+        </member>
+        <member name="M:TestR.Utility.Wait(System.Func{System.Boolean},System.Double,System.Int32)">
+            <summary>
+            Runs the action until the action returns true or the timeout is reached. Will delay in between actions of the provided time.
+            </summary>
+            <param name="action"> The action to call. </param>
+            <param name="timeout"> The timeout to attempt the action. This value is in milliseconds. </param>
+            <param name="delay"> The delay in between actions. This value is in milliseconds. </param>
+            <returns> Returns true of the call completed successfully or false if it timed out. </returns>
+        </member>
+        <member name="M:TestR.Utility.Wait``1(``0,System.Func{``0,System.Boolean},System.Double,System.Int32)">
+            <summary>
+            Runs the action until the action returns true or the timeout is reached. Will delay in between actions of the provided time.
+            </summary>
+            <param name="input"> The input to pass to the action. </param>
+            <param name="action"> The action to call. </param>
+            <param name="timeout"> The timeout to attempt the action. This value is in milliseconds. </param>
+            <param name="delay"> The delay in between actions. This value is in milliseconds. </param>
+            <returns> Returns true of the call completed successfully or false if it timed out. </returns>
         </member>
         <member name="T:TestR.Web.Browser">
             <summary>

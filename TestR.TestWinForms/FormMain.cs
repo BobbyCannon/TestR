@@ -2,6 +2,7 @@
 
 using System;
 using System.Windows.Forms;
+using TestR.Desktop;
 
 #endregion
 
@@ -15,8 +16,8 @@ namespace TestR.TestWinForms
 		{
 			InitializeComponent();
 
-			//Keyboard.KeyPressed += key => keyPress.Text = KeyConverter.KeyToAsciiValue(key, Keyboard.IsShiftPressed()).ToString("X2") + " - " + key.ToString();
-			//Keyboard.StartMonitoring();
+			Input.Keyboard.KeyPressed += KeyboardOnKeyPressed;
+			Input.Keyboard.StartMonitoring();
 		}
 
 		#endregion
@@ -28,14 +29,9 @@ namespace TestR.TestWinForms
 			Close();
 		}
 
-		private void keyPress_KeyDown(object sender, KeyEventArgs e)
+		private void KeyboardOnKeyPressed(object sender, KeyboardKeys key)
 		{
-			e.SuppressKeyPress = true;
-			e.Handled = true;
-		}
-
-		private void keyPress_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-		{
+			keyPress.Text += key.ToString();
 		}
 
 		#endregion
