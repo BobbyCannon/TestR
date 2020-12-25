@@ -268,7 +268,20 @@ namespace TestR.Desktop
 		/// text entry via the keyboard.
 		/// </summary>
 		/// <param name="text"> The text to be simulated. </param>
-		public Keyboard TypeText(string text)
+		/// <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
+		public Keyboard TypeText(string text, params KeyboardKeys[] keys)
+		{
+			return TypeText(text, TimeSpan.Zero, keys);
+		}
+
+		/// <summary>
+		/// Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted
+		/// text entry via the keyboard.
+		/// </summary>
+		/// <param name="text"> The text to be simulated. </param>
+		/// <param name="delay"> An optional delay before sending optional keys. </param>
+		/// <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
+		public Keyboard TypeText(string text, TimeSpan delay, params KeyboardKeys[] keys)
 		{
 			if (text.Length > uint.MaxValue / 2)
 			{
@@ -277,9 +290,20 @@ namespace TestR.Desktop
 
 			var inputList = new InputBuilder().AddCharacters(text).ToArray();
 			SendSimulatedInput(inputList);
+
+			if (delay > TimeSpan.Zero)
+			{
+				Thread.Sleep(delay);
+			}
+
+			foreach (var key in keys)
+			{
+				Input.Keyboard.KeyPress(key);
+			}
+			
 			return this;
 		}
-
+		
 		/// <summary>
 		/// Simulates a single character text entry via the keyboard.
 		/// </summary>

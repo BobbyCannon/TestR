@@ -13,42 +13,51 @@ namespace TestR.Internal
 	{
 		#region Methods
 
-		public static IntPtr Refresh(SafeProcess process)
+		public static IntPtr Refresh(SafeProcess process, TimeSpan? timeout = null)
 		{
-			var frameHosts = Process.GetProcessesByName("ApplicationFrameHost");
+			var handle = IntPtr.Zero;
 
-			foreach (var host in frameHosts)
-			{
-				using var application = new Application(host);
-				application.Refresh();
-
-				foreach (var c in application.Children)
+			Utility.Wait(() =>
 				{
-					if (!(c is Window window))
+					var frameHosts = Process.GetProcessesByName("ApplicationFrameHost");
+
+					foreach (var host in frameHosts)
 					{
-						continue;
+						using var application = new Application(host);
+						application.Refresh();
+
+						foreach (var c in application.Children)
+						{
+							if (!(c is Window window))
+							{
+								continue;
+							}
+
+							foreach (var cc in c.Children)
+							{
+								if (!(cc is Window ww))
+								{
+									continue;
+								}
+
+								if (ww.NativeElement.CurrentProcessId != process.Id)
+								{
+									continue;
+								}
+
+								ww.Dispose();
+								handle = window.Handle;
+								return true;
+							}
+						}
 					}
 
-					foreach (var cc in c.Children)
-					{
-						if (!(cc is Window ww))
-						{
-							continue;
-						}
+					return false;
+				},
+				(timeout ?? TimeSpan.Zero).TotalMilliseconds,
+				25);
 
-						if (ww.NativeElement.CurrentProcessId != process.Id)
-						{
-							continue;
-						}
-						
-						ww.Dispose();
-
-						return window.Handle;
-					}
-				}
-			}
-
-			return IntPtr.Zero;
+			return handle;
 		}
 
 		#endregion

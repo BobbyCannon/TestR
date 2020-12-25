@@ -37,7 +37,7 @@ namespace TestR.Tests.Desktop
 		public void SetNotepadTextAndMove()
 		{
 			StartNotepad();
-
+			
 			Input.Keyboard
 				.TypeText("These are your orders if you choose to accept them...")
 				.TypeText("This message will self destruct in 1 seconds.")

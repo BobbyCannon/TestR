@@ -75,7 +75,7 @@
             Gets or sets the time out for delay request. Defaults to 60 seconds.
             </summary>
         </member>
-        <member name="M:TestR.Application.Attach(System.String,System.String,System.Boolean,System.Boolean)">
+        <member name="M:TestR.Application.Attach(System.String,System.String,System.Boolean,System.Boolean,System.Boolean)">
             <summary>
             Attaches the application to an existing process.
             </summary>
@@ -83,6 +83,7 @@
             <param name="arguments"> The arguments for the executable. Arguments are optional. </param>
             <param name="refresh"> The setting to determine to refresh children now. </param>
             <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
+            <param name="isUwp"> True if we are attaching to a UWP window. </param>
             <returns> The instance that represents the application. </returns>
         </member>
         <member name="M:TestR.Application.Attach(System.IntPtr,System.Boolean,System.Boolean)">
@@ -103,13 +104,14 @@
             <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
             <returns> The instance that represents the application. </returns>
         </member>
-        <member name="M:TestR.Application.Attach(TestR.Desktop.SafeProcess,System.Boolean,System.Boolean)">
+        <member name="M:TestR.Application.Attach(TestR.Desktop.SafeProcess,System.Boolean,System.Boolean,System.Boolean)">
             <summary>
             Attaches the application to an existing process.
             </summary>
             <param name="process"> The process to attach to. </param>
             <param name="refresh"> The setting to determine to refresh children now. </param>
             <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
+            <param name="isUwp"> True if we are attaching to a UWP window. </param>
             <returns> The instance that represents the application. </returns>
         </member>
         <member name="M:TestR.Application.AttachOrCreate(System.String,System.String,System.Boolean,System.Boolean)">
@@ -1007,12 +1009,22 @@
             Stop monitoring the keyboard input.
             </summary>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.TypeText(System.String)">
+        <member name="M:TestR.Desktop.Keyboard.TypeText(System.String,TestR.Desktop.KeyboardKeys[])">
             <summary>
             Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted
             text entry via the keyboard.
             </summary>
             <param name="text"> The text to be simulated. </param>
+            <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.TypeText(System.String,System.TimeSpan,TestR.Desktop.KeyboardKeys[])">
+            <summary>
+            Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted
+            text entry via the keyboard.
+            </summary>
+            <param name="text"> The text to be simulated. </param>
+            <param name="delay"> An optional delay before sending optional keys. </param>
+            <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
         </member>
         <member name="M:TestR.Desktop.Keyboard.TypeText(System.Char)">
             <summary>
@@ -2387,7 +2399,7 @@
             <summary>
             Creates a new instance of the universal application.
             </summary>
-            <param name="filePath"> The file path for the application to start. </param>
+            <param name="executablePathOrName"> The executable file path or name of the process to load. </param>
             <param name="packageFamilyName"> The application package family name. </param>
             <returns> The instance that represents the application. </returns>
         </member>
@@ -2414,12 +2426,11 @@
             <param name="filter"> The filter to reduce collection. </param>
             <returns> The processes that match the filter. </returns>
         </member>
-        <member name="M:TestR.Desktop.ProcessService.WhereUniversal(System.String,System.String)">
+        <member name="M:TestR.Desktop.ProcessService.WhereUniversal(System.String)">
             <summary>
             Gets a list of safe processes by executable path.
             </summary>
             <param name="executablePathOrName"> The executable file path or name of the processes to load. </param>
-            <param name="arguments"> The optional arguments the process was started with. </param>
             <returns> The processes for the executable path. </returns>
         </member>
         <member name="T:TestR.Desktop.SafeProcess">

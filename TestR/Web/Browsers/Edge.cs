@@ -138,7 +138,8 @@ namespace TestR.Web.Browsers
 			}
 			else
 			{
-				application = Application.Create(BrowserName, GetDebugArguments(DebugPort), false, bringToFront);
+				Application.Create(BrowserName, GetDebugArguments(DebugPort), false, bringToFront);
+				application = Application.Attach(BrowserName, GetDebugArguments(DebugPort), false, bringToFront);
 				browser = new Edge(application);
 			}
 

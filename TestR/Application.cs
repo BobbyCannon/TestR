@@ -115,7 +115,7 @@ namespace TestR
 
 		#endregion
 
-		#region Methods
+		 #region Methods
 
 		/// <summary>
 		/// Attaches the application to an existing process.
@@ -124,11 +124,12 @@ namespace TestR
 		/// <param name="arguments"> The arguments for the executable. Arguments are optional. </param>
 		/// <param name="refresh"> The setting to determine to refresh children now. </param>
 		/// <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
+		/// <param name="isUwp"> True if we are attaching to a UWP window. </param>
 		/// <returns> The instance that represents the application. </returns>
-		public static Application Attach(string executablePath, string arguments = null, bool refresh = true, bool bringToFront = true)
+		public static Application Attach(string executablePath, string arguments = null, bool refresh = true, bool bringToFront = true, bool isUwp = false)
 		{
 			var process = ProcessService.Where(executablePath, arguments).FirstOrDefault();
-			return process == null ? null : Attach(process, refresh, bringToFront);
+			return process == null ? null : Attach(process, refresh, bringToFront, isUwp);
 		}
 
 		/// <summary>
@@ -162,11 +163,12 @@ namespace TestR
 		/// <param name="process"> The process to attach to. </param>
 		/// <param name="refresh"> The setting to determine to refresh children now. </param>
 		/// <param name="bringToFront"> The option to bring the application to the front. This argument is optional and defaults to true. </param>
+		/// <param name="isUwp"> True if we are attaching to a UWP window. </param>
 		/// <returns> The instance that represents the application. </returns>
-		public static Application Attach(SafeProcess process, bool refresh = true, bool bringToFront = true)
+		public static Application Attach(SafeProcess process, bool refresh = true, bool bringToFront = true, bool isUwp = false)
 		{
 			var application = new Application(process);
-			application.Initialize();
+			application.Initialize(isUwp);
 
 			if (refresh)
 			{
@@ -206,7 +208,7 @@ namespace TestR
 		/// <returns> The instance that represents the application. </returns>
 		public static Application AttachOrCreateUniversal(string executablePath, string packageFamilyName)
 		{
-			return Attach(executablePath) ?? CreateUniversal(executablePath, packageFamilyName);
+			return Attach(executablePath, isUwp: true) ?? CreateUniversal(executablePath, packageFamilyName);
 		}
 
 		/// <summary>
@@ -295,7 +297,7 @@ namespace TestR
 		public static Application CreateUniversal(string executablePath, string packageFamilyName)
 		{
 			var process = ProcessService.StartUniversal(executablePath, packageFamilyName);
-			return Attach(process);
+			return Attach(process, isUwp: true);
 		}
 
 		/// <summary>
@@ -450,6 +452,9 @@ namespace TestR
 				Kill((int) Timeout.TotalMilliseconds);
 			}
 
+			_uwpWindow?.Dispose();
+			_uwpWindow = null;
+
 			Process?.Dispose();
 			Process = null;
 		}
@@ -554,16 +559,23 @@ namespace TestR
 			return handles;
 		}
 
-		private void Initialize()
+		private void Initialize(bool isUwp)
 		{
-			// Detect UWP
-			var windowHandle = ApplicationFrameHostManager.Refresh(Process);
-
-			if (windowHandle != IntPtr.Zero)
+			if (isUwp)
 			{
-				var automation = new CUIAutomationClass();
-				var element = automation.ElementFromHandle(windowHandle);
-				_uwpWindow = new Window(element, this, null);
+				// Detect UWP
+				var windowHandle = ApplicationFrameHostManager.Refresh(Process, Application.Timeout);
+
+				if (windowHandle != IntPtr.Zero)
+				{
+					var automation = new CUIAutomationClass();
+					var element = automation.ElementFromHandle(windowHandle);
+					_uwpWindow = new Window(element, this, null);
+				}
+				else
+				{
+					throw new TestRException("Failed to find the UWP application window.");
+				}
 			}
 
 			if (Process != null)

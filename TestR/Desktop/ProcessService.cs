@@ -69,15 +69,26 @@ namespace TestR.Desktop
 		/// <summary>
 		/// Creates a new instance of the universal application.
 		/// </summary>
-		/// <param name="filePath"> The file path for the application to start. </param>
+		/// <param name="executablePathOrName"> The executable file path or name of the process to load. </param>
 		/// <param name="packageFamilyName"> The application package family name. </param>
 		/// <returns> The instance that represents the application. </returns>
-		public static SafeProcess StartUniversal(string filePath, string packageFamilyName)
+		public static SafeProcess StartUniversal(string executablePathOrName, string packageFamilyName)
 		{
 			var shellPath = $@"shell:appsFolder\{packageFamilyName}!App";
 			var info = new ProcessStartInfo { FileName = shellPath, Arguments = string.Empty, UseShellExecute = true };
 			Process.Start(info);
-			return WhereUniversal(filePath).FirstOrDefault();
+			var watch = Stopwatch.StartNew();
+			
+			while (watch.Elapsed.TotalMilliseconds <= 10000)
+			{
+				var process = WhereUniversal(executablePathOrName).FirstOrDefault();
+				if (process != null)
+				{
+					return process;
+				}
+			}
+
+			return null;
 		}
 
 		/// <summary>
@@ -156,12 +167,11 @@ namespace TestR.Desktop
 		/// Gets a list of safe processes by executable path.
 		/// </summary>
 		/// <param name="executablePathOrName"> The executable file path or name of the processes to load. </param>
-		/// <param name="arguments"> The optional arguments the process was started with. </param>
 		/// <returns> The processes for the executable path. </returns>
-		public static IEnumerable<SafeProcess> WhereUniversal(string executablePathOrName, string arguments = null)
+		public static IEnumerable<SafeProcess> WhereUniversal(string executablePathOrName)
 		{
 			using var searcher = new ManagementObjectDisposer();
-			var query = _query + $" WHERE CommandLine LIKE '\"{executablePathOrName.FormatForInnerString()}\"%'";
+			var query = _query + $" WHERE ExecutablePath LIKE '{executablePathOrName.FormatForInnerString()}%'";
 			var items = searcher.Search(query).ToList();
 
 			foreach (var item in items)
