@@ -1,7 +1,9 @@
 ﻿#region References
 
+using System;
 using System.Drawing;
 using System.Text;
+using TestR.Desktop;
 using TestR.Internal;
 
 #endregion
@@ -182,6 +184,33 @@ namespace TestR
 			Application.BringToFront();
 			Focus();
 			Input.Keyboard.TypeText(value);
+			return this;
+		}
+
+		/// <summary>
+		/// Focus the element then type the text via the keyboard.
+		/// </summary>
+		/// <param name="value"> The value to type. </param>
+		/// <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
+		public virtual Element TypeText(string value, params KeyboardKeys[] keys)
+		{
+			Application.BringToFront();
+			Focus();
+			Input.Keyboard.TypeText(value, TimeSpan.Zero, keys);
+			return this;
+		}
+
+		/// <summary>
+		/// Focus the element then type the text via the keyboard.
+		/// </summary>
+		/// <param name="value"> The value to type. </param>
+		/// <param name="delay"> An optional delay before sending optional keys. </param>
+		/// <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
+		public virtual Element TypeText(string value, TimeSpan delay, params KeyboardKeys[] keys)
+		{
+			Application.BringToFront();
+			Focus();
+			Input.Keyboard.TypeText(value, delay, keys);
 			return this;
 		}
 

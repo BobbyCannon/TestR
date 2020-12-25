@@ -2762,6 +2762,21 @@
             </summary>
             <param name="value"> The value to type. </param>
         </member>
+        <member name="M:TestR.Element.TypeText(System.String,TestR.Desktop.KeyboardKeys[])">
+            <summary>
+            Focus the element then type the text via the keyboard.
+            </summary>
+            <param name="value"> The value to type. </param>
+            <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
+        </member>
+        <member name="M:TestR.Element.TypeText(System.String,System.TimeSpan,TestR.Desktop.KeyboardKeys[])">
+            <summary>
+            Focus the element then type the text via the keyboard.
+            </summary>
+            <param name="value"> The value to type. </param>
+            <param name="delay"> An optional delay before sending optional keys. </param>
+            <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
+        </member>
         <member name="T:TestR.ElementCollection">
             <summary>
             Represents a collection of elements.
