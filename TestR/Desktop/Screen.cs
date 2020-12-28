@@ -115,7 +115,7 @@ namespace TestR.Desktop
 		/// <returns> The screen that contains the point. </returns>
 		public static Screen FromPoint(Point point)
 		{
-			return _screens.First(screen => screen.ScreenArea.Contains(point));
+			return _screens.FirstOrDefault(screen => screen.ScreenArea.Contains(point));
 		}
 
 		/// <summary>
@@ -126,7 +126,7 @@ namespace TestR.Desktop
 		/// <returns> The screen that contains the point. </returns>
 		public static Screen FromPoint(int x, int y)
 		{
-			return _screens.First(screen => screen.ScreenArea.Contains(x, y));
+			return _screens.FirstOrDefault(screen => screen.ScreenArea.Contains(x, y));
 		}
 
 		/// <summary>

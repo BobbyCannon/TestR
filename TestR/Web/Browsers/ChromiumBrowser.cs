@@ -3,11 +3,10 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.Net.Cache;
 using System.Net.Http;
-using System.Net.Sockets;
 using System.Net.WebSockets;
 using System.Runtime.Serialization;
 using System.Text;
@@ -33,18 +32,19 @@ namespace TestR.Web.Browsers
 		/// <summary>
 		/// The debugging argument for starting the browser.
 		/// </summary>
-		private const string DebugArgument = "--remote-debugging-port={0}";
+		private const string DebugArgument = "--remote-debugging-port={0} --profile-directory=TestR";
 
 		#endregion
 
 		#region Fields
+
+		private static readonly HttpClient _client;
 
 		private readonly int _debugPort;
 		private readonly JsonSerializerSettings _jsonSerializerSettings;
 		private int _requestId;
 		private ClientWebSocket _socket;
 		private readonly ConcurrentDictionary<string, dynamic> _socketResponses;
-		private static readonly HttpClient _client;
 
 		#endregion
 
@@ -95,7 +95,7 @@ namespace TestR.Web.Browsers
 
 			SendRequestAndReadResponse(request, x => x.id == request.Id);
 
-			// todo: There must be a better way to determine when Chrome and Firefox is done processing.
+			// todo: There must be a better way to determine when Chrome and Edge is done processing.
 			Thread.Sleep(250);
 		}
 
@@ -282,6 +282,21 @@ namespace TestR.Web.Browsers
 			var sessions = JsonConvert.DeserializeObject<List<RemoteSessionsResponse>>(data);
 			sessions.RemoveAll(x => x.Url.StartsWith("chrome-extension"));
 			sessions.RemoveAll(x => x.Url.StartsWith("chrome-devtools"));
+			sessions.RemoveAll(x => x.Title.Contains("https://ntp.msn.com/edge/ntp/service-worker.js"));
+
+			if (sessions.Count > 1)
+			{
+				Debug.WriteLine("\r\nToo many sessions?");
+
+				sessions.ForEach(x =>
+				{
+					Debug.WriteLine(x.Title);
+					Debug.WriteLine(x.Url);
+					Debug.WriteLine(x.DevtoolsFrontendUrl);
+					Debug.WriteLine(x.WebSocketDebuggerUrl);
+				});
+			}
+
 			return sessions;
 		}
 

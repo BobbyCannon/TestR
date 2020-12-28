@@ -22,6 +22,8 @@ namespace TestR
 	/// </summary>
 	public class Application : ElementHost
 	{
+		private static object _automationLock = new object();
+		
 		#region Constants
 
 		/// <summary>
@@ -476,59 +478,65 @@ namespace TestR
 			}
 
 			Process.Process.Refresh();
-			var automation = new CUIAutomationClass();
-			var watch = Stopwatch.StartNew();
 
-			var rootWindow = automation.GetRootElement();
-			var walker = automation.CreateTreeWalker(automation.RawViewCondition);
-			var child = walker.GetFirstChildElement(rootWindow);
-
-			while (child != null)
+			// Restrict root element access to a single accessor? This is a new issue that has recently been returning a COM error.
+			// Seems to only happen on test with ForAllBrowsers where each browser is trying to locate their main window.
+			lock (_automationLock)
 			{
-				if (child.CurrentProcessId == Process.Id)
-				{
-					var e = DesktopElement.Create(child, this, null);
+				var automation = new CUIAutomationClass();
+				var watch = Stopwatch.StartNew();
 
-					if (e is Window window)
+				var rootWindow = automation.GetRootElement();
+				var walker = automation.CreateTreeWalker(automation.RawViewCondition);
+				var child = walker.GetFirstChildElement(rootWindow);
+
+				while (child != null)
+				{
+					if (child.CurrentProcessId == Process.Id)
 					{
-						yield return window;
-					}
-				}
+						var e = DesktopElement.Create(child, this, null);
 
-				child = walker.GetNextSiblingElement(child);
-			}
-
-			foreach (var handle in EnumerateProcessWindowHandles())
-			{
-				if (windowsToIgnore?.Contains(handle) == true)
-				{
-					continue;
-				}
-
-				watch.Restart();
-
-				while (watch.ElapsedMilliseconds < 1000)
-				{
-					Window response;
-
-					try
-					{
-						var automationElement = automation.ElementFromHandle(handle);
-						var element = DesktopElement.Create(automationElement, this, null);
-						if (!(element is Window window))
+						if (e is Window window)
 						{
-							break;
+							yield return window;
 						}
-
-						response = window;
 					}
-					catch
+
+					child = walker.GetNextSiblingElement(child);
+				}
+
+				foreach (var handle in EnumerateProcessWindowHandles())
+				{
+					if (windowsToIgnore?.Contains(handle) == true)
 					{
 						continue;
 					}
 
-					yield return response;
-					break;
+					watch.Restart();
+
+					while (watch.ElapsedMilliseconds < 1000)
+					{
+						Window response;
+
+						try
+						{
+							var automationElement = automation.ElementFromHandle(handle);
+							var element = DesktopElement.Create(automationElement, this, null);
+							if (!(element is Window window))
+							{
+								break;
+							}
+
+							response = window;
+						}
+						catch
+						{
+							continue;
+						}
+
+						yield return response;
+						break;
+					}
 				}
 			}
 		}

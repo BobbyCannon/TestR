@@ -1,79 +1,40 @@
-﻿param (
+﻿#Requires -RunAsAdministrator
+
+param (
     [Parameter(Mandatory = $false)]
     [string] $SitePath = "C:\inetpub\TestR",
-    [Parameter(Mandatory = $false)]
-    [string] $UserName,
-    [Parameter(Mandatory = $false)]
-    [string] $Password
+    [Parameter()]
+	[string] $Configuration = "Release"
 )
 
 $ErrorActionPreference = "Stop"
 $siteName = "TestR"
+$watch = [System.Diagnostics.Stopwatch]::StartNew()
+$scriptPath = Split-Path(Get-Variable MyInvocation).Value.MyCommand.Path
+#$scriptPath = "C:\Workspaces\GitHub\TestR"
 
-Import-Module WebAdministration
+& nuget.exe restore "$scriptPath\TestR.sln"
 
-$scriptPath = $PSScriptRoot
-if ($scriptPath -eq $null) {
-	$scriptPath = "C:\Workspaces\GitHub\TestR"
+if ($LASTEXITCODE -ne 0)
+{
+	Write-Host "Nuget pull has failed! " $watch.Elapsed -ForegroundColor Red
+	exit $LASTEXITCODE
 }
 
-if (Test-Path $SitePath -PathType Container) {
-	Remove-Item $SitePath -Recurse -Force
+# Visual Studio Online Support
+$msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\MSBuild.exe"
+
+if (!(Test-Path $msbuild -PathType Leaf))
+{
+	$msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe"
 }
 
-New-Item $SitePath -ItemType Directory | Out-Null
-Copy-Item "$scriptPath\TestR.TestSite\*" $SitePath -Recurse -Force
+& $msbuild "$scriptPath\TestR.TestWebsite\TestR.TestWebsite.csproj" /p:Configuration="$Configuration" /p:PublishProfile=localhost /p:DeployOnBuild=True /p:VisualStudioVersion=16.0 /t:Rebuild /v:m
 
-$bindings = @()
-$bindings += @{ protocol="http"; bindingInformation="*:80:testr.local"}
-$bindings += @{ protocol="https"; bindingInformation="*:443:testr.local"; sslFlags=1 }
-$webPath = "IIS:\Sites\$siteName"
-$site = Get-Website $siteName
-# Remove-Website $siteName
-
-if (!(Test-Path $SitePath -PathType Container)) {
-	New-Item $SitePath -ItemType Directory
+if ($LASTEXITCODE -ne 0)
+{
+	Write-Error "Build has failed ($LASTEXITCODE)! $($watch.Elapsed)"
+	exit $LASTEXITCODE
 }
 
-if ($site -eq $null) {
-	New-Website -Name $siteName -PhysicalPath $SitePath
-	$site = Get-Website $siteName
-}
-
-Set-ItemProperty -Path $webPath -Name Bindings -Value $bindings
-
-$certificate = Get-ChildItem Cert:\LocalMachine -Recurse | Where { $_.Subject -ne $null -and $_.Subject.Contains("testr.local") } | Select -First 1
-if ($certificate -eq $null) {
-	$certificate = New-SelfSignedCertificate -CertStoreLocation Cert:\LocalMachine\My -DnsName testr.local -FriendlyName TestR
-}
-
-$rootCertificate = Get-ChildItem cert:\LocalMachine\Root -Recurse | Where { $_.Subject -ne $null -and $_.Subject.Contains("testr.local") } | Select -First 1
-if ($rootCertificate -eq $null) {
-	$store = New-Object System.Security.Cryptography.X509Certificates.X509Store "Root","LocalMachine"
-	$store.Open("ReadWrite")
-	$store.Add($certificate)
-	$store.Close()
-	$store.Dispose()
-}
-
-$hash = $certificate.GetCertHashString()
-$binding = Get-WebBinding -Name $siteName -Protocol "https"
-$binding.AddSslCertificate($hash, "My")
-
-$pool = Get-Item "IIS:\AppPools\$siteName" -ErrorAction Ignore
-if ($pool -eq $null) {
-    New-WebAppPool -Name $SiteName
-    $pool = Get-Item IIS:\AppPools\$siteName
-}
-
-Set-ItemProperty IIS:\Sites\$siteName -Name applicationPool -Value $siteName
-
-if (![string]::IsNullOrWhiteSpace($UserName) -and ![string]::IsNullOrWhiteSpace($Password)) {
-	$pool.processModel.userName = $UserName
-	$pool.processModel.password = $Password
-	$pool.processModel.identityType = 3
-	$pool | Set-Item
-}
-
-Start-WebAppPool -Name $siteName
-$site.Start()
+Write-Host "Deployed Completed" -ForegroundColor Yellow

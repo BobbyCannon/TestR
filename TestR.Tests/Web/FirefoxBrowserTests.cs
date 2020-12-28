@@ -1,6 +1,5 @@
 ﻿#region References
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Web.Browsers;
 
 #endregion

@@ -2,7 +2,6 @@
 
 using System;
 using System.Linq;
-using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -182,7 +181,7 @@ namespace TestR.Tests.Web
 				Assert.AreEqual("Text Area's \"Quotes\" Data", browser.First<TextArea>("textarea").Text);
 				browser.First("button").Click();
 				Assert.AreEqual("button", browser.First<TextArea>("textarea").Text);
-				
+
 				browser.NavigateTo(TestSite + "/vue.html");
 				Assert.AreEqual("", browser.First<Division>("error").Text);
 				browser.First<Button>("click").Click();
@@ -562,7 +561,7 @@ namespace TestR.Tests.Web
 
 			try
 			{
-				ForAllBrowsers(x => throw new Exception(x.BrowserType.ToString()), BrowserType.Chrome | BrowserType.Edge);
+				ForAllBrowsers(x => throw new Exception(x.BrowserType.ToString()));
 			}
 			catch (AggregateException ex)
 			{
@@ -576,7 +575,7 @@ namespace TestR.Tests.Web
 				Assert.Fail("Invalid exception: " + ex.GetType().FullName);
 			}
 		}
-		
+
 		[TestMethod]
 		public void ForAllBrowserShouldTimeoutFast()
 		{
@@ -732,7 +731,7 @@ namespace TestR.Tests.Web
 		public void GetAndSetStyle()
 		{
 			ForAllBrowsers(browser =>
-			//ForEachBrowser(browser =>
+				//ForEachBrowser(browser =>
 			{
 				browser.NavigateTo(TestSite + "/invalid.html");
 
@@ -745,7 +744,7 @@ namespace TestR.Tests.Web
 				var actual = span1.GetStyleAttributeValue("color", true);
 				Assert.AreEqual("red", actual);
 				Assert.IsTrue(span1.GetAttributeValue("Style", true).Contains("color: red"));
-				
+
 				var input1 = browser.FirstOrDefault<WebElement>("input1");
 				Assert.IsNotNull(input1);
 				Assert.AreEqual("", input1.Style);
@@ -872,18 +871,14 @@ namespace TestR.Tests.Web
 		[TestMethod]
 		public void InternetOfBing()
 		{
-			Browser.CloseBrowsers();
-
 			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo("https://www.bing.com");
 				browser.Descendants().ToList().Count.Dump();
-				browser.FirstOrDefault("sb_form_q").TypeText("Bobby Cannon");
+				browser.FirstOrDefault("sb_form_q").TypeText("Bobby Cannon Epic Coders");
 				browser.FirstOrDefault("sb_form_go").Click();
 				browser.WaitForComplete();
 			});
-
-			Browser.CloseBrowsers();
 		}
 
 		[TestMethod]
@@ -1631,7 +1626,7 @@ namespace TestR.Tests.Web
 		private void ForAllBrowsers(Action<Browser> action, BrowserType browserTypes = BrowserType.Chrome | BrowserType.Edge, bool resizeBrowsers = true, bool useSecondaryMonitor = false, int? timeout = null)
 		{
 			CleanupBrowsers = false;
-			browserTypes.ForAllBrowsers(action, useSecondaryMonitor, resizeBrowsers, BrowserResizeType.LeftSideBySide, timeout ?? (int)DefaultTimeout.TotalMilliseconds);
+			browserTypes.ForAllBrowsers(action, useSecondaryMonitor, resizeBrowsers, BrowserResizeType.LeftSideBySide, timeout ?? (int) DefaultTimeout.TotalMilliseconds);
 		}
 
 		private void ForEachBrowser(Action<Browser> action, BrowserType browserTypes = BrowserType.Chrome | BrowserType.Edge, bool resizeBrowsers = true, bool useSecondaryMonitor = false)

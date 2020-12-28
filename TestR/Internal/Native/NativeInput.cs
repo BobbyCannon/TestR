@@ -15,9 +15,6 @@ namespace TestR.Internal.Native
 		[DllImport("User32.dll")]
 		public static extern int CallNextHookEx(IntPtr idHook, int nCode, int wParam, ref KeyboardHookStruct lParam);
 
-		[DllImport("user32.dll", SetLastError = true)]
-		public static extern short GetAsyncKeyState(ushort virtualKeyCode);
-
 		[DllImport("user32.dll", EntryPoint = "GetCursorPos", SetLastError = true)]
 		public static extern bool GetCursorPosition(out Point lpMousePoint);
 

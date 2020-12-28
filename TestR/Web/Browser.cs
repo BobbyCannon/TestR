@@ -520,7 +520,7 @@ namespace TestR.Web
 			{
 				throw new ArgumentNullException(nameof(uri));
 			}
-
+			
 			_lastUri = Uri;
 
 			try

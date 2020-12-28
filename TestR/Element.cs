@@ -192,7 +192,7 @@ namespace TestR
 		/// </summary>
 		/// <param name="value"> The value to type. </param>
 		/// <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
-		public virtual Element TypeText(string value, params KeyboardKeys[] keys)
+		public virtual Element TypeText(string value, params KeyboardKey[] keys)
 		{
 			Application.BringToFront();
 			Focus();
@@ -206,7 +206,7 @@ namespace TestR
 		/// <param name="value"> The value to type. </param>
 		/// <param name="delay"> An optional delay before sending optional keys. </param>
 		/// <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
-		public virtual Element TypeText(string value, TimeSpan delay, params KeyboardKeys[] keys)
+		public virtual Element TypeText(string value, TimeSpan delay, params KeyboardKey[] keys)
 		{
 			Application.BringToFront();
 			Focus();

@@ -21,7 +21,7 @@ namespace TestR.Tests.Desktop
 		[TestMethod]
 		public void ApplicationLocation()
 		{
-			using var application = TestHelper.GetApplication();
+			using var application = TestHelper.StartApplication();
 			var expected = application.First<Window>("ParentForm");
 			var wait = application.Wait(x => application.Location.X > 0, 1000, 20);
 			Assert.IsTrue(wait, "Application never displayed?");
@@ -33,7 +33,7 @@ namespace TestR.Tests.Desktop
 		{
 			Input.Mouse.MoveTo(0, 0);
 
-			using var application = TestHelper.GetApplication();
+			using var application = TestHelper.StartApplication();
 			application.BringToFront();
 
 			var expected = application.First<Window>("ParentForm");
@@ -47,7 +47,7 @@ namespace TestR.Tests.Desktop
 		[TestMethod]
 		public void ApplicationSize()
 		{
-			using var application = TestHelper.GetApplication();
+			using var application = TestHelper.StartApplication();
 			var expected = application.First<Window>("ParentForm");
 			var wait = application.Wait(x => application.Size.Height > 0);
 			Assert.IsTrue(wait, "Application never displayed?");
@@ -57,7 +57,7 @@ namespace TestR.Tests.Desktop
 		[TestMethod]
 		public void CheckBoxCanBeToggledWithMouse()
 		{
-			using var application = TestHelper.GetApplication();
+			using var application = TestHelper.StartApplication();
 			var window = application.First<Window>("ParentForm");
 			var checkbox = window.First<CheckBox>("checkBox1");
 			Assert.IsFalse(checkbox.Checked);
@@ -70,7 +70,7 @@ namespace TestR.Tests.Desktop
 		[TestMethod]
 		public void CheckBoxCheckedStateShouldBeIndeterminate()
 		{
-			using var application = TestHelper.GetApplication();
+			using var application = TestHelper.StartApplication();
 			var window = application.First<Window>("ParentForm");
 			var checkbox = window.First<CheckBox>("checkBox3");
 			Assert.AreEqual(ToggleState.Indeterminate, checkbox.CheckedState);
@@ -79,7 +79,7 @@ namespace TestR.Tests.Desktop
 		[TestMethod]
 		public void CheckBoxCheckedStateShouldBeOff()
 		{
-			using var application = TestHelper.GetApplication();
+			using var application = TestHelper.StartApplication();
 			var window = application.First<Window>("ParentForm");
 			var checkbox = window.First<CheckBox>("checkBox1");
 			Assert.AreEqual(ToggleState.Off, checkbox.CheckedState);
@@ -88,7 +88,7 @@ namespace TestR.Tests.Desktop
 		[TestMethod]
 		public void CheckBoxCheckedStateShouldBeOn()
 		{
-			using var application = TestHelper.GetApplication();
+			using var application = TestHelper.StartApplication();
 			var window = application.First<Window>("ParentForm");
 			var checkbox = window.First<CheckBox>("checkBox2");
 			Assert.AreEqual(ToggleState.On, checkbox.CheckedState);
@@ -97,7 +97,7 @@ namespace TestR.Tests.Desktop
 		[TestMethod]
 		public void CheckBoxCount()
 		{
-			using var application = TestHelper.GetApplication();
+			using var application = TestHelper.StartApplication();
 			var window = application.First<Window>(x => x.Id == "FormMain");
 			window.Refresh();
 
@@ -109,7 +109,7 @@ namespace TestR.Tests.Desktop
 		[TestMethod]
 		public void CheckBoxWithIndeterminateStateShouldBeChecked()
 		{
-			using var application = TestHelper.GetApplication();
+			using var application = TestHelper.StartApplication();
 			var window = application.First<Window>("ParentForm");
 			var checkbox = window.First<CheckBox>("checkBox3");
 			Assert.IsTrue(checkbox.Checked);
@@ -118,7 +118,7 @@ namespace TestR.Tests.Desktop
 		[TestMethod]
 		public void CheckBoxWithOffStateShouldBeChecked()
 		{
-			using var application = TestHelper.GetApplication();
+			using var application = TestHelper.StartApplication();
 			var window = application.First<Window>("ParentForm");
 			var checkbox = window.First<CheckBox>("checkBox1");
 			Assert.IsFalse(checkbox.Checked);
@@ -127,7 +127,7 @@ namespace TestR.Tests.Desktop
 		[TestMethod]
 		public void CheckBoxWithOnStateShouldBeChecked()
 		{
-			using var application = TestHelper.GetApplication();
+			using var application = TestHelper.StartApplication();
 			var window = application.First<Window>("ParentForm");
 			var checkbox = window.First<CheckBox>("checkBox2");
 			Assert.IsTrue(checkbox.Checked);
@@ -136,14 +136,14 @@ namespace TestR.Tests.Desktop
 		[TestMethod]
 		public void CheckProcessIs64Bit()
 		{
-			using (var application = TestHelper.GetApplication())
+			using (var application = TestHelper.StartApplication())
 			{
 				application.WaitForComplete(500);
 				Assert.IsTrue(application.Process.Is64Bit, "Application should be 64 bit.");
 				application.Close();
 			}
 
-			using (var application = TestHelper.GetApplication(true))
+			using (var application = TestHelper.StartApplication(true))
 			{
 				application.WaitForComplete(500);
 				Assert.IsFalse(application.Process.Is64Bit, "Application should be 32 bit.");
@@ -154,7 +154,7 @@ namespace TestR.Tests.Desktop
 		[TestMethod]
 		public void CheckWindowId()
 		{
-			using var application = TestHelper.GetApplication();
+			using var application = TestHelper.StartApplication();
 			application.WaitForComplete(500);
 			var window = application.First<Window>("ParentForm");
 			Assert.AreEqual("ParentForm", window.Id);
@@ -163,7 +163,7 @@ namespace TestR.Tests.Desktop
 		[TestMethod]
 		public void CheckWindowName()
 		{
-			using var application = TestHelper.GetApplication();
+			using var application = TestHelper.StartApplication();
 			application.WaitForComplete(500);
 			var window = application.First<Window>("ParentForm");
 			Assert.AreEqual("ParentForm", window.Name);
@@ -172,7 +172,7 @@ namespace TestR.Tests.Desktop
 		[TestMethod]
 		public void ClickMainMenu()
 		{
-			using var application = TestHelper.GetApplication();
+			using var application = TestHelper.StartApplication();
 			application.AutoClose = false;
 			var window = application.First<Window>("ParentForm");
 			var mainMenu = window.First("menuStrip");
@@ -201,7 +201,7 @@ namespace TestR.Tests.Desktop
 		[TestMethod]
 		public void GetMainMenuBar()
 		{
-			using var application = TestHelper.GetApplication();
+			using var application = TestHelper.StartApplication();
 			var window = application.First<Window>("ParentForm");
 			var mainMenu = window.First("menuStrip");
 			Assert.AreEqual("menuStrip", mainMenu.Id);
@@ -211,7 +211,7 @@ namespace TestR.Tests.Desktop
 		[TestMethod]
 		public void GetMainStatusStrip()
 		{
-			using var application = TestHelper.GetApplication();
+			using var application = TestHelper.StartApplication();
 			var window = application.First<Window>("ParentForm");
 			var statusBar = window.StatusBar;
 			Assert.IsNotNull(statusBar);
@@ -222,7 +222,7 @@ namespace TestR.Tests.Desktop
 		[TestMethod]
 		public void GetMainTitleBar()
 		{
-			using var application = TestHelper.GetApplication();
+			using var application = TestHelper.StartApplication();
 			var window = application.First<Window>("ParentForm");
 			var titleBar = window.TitleBar;
 			Assert.IsNotNull(titleBar);
@@ -233,7 +233,7 @@ namespace TestR.Tests.Desktop
 		[TestMethod]
 		public void GetParents()
 		{
-			using var application = TestHelper.GetApplication();
+			using var application = TestHelper.StartApplication();
 			var window = application.First<Window>("ParentForm");
 			var checkbox = window.First<CheckBox>("checkBox1");
 
@@ -243,11 +243,26 @@ namespace TestR.Tests.Desktop
 			element.UpdateParents();
 			Assert.AreEqual(checkbox.FullId, element.FullId);
 		}
+		
+		[TestMethod]
+		public void MonitorForKeyPress()
+		{
+			using var application = TestHelper.GetOrStartApplication();
+			var window = application.First<Window>("ParentForm");
+			var text = window.First<Edit>("textBox1");
+
+			var element = DesktopElement.FromPoint(text.Location);
+			Assert.AreEqual("textBox1", element.FullId);
+			text.TypeText("Hello World");
+
+			var matched = Utility.Wait(() => text.Text == "Hello World", 2000, 25);
+			Assert.IsTrue(matched, $"Hello World != {text.Text}");
+		}
 
 		[TestMethod]
 		public void GetWindowById()
 		{
-			using var application = TestHelper.GetApplication();
+			using var application = TestHelper.StartApplication();
 			var window = application.First<Window>("FormMain");
 			Assert.IsNotNull(window);
 		}
@@ -255,7 +270,7 @@ namespace TestR.Tests.Desktop
 		[TestMethod]
 		public void GetWindowByName()
 		{
-			using var application = TestHelper.GetApplication();
+			using var application = TestHelper.StartApplication();
 			var window = application.First<Window>("TestR Test WinForm");
 			Assert.IsNotNull(window);
 		}
@@ -263,7 +278,7 @@ namespace TestR.Tests.Desktop
 		[TestMethod]
 		public void RefreshingApplicationWhileClosingWindowsShouldNotFail()
 		{
-			using var application = TestHelper.GetApplication();
+			using var application = TestHelper.StartApplication();
 			var tempApplication = application;
 			var window = application.First<Window>("TestR Test WinForm");
 			Assert.IsNotNull(window);

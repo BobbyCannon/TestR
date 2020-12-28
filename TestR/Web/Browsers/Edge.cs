@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 
 #endregion
 
@@ -68,6 +69,7 @@ namespace TestR.Web.Browsers
 			var browser = new Edge(application);
 			browser.Connect();
 			browser.Refresh();
+			
 			return browser;
 		}
 

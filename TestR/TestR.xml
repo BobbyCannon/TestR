@@ -864,39 +864,16 @@
             <see cref="T:TestR.Internal.Inputs.InputMessageDispatcher" /> for dispatching <see cref="T:TestR.Internal.Inputs.Input" /> messages.
             </summary>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.IsHardwareKeyDown(TestR.Desktop.KeyboardKeys)">
+        <member name="P:TestR.Desktop.Keyboard.State">
             <summary>
-            Determines whether the physical key is up or down at the time the function is called regardless of whether the
-            application thread has read the keyboard event from the message pump by calling the
-            <see cref="M:TestR.Internal.Native.NativeInput.GetAsyncKeyState(System.UInt16)" /> function.
+            The last state of the keyboard when monitoring.
             </summary>
-            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" /> for the key. </param>
-            <returns>
-            <c> true </c> if the key is down; otherwise, <c> false </c>.
-            </returns>
-            <remarks>
-            See: http://msdn.microsoft.com/en-us/library/ms646293(VS.85).aspx
-            </remarks>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.IsHardwareKeyUp(TestR.Desktop.KeyboardKeys)">
-            <summary>
-            Determines whether the physical key is up or down at the time the function is called regardless of whether the
-            application thread has read the keyboard event from the message pump by calling the
-            <see cref="M:TestR.Internal.Native.NativeInput.GetAsyncKeyState(System.UInt16)" /> function.
-            </summary>
-            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" /> for the key. </param>
-            <returns>
-            <c> true </c> if the key is up; otherwise, <c> false </c>.
-            </returns>
-            <remarks>
-            See: http://msdn.microsoft.com/en-us/library/ms646293(VS.85).aspx
-            </remarks>
-        </member>
-        <member name="M:TestR.Desktop.Keyboard.IsKeyDown(TestR.Desktop.KeyboardKeys)">
+        <member name="M:TestR.Desktop.Keyboard.IsKeyDown(TestR.Desktop.KeyboardKey)">
             <summary>
             Determines whether the specified key is up or down by calling the GetKeyState function.
             </summary>
-            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" /> for the key. </param>
+            <param name="key"> The <see cref="T:TestR.Desktop.KeyboardKey" /> for the key. </param>
             <returns>
             <c> true </c> if the key is down; otherwise, <c> false </c>.
             </returns>
@@ -904,11 +881,11 @@
             See: http://msdn.microsoft.com/en-us/library/ms646301(VS.85).aspx
             </remarks>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.IsKeyUp(TestR.Desktop.KeyboardKeys)">
+        <member name="M:TestR.Desktop.Keyboard.IsKeyUp(TestR.Desktop.KeyboardKey)">
             <summary>
             Determines whether the specified key is up or down by calling the GetKeyState function.
             </summary>
-            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" /> for the key. </param>
+            <param name="key"> The <see cref="T:TestR.Desktop.KeyboardKey" /> for the key. </param>
             <returns>
             <c> true </c> if the key is up; otherwise, <c> false </c>.
             </returns>
@@ -916,11 +893,11 @@
             See: http://msdn.microsoft.com/en-us/library/ms646301(VS.85).aspx
             </remarks>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.IsTogglingKeyInEffect(TestR.Desktop.KeyboardKeys)">
+        <member name="M:TestR.Desktop.Keyboard.IsTogglingKeyInEffect(TestR.Desktop.KeyboardKey)">
             <summary>
             Determines whether the toggling key is toggled on (in-effect) or not by calling the GetKeyState function.
             </summary>
-            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" /> for the key. </param>
+            <param name="key"> The <see cref="T:TestR.Desktop.KeyboardKey" /> for the key. </param>
             <returns>
             <c> true </c> if the toggling key is toggled on (in-effect); otherwise, <c> false </c>.
             </returns>
@@ -928,64 +905,64 @@
             See: http://msdn.microsoft.com/en-us/library/ms646301(VS.85).aspx
             </remarks>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.KeyDown(TestR.Desktop.KeyboardKeys)">
+        <member name="M:TestR.Desktop.Keyboard.KeyDown(TestR.Desktop.KeyboardKey)">
             <summary>
             Calls the Win32 SendInput method to simulate a KeyDown.
             </summary>
-            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" /> to press </param>
+            <param name="key"> The <see cref="T:TestR.Desktop.KeyboardKey" /> to press. </param>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.KeyPress(TestR.Desktop.KeyboardKeys)">
+        <member name="M:TestR.Desktop.Keyboard.KeyPress(TestR.Desktop.KeyboardKey)">
             <summary>
             Calls the Win32 SendInput method with a KeyDown and KeyUp message in the same input sequence in order to simulate a Key PRESS.
             </summary>
-            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" /> to press </param>
+            <param name="key"> The <see cref="T:TestR.Desktop.KeyboardKey" /> to press. </param>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.KeyPress(TestR.Desktop.KeyboardKeys[])">
+        <member name="M:TestR.Desktop.Keyboard.KeyPress(TestR.Desktop.KeyboardKey[])">
             <summary>
             Simulates a key press for each of the specified key codes in the order they are specified.
             </summary>
-            <param name="keyCodes"> </param>
+            <param name="keys"> The keys to press. </param>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.KeyUp(TestR.Desktop.KeyboardKeys)">
-            <summary>
-            Calls the Win32 SendInput method to simulate a KeyUp.
-            </summary>
-            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" /> to lift up. </param>
-        </member>
-        <member name="M:TestR.Desktop.Keyboard.ModifiedKeyStroke(TestR.Desktop.KeyboardKeys,TestR.Desktop.KeyboardKeys)">
+        <member name="M:TestR.Desktop.Keyboard.KeyPress(TestR.Desktop.KeyboardModifier,TestR.Desktop.KeyboardKey)">
             <summary>
             Simulates a simple modified keystroke like CTRL-C where CTRL is the modifierKey and C is the key.
             The flow is Modifier KeyDown, Key Press, Modifier KeyUp.
             </summary>
-            <param name="modifierKeyCode"> The modifier key. </param>
-            <param name="keyCode"> The key to simulate. </param>
+            <param name="modifier"> The modifier key. </param>
+            <param name="key"> The key to simulate. </param>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.ModifiedKeyStroke(System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardKeys},TestR.Desktop.KeyboardKeys)">
+        <member name="M:TestR.Desktop.Keyboard.KeyPress(System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardModifier},TestR.Desktop.KeyboardKey)">
             <summary>
             Simulates a modified keystroke where there are multiple modifiers and one key like CTRL-ALT-C where CTRL and ALT
             are the modifierKeys and C is the key.
             The flow is Modifiers KeyDown in order, Key Press, Modifiers KeyUp in reverse order.
             </summary>
-            <param name="modifierKeyCodes"> The list of modifier keys </param>
-            <param name="keyCode"> The key to simulate </param>
+            <param name="modifiers"> The list of modifier keys </param>
+            <param name="key"> The key to simulate </param>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.ModifiedKeyStroke(TestR.Desktop.KeyboardKeys,System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardKeys})">
+        <member name="M:TestR.Desktop.Keyboard.KeyPress(TestR.Desktop.KeyboardModifier,System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardKey})">
             <summary>
             Simulates a modified keystroke where there is one modifier and multiple keys like CTRL-K-C where CTRL is the
             modifierKey and K and C are the keys.
             The flow is Modifier KeyDown, Keys Press in order, Modifier KeyUp.
             </summary>
-            <param name="modifierKey"> The modifier key </param>
-            <param name="keyCodes"> The list of keys to simulate </param>
+            <param name="modifier"> The modifier key </param>
+            <param name="keys"> The list of keys to simulate </param>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.ModifiedKeyStroke(System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardKeys},System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardKeys})">
+        <member name="M:TestR.Desktop.Keyboard.KeyPress(System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardModifier},System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardKey})">
             <summary>
             Simulates a modified keystroke where there are multiple modifiers and multiple keys like CTRL-ALT-K-C where CTRL
             and ALT are the modifierKeys and K and C are the keys.
             The flow is Modifiers KeyDown in order, Keys Press in order, Modifiers KeyUp in reverse order.
             </summary>
-            <param name="modifierKeyCodes"> The list of modifier keys </param>
-            <param name="keyCodes"> The list of keys to simulate </param>
+            <param name="modifiers"> The list of modifier keys </param>
+            <param name="keys"> The list of keys to simulate </param>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.KeyUp(TestR.Desktop.KeyboardKey)">
+            <summary>
+            Calls the Win32 SendInput method to simulate a KeyUp.
+            </summary>
+            <param name="key"> The <see cref="T:TestR.Desktop.KeyboardKey" /> to lift up. </param>
         </member>
         <member name="M:TestR.Desktop.Keyboard.Sleep(System.Int32)">
             <summary>
@@ -1009,7 +986,7 @@
             Stop monitoring the keyboard input.
             </summary>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.TypeText(System.String,TestR.Desktop.KeyboardKeys[])">
+        <member name="M:TestR.Desktop.Keyboard.TypeText(System.String,TestR.Desktop.KeyboardKey[])">
             <summary>
             Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted
             text entry via the keyboard.
@@ -1017,7 +994,16 @@
             <param name="text"> The text to be simulated. </param>
             <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.TypeText(System.String,System.TimeSpan,TestR.Desktop.KeyboardKeys[])">
+        <member name="M:TestR.Desktop.Keyboard.TypeText(System.String,System.TimeSpan,TestR.Desktop.KeyStroke[])">
+            <summary>
+            Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted
+            text entry via the keyboard.
+            </summary>
+            <param name="text"> The text to be simulated. </param>
+            <param name="delay"> An optional delay before sending optional keys. </param>
+            <param name="strokes"> An optional set of keyboard strokes to process typing the provided text. </param>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.TypeText(System.String,System.TimeSpan,TestR.Desktop.KeyboardKey[])">
             <summary>
             Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted
             text entry via the keyboard.
@@ -1043,874 +1029,1068 @@
             Called when monitoring keyboard and a key is pressed.
             </summary>
         </member>
-        <member name="T:TestR.Desktop.KeyboardKeys">
+        <member name="T:TestR.Desktop.KeyboardAction">
+            <summary>
+            Represents a keyboard key action. Ex. Key Press, Up, Down
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardAction.KeyPress">
+            <summary>
+            Represents a key press action.
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardAction.KeyDown">
+            <summary>
+            Represents a key down action.
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardAction.KeyUp">
+            <summary>
+            Represents a key up action.
+            </summary>
+        </member>
+        <member name="T:TestR.Desktop.KeyboardKey">
             <summary>
             The list of VirtualKeyCodes (see: http://msdn.microsoft.com/en-us/library/ms645540(VS.85).aspx)
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.LeftMouseButton">
+        <member name="F:TestR.Desktop.KeyboardKey.LeftMouseButton">
             <summary>
             Left mouse button
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.RightMouseButton">
+        <member name="F:TestR.Desktop.KeyboardKey.RightMouseButton">
             <summary>
             Right mouse button
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.ControlBreak">
+        <member name="F:TestR.Desktop.KeyboardKey.ControlBreak">
             <summary>
             Control-break processing
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.MiddleMouseButton">
+        <member name="F:TestR.Desktop.KeyboardKey.MiddleMouseButton">
             <summary>
             Middle mouse button (three-button mouse) - NOT contiguous with LBUTTON and RBUTTON
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.XButton1">
+        <member name="F:TestR.Desktop.KeyboardKey.XButton1">
             <summary>
             Windows 2000/XP: X1 mouse button - NOT contiguous with LBUTTON and RBUTTON
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.XButton2">
+        <member name="F:TestR.Desktop.KeyboardKey.XButton2">
             <summary>
             Windows 2000/XP: X2 mouse button - NOT contiguous with LBUTTON and RBUTTON
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Back">
+        <member name="F:TestR.Desktop.KeyboardKey.Backspace">
             <summary>
             BACKSPACE key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Tab">
+        <member name="F:TestR.Desktop.KeyboardKey.Tab">
             <summary>
             TAB key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Clear">
+        <member name="F:TestR.Desktop.KeyboardKey.Clear">
             <summary>
             CLEAR key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Return">
+        <member name="F:TestR.Desktop.KeyboardKey.Enter">
             <summary>
             ENTER key
             </summary>
+            <seealso cref="F:TestR.Desktop.KeyboardKey.Return" />
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Shift">
+        <member name="F:TestR.Desktop.KeyboardKey.Return">
+            <summary>
+            ENTER key
+            </summary>
+            <seealso cref="F:TestR.Desktop.KeyboardKey.Enter" />
+        </member>
+        <member name="F:TestR.Desktop.KeyboardKey.Shift">
             <summary>
             SHIFT key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Control">
+        <member name="F:TestR.Desktop.KeyboardKey.Control">
             <summary>
             CTRL key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Alt">
+        <member name="F:TestR.Desktop.KeyboardKey.Alt">
             <summary>
             ALT key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Pause">
+        <member name="F:TestR.Desktop.KeyboardKey.Pause">
             <summary>
             PAUSE key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Capital">
+        <member name="F:TestR.Desktop.KeyboardKey.CapsLock">
             <summary>
             CAPS LOCK key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Kana">
+        <member name="F:TestR.Desktop.KeyboardKey.Kana">
             <summary>
             Input Method Editor (IME) Kana mode
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Hangeul">
+        <member name="F:TestR.Desktop.KeyboardKey.Hangeul">
             <summary>
-            IME Hanguel mode (maintained for compatibility; use HANGUL)
+            IME Hangeul mode (maintained for compatibility; use HANGUL)
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Hangul">
+        <member name="F:TestR.Desktop.KeyboardKey.Hangul">
             <summary>
             IME Hangul mode
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Junja">
+        <member name="F:TestR.Desktop.KeyboardKey.Junja">
             <summary>
             IME Junja mode
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Final">
+        <member name="F:TestR.Desktop.KeyboardKey.Final">
             <summary>
             IME final mode
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Hanja">
+        <member name="F:TestR.Desktop.KeyboardKey.Hanja">
             <summary>
             IME Hanja mode
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Kanji">
+        <member name="F:TestR.Desktop.KeyboardKey.Kanji">
             <summary>
             IME Kanji mode
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Escape">
+        <member name="F:TestR.Desktop.KeyboardKey.Escape">
             <summary>
             ESC key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Convert">
+        <member name="F:TestR.Desktop.KeyboardKey.Convert">
             <summary>
             IME convert
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.NonConvert">
+        <member name="F:TestR.Desktop.KeyboardKey.NonConvert">
             <summary>
-            IME nonconvert
+            IME non-convert
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Accept">
+        <member name="F:TestR.Desktop.KeyboardKey.Accept">
             <summary>
             IME accept
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.ModeChange">
+        <member name="F:TestR.Desktop.KeyboardKey.ModeChange">
             <summary>
             IME mode change request
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Space">
+        <member name="F:TestR.Desktop.KeyboardKey.Space">
             <summary>
             Space Bar
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Prior">
+        <member name="F:TestR.Desktop.KeyboardKey.Prior">
             <summary>
             PAGE UP key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Next">
+        <member name="F:TestR.Desktop.KeyboardKey.Next">
             <summary>
             PAGE DOWN key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.End">
+        <member name="F:TestR.Desktop.KeyboardKey.End">
             <summary>
             END key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Home">
+        <member name="F:TestR.Desktop.KeyboardKey.Home">
             <summary>
             HOME key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Left">
+        <member name="F:TestR.Desktop.KeyboardKey.LeftArrow">
             <summary>
             LEFT ARROW key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Up">
+        <member name="F:TestR.Desktop.KeyboardKey.UpArrow">
             <summary>
             UP ARROW key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Right">
+        <member name="F:TestR.Desktop.KeyboardKey.RightArrow">
             <summary>
             RIGHT ARROW key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Down">
+        <member name="F:TestR.Desktop.KeyboardKey.DownArrow">
             <summary>
             DOWN ARROW key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Select">
+        <member name="F:TestR.Desktop.KeyboardKey.Select">
             <summary>
             SELECT key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Print">
+        <member name="F:TestR.Desktop.KeyboardKey.Print">
             <summary>
             PRINT key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Execute">
+        <member name="F:TestR.Desktop.KeyboardKey.Execute">
             <summary>
             EXECUTE key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Snapshot">
+        <member name="F:TestR.Desktop.KeyboardKey.Snapshot">
             <summary>
             PRINT SCREEN key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Insert">
+        <member name="F:TestR.Desktop.KeyboardKey.Insert">
             <summary>
             INS key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Delete">
+        <member name="F:TestR.Desktop.KeyboardKey.Delete">
             <summary>
             DEL key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Help">
+        <member name="F:TestR.Desktop.KeyboardKey.Help">
             <summary>
             HELP key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Number0">
+        <member name="F:TestR.Desktop.KeyboardKey.Number0">
             <summary>
             0 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Number1">
+        <member name="F:TestR.Desktop.KeyboardKey.Number1">
             <summary>
             1 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Number2">
+        <member name="F:TestR.Desktop.KeyboardKey.Number2">
             <summary>
             2 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Number3">
+        <member name="F:TestR.Desktop.KeyboardKey.Number3">
             <summary>
             3 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Number4">
+        <member name="F:TestR.Desktop.KeyboardKey.Number4">
             <summary>
             4 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Number5">
+        <member name="F:TestR.Desktop.KeyboardKey.Number5">
             <summary>
             5 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Number6">
+        <member name="F:TestR.Desktop.KeyboardKey.Number6">
             <summary>
             6 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Number7">
+        <member name="F:TestR.Desktop.KeyboardKey.Number7">
             <summary>
             7 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Number8">
+        <member name="F:TestR.Desktop.KeyboardKey.Number8">
             <summary>
             8 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Number9">
+        <member name="F:TestR.Desktop.KeyboardKey.Number9">
             <summary>
             9 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.A">
+        <member name="F:TestR.Desktop.KeyboardKey.A">
             <summary>
             A key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.B">
+        <member name="F:TestR.Desktop.KeyboardKey.B">
             <summary>
             B key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.C">
+        <member name="F:TestR.Desktop.KeyboardKey.C">
             <summary>
             C key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.D">
+        <member name="F:TestR.Desktop.KeyboardKey.D">
             <summary>
             D key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.E">
+        <member name="F:TestR.Desktop.KeyboardKey.E">
             <summary>
             E key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F">
+        <member name="F:TestR.Desktop.KeyboardKey.F">
             <summary>
             F key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.G">
+        <member name="F:TestR.Desktop.KeyboardKey.G">
             <summary>
             G key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.H">
+        <member name="F:TestR.Desktop.KeyboardKey.H">
             <summary>
             H key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.I">
+        <member name="F:TestR.Desktop.KeyboardKey.I">
             <summary>
             I key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.J">
+        <member name="F:TestR.Desktop.KeyboardKey.J">
             <summary>
             J key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.K">
+        <member name="F:TestR.Desktop.KeyboardKey.K">
             <summary>
             K key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.L">
+        <member name="F:TestR.Desktop.KeyboardKey.L">
             <summary>
             L key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.M">
+        <member name="F:TestR.Desktop.KeyboardKey.M">
             <summary>
             M key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.N">
+        <member name="F:TestR.Desktop.KeyboardKey.N">
             <summary>
             N key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.O">
+        <member name="F:TestR.Desktop.KeyboardKey.O">
             <summary>
             O key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.P">
+        <member name="F:TestR.Desktop.KeyboardKey.P">
             <summary>
             P key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Q">
+        <member name="F:TestR.Desktop.KeyboardKey.Q">
             <summary>
             Q key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.R">
+        <member name="F:TestR.Desktop.KeyboardKey.R">
             <summary>
             R key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.S">
+        <member name="F:TestR.Desktop.KeyboardKey.S">
             <summary>
             S key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.T">
+        <member name="F:TestR.Desktop.KeyboardKey.T">
             <summary>
             T key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.U">
+        <member name="F:TestR.Desktop.KeyboardKey.U">
             <summary>
             U key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.V">
+        <member name="F:TestR.Desktop.KeyboardKey.V">
             <summary>
             V key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.W">
+        <member name="F:TestR.Desktop.KeyboardKey.W">
             <summary>
             W key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.X">
+        <member name="F:TestR.Desktop.KeyboardKey.X">
             <summary>
             X key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Y">
+        <member name="F:TestR.Desktop.KeyboardKey.Y">
             <summary>
             Y key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Z">
+        <member name="F:TestR.Desktop.KeyboardKey.Z">
             <summary>
             Z key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.LeftWindows">
+        <member name="F:TestR.Desktop.KeyboardKey.LeftWindows">
             <summary>
             Left Windows key (Microsoft Natural keyboard)
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.RightWindows">
+        <member name="F:TestR.Desktop.KeyboardKey.RightWindows">
             <summary>
             Right Windows key (Natural keyboard)
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Apps">
+        <member name="F:TestR.Desktop.KeyboardKey.Apps">
             <summary>
             Applications key (Natural keyboard)
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Sleep">
+        <member name="F:TestR.Desktop.KeyboardKey.Sleep">
             <summary>
             Computer Sleep key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Numpad0">
+        <member name="F:TestR.Desktop.KeyboardKey.Numpad0">
             <summary>
             Numeric keypad 0 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Numpad1">
+        <member name="F:TestR.Desktop.KeyboardKey.Numpad1">
             <summary>
             Numeric keypad 1 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Numpad2">
+        <member name="F:TestR.Desktop.KeyboardKey.Numpad2">
             <summary>
             Numeric keypad 2 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Numpad3">
+        <member name="F:TestR.Desktop.KeyboardKey.Numpad3">
             <summary>
             Numeric keypad 3 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Numpad4">
+        <member name="F:TestR.Desktop.KeyboardKey.Numpad4">
             <summary>
             Numeric keypad 4 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Numpad5">
+        <member name="F:TestR.Desktop.KeyboardKey.Numpad5">
             <summary>
             Numeric keypad 5 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Numpad6">
+        <member name="F:TestR.Desktop.KeyboardKey.Numpad6">
             <summary>
             Numeric keypad 6 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Numpad7">
+        <member name="F:TestR.Desktop.KeyboardKey.Numpad7">
             <summary>
             Numeric keypad 7 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Numpad8">
+        <member name="F:TestR.Desktop.KeyboardKey.Numpad8">
             <summary>
             Numeric keypad 8 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Numpad9">
+        <member name="F:TestR.Desktop.KeyboardKey.Numpad9">
             <summary>
             Numeric keypad 9 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Multiply">
+        <member name="F:TestR.Desktop.KeyboardKey.Multiply">
             <summary>
             Multiply key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Add">
+        <member name="F:TestR.Desktop.KeyboardKey.Add">
             <summary>
             Add key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Separator">
+        <member name="F:TestR.Desktop.KeyboardKey.Separator">
             <summary>
             Separator key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Subtract">
+        <member name="F:TestR.Desktop.KeyboardKey.Subtract">
             <summary>
             Subtract key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Decimal">
+        <member name="F:TestR.Desktop.KeyboardKey.Decimal">
             <summary>
             Decimal key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Divide">
+        <member name="F:TestR.Desktop.KeyboardKey.Divide">
             <summary>
             Divide key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F1">
+        <member name="F:TestR.Desktop.KeyboardKey.F1">
             <summary>
             F1 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F2">
+        <member name="F:TestR.Desktop.KeyboardKey.F2">
             <summary>
             F2 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F3">
+        <member name="F:TestR.Desktop.KeyboardKey.F3">
             <summary>
             F3 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F4">
+        <member name="F:TestR.Desktop.KeyboardKey.F4">
             <summary>
             F4 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F5">
+        <member name="F:TestR.Desktop.KeyboardKey.F5">
             <summary>
             F5 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F6">
+        <member name="F:TestR.Desktop.KeyboardKey.F6">
             <summary>
             F6 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F7">
+        <member name="F:TestR.Desktop.KeyboardKey.F7">
             <summary>
             F7 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F8">
+        <member name="F:TestR.Desktop.KeyboardKey.F8">
             <summary>
             F8 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F9">
+        <member name="F:TestR.Desktop.KeyboardKey.F9">
             <summary>
             F9 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F10">
+        <member name="F:TestR.Desktop.KeyboardKey.F10">
             <summary>
             F10 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F11">
+        <member name="F:TestR.Desktop.KeyboardKey.F11">
             <summary>
             F11 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F12">
+        <member name="F:TestR.Desktop.KeyboardKey.F12">
             <summary>
             F12 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F13">
+        <member name="F:TestR.Desktop.KeyboardKey.F13">
             <summary>
             F13 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F14">
+        <member name="F:TestR.Desktop.KeyboardKey.F14">
             <summary>
             F14 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F15">
+        <member name="F:TestR.Desktop.KeyboardKey.F15">
             <summary>
             F15 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F16">
+        <member name="F:TestR.Desktop.KeyboardKey.F16">
             <summary>
             F16 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F17">
+        <member name="F:TestR.Desktop.KeyboardKey.F17">
             <summary>
             F17 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F18">
+        <member name="F:TestR.Desktop.KeyboardKey.F18">
             <summary>
             F18 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F19">
+        <member name="F:TestR.Desktop.KeyboardKey.F19">
             <summary>
             F19 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F20">
+        <member name="F:TestR.Desktop.KeyboardKey.F20">
             <summary>
             F20 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F21">
+        <member name="F:TestR.Desktop.KeyboardKey.F21">
             <summary>
             F21 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F22">
+        <member name="F:TestR.Desktop.KeyboardKey.F22">
             <summary>
             F22 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F23">
+        <member name="F:TestR.Desktop.KeyboardKey.F23">
             <summary>
             F23 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.F24">
+        <member name="F:TestR.Desktop.KeyboardKey.F24">
             <summary>
             F24 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.NumLock">
+        <member name="F:TestR.Desktop.KeyboardKey.NumLock">
             <summary>
             NUM LOCK key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Scroll">
+        <member name="F:TestR.Desktop.KeyboardKey.Scroll">
             <summary>
             SCROLL LOCK key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.LeftShift">
+        <member name="F:TestR.Desktop.KeyboardKey.LeftShift">
             <summary>
             Left SHIFT key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.RightShift">
+        <member name="F:TestR.Desktop.KeyboardKey.RightShift">
             <summary>
             Right SHIFT key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.LeftControl">
+        <member name="F:TestR.Desktop.KeyboardKey.LeftControl">
             <summary>
             Left CONTROL key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.RightControl">
+        <member name="F:TestR.Desktop.KeyboardKey.RightControl">
             <summary>
             Right CONTROL key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.LeftAlt">
+        <member name="F:TestR.Desktop.KeyboardKey.LeftAlt">
             <summary>
             Left ALT/MENU key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.RightAlt">
+        <member name="F:TestR.Desktop.KeyboardKey.RightAlt">
             <summary>
             Right ALT/MENU key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.BrowserBack">
+        <member name="F:TestR.Desktop.KeyboardKey.BrowserBack">
             <summary>
             Windows 2000/XP: Browser Back key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.BrowserForward">
+        <member name="F:TestR.Desktop.KeyboardKey.BrowserForward">
             <summary>
             Windows 2000/XP: Browser Forward key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.BrowserRefresh">
+        <member name="F:TestR.Desktop.KeyboardKey.BrowserRefresh">
             <summary>
             Windows 2000/XP: Browser Refresh key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.BrowserStop">
+        <member name="F:TestR.Desktop.KeyboardKey.BrowserStop">
             <summary>
             Windows 2000/XP: Browser Stop key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.BrowserSearch">
+        <member name="F:TestR.Desktop.KeyboardKey.BrowserSearch">
             <summary>
             Windows 2000/XP: Browser Search key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.BrowserFavorites">
+        <member name="F:TestR.Desktop.KeyboardKey.BrowserFavorites">
             <summary>
             Windows 2000/XP: Browser Favorites key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.BrowserHome">
+        <member name="F:TestR.Desktop.KeyboardKey.BrowserHome">
             <summary>
             Windows 2000/XP: Browser Start and Home key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.VolumeMute">
+        <member name="F:TestR.Desktop.KeyboardKey.VolumeMute">
             <summary>
             Windows 2000/XP: Volume Mute key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.VolumeDown">
+        <member name="F:TestR.Desktop.KeyboardKey.VolumeDown">
             <summary>
             Windows 2000/XP: Volume Down key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.VolumeUp">
+        <member name="F:TestR.Desktop.KeyboardKey.VolumeUp">
             <summary>
             Windows 2000/XP: Volume Up key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.MediaNextTrack">
+        <member name="F:TestR.Desktop.KeyboardKey.MediaNextTrack">
             <summary>
             Windows 2000/XP: Next Track key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.MediaPrevTrack">
+        <member name="F:TestR.Desktop.KeyboardKey.MediaPrevTrack">
             <summary>
             Windows 2000/XP: Previous Track key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.MediaStop">
+        <member name="F:TestR.Desktop.KeyboardKey.MediaStop">
             <summary>
             Windows 2000/XP: Stop Media key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.MediaPlayPause">
+        <member name="F:TestR.Desktop.KeyboardKey.MediaPlayPause">
             <summary>
             Windows 2000/XP: Play/Pause Media key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.LaunchMail">
+        <member name="F:TestR.Desktop.KeyboardKey.LaunchMail">
             <summary>
             Windows 2000/XP: Start Mail key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.LaunchMediaSelect">
+        <member name="F:TestR.Desktop.KeyboardKey.LaunchMediaSelect">
             <summary>
             Windows 2000/XP: Select Media key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.LaunchApp1">
+        <member name="F:TestR.Desktop.KeyboardKey.LaunchApp1">
             <summary>
             Windows 2000/XP: Start Application 1 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.LaunchApp2">
+        <member name="F:TestR.Desktop.KeyboardKey.LaunchApp2">
             <summary>
             Windows 2000/XP: Start Application 2 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Oem1">
+        <member name="F:TestR.Desktop.KeyboardKey.Oem1">
             <summary>
             Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the ';:' key 
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.OemPlus">
+        <member name="F:TestR.Desktop.KeyboardKey.OemPlus">
             <summary>
             Windows 2000/XP: For any country/region, the '+' key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.OemComma">
+        <member name="F:TestR.Desktop.KeyboardKey.OemComma">
             <summary>
             Windows 2000/XP: For any country/region, the ',' key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.OemMinus">
+        <member name="F:TestR.Desktop.KeyboardKey.OemMinus">
             <summary>
             Windows 2000/XP: For any country/region, the '-' key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.OemPeriod">
+        <member name="F:TestR.Desktop.KeyboardKey.OemPeriod">
             <summary>
             Windows 2000/XP: For any country/region, the '.' key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Oem2">
+        <member name="F:TestR.Desktop.KeyboardKey.Oem2">
             <summary>
             Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the '/?' key 
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Oem3">
+        <member name="F:TestR.Desktop.KeyboardKey.Oem3">
             <summary>
             Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the '`~' key 
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Oem4">
+        <member name="F:TestR.Desktop.KeyboardKey.Oem4">
             <summary>
             Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the '[{' key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Oem5">
+        <member name="F:TestR.Desktop.KeyboardKey.Oem5">
             <summary>
             Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the '\|' key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Oem6">
+        <member name="F:TestR.Desktop.KeyboardKey.Oem6">
             <summary>
             Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the ']}' key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Oem7">
+        <member name="F:TestR.Desktop.KeyboardKey.Oem7">
             <summary>
             Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the 'single-quote/double-quote' key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Oem8">
+        <member name="F:TestR.Desktop.KeyboardKey.Oem8">
             <summary>
             Used for miscellaneous characters; it can vary by keyboard.
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Oem102">
+        <member name="F:TestR.Desktop.KeyboardKey.Oem102">
             <summary>
             Windows 2000/XP: Either the angle bracket key or the backslash key on the RT 102-key keyboard
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.ProcessKey">
+        <member name="F:TestR.Desktop.KeyboardKey.ProcessKey">
             <summary>
             Windows 95/98/Me, Windows NT 4.0, Windows 2000/XP: IME PROCESS key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Packet">
+        <member name="F:TestR.Desktop.KeyboardKey.Packet">
             <summary>
             Windows 2000/XP: Used to pass Unicode characters as if they were keystrokes. The PACKET key is the low word of a 32-bit Virtual Key value used for non-keyboard input methods. For more information, see Remark in KEYBDINPUT, SendInput, WM_KEYDOWN, and WM_KEYUP
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Attn">
+        <member name="F:TestR.Desktop.KeyboardKey.Attn">
             <summary>
             Attn key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.CrSel">
+        <member name="F:TestR.Desktop.KeyboardKey.CrSel">
             <summary>
             CrSel key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.ExSel">
+        <member name="F:TestR.Desktop.KeyboardKey.ExSel">
             <summary>
             ExSel key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.ErEof">
+        <member name="F:TestR.Desktop.KeyboardKey.ErEof">
             <summary>
             Erase EOF key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Play">
+        <member name="F:TestR.Desktop.KeyboardKey.Play">
             <summary>
             Play key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Zoom">
+        <member name="F:TestR.Desktop.KeyboardKey.Zoom">
             <summary>
             Zoom key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.NoName">
+        <member name="F:TestR.Desktop.KeyboardKey.NoName">
             <summary>
             Reserved
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.Pa1">
+        <member name="F:TestR.Desktop.KeyboardKey.Pa1">
             <summary>
             PA1 key
             </summary>
         </member>
-        <member name="F:TestR.Desktop.KeyboardKeys.OemClear">
+        <member name="F:TestR.Desktop.KeyboardKey.OemClear">
             <summary>
             Clear key
+            </summary>
+        </member>
+        <member name="T:TestR.Desktop.KeyboardModifier">
+            <summary>
+            The keyboard modifier.
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardModifier.None">
+            <summary>
+            No modifier
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardModifier.Shift">
+            <summary>
+            SHIFT key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardModifier.Control">
+            <summary>
+            CTRL key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardModifier.Alt">
+            <summary>
+            ALT key
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardModifier.LeftShift">
+            <summary>
+            Left SHIFT key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardModifier.RightShift">
+            <summary>
+            Right SHIFT key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardModifier.LeftControl">
+            <summary>
+            Left CONTROL key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardModifier.RightControl">
+            <summary>
+            Right CONTROL key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardModifier.LeftAlt">
+            <summary>
+            Left ALT/MENU key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
+            </summary>
+        </member>
+        <member name="F:TestR.Desktop.KeyboardModifier.RightAlt">
+            <summary>
+            Right ALT/MENU key - Used only as parameters to GetAsyncKeyState() and GetKeyState()
+            </summary>
+        </member>
+        <member name="T:TestR.Desktop.KeyboardState">
+            <summary>
+            Represents the state of the keyboard during Keyboard.StartMonitoring.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.KeyboardState.IsAltPressed">
+            <summary>
+            Gets a value indicating if either the left or right alt key is pressed.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.KeyboardState.IsCapsLockOn">
+            <summary>
+            Determines if the caps lock in on at the time of the key event.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.KeyboardState.IsControlPressed">
+            <summary>
+            Gets a value indicating if either the left or right control key is pressed.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.KeyboardState.IsLeftAltPressed">
+            <summary>
+            Gets a value indicating if the left alt key is pressed.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.KeyboardState.IsLeftControlPressed">
+            <summary>
+            Gets a value indicating if the left control key is pressed.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.KeyboardState.IsLeftShiftPressed">
+            <summary>
+            Gets a value indicating if the left shift key is pressed.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.KeyboardState.IsMonitoring">
+            <summary>
+            Gets a value indicating if the keyboard input is being monitored.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.KeyboardState.IsPressed">
+            <summary>
+            Gets a value indicating the key is being pressed (down). If false the key is being released (up).
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.KeyboardState.IsRightAltPressed">
+            <summary>
+            Gets a value indicating if the right alt key is pressed.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.KeyboardState.IsRightControlPressed">
+            <summary>
+            Gets a value indicating if the right control key is pressed.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.KeyboardState.IsRightShiftPressed">
+            <summary>
+            Gets a value indicating if the right shift key is pressed.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.KeyboardState.IsShiftPressed">
+            <summary>
+            Gets a value indicating if either the left or right shift key is pressed.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.KeyboardState.Key">
+            <summary>
+            Gets a value of the key being changed (up or down).
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.KeyboardState.Clone">
+            <summary>
+            Clone the keyboard state.
+            </summary>
+            <returns> The copy of the keyboard state. </returns>
+        </member>
+        <member name="M:TestR.Desktop.KeyboardState.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:TestR.Desktop.KeyStroke">
+            <summary>
+            Represents a key stroke.
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.KeyStroke.#ctor(TestR.Desktop.KeyboardKey)">
+            <summary>
+            Instantiates an instance of a key stroke.
+            </summary>
+            <param name="key"> The key to be processed. </param>
+        </member>
+        <member name="M:TestR.Desktop.KeyStroke.#ctor(TestR.Desktop.KeyboardModifier,TestR.Desktop.KeyboardKey)">
+            <summary>
+            Instantiates an instance of a key stroke.
+            </summary>
+            <param name="modifier"> An optional modifier. </param>
+            <param name="key"> The key to be processed. </param>
+        </member>
+        <member name="P:TestR.Desktop.KeyStroke.Action">
+            <summary>
+            The keyboard action to perform. Defaults to KeyPress.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.KeyStroke.Key">
+            <summary>
+            The key to be processed.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.KeyStroke.Modifier">
+            <summary>
+            An optional key modifier. Ex. Control, Alt, Shift
             </summary>
         </member>
         <member name="T:TestR.Desktop.Mouse">
@@ -2762,14 +2942,14 @@
             </summary>
             <param name="value"> The value to type. </param>
         </member>
-        <member name="M:TestR.Element.TypeText(System.String,TestR.Desktop.KeyboardKeys[])">
+        <member name="M:TestR.Element.TypeText(System.String,TestR.Desktop.KeyboardKey[])">
             <summary>
             Focus the element then type the text via the keyboard.
             </summary>
             <param name="value"> The value to type. </param>
             <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
         </member>
-        <member name="M:TestR.Element.TypeText(System.String,System.TimeSpan,TestR.Desktop.KeyboardKeys[])">
+        <member name="M:TestR.Element.TypeText(System.String,System.TimeSpan,TestR.Desktop.KeyboardKey[])">
             <summary>
             Focus the element then type the text via the keyboard.
             </summary>
@@ -3290,7 +3470,7 @@
             </summary>
             <remarks>
             This structure contains information identical to that used in the parameter list of the keybd_event or mouse_event function.
-            Windows 2000/XP: INPUT_KEYBOARD supports nonkeyboard input methods, such as handwriting recognition or voice recognition, as if it were text input by using the KEYEVENTF_UNICODE flag. For more information, see the remarks section of KEYBDINPUT.
+            Windows 2000/XP: INPUT_KEYBOARD supports non-keyboard input methods, such as handwriting recognition or voice recognition, as if it were text input by using the KEYEVENTF_UNICODE flag. For more information, see the remarks section of KEYBDINPUT.
             </remarks>
         </member>
         <member name="F:TestR.Internal.Inputs.Input.Type">
@@ -3364,25 +3544,46 @@
             <param name="characters"> The string of <see cref="T:System.Char" /> to add. </param>
             <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
         </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddKeyDown(TestR.Desktop.KeyboardKeys)">
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddKeyDown(TestR.Desktop.KeyboardKey)">
             <summary>
             Adds a key down to the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages.
             </summary>
-            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" />. </param>
+            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKey" />. </param>
             <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
         </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddKeyPress(TestR.Desktop.KeyboardKeys)">
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddKeyDown(TestR.Desktop.KeyboardKey[])">
+            <summary>
+            Adds a key down to the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages.
+            </summary>
+            <param name="keys"> The keys to press down. </param>
+            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddKeyPress(TestR.Desktop.KeyboardKey)">
             <summary>
             Adds a key press to the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages which is equivalent to a key down followed by a key up.
             </summary>
-            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" />. </param>
+            <param name="key"> The key to press down. </param>
             <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
         </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddKeyUp(TestR.Desktop.KeyboardKeys)">
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddKeyPress(TestR.Desktop.KeyboardKey[])">
+            <summary>
+            Adds a key press to the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages which is equivalent to a key down followed by a key up.
+            </summary>
+            <param name="keys"> The keys to press down. </param>
+            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddKeyUp(TestR.Desktop.KeyboardKey)">
             <summary>
             Adds a key up to the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages.
             </summary>
-            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKeys" />. </param>
+            <param name="key"> The key to release. </param>
+            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddKeyUp(TestR.Desktop.KeyboardKey[])">
+            <summary>
+            Adds a key up to the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages.
+            </summary>
+            <param name="keys"> The keys to release. </param>
             <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
         </member>
         <member name="M:TestR.Internal.Inputs.InputBuilder.AddMouseButtonClick(TestR.Desktop.MouseButton)">
@@ -3463,6 +3664,17 @@
             <param name="y"> </param>
             <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
         </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.AddStroke(TestR.Desktop.KeyStroke)">
+            <summary>
+            Add key strokes to input builder.
+            </summary>
+            <param name="stroke"> </param>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.Clear">
+            <summary>
+            Clear the input list.
+            </summary>
+        </member>
         <member name="M:TestR.Internal.Inputs.InputBuilder.GetEnumerator">
             <summary>
             Returns an enumerator that iterates through the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages.
@@ -3472,9 +3684,9 @@
             </returns>
             <filterpriority> 1 </filterpriority>
         </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.IsExtendedKey(TestR.Desktop.KeyboardKeys)">
+        <member name="M:TestR.Internal.Inputs.InputBuilder.IsExtendedKey(TestR.Desktop.KeyboardKey)">
             <summary>
-            Determines if the <see cref="T:TestR.Desktop.KeyboardKeys" /> is an ExtendedKey
+            Determines if the <see cref="T:TestR.Desktop.KeyboardKey" /> is an ExtendedKey
             </summary>
             <param name="keyCode"> The key code. </param>
             <returns> true if the key code is an extended key; otherwise, false. </returns>
@@ -3482,6 +3694,12 @@
             The extended keys consist of the ALT and CTRL keys on the right-hand side of the keyboard; the INS, DEL, HOME, END, PAGE UP, PAGE DOWN, and arrow keys in the clusters to the left of the numeric keypad; the NUM LOCK key; the BREAK (CTRL+PAUSE) key; the PRINT SCRN key; and the divide (/) and ENTER keys in the numeric keypad.
             See http://msdn.microsoft.com/en-us/library/ms646267(v=vs.85).aspx Section "Extended-Key Flag"
             </remarks>
+        </member>
+        <member name="M:TestR.Internal.Inputs.InputBuilder.Reset(TestR.Desktop.KeyStroke[])">
+            <summary>
+            Reset the input builder with a set of new key strokes.
+            </summary>
+            <param name="strokes"> </param>
         </member>
         <member name="M:TestR.Internal.Inputs.InputBuilder.ToArray">
             <summary>

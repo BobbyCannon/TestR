@@ -3,7 +3,7 @@
     /// <summary>
     /// The list of VirtualKeyCodes (see: http://msdn.microsoft.com/en-us/library/ms645540(VS.85).aspx)
     /// </summary>
-    public enum KeyboardKeys
+    public enum KeyboardKey
     {
         /// <summary>
         /// Left mouse button
@@ -40,7 +40,7 @@
         /// <summary>
         /// BACKSPACE key
         /// </summary>
-        Back = 0x08,
+        Backspace = 0x08,
 
         /// <summary>
         /// TAB key
@@ -57,6 +57,13 @@
         /// <summary>
         /// ENTER key
         /// </summary>
+        /// <seealso cref="Return" />
+        Enter = 0x0D,
+		
+		/// <summary>
+        /// ENTER key
+        /// </summary>
+        /// <seealso cref="Enter" />
         Return = 0x0D,
 
         // 0x0E - 0x0F : Undefined
@@ -84,7 +91,7 @@
         /// <summary>
         /// CAPS LOCK key
         /// </summary>
-        Capital = 0x14,
+        CapsLock = 0x14,
 
         /// <summary>
         /// Input Method Editor (IME) Kana mode
@@ -92,7 +99,7 @@
         Kana = 0x15,
 
         /// <summary>
-        /// IME Hanguel mode (maintained for compatibility; use HANGUL)
+        /// IME Hangeul mode (maintained for compatibility; use HANGUL)
         /// </summary>
         Hangeul = 0x15,
 
@@ -136,7 +143,7 @@
         Convert = 0x1C,
 
         /// <summary>
-        /// IME nonconvert
+        /// IME non-convert
         /// </summary>
         NonConvert = 0x1D,
 
@@ -178,22 +185,22 @@
         /// <summary>
         /// LEFT ARROW key
         /// </summary>
-        Left = 0x25,
+        LeftArrow = 0x25,
 
         /// <summary>
         /// UP ARROW key
         /// </summary>
-        Up = 0x26,
+        UpArrow = 0x26,
 
         /// <summary>
         /// RIGHT ARROW key
         /// </summary>
-        Right = 0x27,
+        RightArrow = 0x27,
 
         /// <summary>
         /// DOWN ARROW key
         /// </summary>
-        Down = 0x28,
+        DownArrow = 0x28,
 
         /// <summary>
         /// SELECT key
@@ -281,7 +288,7 @@
         Number9 = 0x39,
 
         //
-        // 0x3A - 0x40 : Udefined
+        // 0x3A - 0x40 : Undefined
         //
 
         /// <summary>

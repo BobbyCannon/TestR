@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using KellermanSoftware.CompareNetObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TestR.Web;
 
 #endregion
 
@@ -86,7 +87,16 @@ namespace TestR.Tests
 			}
 		}
 
-		public static Application GetApplication(bool x86 = false)
+		public static Application GetOrStartApplication(bool x86 = false)
+		{
+			var path = x86 ? ApplicationPathForWinFormX86 : ApplicationPathForWinForms;
+			var response = Application.AttachOrCreate(path);
+			response.Timeout = TimeSpan.FromSeconds(5);
+			response.AutoClose = true;
+			return response;
+		}
+
+		public static Application StartApplication(bool x86 = false)
 		{
 			var path = x86 ? ApplicationPathForWinFormX86 : ApplicationPathForWinForms;
 			Application.CloseAll(path);

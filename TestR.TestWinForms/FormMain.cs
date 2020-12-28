@@ -29,9 +29,14 @@ namespace TestR.TestWinForms
 			Close();
 		}
 
-		private void KeyboardOnKeyPressed(object sender, KeyboardKeys key)
+		private void KeyboardOnKeyPressed(object sender, KeyboardState state)
 		{
-			keyPress.Text += key.ToString();
+			if (!state.IsPressed)
+			{
+				return;
+			}
+
+			keyPress.Text += state;
 		}
 
 		#endregion
