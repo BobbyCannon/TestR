@@ -30,8 +30,8 @@ namespace TestR.Tests
 			// C:\Workspaces\GitHub\TestR\TestR.TestUwp\bin\Debug\AppX\TestR.TestUwp.exe
 			ApplicationPathForUwp = info.FullName.Replace("TestR.Tests", "TestR.TestUwp").Replace("Debug\\netcoreapp3.1", "x86\\Debug\\AppX") + "\\TestR.TestUwp.exe";
 
-			Application.CloseAll(ApplicationPathForWinForms);
-			Application.CloseAll(ApplicationPathForWinFormX86);
+			//Application.CloseAll(ApplicationPathForWinForms);
+			//Application.CloseAll(ApplicationPathForWinFormX86);
 		}
 
 		#endregion

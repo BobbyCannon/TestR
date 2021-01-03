@@ -3,6 +3,8 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop;
+using TestR.Internal.Inputs;
+using TestR.Internal.Native;
 
 #endregion
 
@@ -40,9 +42,9 @@ namespace TestR.Tests.Desktop
 			StartNotepad();
 
 			Input.Keyboard
-				.TypeText("These are your orders if you choose to accept them...")
+				.SendInput("These are your orders if you choose to accept them...")
 				.KeyPress(KeyboardKey.Enter)
-				.TypeText("This message will self destruct in 1 seconds.")
+				.SendInput("This message will self destruct in 1 seconds.")
 				.Sleep(1000)
 				.KeyPress(KeyboardModifier.Alt, KeyboardKey.Space)
 				.KeyPress(KeyboardKey.DownArrow)
@@ -71,8 +73,8 @@ namespace TestR.Tests.Desktop
 			const int delay = 100;
 
 			Input.Keyboard
-				.TypeText("These are your orders if you choose to accept them...", KeyboardKey.Enter)
-				.TypeText("This message will self destruct in 1 seconds.",
+				.SendInput("These are your orders if you choose to accept them...", KeyboardKey.Enter)
+				.SendInput("This message will self destruct in 1 seconds.",
 					TimeSpan.FromMilliseconds(1000),
 					new KeyStroke(KeyboardModifier.Alt, KeyboardKey.Space),
 					new KeyStroke(KeyboardKey.DownArrow),
@@ -105,10 +107,53 @@ namespace TestR.Tests.Desktop
 			Input.Keyboard
 				.KeyPress(KeyboardKey.LeftWindows, KeyboardKey.R)
 				.Sleep(250)
-				.TypeText("notepad")
-				.Sleep(250)
-				.KeyPress(KeyboardKey.Return)
+				//.SendInput("notepad")
+				//.Sleep(250)
+				//.KeyPress(KeyboardKey.Return)
 				.Sleep(1000);
+		}
+
+		[TestMethod]
+		public void name()
+		{
+			//StartNotepad();
+			//var test = NativeInput.MapVirtualKey('f', 0);
+			//((KeyboardKey) test).Dump();
+
+			//var notepad = Application.Attach("c:\\windows\\system32\\notepad.exe");
+			var application = Application.AttachOrCreate("C:\\Workspaces\\GitHub\\TestR\\TestR.TestWinForms\\bin\\Debug\\TestR.TestWinForms.exe");
+			application.BringToFront();
+			application.Focus();
+
+			ushort character = (byte) 'f';
+			character.Dump();
+
+			var scanCode = (ushort) NativeInput.MapVirtualKey(character, 0);
+			scanCode.Dump();
+
+			var input = new InputTypeWithData
+			{
+				Type = (uint) InputType.Keyboard,
+				Data =
+				{
+					Keyboard =
+						new KeyboardInput
+						{
+							KeyCode = character,
+							Scan = (ushort) NativeInput.MapVirtualKey(character, 0),
+							Flags = (uint) KeyboardFlag.ScanCode,
+							Time = 0,
+							ExtraInfo = IntPtr.Zero
+						}
+				}
+			};
+
+			
+			Input.SendInput(input);
+			
+			input.Data.Keyboard.Flags |= (uint) KeyboardFlag.KeyUp;
+
+			Input.SendInput(input);
 		}
 
 		#endregion

@@ -315,7 +315,7 @@ namespace TestR.Desktop
 
 			// Pause before sending keyboard input.
 			Thread.Sleep(100);
-			Input.Keyboard.TypeText(value);
+			Input.Keyboard.SendInput(value);
 			return this;
 		}
 

@@ -253,7 +253,7 @@ namespace TestR.Tests.Desktop
 
 			var element = DesktopElement.FromPoint(text.Location);
 			Assert.AreEqual("textBox1", element.FullId);
-			text.TypeText("Hello World");
+			text.SendInput("Hello World");
 
 			var matched = Utility.Wait(() => text.Text == "Hello World", 2000, 25);
 			Assert.IsTrue(matched, $"Hello World != {text.Text}");

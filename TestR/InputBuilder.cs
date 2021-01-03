@@ -1,27 +1,28 @@
 ﻿#region References
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TestR.Desktop;
+using TestR.Internal;
+using TestR.Internal.Inputs;
 using TestR.Internal.Native;
 
 #endregion
 
-namespace TestR.Internal.Inputs
+namespace TestR
 {
 	/// <summary>
-	/// A helper class for building a list of <see cref="Input" /> messages ready to be sent to the native Windows API.
+	/// A helper class for building a list of <see cref="InputTypeWithData" /> messages ready to be sent to the native Windows API.
 	/// </summary>
-	internal class InputBuilder : IEnumerable<Input>
+	public class InputBuilder
 	{
 		#region Fields
 
 		/// <summary>
-		/// The public list of <see cref="Input" /> messages being built by this instance.
+		/// The public list of <see cref="InputTypeWithData" /> messages being built by this instance.
 		/// </summary>
-		private readonly List<Input> _inputList;
+		private readonly List<InputTypeWithData> _inputList;
 
 		#endregion
 
@@ -32,18 +33,8 @@ namespace TestR.Internal.Inputs
 		/// </summary>
 		public InputBuilder()
 		{
-			_inputList = new List<Input>();
+			_inputList = new List<InputTypeWithData>();
 		}
-
-		#endregion
-
-		#region Properties
-
-		/// <summary>
-		/// Gets the <see cref="Input" /> at the specified position.
-		/// </summary>
-		/// <value> The <see cref="Input" /> message at the specified position. </value>
-		public Input this[int position] => _inputList[position];
 
 		#endregion
 
@@ -61,7 +52,7 @@ namespace TestR.Internal.Inputs
 			var relativeX = absoluteX * 65536 / screen.Size.Width + 1;
 			var relativeY = absoluteY * 65536 / screen.Size.Height + 1;
 
-			var movement = new Input { Type = (uint) InputType.Mouse };
+			var movement = new InputTypeWithData { Type = (uint) InputType.Mouse };
 			movement.Data.Mouse.Flags = (uint) (MouseFlag.Move | MouseFlag.Absolute);
 			movement.Data.Mouse.X = relativeX;
 			movement.Data.Mouse.Y = relativeY;
@@ -83,7 +74,7 @@ namespace TestR.Internal.Inputs
 			var relativeX = absoluteX * 65536 / screen.Size.Width + 1;
 			var relativeY = absoluteY * 65536 / screen.Size.Height + 1;
 
-			var movement = new Input { Type = (uint) InputType.Mouse };
+			var movement = new InputTypeWithData { Type = (uint) InputType.Mouse };
 			movement.Data.Mouse.Flags = (uint) (MouseFlag.Move | MouseFlag.Absolute | MouseFlag.VirtualDesk);
 			movement.Data.Mouse.X = relativeX;
 			movement.Data.Mouse.Y = relativeY;
@@ -94,15 +85,15 @@ namespace TestR.Internal.Inputs
 		}
 
 		/// <summary>
-		/// Adds the character to the list of <see cref="Input" /> messages.
+		/// Adds the character to the list of <see cref="InputTypeWithData" /> messages.
 		/// </summary>
-		/// <param name="character"> The <see cref="System.Char" /> to be added to the list of <see cref="Input" /> messages. </param>
+		/// <param name="character"> The <see cref="System.Char" /> to be added to the list of <see cref="InputTypeWithData" /> messages. </param>
 		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
 		public InputBuilder AddCharacter(char character)
 		{
 			ushort scanCode = character;
 
-			var down = new Input
+			var down = new InputTypeWithData
 			{
 				Type = (uint) InputType.Keyboard,
 				Data =
@@ -110,16 +101,16 @@ namespace TestR.Internal.Inputs
 					Keyboard =
 						new KeyboardInput
 						{
-							KeyCode = 0,
-							Scan = scanCode,
-							Flags = (uint) KeyboardFlag.Unicode,
+							KeyCode = character,
+							Scan = (ushort) (NativeInput.MapVirtualKey(character, 0) & 0xFFU),
+							Flags = IsExtendedKey((KeyboardKey) character) ? (uint) KeyboardFlag.ExtendedKey : 0,
 							Time = 0,
 							ExtraInfo = IntPtr.Zero
 						}
 				}
 			};
 
-			var up = new Input
+			var up = new InputTypeWithData
 			{
 				Type = (uint) InputType.Keyboard,
 				Data =
@@ -127,9 +118,9 @@ namespace TestR.Internal.Inputs
 					Keyboard =
 						new KeyboardInput
 						{
-							KeyCode = 0,
-							Scan = scanCode,
-							Flags = (uint) (KeyboardFlag.KeyUp | KeyboardFlag.Unicode),
+							KeyCode = character,
+							Scan = (ushort) (NativeInput.MapVirtualKey(character, 0) & 0xFFU),
+							Flags = (uint) ((IsExtendedKey((KeyboardKey) character) ? KeyboardFlag.ExtendedKey : 0) | KeyboardFlag.KeyUp),
 							Time = 0,
 							ExtraInfo = IntPtr.Zero
 						}
@@ -172,107 +163,115 @@ namespace TestR.Internal.Inputs
 		}
 
 		/// <summary>
-		/// Adds a key down to the list of <see cref="Input" /> messages.
-		/// </summary>
-		/// <param name="keyCode"> The <see cref="KeyboardKey" />. </param>
-		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
-		public InputBuilder AddKeyDown(KeyboardKey keyCode)
-		{
-			var down =
-				new Input
-				{
-					Type = (uint) InputType.Keyboard,
-					Data =
-					{
-						Keyboard =
-							new KeyboardInput
-							{
-								KeyCode = (ushort) keyCode,
-								Scan = (ushort) (NativeInput.MapVirtualKey((uint) keyCode, 0) & 0xFFU),
-								Flags = IsExtendedKey(keyCode) ? (uint) KeyboardFlag.ExtendedKey : 0,
-								Time = 0,
-								ExtraInfo = IntPtr.Zero
-							}
-					}
-				};
-
-			_inputList.Add(down);
-			return this;
-		}
-
-		/// <summary>
-		/// Adds a key down to the list of <see cref="Input" /> messages.
+		/// Adds a key down to the list of <see cref="InputTypeWithData" /> messages.
 		/// </summary>
 		/// <param name="keys"> The keys to press down. </param>
 		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
 		public InputBuilder AddKeyDown(params KeyboardKey[] keys)
 		{
-			keys.ForEach(x => AddKeyDown(x));
+			keys.ForEach(key =>
+			{
+				var down =
+					new InputTypeWithData
+					{
+						Type = (uint) InputType.Keyboard,
+						Data =
+						{
+							Keyboard =
+								new KeyboardInput
+								{
+									KeyCode = (ushort) key,
+									Scan = (ushort) (NativeInput.MapVirtualKey((uint) key, 0) & 0xFFU),
+									Flags = IsExtendedKey(key) ? (uint) KeyboardFlag.ExtendedKey : 0,
+									Time = 0,
+									ExtraInfo = IntPtr.Zero
+								}
+						}
+					};
+
+				_inputList.Add(down);
+			});
 			return this;
 		}
 
 		/// <summary>
-		/// Adds a key press to the list of <see cref="Input" /> messages which is equivalent to a key down followed by a key up.
-		/// </summary>
-		/// <param name="key"> The key to press down. </param>
-		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
-		public InputBuilder AddKeyPress(KeyboardKey key)
-		{
-			AddKeyDown(key);
-			AddKeyUp(key);
-			return this;
-		}
-
-		/// <summary>
-		/// Adds a key press to the list of <see cref="Input" /> messages which is equivalent to a key down followed by a key up.
+		/// Adds a key press to the list of <see cref="InputTypeWithData" /> messages which is equivalent to a key down followed by a key up.
 		/// </summary>
 		/// <param name="keys"> The keys to press down. </param>
 		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
 		public InputBuilder AddKeyPress(params KeyboardKey[] keys)
 		{
-			keys.ForEach(x => AddKeyPress(x));
+			keys.ForEach(x =>
+			{
+				AddKeyDown(x);
+				AddKeyUp(x);
+			});
 			return this;
 		}
 
 		/// <summary>
-		/// Adds a key up to the list of <see cref="Input" /> messages.
+		/// Adds modified keystroke(s) where there are multiple modifiers and multiple keys like CTRL-ALT-K-C where CTRL
+		/// and ALT are the modifierKeys and K and C are the keys.
+		/// The flow is Modifiers KeyDown in order, Keys Press in order, Modifiers KeyUp in reverse order.
 		/// </summary>
-		/// <param name="key"> The key to release. </param>
-		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
-		public InputBuilder AddKeyUp(KeyboardKey key)
+		/// <param name="modifier"> The modifier key. </param>
+		/// <param name="keys"> The list of keys to press. </param>
+		public InputBuilder AddKeyPress(KeyboardModifier modifier, params KeyboardKey[] keys)
 		{
-			var up =
-				new Input
-				{
-					Type = (uint) InputType.Keyboard,
-					Data =
-					{
-						Keyboard =
-							new KeyboardInput
-							{
-								KeyCode = (ushort) key,
-								Scan = (ushort) (NativeInput.MapVirtualKey((uint) key, 0) & 0xFFU),
-								Flags = (uint) (IsExtendedKey(key)
-									? KeyboardFlag.KeyUp | KeyboardFlag.ExtendedKey
-									: KeyboardFlag.KeyUp),
-								Time = 0,
-								ExtraInfo = IntPtr.Zero
-							}
-					}
-				};
-
-			_inputList.Add(up);
+			var modifierKeys = ConvertModifierToKey(modifier).ToArray();
+			AddKeyDown(modifierKeys);
+			AddKeyPress(keys.ToArray());
+			AddKeyUp(modifierKeys);
 			return this;
 		}
 
 		/// <summary>
-		/// Adds a key up to the list of <see cref="Input" /> messages.
+		/// Adds modified keystroke(s) where there are multiple modifiers and multiple keys like CTRL-ALT-K-C where CTRL
+		/// and ALT are the modifierKeys and K and C are the keys.
+		/// The flow is Modifiers KeyDown in order, Keys Press in order, Modifiers KeyUp in reverse order.
+		/// </summary>
+		/// <param name="modifiers"> The list of modifier keys </param>
+		/// <param name="keys"> The list of keys to simulate </param>
+		public InputBuilder AddKeyPress(IEnumerable<KeyboardModifier> modifiers, params KeyboardKey[] keys)
+		{
+			var modifierKeys = ConvertModifierToKey(modifiers).ToArray();
+			AddKeyDown(modifierKeys);
+			AddKeyPress(keys.ToArray());
+			AddKeyUp(modifierKeys);
+			return this;
+		}
+
+		/// <summary>
+		/// Adds a key up to the list of <see cref="InputTypeWithData" /> messages.
 		/// </summary>
 		/// <param name="keys"> The keys to release. </param>
 		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
 		public InputBuilder AddKeyUp(params KeyboardKey[] keys)
 		{
-			keys.ForEach(x => AddKeyUp(x));
+			keys.ForEach(key =>
+			{
+				var up =
+					new InputTypeWithData
+					{
+						Type = (uint) InputType.Keyboard,
+						Data =
+						{
+							Keyboard =
+								new KeyboardInput
+								{
+									KeyCode = (ushort) key,
+									Scan = (ushort) (NativeInput.MapVirtualKey((uint) key, 0) & 0xFFU),
+									Flags = (uint) (IsExtendedKey(key)
+										? KeyboardFlag.KeyUp | KeyboardFlag.ExtendedKey
+										: KeyboardFlag.KeyUp),
+									Time = 0,
+									ExtraInfo = IntPtr.Zero
+								}
+						}
+					};
+
+				_inputList.Add(up);
+			});
 			return this;
 		}
 
@@ -303,7 +302,7 @@ namespace TestR.Internal.Inputs
 		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
 		public InputBuilder AddMouseButtonDown(MouseButton button)
 		{
-			var buttonDown = new Input { Type = (uint) InputType.Mouse };
+			var buttonDown = new InputTypeWithData { Type = (uint) InputType.Mouse };
 			buttonDown.Data.Mouse.Flags = (uint) ToMouseButtonDownFlag(button);
 
 			_inputList.Add(buttonDown);
@@ -318,8 +317,9 @@ namespace TestR.Internal.Inputs
 		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
 		public InputBuilder AddMouseButtonUp(MouseButton button)
 		{
-			var buttonUp = new Input { Type = (uint) InputType.Mouse };
+			var buttonUp = new InputTypeWithData { Type = (uint) InputType.Mouse };
 			buttonUp.Data.Mouse.Flags = (uint) ToMouseButtonUpFlag(button);
+
 			_inputList.Add(buttonUp);
 
 			return this;
@@ -332,7 +332,7 @@ namespace TestR.Internal.Inputs
 		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
 		public InputBuilder AddMouseHorizontalWheelScroll(int scrollAmount)
 		{
-			var scroll = new Input { Type = (uint) InputType.Mouse };
+			var scroll = new InputTypeWithData { Type = (uint) InputType.Mouse };
 			scroll.Data.Mouse.Flags = (uint) MouseFlag.HorizontalWheel;
 			scroll.Data.Mouse.MouseData = (uint) scrollAmount;
 
@@ -348,7 +348,7 @@ namespace TestR.Internal.Inputs
 		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
 		public InputBuilder AddMouseVerticalWheelScroll(int scrollAmount)
 		{
-			var scroll = new Input { Type = (uint) InputType.Mouse };
+			var scroll = new InputTypeWithData { Type = (uint) InputType.Mouse };
 			scroll.Data.Mouse.Flags = (uint) MouseFlag.VerticalWheel;
 			scroll.Data.Mouse.MouseData = (uint) scrollAmount;
 
@@ -384,7 +384,7 @@ namespace TestR.Internal.Inputs
 		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
 		public InputBuilder AddMouseXButtonDown(int xButtonId)
 		{
-			var buttonDown = new Input { Type = (uint) InputType.Mouse };
+			var buttonDown = new InputTypeWithData { Type = (uint) InputType.Mouse };
 			buttonDown.Data.Mouse.Flags = (uint) MouseFlag.XDown;
 			buttonDown.Data.Mouse.MouseData = (uint) xButtonId;
 			_inputList.Add(buttonDown);
@@ -399,7 +399,7 @@ namespace TestR.Internal.Inputs
 		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
 		public InputBuilder AddMouseXButtonUp(int xButtonId)
 		{
-			var buttonUp = new Input { Type = (uint) InputType.Mouse };
+			var buttonUp = new InputTypeWithData { Type = (uint) InputType.Mouse };
 			buttonUp.Data.Mouse.Flags = (uint) MouseFlag.XUp;
 			buttonUp.Data.Mouse.MouseData = (uint) xButtonId;
 			_inputList.Add(buttonUp);
@@ -415,7 +415,7 @@ namespace TestR.Internal.Inputs
 		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
 		public InputBuilder AddRelativeMouseMovement(int x, int y)
 		{
-			var movement = new Input { Type = (uint) InputType.Mouse };
+			var movement = new InputTypeWithData { Type = (uint) InputType.Mouse };
 			movement.Data.Mouse.Flags = (uint) MouseFlag.Move;
 			movement.Data.Mouse.X = x;
 			movement.Data.Mouse.Y = y;
@@ -460,6 +460,10 @@ namespace TestR.Internal.Inputs
 			}
 		}
 
+		/// <summary>
+		/// Add key stroke to the input builder.
+		/// </summary>
+		/// <param name="strokes"> The stroke(s) to add. </param>
 		public void AddStrokes(params KeyStroke[] strokes)
 		{
 			foreach (var stroke in strokes)
@@ -477,54 +481,6 @@ namespace TestR.Internal.Inputs
 		}
 
 		/// <summary>
-		/// Returns an enumerator that iterates through the list of <see cref="Input" /> messages.
-		/// </summary>
-		/// <returns>
-		/// A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the list of <see cref="Input" /> messages.
-		/// </returns>
-		/// <filterpriority> 1 </filterpriority>
-		public IEnumerator<Input> GetEnumerator()
-		{
-			return _inputList.GetEnumerator();
-		}
-
-		/// <summary>
-		/// Determines if the <see cref="KeyboardKey" /> is an ExtendedKey
-		/// </summary>
-		/// <param name="keyCode"> The key code. </param>
-		/// <returns> true if the key code is an extended key; otherwise, false. </returns>
-		/// <remarks>
-		/// The extended keys consist of the ALT and CTRL keys on the right-hand side of the keyboard; the INS, DEL, HOME, END, PAGE UP, PAGE DOWN, and arrow keys in the clusters to the left of the numeric keypad; the NUM LOCK key; the BREAK (CTRL+PAUSE) key; the PRINT SCRN key; and the divide (/) and ENTER keys in the numeric keypad.
-		/// See http://msdn.microsoft.com/en-us/library/ms646267(v=vs.85).aspx Section "Extended-Key Flag"
-		/// </remarks>
-		public static bool IsExtendedKey(KeyboardKey keyCode)
-		{
-			if (keyCode == KeyboardKey.Alt ||
-				keyCode == KeyboardKey.LeftAlt ||
-				keyCode == KeyboardKey.RightAlt ||
-				keyCode == KeyboardKey.Control ||
-				keyCode == KeyboardKey.RightControl ||
-				keyCode == KeyboardKey.Insert ||
-				keyCode == KeyboardKey.Delete ||
-				keyCode == KeyboardKey.Home ||
-				keyCode == KeyboardKey.End ||
-				keyCode == KeyboardKey.Prior ||
-				keyCode == KeyboardKey.Next ||
-				keyCode == KeyboardKey.RightArrow ||
-				keyCode == KeyboardKey.UpArrow ||
-				keyCode == KeyboardKey.LeftArrow ||
-				keyCode == KeyboardKey.DownArrow ||
-				keyCode == KeyboardKey.NumLock ||
-				keyCode == KeyboardKey.ControlBreak ||
-				keyCode == KeyboardKey.Snapshot ||
-				keyCode == KeyboardKey.Divide)
-			{
-				return true;
-			}
-			return false;
-		}
-
-		/// <summary>
 		/// Reset the input builder with a set of new key strokes.
 		/// </summary>
 		/// <param name="strokes"> </param>
@@ -536,20 +492,30 @@ namespace TestR.Internal.Inputs
 		}
 
 		/// <summary>
-		/// Returns the list of <see cref="Input" /> messages as a <see cref="System.Array" /> of <see cref="Input" /> messages.
+		/// Returns the list of <see cref="InputTypeWithData" /> messages as a <see cref="System.Array" /> of <see cref="InputTypeWithData" /> messages.
 		/// </summary>
-		/// <returns> The <see cref="System.Array" /> of <see cref="Input" /> messages. </returns>
-		public Input[] ToArray()
+		/// <returns> The <see cref="System.Array" /> of <see cref="InputTypeWithData" /> messages. </returns>
+		internal InputTypeWithData[] ToArray()
 		{
 			return _inputList.ToArray();
 		}
 
-		internal static IEnumerable<KeyboardKey> ConvertModifierToKey(IEnumerable<KeyboardModifier> modifiers)
+		/// <summary>
+		/// Converts the modifier to the key.
+		/// </summary>
+		/// <param name="modifiers"> The modifiers to convert. </param>
+		/// <returns> The key representation of the modifier. </returns>
+		private static IEnumerable<KeyboardKey> ConvertModifierToKey(IEnumerable<KeyboardModifier> modifiers)
 		{
 			return ConvertModifierToKey(modifiers.ToArray());
 		}
 
-		internal static IEnumerable<KeyboardKey> ConvertModifierToKey(params KeyboardModifier[] modifiers)
+		/// <summary>
+		/// Converts the modifier to the key.
+		/// </summary>
+		/// <param name="modifiers"> The modifiers to convert. </param>
+		/// <returns> The key representation of the modifier. </returns>
+		private static IEnumerable<KeyboardKey> ConvertModifierToKey(params KeyboardModifier[] modifiers)
 		{
 			if (modifiers.Any(x => x.HasFlag(KeyboardModifier.Alt)))
 			{
@@ -598,15 +564,39 @@ namespace TestR.Internal.Inputs
 		}
 
 		/// <summary>
-		/// Returns an enumerator that iterates through the list of <see cref="Input" /> messages.
+		/// Determines if the <see cref="KeyboardKey" /> is an ExtendedKey
 		/// </summary>
-		/// <returns>
-		/// An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the list of <see cref="Input" /> messages.
-		/// </returns>
-		/// <filterpriority> 2 </filterpriority>
-		IEnumerator IEnumerable.GetEnumerator()
+		/// <param name="keyCode"> The key code. </param>
+		/// <returns> true if the key code is an extended key otherwise false. </returns>
+		/// <remarks>
+		/// The extended keys consist of the ALT and CTRL keys on the right-hand side of the keyboard; the INS, DEL, HOME, END, PAGE UP, PAGE DOWN, and arrow keys in the clusters to the left of the numeric keypad; the NUM LOCK key; the BREAK (CTRL+PAUSE) key; the PRINT SCRN key; and the divide (/) and ENTER keys in the numeric keypad.
+		/// See http://msdn.microsoft.com/en-us/library/ms646267(v=vs.85).aspx Section "Extended-Key Flag"
+		/// </remarks>
+		private static bool IsExtendedKey(KeyboardKey keyCode)
 		{
-			return GetEnumerator();
+			if (keyCode == KeyboardKey.Alt ||
+				keyCode == KeyboardKey.LeftAlt ||
+				keyCode == KeyboardKey.RightAlt ||
+				keyCode == KeyboardKey.Control ||
+				keyCode == KeyboardKey.RightControl ||
+				keyCode == KeyboardKey.Insert ||
+				keyCode == KeyboardKey.Delete ||
+				keyCode == KeyboardKey.Home ||
+				keyCode == KeyboardKey.End ||
+				keyCode == KeyboardKey.Prior ||
+				keyCode == KeyboardKey.Next ||
+				keyCode == KeyboardKey.RightArrow ||
+				keyCode == KeyboardKey.UpArrow ||
+				keyCode == KeyboardKey.LeftArrow ||
+				keyCode == KeyboardKey.DownArrow ||
+				keyCode == KeyboardKey.NumLock ||
+				keyCode == KeyboardKey.ControlBreak ||
+				keyCode == KeyboardKey.Snapshot ||
+				keyCode == KeyboardKey.Divide)
+			{
+				return true;
+			}
+			return false;
 		}
 
 		private static MouseFlag ToMouseButtonDownFlag(MouseButton button)

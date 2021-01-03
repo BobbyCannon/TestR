@@ -136,7 +136,7 @@ namespace TestR.Web.Elements
 		#region Methods
 
 		/// <inheritdoc />
-		public override Element TypeText(string value)
+		public override Element SendInput(string value)
 		{
 			return TypeText(value, false);
 		}

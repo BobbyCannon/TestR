@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace TestR.Internal.Native
 {
-	internal class NativeInput
+	public class NativeInput
 	{
 		#region Methods
 
@@ -25,7 +25,7 @@ namespace TestR.Internal.Native
 		public static extern uint MapVirtualKey(uint uCode, uint uMapType);
 
 		[DllImport("user32.dll", SetLastError = true)]
-		public static extern uint SendInput(uint numberOfInputs, Inputs.Input[] inputs, int sizeOfInputStructure);
+		public static extern uint SendInput(uint numberOfInputs, Inputs.InputTypeWithData[] inputs, int sizeOfInputStructure);
 
 		[DllImport("user32.dll", SetLastError = true, EntryPoint = "SetCursorPos")]
 		[return: MarshalAs(UnmanagedType.Bool)]

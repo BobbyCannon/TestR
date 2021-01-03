@@ -1,6 +1,7 @@
 ﻿#region References
 
 using TestR.Desktop;
+using TestR.Internal.Inputs;
 
 #endregion
 
@@ -11,10 +12,21 @@ namespace TestR
 	/// </summary>
 	public static class Input
 	{
+		#region Fields
+
+		/// <summary>
+		/// The instance of the <see cref="InputMessageDispatcher" /> to use for dispatching <see cref="InputTypeWithData" /> messages.
+		/// </summary>
+		private static readonly InputMessageDispatcher _messageDispatcher;
+
+		#endregion
+
 		#region Constructors
 
 		static Input()
 		{
+			_messageDispatcher = new InputMessageDispatcher();
+
 			Keyboard = new Keyboard();
 			Mouse = new Mouse();
 		}
@@ -32,6 +44,28 @@ namespace TestR
 		/// Represents the mouse and allows for simulated input.
 		/// </summary>
 		public static Mouse Mouse { get; }
+
+		#endregion
+
+		#region Methods
+
+		/// <summary>
+		/// Dispatches the specified inputs from the provided InputBuilder in their specified order by issuing a single call.
+		/// </summary>
+		/// <param name="builder"> The builder containing the input. </param>
+		public static void SendInput(InputBuilder builder)
+		{
+			_messageDispatcher.DispatchInput(builder.ToArray());
+		}
+
+		/// <summary>
+		/// Dispatches the specified provided inputs in their specified order by issuing a single call.
+		/// </summary>
+		/// <param name="builder"> The builder containing the input. </param>
+		public static void SendInput(params InputTypeWithData[] builder)
+		{
+			_messageDispatcher.DispatchInput(builder);
+		}
 
 		#endregion
 	}

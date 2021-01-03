@@ -95,7 +95,7 @@ namespace TestR.Desktop
 		/// Determines whether the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />.
 		/// </summary>
 		/// <returns>
-		/// true if the specified object  is equal to the current object; otherwise, false.
+		/// True if the specified object  is equal to the current object otherwise false.
 		/// </returns>
 		/// <param name="obj"> The object to compare with the current object. </param>
 		/// <filterpriority> 2 </filterpriority>

@@ -853,15 +853,10 @@
             Represents the keyboard and allows for simulated input.
             </summary>
         </member>
-        <member name="F:TestR.Desktop.Keyboard._messageDispatcher">
-            <summary>
-            The instance of the <see cref="T:TestR.Internal.Inputs.InputMessageDispatcher" /> to use for dispatching <see cref="T:TestR.Internal.Inputs.Input" /> messages.
-            </summary>
-        </member>
         <member name="M:TestR.Desktop.Keyboard.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:TestR.Desktop.Keyboard" /> class using an instance of a
-            <see cref="T:TestR.Internal.Inputs.InputMessageDispatcher" /> for dispatching <see cref="T:TestR.Internal.Inputs.Input" /> messages.
+            <see cref="T:TestR.Internal.Inputs.InputMessageDispatcher" /> for dispatching <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages.
             </summary>
         </member>
         <member name="P:TestR.Desktop.Keyboard.State">
@@ -871,11 +866,11 @@
         </member>
         <member name="M:TestR.Desktop.Keyboard.IsKeyDown(TestR.Desktop.KeyboardKey)">
             <summary>
-            Determines whether the specified key is up or down by calling the GetKeyState function.
+            Determines whether the specified key is up or down.
             </summary>
             <param name="key"> The <see cref="T:TestR.Desktop.KeyboardKey" /> for the key. </param>
             <returns>
-            <c> true </c> if the key is down; otherwise, <c> false </c>.
+            True if the key is down otherwise false.
             </returns>
             <remarks>
             See: http://msdn.microsoft.com/en-us/library/ms646301(VS.85).aspx
@@ -887,11 +882,8 @@
             </summary>
             <param name="key"> The <see cref="T:TestR.Desktop.KeyboardKey" /> for the key. </param>
             <returns>
-            <c> true </c> if the key is up; otherwise, <c> false </c>.
+            True if the key is up otherwise false.
             </returns>
-            <remarks>
-            See: http://msdn.microsoft.com/en-us/library/ms646301(VS.85).aspx
-            </remarks>
         </member>
         <member name="M:TestR.Desktop.Keyboard.IsTogglingKeyInEffect(TestR.Desktop.KeyboardKey)">
             <summary>
@@ -899,23 +891,14 @@
             </summary>
             <param name="key"> The <see cref="T:TestR.Desktop.KeyboardKey" /> for the key. </param>
             <returns>
-            <c> true </c> if the toggling key is toggled on (in-effect); otherwise, <c> false </c>.
+            True if the toggling key is toggled on (in-effect) otherwise false.
             </returns>
-            <remarks>
-            See: http://msdn.microsoft.com/en-us/library/ms646301(VS.85).aspx
-            </remarks>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.KeyDown(TestR.Desktop.KeyboardKey)">
+        <member name="M:TestR.Desktop.Keyboard.KeyDown(TestR.Desktop.KeyboardKey[])">
             <summary>
-            Calls the Win32 SendInput method to simulate a KeyDown.
+            Calls the Input.SendInput method to simulate key down.
             </summary>
-            <param name="key"> The <see cref="T:TestR.Desktop.KeyboardKey" /> to press. </param>
-        </member>
-        <member name="M:TestR.Desktop.Keyboard.KeyPress(TestR.Desktop.KeyboardKey)">
-            <summary>
-            Calls the Win32 SendInput method with a KeyDown and KeyUp message in the same input sequence in order to simulate a Key PRESS.
-            </summary>
-            <param name="key"> The <see cref="T:TestR.Desktop.KeyboardKey" /> to press. </param>
+            <param name="keys"> The key(s) to press down. </param>
         </member>
         <member name="M:TestR.Desktop.Keyboard.KeyPress(TestR.Desktop.KeyboardKey[])">
             <summary>
@@ -923,24 +906,7 @@
             </summary>
             <param name="keys"> The keys to press. </param>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.KeyPress(TestR.Desktop.KeyboardModifier,TestR.Desktop.KeyboardKey)">
-            <summary>
-            Simulates a simple modified keystroke like CTRL-C where CTRL is the modifierKey and C is the key.
-            The flow is Modifier KeyDown, Key Press, Modifier KeyUp.
-            </summary>
-            <param name="modifier"> The modifier key. </param>
-            <param name="key"> The key to simulate. </param>
-        </member>
-        <member name="M:TestR.Desktop.Keyboard.KeyPress(System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardModifier},TestR.Desktop.KeyboardKey)">
-            <summary>
-            Simulates a modified keystroke where there are multiple modifiers and one key like CTRL-ALT-C where CTRL and ALT
-            are the modifierKeys and C is the key.
-            The flow is Modifiers KeyDown in order, Key Press, Modifiers KeyUp in reverse order.
-            </summary>
-            <param name="modifiers"> The list of modifier keys </param>
-            <param name="key"> The key to simulate </param>
-        </member>
-        <member name="M:TestR.Desktop.Keyboard.KeyPress(TestR.Desktop.KeyboardModifier,System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardKey})">
+        <member name="M:TestR.Desktop.Keyboard.KeyPress(TestR.Desktop.KeyboardModifier,TestR.Desktop.KeyboardKey[])">
             <summary>
             Simulates a modified keystroke where there is one modifier and multiple keys like CTRL-K-C where CTRL is the
             modifierKey and K and C are the keys.
@@ -949,7 +915,7 @@
             <param name="modifier"> The modifier key </param>
             <param name="keys"> The list of keys to simulate </param>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.KeyPress(System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardModifier},System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardKey})">
+        <member name="M:TestR.Desktop.Keyboard.KeyPress(System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardModifier},TestR.Desktop.KeyboardKey[])">
             <summary>
             Simulates a modified keystroke where there are multiple modifiers and multiple keys like CTRL-ALT-K-C where CTRL
             and ALT are the modifierKeys and K and C are the keys.
@@ -958,11 +924,11 @@
             <param name="modifiers"> The list of modifier keys </param>
             <param name="keys"> The list of keys to simulate </param>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.KeyUp(TestR.Desktop.KeyboardKey)">
+        <member name="M:TestR.Desktop.Keyboard.KeyUp(TestR.Desktop.KeyboardKey[])">
             <summary>
-            Calls the Win32 SendInput method to simulate a KeyUp.
+            Calls the Input.SendInput method to simulate key up.
             </summary>
-            <param name="key"> The <see cref="T:TestR.Desktop.KeyboardKey" /> to lift up. </param>
+            <param name="keys"> The key(s) to lift up. </param>
         </member>
         <member name="M:TestR.Desktop.Keyboard.Sleep(System.Int32)">
             <summary>
@@ -986,7 +952,7 @@
             Stop monitoring the keyboard input.
             </summary>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.TypeText(System.String,TestR.Desktop.KeyboardKey[])">
+        <member name="M:TestR.Desktop.Keyboard.SendInput(System.String,TestR.Desktop.KeyboardKey[])">
             <summary>
             Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted
             text entry via the keyboard.
@@ -994,7 +960,22 @@
             <param name="text"> The text to be simulated. </param>
             <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.TypeText(System.String,System.TimeSpan,TestR.Desktop.KeyStroke[])">
+        <member name="M:TestR.Desktop.Keyboard.SendInput(TestR.Desktop.KeyboardKey[])">
+            <summary>
+            Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted
+            text entry via the keyboard.
+            </summary>
+            <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.SendInput(TestR.Desktop.KeyboardModifier,TestR.Desktop.KeyboardKey[])">
+            <summary>
+            Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted
+            text entry via the keyboard.
+            </summary>
+            <param name="modifier"> The modifier key. </param>
+            <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.SendInput(System.String,System.TimeSpan,TestR.Desktop.KeyStroke[])">
             <summary>
             Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted
             text entry via the keyboard.
@@ -1003,7 +984,7 @@
             <param name="delay"> An optional delay before sending optional keys. </param>
             <param name="strokes"> An optional set of keyboard strokes to process typing the provided text. </param>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.TypeText(System.String,System.TimeSpan,TestR.Desktop.KeyboardKey[])">
+        <member name="M:TestR.Desktop.Keyboard.SendInput(System.String,System.TimeSpan,TestR.Desktop.KeyboardKey[])">
             <summary>
             Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted
             text entry via the keyboard.
@@ -1012,17 +993,11 @@
             <param name="delay"> An optional delay before sending optional keys. </param>
             <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.TypeText(System.Char)">
+        <member name="M:TestR.Desktop.Keyboard.SendInput(System.Char)">
             <summary>
             Simulates a single character text entry via the keyboard.
             </summary>
             <param name="character"> The unicode character to be simulated. </param>
-        </member>
-        <member name="M:TestR.Desktop.Keyboard.SendSimulatedInput(TestR.Internal.Inputs.Input[])">
-            <summary>
-            Sends the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages using the <see cref="T:TestR.Internal.Inputs.InputMessageDispatcher" /> instance.
-            </summary>
-            <param name="inputList"> The <see cref="T:System.Array" /> of <see cref="T:TestR.Internal.Inputs.Input" /> messages to send. </param>
         </member>
         <member name="E:TestR.Desktop.Keyboard.KeyPressed">
             <summary>
@@ -1051,7 +1026,7 @@
         </member>
         <member name="T:TestR.Desktop.KeyboardKey">
             <summary>
-            The list of VirtualKeyCodes (see: http://msdn.microsoft.com/en-us/library/ms645540(VS.85).aspx)
+            The input codes.
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.LeftMouseButton">
@@ -1076,12 +1051,12 @@
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.XButton1">
             <summary>
-            Windows 2000/XP: X1 mouse button - NOT contiguous with LBUTTON and RBUTTON
+            X1 mouse button - NOT contiguous with LBUTTON and RBUTTON
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.XButton2">
             <summary>
-            Windows 2000/XP: X2 mouse button - NOT contiguous with LBUTTON and RBUTTON
+            X2 mouse button - NOT contiguous with LBUTTON and RBUTTON
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Backspace">
@@ -1718,147 +1693,147 @@
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.BrowserBack">
             <summary>
-            Windows 2000/XP: Browser Back key
+            Browser Back key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.BrowserForward">
             <summary>
-            Windows 2000/XP: Browser Forward key
+            Browser Forward key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.BrowserRefresh">
             <summary>
-            Windows 2000/XP: Browser Refresh key
+            Browser Refresh key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.BrowserStop">
             <summary>
-            Windows 2000/XP: Browser Stop key
+            Browser Stop key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.BrowserSearch">
             <summary>
-            Windows 2000/XP: Browser Search key
+            Browser Search key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.BrowserFavorites">
             <summary>
-            Windows 2000/XP: Browser Favorites key
+            Browser Favorites key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.BrowserHome">
             <summary>
-            Windows 2000/XP: Browser Start and Home key
+            Browser Start and Home key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.VolumeMute">
             <summary>
-            Windows 2000/XP: Volume Mute key
+            Volume Mute key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.VolumeDown">
             <summary>
-            Windows 2000/XP: Volume Down key
+            Volume Down key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.VolumeUp">
             <summary>
-            Windows 2000/XP: Volume Up key
+            Volume Up key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.MediaNextTrack">
             <summary>
-            Windows 2000/XP: Next Track key
+            Next Track key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.MediaPrevTrack">
             <summary>
-            Windows 2000/XP: Previous Track key
+            Previous Track key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.MediaStop">
             <summary>
-            Windows 2000/XP: Stop Media key
+            Stop Media key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.MediaPlayPause">
             <summary>
-            Windows 2000/XP: Play/Pause Media key
+            Play/Pause Media key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.LaunchMail">
             <summary>
-            Windows 2000/XP: Start Mail key
+            Start Mail key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.LaunchMediaSelect">
             <summary>
-            Windows 2000/XP: Select Media key
+            Select Media key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.LaunchApp1">
             <summary>
-            Windows 2000/XP: Start Application 1 key
+            Start Application 1 key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.LaunchApp2">
             <summary>
-            Windows 2000/XP: Start Application 2 key
+            Start Application 2 key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Oem1">
             <summary>
-            Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the ';:' key 
+            Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the ';:' key 
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.OemPlus">
             <summary>
-            Windows 2000/XP: For any country/region, the '+' key
+            For any country/region, the '+' key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.OemComma">
             <summary>
-            Windows 2000/XP: For any country/region, the ',' key
+            For any country/region, the ',' key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.OemMinus">
             <summary>
-            Windows 2000/XP: For any country/region, the '-' key
+            For any country/region, the '-' key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.OemPeriod">
             <summary>
-            Windows 2000/XP: For any country/region, the '.' key
+            For any country/region, the '.' key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Oem2">
             <summary>
-            Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the '/?' key 
+            Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '/?' key 
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Oem3">
             <summary>
-            Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the '`~' key 
+            Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '`~' key 
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Oem4">
             <summary>
-            Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the '[{' key
+            Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '[{' key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Oem5">
             <summary>
-            Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the '\|' key
+            Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '\|' key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Oem6">
             <summary>
-            Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the ']}' key
+            Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the ']}' key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Oem7">
             <summary>
-            Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the 'single-quote/double-quote' key
+            Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the 'single-quote/double-quote' key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Oem8">
@@ -1868,17 +1843,17 @@
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Oem102">
             <summary>
-            Windows 2000/XP: Either the angle bracket key or the backslash key on the RT 102-key keyboard
+            Either the angle bracket key or the backslash key on the RT 102-key keyboard
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.ProcessKey">
             <summary>
-            Windows 95/98/Me, Windows NT 4.0, Windows 2000/XP: IME PROCESS key
+            Windows 95/98/Me, Windows NT 4.0, IME PROCESS key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Packet">
             <summary>
-            Windows 2000/XP: Used to pass Unicode characters as if they were keystrokes. The PACKET key is the low word of a 32-bit Virtual Key value used for non-keyboard input methods. For more information, see Remark in KEYBDINPUT, SendInput, WM_KEYDOWN, and WM_KEYUP
+            Used to pass Unicode characters as if they were keystrokes. The PACKET key is the low word of a 32-bit Virtual Key value used for non-keyboard input methods. For more information, see Remark in KEYBDINPUT, SendInput, WM_KEYDOWN, and WM_KEYUP
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Attn">
@@ -2098,16 +2073,6 @@
             Represents the mouse and allows for simulated input.
             </summary>
         </member>
-        <member name="F:TestR.Desktop.Mouse._messageDispatcher">
-            <summary>
-            The instance of the <see cref="T:TestR.Internal.Inputs.InputMessageDispatcher" /> to use for dispatching <see cref="T:TestR.Internal.Inputs.Input" /> messages.
-            </summary>
-        </member>
-        <member name="M:TestR.Desktop.Mouse.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:TestR.Desktop.Mouse" /> class.
-            </summary>
-        </member>
         <member name="P:TestR.Desktop.Mouse.Cursor">
             <summary>
             Gets the current cursor for the mouse.
@@ -2280,12 +2245,6 @@
             </summary>
             <param name="buttonId"> The button id. </param>
         </member>
-        <member name="M:TestR.Desktop.Mouse.SendSimulatedInput(TestR.Internal.Inputs.Input[])">
-            <summary>
-            Sends the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages using the <see cref="T:TestR.Internal.Inputs.InputMessageDispatcher" /> instance.
-            </summary>
-            <param name="inputList"> The <see cref="T:System.Array" /> of <see cref="T:TestR.Internal.Inputs.Input" /> messages to send. </param>
-        </member>
         <member name="T:TestR.Desktop.MouseButton">
             <summary>
             The mouse button
@@ -2346,7 +2305,7 @@
             Determines whether the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />.
             </summary>
             <returns>
-            true if the specified object  is equal to the current object; otherwise, false.
+            True if the specified object  is equal to the current object otherwise false.
             </returns>
             <param name="obj"> The object to compare with the current object. </param>
             <filterpriority> 2 </filterpriority>
@@ -2930,32 +2889,38 @@
             <param name="x"> Optional X offset when clicking. </param>
             <param name="y"> Optional Y offset when clicking. </param>
         </member>
+        <member name="M:TestR.Element.SendInput(System.String)">
+            <summary>
+            Focus the element then send the text as keyboard input.
+            </summary>
+            <param name="value"> The value to type. </param>
+        </member>
+        <member name="M:TestR.Element.SendInput(System.String,TestR.Desktop.KeyboardKey[])">
+            <summary>
+            Focus the element then send the text as keyboard input.
+            </summary>
+            <param name="value"> The value to type. </param>
+            <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
+        </member>
+        <member name="M:TestR.Element.SendInput(System.String,System.TimeSpan,TestR.Desktop.KeyboardKey[])">
+            <summary>
+            Focus the element then send the text as keyboard input.
+            </summary>
+            <param name="value"> The value to type. </param>
+            <param name="delay"> An optional delay before sending optional keys. </param>
+            <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
+        </member>
+        <member name="M:TestR.Element.SendInput(TestR.Desktop.KeyboardKey[])">
+            <summary>
+            Focus the element then send the text as keyboard input.
+            </summary>
+            <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
+        </member>
         <member name="M:TestR.Element.ToDetailString">
             <summary>
             Provides a string of details for the element.
             </summary>
             <returns> The string of element details. </returns>
-        </member>
-        <member name="M:TestR.Element.TypeText(System.String)">
-            <summary>
-            Focus the element then type the text via the keyboard.
-            </summary>
-            <param name="value"> The value to type. </param>
-        </member>
-        <member name="M:TestR.Element.TypeText(System.String,TestR.Desktop.KeyboardKey[])">
-            <summary>
-            Focus the element then type the text via the keyboard.
-            </summary>
-            <param name="value"> The value to type. </param>
-            <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
-        </member>
-        <member name="M:TestR.Element.TypeText(System.String,System.TimeSpan,TestR.Desktop.KeyboardKey[])">
-            <summary>
-            Focus the element then type the text via the keyboard.
-            </summary>
-            <param name="value"> The value to type. </param>
-            <param name="delay"> An optional delay before sending optional keys. </param>
-            <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
         </member>
         <member name="T:TestR.ElementCollection">
             <summary>
@@ -3114,7 +3079,7 @@
             </summary>
             <param name="element"> The element to be removed. </param>
             <param name="includeDescendants"> The flag that determines to search descendants or not. </param>
-            <returns> true if item is successfully removed; otherwise, false. This method also returns false if item was not found. </returns>
+            <returns> true if item is successfully removed otherwise false. This method also returns false if item was not found. </returns>
         </member>
         <member name="T:TestR.ElementHost">
             <summary>
@@ -3332,7 +3297,7 @@
             </summary>
             <param name="element"> The element to be removed. </param>
             <param name="includeDescendants"> The flag that determines to search descendants or not. </param>
-            <returns> true if item is successfully removed; otherwise, false. This method also returns false if item was not found. </returns>
+            <returns> true if item is successfully removed otherwise false. This method also returns false if item was not found. </returns>
         </member>
         <member name="M:TestR.ElementHost.Wait(System.Func{TestR.ElementHost,System.Boolean},System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
@@ -3390,6 +3355,11 @@
             A static combination a keyboard and mouse instance.
             </summary>
         </member>
+        <member name="F:TestR.Input._messageDispatcher">
+            <summary>
+            The instance of the <see cref="T:TestR.Internal.Inputs.InputMessageDispatcher" /> to use for dispatching <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages.
+            </summary>
+        </member>
         <member name="P:TestR.Input.Keyboard">
             <summary>
             Represents the keyboard and allows for simulated input.
@@ -3399,6 +3369,241 @@
             <summary>
             Represents the mouse and allows for simulated input.
             </summary>
+        </member>
+        <member name="M:TestR.Input.SendInput(TestR.InputBuilder)">
+            <summary>
+            Dispatches the specified inputs from the provided InputBuilder in their specified order by issuing a single call.
+            </summary>
+            <param name="builder"> The builder containing the input. </param>
+        </member>
+        <member name="M:TestR.Input.SendInput(TestR.Internal.Inputs.InputTypeWithData[])">
+            <summary>
+            Dispatches the specified provided inputs in their specified order by issuing a single call.
+            </summary>
+            <param name="builder"> The builder containing the input. </param>
+        </member>
+        <member name="T:TestR.InputBuilder">
+            <summary>
+            A helper class for building a list of <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages ready to be sent to the native Windows API.
+            </summary>
+        </member>
+        <member name="F:TestR.InputBuilder._inputList">
+            <summary>
+            The public list of <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages being built by this instance.
+            </summary>
+        </member>
+        <member name="M:TestR.InputBuilder.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:TestR.InputBuilder" /> class.
+            </summary>
+        </member>
+        <member name="M:TestR.InputBuilder.AddAbsoluteMouseMovement(System.Int32,System.Int32)">
+            <summary>
+            Move the mouse to an absolute position.
+            </summary>
+            <param name="absoluteX"> </param>
+            <param name="absoluteY"> </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.AddAbsoluteMouseMovementOnVirtualDesktop(System.Int32,System.Int32)">
+            <summary>
+            Move the mouse to the absolute position on the virtual desktop.
+            </summary>
+            <param name="absoluteX"> </param>
+            <param name="absoluteY"> </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.AddCharacter(System.Char)">
+            <summary>
+            Adds the character to the list of <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages.
+            </summary>
+            <param name="character"> The <see cref="T:System.Char" /> to be added to the list of <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages. </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.AddCharacters(System.Collections.Generic.IEnumerable{System.Char})">
+            <summary>
+            Adds all of the characters in the specified <see cref="T:System.Collections.Generic.IEnumerable`1" /> of <see cref="T:System.Char" />.
+            </summary>
+            <param name="characters"> The characters to add. </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.AddCharacters(System.String)">
+            <summary>
+            Adds the characters in the specified <see cref="T:System.String" />.
+            </summary>
+            <param name="characters"> The string of <see cref="T:System.Char" /> to add. </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.AddKeyDown(TestR.Desktop.KeyboardKey[])">
+            <summary>
+            Adds a key down to the list of <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages.
+            </summary>
+            <param name="keys"> The keys to press down. </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.AddKeyPress(TestR.Desktop.KeyboardKey[])">
+            <summary>
+            Adds a key press to the list of <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages which is equivalent to a key down followed by a key up.
+            </summary>
+            <param name="keys"> The keys to press down. </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.AddKeyPress(TestR.Desktop.KeyboardModifier,TestR.Desktop.KeyboardKey[])">
+            <summary>
+            Adds modified keystroke(s) where there are multiple modifiers and multiple keys like CTRL-ALT-K-C where CTRL
+            and ALT are the modifierKeys and K and C are the keys.
+            The flow is Modifiers KeyDown in order, Keys Press in order, Modifiers KeyUp in reverse order.
+            </summary>
+            <param name="modifier"> The modifier key. </param>
+            <param name="keys"> The list of keys to press. </param>
+        </member>
+        <member name="M:TestR.InputBuilder.AddKeyPress(System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardModifier},TestR.Desktop.KeyboardKey[])">
+            <summary>
+            Adds modified keystroke(s) where there are multiple modifiers and multiple keys like CTRL-ALT-K-C where CTRL
+            and ALT are the modifierKeys and K and C are the keys.
+            The flow is Modifiers KeyDown in order, Keys Press in order, Modifiers KeyUp in reverse order.
+            </summary>
+            <param name="modifiers"> The list of modifier keys </param>
+            <param name="keys"> The list of keys to simulate </param>
+        </member>
+        <member name="M:TestR.InputBuilder.AddKeyUp(TestR.Desktop.KeyboardKey[])">
+            <summary>
+            Adds a key up to the list of <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages.
+            </summary>
+            <param name="keys"> The keys to release. </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.AddMouseButtonClick(TestR.Desktop.MouseButton)">
+            <summary>
+            Adds a single click of the specified button.
+            </summary>
+            <param name="button"> </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.AddMouseButtonDoubleClick(TestR.Desktop.MouseButton)">
+            <summary>
+            Adds a double click of the specified button.
+            </summary>
+            <param name="button"> </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.AddMouseButtonDown(TestR.Desktop.MouseButton)">
+            <summary>
+            Adds a mouse button down for the specified button.
+            </summary>
+            <param name="button"> </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.AddMouseButtonUp(TestR.Desktop.MouseButton)">
+            <summary>
+            Adds a mouse button up for the specified button.
+            </summary>
+            <param name="button"> </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.AddMouseHorizontalWheelScroll(System.Int32)">
+            <summary>
+            Scroll the horizontal mouse wheel by the specified amount.
+            </summary>
+            <param name="scrollAmount"> </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.AddMouseVerticalWheelScroll(System.Int32)">
+            <summary>
+            Scroll the vertical mouse wheel by the specified amount.
+            </summary>
+            <param name="scrollAmount"> </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.AddMouseXButtonClick(System.Int32)">
+            <summary>
+            Adds a single click of the specified button.
+            </summary>
+            <param name="xButtonId"> </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.AddMouseXButtonDoubleClick(System.Int32)">
+            <summary>
+            Adds a double click of the specified button.
+            </summary>
+            <param name="xButtonId"> </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.AddMouseXButtonDown(System.Int32)">
+            <summary>
+            Adds a mouse button down for the specified button.
+            </summary>
+            <param name="xButtonId"> </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.AddMouseXButtonUp(System.Int32)">
+            <summary>
+            Adds a mouse button up for the specified button.
+            </summary>
+            <param name="xButtonId"> </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.AddRelativeMouseMovement(System.Int32,System.Int32)">
+            <summary>
+            Moves the mouse relative to its current position.
+            </summary>
+            <param name="x"> </param>
+            <param name="y"> </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.AddStroke(TestR.Desktop.KeyStroke)">
+            <summary>
+            Add key strokes to input builder.
+            </summary>
+            <param name="stroke"> </param>
+        </member>
+        <member name="M:TestR.InputBuilder.AddStrokes(TestR.Desktop.KeyStroke[])">
+            <summary>
+            Add key stroke to the input builder.
+            </summary>
+            <param name="strokes"> The stroke(s) to add. </param>
+        </member>
+        <member name="M:TestR.InputBuilder.Clear">
+            <summary>
+            Clear the input list.
+            </summary>
+        </member>
+        <member name="M:TestR.InputBuilder.Reset(TestR.Desktop.KeyStroke[])">
+            <summary>
+            Reset the input builder with a set of new key strokes.
+            </summary>
+            <param name="strokes"> </param>
+        </member>
+        <member name="M:TestR.InputBuilder.ToArray">
+            <summary>
+            Returns the list of <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages as a <see cref="T:System.Array" /> of <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages.
+            </summary>
+            <returns> The <see cref="T:System.Array" /> of <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.ConvertModifierToKey(System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardModifier})">
+            <summary>
+            Converts the modifier to the key.
+            </summary>
+            <param name="modifiers"> The modifiers to convert. </param>
+            <returns> The key representation of the modifier. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.ConvertModifierToKey(TestR.Desktop.KeyboardModifier[])">
+            <summary>
+            Converts the modifier to the key.
+            </summary>
+            <param name="modifiers"> The modifiers to convert. </param>
+            <returns> The key representation of the modifier. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.IsExtendedKey(TestR.Desktop.KeyboardKey)">
+            <summary>
+            Determines if the <see cref="T:TestR.Desktop.KeyboardKey" /> is an ExtendedKey
+            </summary>
+            <param name="keyCode"> The key code. </param>
+            <returns> true if the key code is an extended key otherwise false. </returns>
+            <remarks>
+            The extended keys consist of the ALT and CTRL keys on the right-hand side of the keyboard; the INS, DEL, HOME, END, PAGE UP, PAGE DOWN, and arrow keys in the clusters to the left of the numeric keypad; the NUM LOCK key; the BREAK (CTRL+PAUSE) key; the PRINT SCRN key; and the divide (/) and ENTER keys in the numeric keypad.
+            See http://msdn.microsoft.com/en-us/library/ms646267(v=vs.85).aspx Section "Extended-Key Flag"
+            </remarks>
         </member>
         <member name="M:TestR.Internal.Extensions.ToInt(System.String)">
             <summary>
@@ -3444,8 +3649,7 @@
         </member>
         <member name="T:TestR.Internal.Inputs.HardwareInput">
             <summary>
-            The HardwareInput structure contains information about a simulated message generated by an input device other than a keyboard or mouse.  (see: http://msdn.microsoft.com/en-us/library/ms646269(VS.85).aspx)
-            Declared in Winuser.h, include Windows.h
+            The HardwareInput structure contains information about a simulated message generated by an input device other than a keyboard or mouse.
             </summary>
         </member>
         <member name="F:TestR.Internal.Inputs.HardwareInput.Msg">
@@ -3463,269 +3667,16 @@
             Specifies the high-order word of the lParam parameter for uMsg.
             </summary>
         </member>
-        <member name="T:TestR.Internal.Inputs.Input">
-            <summary>
-            The INPUT structure is used by SendInput to store information for synthesizing input events such as keystrokes, mouse movement, and mouse clicks. (see: http://msdn.microsoft.com/en-us/library/ms646270(VS.85).aspx)
-            Declared in Winuser.h, include Windows.h
-            </summary>
-            <remarks>
-            This structure contains information identical to that used in the parameter list of the keybd_event or mouse_event function.
-            Windows 2000/XP: INPUT_KEYBOARD supports non-keyboard input methods, such as handwriting recognition or voice recognition, as if it were text input by using the KEYEVENTF_UNICODE flag. For more information, see the remarks section of KEYBDINPUT.
-            </remarks>
-        </member>
-        <member name="F:TestR.Internal.Inputs.Input.Type">
-            <summary>
-            Specifies the type of the input event. This member can be one of the following values.
-            <see cref="F:TestR.Internal.Inputs.InputType.Mouse" /> - The event is a mouse event. Use the mi structure of the union.
-            <see cref="F:TestR.Internal.Inputs.InputType.Keyboard" /> - The event is a keyboard event. Use the ki structure of the union.
-            <see cref="F:TestR.Internal.Inputs.InputType.Hardware" /> - Windows 95/98/Me: The event is from input hardware other than a keyboard or mouse. Use the hi structure of the union.
-            </summary>
-        </member>
-        <member name="F:TestR.Internal.Inputs.Input.Data">
-            <summary>
-            The data structure that contains information about the simulated Mouse, Keyboard or Hardware event.
-            </summary>
-        </member>
-        <member name="T:TestR.Internal.Inputs.InputBuilder">
-            <summary>
-            A helper class for building a list of <see cref="T:TestR.Internal.Inputs.Input" /> messages ready to be sent to the native Windows API.
-            </summary>
-        </member>
-        <member name="F:TestR.Internal.Inputs.InputBuilder._inputList">
-            <summary>
-            The public list of <see cref="T:TestR.Internal.Inputs.Input" /> messages being built by this instance.
-            </summary>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:TestR.Internal.Inputs.InputBuilder" /> class.
-            </summary>
-        </member>
-        <member name="P:TestR.Internal.Inputs.InputBuilder.Item(System.Int32)">
-            <summary>
-            Gets the <see cref="T:TestR.Internal.Inputs.Input" /> at the specified position.
-            </summary>
-            <value> The <see cref="T:TestR.Internal.Inputs.Input" /> message at the specified position. </value>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddAbsoluteMouseMovement(System.Int32,System.Int32)">
-            <summary>
-            Move the mouse to an absolute position.
-            </summary>
-            <param name="absoluteX"> </param>
-            <param name="absoluteY"> </param>
-            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddAbsoluteMouseMovementOnVirtualDesktop(System.Int32,System.Int32)">
-            <summary>
-            Move the mouse to the absolute position on the virtual desktop.
-            </summary>
-            <param name="absoluteX"> </param>
-            <param name="absoluteY"> </param>
-            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddCharacter(System.Char)">
-            <summary>
-            Adds the character to the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages.
-            </summary>
-            <param name="character"> The <see cref="T:System.Char" /> to be added to the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages. </param>
-            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddCharacters(System.Collections.Generic.IEnumerable{System.Char})">
-            <summary>
-            Adds all of the characters in the specified <see cref="T:System.Collections.Generic.IEnumerable`1" /> of <see cref="T:System.Char" />.
-            </summary>
-            <param name="characters"> The characters to add. </param>
-            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddCharacters(System.String)">
-            <summary>
-            Adds the characters in the specified <see cref="T:System.String" />.
-            </summary>
-            <param name="characters"> The string of <see cref="T:System.Char" /> to add. </param>
-            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddKeyDown(TestR.Desktop.KeyboardKey)">
-            <summary>
-            Adds a key down to the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages.
-            </summary>
-            <param name="keyCode"> The <see cref="T:TestR.Desktop.KeyboardKey" />. </param>
-            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddKeyDown(TestR.Desktop.KeyboardKey[])">
-            <summary>
-            Adds a key down to the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages.
-            </summary>
-            <param name="keys"> The keys to press down. </param>
-            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddKeyPress(TestR.Desktop.KeyboardKey)">
-            <summary>
-            Adds a key press to the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages which is equivalent to a key down followed by a key up.
-            </summary>
-            <param name="key"> The key to press down. </param>
-            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddKeyPress(TestR.Desktop.KeyboardKey[])">
-            <summary>
-            Adds a key press to the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages which is equivalent to a key down followed by a key up.
-            </summary>
-            <param name="keys"> The keys to press down. </param>
-            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddKeyUp(TestR.Desktop.KeyboardKey)">
-            <summary>
-            Adds a key up to the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages.
-            </summary>
-            <param name="key"> The key to release. </param>
-            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddKeyUp(TestR.Desktop.KeyboardKey[])">
-            <summary>
-            Adds a key up to the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages.
-            </summary>
-            <param name="keys"> The keys to release. </param>
-            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddMouseButtonClick(TestR.Desktop.MouseButton)">
-            <summary>
-            Adds a single click of the specified button.
-            </summary>
-            <param name="button"> </param>
-            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddMouseButtonDoubleClick(TestR.Desktop.MouseButton)">
-            <summary>
-            Adds a double click of the specified button.
-            </summary>
-            <param name="button"> </param>
-            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddMouseButtonDown(TestR.Desktop.MouseButton)">
-            <summary>
-            Adds a mouse button down for the specified button.
-            </summary>
-            <param name="button"> </param>
-            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddMouseButtonUp(TestR.Desktop.MouseButton)">
-            <summary>
-            Adds a mouse button up for the specified button.
-            </summary>
-            <param name="button"> </param>
-            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddMouseHorizontalWheelScroll(System.Int32)">
-            <summary>
-            Scroll the horizontal mouse wheel by the specified amount.
-            </summary>
-            <param name="scrollAmount"> </param>
-            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddMouseVerticalWheelScroll(System.Int32)">
-            <summary>
-            Scroll the vertical mouse wheel by the specified amount.
-            </summary>
-            <param name="scrollAmount"> </param>
-            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddMouseXButtonClick(System.Int32)">
-            <summary>
-            Adds a single click of the specified button.
-            </summary>
-            <param name="xButtonId"> </param>
-            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddMouseXButtonDoubleClick(System.Int32)">
-            <summary>
-            Adds a double click of the specified button.
-            </summary>
-            <param name="xButtonId"> </param>
-            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddMouseXButtonDown(System.Int32)">
-            <summary>
-            Adds a mouse button down for the specified button.
-            </summary>
-            <param name="xButtonId"> </param>
-            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddMouseXButtonUp(System.Int32)">
-            <summary>
-            Adds a mouse button up for the specified button.
-            </summary>
-            <param name="xButtonId"> </param>
-            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddRelativeMouseMovement(System.Int32,System.Int32)">
-            <summary>
-            Moves the mouse relative to its current position.
-            </summary>
-            <param name="x"> </param>
-            <param name="y"> </param>
-            <returns> This <see cref="T:TestR.Internal.Inputs.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.AddStroke(TestR.Desktop.KeyStroke)">
-            <summary>
-            Add key strokes to input builder.
-            </summary>
-            <param name="stroke"> </param>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.Clear">
-            <summary>
-            Clear the input list.
-            </summary>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.GetEnumerator">
-            <summary>
-            Returns an enumerator that iterates through the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages.
-            </summary>
-            <returns>
-            A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages.
-            </returns>
-            <filterpriority> 1 </filterpriority>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.IsExtendedKey(TestR.Desktop.KeyboardKey)">
-            <summary>
-            Determines if the <see cref="T:TestR.Desktop.KeyboardKey" /> is an ExtendedKey
-            </summary>
-            <param name="keyCode"> The key code. </param>
-            <returns> true if the key code is an extended key; otherwise, false. </returns>
-            <remarks>
-            The extended keys consist of the ALT and CTRL keys on the right-hand side of the keyboard; the INS, DEL, HOME, END, PAGE UP, PAGE DOWN, and arrow keys in the clusters to the left of the numeric keypad; the NUM LOCK key; the BREAK (CTRL+PAUSE) key; the PRINT SCRN key; and the divide (/) and ENTER keys in the numeric keypad.
-            See http://msdn.microsoft.com/en-us/library/ms646267(v=vs.85).aspx Section "Extended-Key Flag"
-            </remarks>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.Reset(TestR.Desktop.KeyStroke[])">
-            <summary>
-            Reset the input builder with a set of new key strokes.
-            </summary>
-            <param name="strokes"> </param>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.ToArray">
-            <summary>
-            Returns the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages as a <see cref="T:System.Array" /> of <see cref="T:TestR.Internal.Inputs.Input" /> messages.
-            </summary>
-            <returns> The <see cref="T:System.Array" /> of <see cref="T:TestR.Internal.Inputs.Input" /> messages. </returns>
-        </member>
-        <member name="M:TestR.Internal.Inputs.InputBuilder.System#Collections#IEnumerable#GetEnumerator">
-            <summary>
-            Returns an enumerator that iterates through the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages.
-            </summary>
-            <returns>
-            An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the list of <see cref="T:TestR.Internal.Inputs.Input" /> messages.
-            </returns>
-            <filterpriority> 2 </filterpriority>
-        </member>
         <member name="T:TestR.Internal.Inputs.InputMessageDispatcher">
             <summary>
-            Implements the <see cref="T:TestR.Internal.Inputs.InputMessageDispatcher" /> by calling <see cref="M:TestR.Internal.Native.NativeInput.SendInput(System.UInt32,TestR.Internal.Inputs.Input[],System.Int32)" />.
+            Implements the <see cref="T:TestR.Internal.Inputs.InputMessageDispatcher" /> by calling <see cref="M:TestR.Internal.Native.NativeInput.SendInput(System.UInt32,TestR.Internal.Inputs.InputTypeWithData[],System.Int32)" />.
             </summary>
         </member>
-        <member name="M:TestR.Internal.Inputs.InputMessageDispatcher.DispatchInput(TestR.Internal.Inputs.Input[])">
+        <member name="M:TestR.Internal.Inputs.InputMessageDispatcher.DispatchInput(TestR.Internal.Inputs.InputTypeWithData[])">
             <summary>
-            Dispatches the specified list of <see cref="T:TestR.Internal.Inputs.Input" /> messages in their specified order by issuing a single called to <see cref="M:TestR.Internal.Native.NativeInput.SendInput(System.UInt32,TestR.Internal.Inputs.Input[],System.Int32)" />.
+            Dispatches the specified list of <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages in their specified order by issuing a single called to <see cref="M:TestR.Internal.Native.NativeInput.SendInput(System.UInt32,TestR.Internal.Inputs.InputTypeWithData[],System.Int32)" />.
             </summary>
-            <param name="inputs"> The list of <see cref="T:TestR.Internal.Inputs.Input" /> messages to be dispatched. </param>
+            <param name="inputs"> The list of <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages to be dispatched. </param>
             <exception cref="T:System.ArgumentException"> If the <paramref name="inputs" /> array is empty. </exception>
             <exception cref="T:System.ArgumentNullException"> If the <paramref name="inputs" /> array is null. </exception>
             <exception cref="T:System.Exception"> If the any of the commands in the <paramref name="inputs" /> array could not be sent successfully. </exception>
@@ -3748,6 +3699,29 @@
         <member name="F:TestR.Internal.Inputs.InputType.Hardware">
             <summary>
             INPUT_HARDWARE = 0x02 (Windows 95/98/Me: The event is from input hardware other than a keyboard or mouse. Use the hi structure of the union.)
+            </summary>
+        </member>
+        <member name="T:TestR.Internal.Inputs.InputTypeWithData">
+            <summary>
+            The INPUT structure is used by SendInput to store information for synthesizing input events such as keystrokes, mouse movement, and mouse clicks.
+            </summary>
+            <remarks>
+            This structure contains information identical to that used in the parameter list of the keybd_event or mouse_event function.
+            Windows 2000/XP: INPUT_KEYBOARD supports non-keyboard input methods, such as handwriting recognition or voice recognition, as if it were text input by using the KEYEVENTF_UNICODE flag.
+            For more information, see the remarks section of KEYBDINPUT.
+            </remarks>
+        </member>
+        <member name="F:TestR.Internal.Inputs.InputTypeWithData.Type">
+            <summary>
+            Specifies the type of the input event. This member can be one of the following values.
+            <see cref="F:TestR.Internal.Inputs.InputType.Mouse" /> - The event is a mouse event. Use the mi structure of the union.
+            <see cref="F:TestR.Internal.Inputs.InputType.Keyboard" /> - The event is a keyboard event. Use the ki structure of the union.
+            <see cref="F:TestR.Internal.Inputs.InputType.Hardware" /> - Windows 95/98/Me: The event is from input hardware other than a keyboard or mouse. Use the hi structure of the union.
+            </summary>
+        </member>
+        <member name="F:TestR.Internal.Inputs.InputTypeWithData.Data">
+            <summary>
+            The data structure that contains information about the simulated Mouse, Keyboard or Hardware event.
             </summary>
         </member>
         <member name="T:TestR.Internal.Inputs.KeyboardFlag">
@@ -3778,7 +3752,6 @@
         <member name="T:TestR.Internal.Inputs.KeyboardInput">
             <summary>
             The KEYBDINPUT structure contains information about a simulated keyboard event.  (see: http://msdn.microsoft.com/en-us/library/ms646271(VS.85).aspx)
-            Declared in Winuser.h, include Windows.h
             </summary>
             <remarks>
             Windows 2000/XP: INPUT_KEYBOARD supports nonkeyboard-input methodssuch as handwriting recognition or voice recognitionas if it were text input by using the KEYEVENTF_UNICODE flag. If KEYEVENTF_UNICODE is specified, SendInput sends a WM_KEYDOWN or WM_KEYUP message to the foreground thread's message queue with wParam equal to VK_PACKET. Once GetMessage or PeekMessage obtains this message, passing the message to TranslateMessage posts a WM_CHAR message with the Unicode character originally specified by wScan. This Unicode character will automatically be converted to the appropriate ANSI value if it is posted to an ANSI window.
@@ -3787,7 +3760,7 @@
         </member>
         <member name="F:TestR.Internal.Inputs.KeyboardInput.KeyCode">
             <summary>
-            Specifies a virtual-key code. The code must be a value in the range 1 to 254. The Winuser.h header file provides macro definitions (VK_*) for each value. If the dwFlags member specifies KEYEVENTF_UNICODE, wVk must be 0.
+            Specifies a virtual-key code. The code must be a value in the range 1 to 254. If the dwFlags member specifies KEYEVENTF_UNICODE, wVk must be 0.
             </summary>
         </member>
         <member name="F:TestR.Internal.Inputs.KeyboardInput.Scan">
@@ -6343,7 +6316,7 @@
             Gets or sets the value for this select.
             </summary>
         </member>
-        <member name="M:TestR.Web.Elements.Select.TypeText(System.String)">
+        <member name="M:TestR.Web.Elements.Select.SendInput(System.String)">
             <inheritdoc />
         </member>
         <member name="T:TestR.Web.Elements.Small">
@@ -6745,7 +6718,7 @@
             HTML5: Specifies how the text in a text area is to be wrapped when submitted in a form.
             </remarks>
         </member>
-        <member name="M:TestR.Web.Elements.TextArea.TypeText(System.String)">
+        <member name="M:TestR.Web.Elements.TextArea.SendInput(System.String)">
             <inheritdoc />
         </member>
         <member name="M:TestR.Web.Elements.TextArea.TypeText(System.String,System.Boolean)">
@@ -6837,7 +6810,7 @@
             Specifies the value of an input element.
             </remarks>
         </member>
-        <member name="M:TestR.Web.Elements.TextInput.TypeText(System.String)">
+        <member name="M:TestR.Web.Elements.TextInput.SendInput(System.String)">
             <inheritdoc />
         </member>
         <member name="M:TestR.Web.Elements.TextInput.TypeText(System.String,System.Boolean)">
@@ -7287,7 +7260,7 @@
         <member name="M:TestR.Web.WebElement.ToString">
             <inheritdoc />
         </member>
-        <member name="M:TestR.Web.WebElement.TypeText(System.String)">
+        <member name="M:TestR.Web.WebElement.SendInput(System.String)">
             <inheritdoc />
         </member>
         <member name="M:TestR.Web.WebElement.WaitForComplete(System.Int32)">

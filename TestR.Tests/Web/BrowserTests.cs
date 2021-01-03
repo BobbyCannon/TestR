@@ -56,7 +56,7 @@ namespace TestR.Tests.Web
 				TestHelper.AreEqual("user", email.Text);
 				TestHelper.AreEqual(expected, actual);
 
-				email.TypeText("@domain.com");
+				email.SendInput("@domain.com");
 				expected = "ng-valid-parse ng-untouched ng-scope ng-not-empty ng-dirty ng-valid-required ng-valid ng-valid-email".Split(' ');
 				actual = email.GetAttributeValue("class", true).Split(' ');
 				TestHelper.AreEqual("user@domain.com", email.Text);
@@ -875,7 +875,7 @@ namespace TestR.Tests.Web
 			{
 				browser.NavigateTo("https://www.bing.com");
 				browser.Descendants().ToList().Count.Dump();
-				browser.FirstOrDefault("sb_form_q").TypeText("Bobby Cannon Epic Coders");
+				browser.FirstOrDefault("sb_form_q").SendInput("Bobby Cannon Epic Coders");
 				browser.FirstOrDefault("sb_form_go").Click();
 				browser.WaitForComplete();
 			});
@@ -1490,19 +1490,19 @@ namespace TestR.Tests.Web
 				{
 					if (input.Id == "number")
 					{
-						input.TypeText("100");
+						input.SendInput("100");
 						Assert.AreEqual("100", input.Text);
 					}
 					else
 					{
-						input.TypeText(input.Id);
+						input.SendInput(input.Id);
 						Assert.AreEqual(input.Id, input.Text);
 					}
 				}
 
 				foreach (var input in browser.Descendants<TextArea>())
 				{
-					input.TypeText(input.Id);
+					input.SendInput(input.Id);
 					Assert.AreEqual(input.Id, input.Text);
 				}
 			});
@@ -1516,7 +1516,7 @@ namespace TestR.Tests.Web
 				browser.NavigateTo(TestSite + "/inputs.html");
 				var input = browser.First<TextInput>("text");
 				input.Value = "foo";
-				input.TypeText("bar");
+				input.SendInput("bar");
 				Assert.AreEqual("foobar", input.Value);
 			});
 		}
@@ -1540,7 +1540,7 @@ namespace TestR.Tests.Web
 			{
 				browser.NavigateTo(TestSite + "/main.html");
 				var select = browser.First<Select>("select");
-				select.TypeText("O");
+				select.SendInput("O");
 				Assert.AreEqual("One", select.Text);
 				Assert.AreEqual("1", select.Value);
 			});
@@ -1566,7 +1566,7 @@ namespace TestR.Tests.Web
 			{
 				browser.NavigateTo(TestSite + "/inputs.html");
 				var input = browser.First("text");
-				input.TypeText("bar");
+				input.SendInput("bar");
 				Assert.AreEqual("bar", ((TextInput) input).Value);
 			});
 		}
@@ -1578,7 +1578,7 @@ namespace TestR.Tests.Web
 			{
 				browser.NavigateTo(TestSite + "/inputs.html");
 				var input = browser.First<TextArea>("textarea");
-				input.TypeText("first\r\nsecond");
+				input.SendInput("first\r\nsecond");
 				Assert.AreEqual("first\nsecond", input.Text);
 			});
 		}
@@ -1591,7 +1591,7 @@ namespace TestR.Tests.Web
 				browser.NavigateTo(TestSite + "/Vue.html");
 				Assert.AreEqual(false, browser.First<Button>("submit").Enabled);
 
-				browser.First<TextInput>("emailAddress").TypeText("user");
+				browser.First<TextInput>("emailAddress").SendInput("user");
 				var expected = "user";
 				var actual = browser.First<WebElement>("emailAddressLabel").GetHtml();
 				Assert.AreEqual(expected, actual);

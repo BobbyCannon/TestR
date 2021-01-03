@@ -3,7 +3,6 @@
 using System;
 using System.Drawing;
 using System.Threading;
-using TestR.Internal.Inputs;
 using TestR.Internal.Native;
 
 #endregion
@@ -17,28 +16,7 @@ namespace TestR.Desktop
 	{
 		#region Constants
 
-		private const int MouseWheelClickSize = 120;
-
-		#endregion
-
-		#region Fields
-
-		/// <summary>
-		/// The instance of the <see cref="InputMessageDispatcher" /> to use for dispatching <see cref="Internal.Inputs.Input" /> messages.
-		/// </summary>
-		private readonly InputMessageDispatcher _messageDispatcher;
-
-		#endregion
-
-		#region Constructors
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Mouse" /> class.
-		/// </summary>
-		public Mouse()
-		{
-			_messageDispatcher = new InputMessageDispatcher();
-		}
+		private const int _mouseWheelClickSize = 120;
 
 		#endregion
 
@@ -69,10 +47,10 @@ namespace TestR.Desktop
 		public Mouse HorizontalScroll(int scrollAmountInClicks)
 		{
 			var inputList = new InputBuilder()
-				.AddMouseHorizontalWheelScroll(scrollAmountInClicks * MouseWheelClickSize)
+				.AddMouseHorizontalWheelScroll(scrollAmountInClicks * _mouseWheelClickSize)
 				.ToArray();
 
-			SendSimulatedInput(inputList);
+			Input.SendInput(inputList);
 			return this;
 		}
 
@@ -85,7 +63,7 @@ namespace TestR.Desktop
 				.AddMouseButtonClick(MouseButton.LeftButton)
 				.ToArray();
 
-			SendSimulatedInput(inputList);
+			Input.SendInput(inputList);
 			return this;
 		}
 
@@ -112,7 +90,7 @@ namespace TestR.Desktop
 				.AddMouseButtonClick(MouseButton.LeftButton)
 				.ToArray();
 
-			SendSimulatedInput(inputList);
+			Input.SendInput(inputList);
 			return this;
 		}
 
@@ -125,7 +103,7 @@ namespace TestR.Desktop
 				.AddMouseButtonDoubleClick(MouseButton.LeftButton)
 				.ToArray();
 
-			SendSimulatedInput(inputList);
+			Input.SendInput(inputList);
 			return this;
 		}
 
@@ -138,7 +116,7 @@ namespace TestR.Desktop
 				.AddMouseButtonDown(MouseButton.LeftButton)
 				.ToArray();
 
-			SendSimulatedInput(inputList);
+			Input.SendInput(inputList);
 			return this;
 		}
 
@@ -151,7 +129,7 @@ namespace TestR.Desktop
 				.AddMouseButtonUp(MouseButton.LeftButton)
 				.ToArray();
 
-			SendSimulatedInput(inputList);
+			Input.SendInput(inputList);
 			return this;
 		}
 
@@ -164,7 +142,7 @@ namespace TestR.Desktop
 				.AddMouseButtonClick(MouseButton.MiddleButton)
 				.ToArray();
 
-			SendSimulatedInput(inputList);
+			Input.SendInput(inputList);
 			return this;
 		}
 
@@ -191,7 +169,7 @@ namespace TestR.Desktop
 				.AddMouseButtonClick(MouseButton.MiddleButton)
 				.ToArray();
 
-			SendSimulatedInput(inputList);
+			Input.SendInput(inputList);
 			return this;
 		}
 
@@ -245,7 +223,7 @@ namespace TestR.Desktop
 				.AddMouseButtonClick(MouseButton.RightButton)
 				.ToArray();
 
-			SendSimulatedInput(inputList);
+			Input.SendInput(inputList);
 			return this;
 		}
 
@@ -272,7 +250,7 @@ namespace TestR.Desktop
 				.AddMouseButtonClick(MouseButton.RightButton)
 				.ToArray();
 
-			SendSimulatedInput(inputList);
+			Input.SendInput(inputList);
 			return this;
 		}
 
@@ -285,7 +263,7 @@ namespace TestR.Desktop
 				.AddMouseButtonDoubleClick(MouseButton.RightButton)
 				.ToArray();
 
-			SendSimulatedInput(inputList);
+			Input.SendInput(inputList);
 			return this;
 		}
 
@@ -298,7 +276,7 @@ namespace TestR.Desktop
 				.AddMouseButtonDown(MouseButton.RightButton)
 				.ToArray();
 
-			SendSimulatedInput(inputList);
+			Input.SendInput(inputList);
 			return this;
 		}
 
@@ -311,7 +289,7 @@ namespace TestR.Desktop
 				.AddMouseButtonUp(MouseButton.RightButton)
 				.ToArray();
 
-			SendSimulatedInput(inputList);
+			Input.SendInput(inputList);
 			return this;
 		}
 
@@ -345,10 +323,10 @@ namespace TestR.Desktop
 		public Mouse VerticalScroll(int scrollAmountInClicks)
 		{
 			var inputList = new InputBuilder()
-				.AddMouseVerticalWheelScroll(scrollAmountInClicks * MouseWheelClickSize)
+				.AddMouseVerticalWheelScroll(scrollAmountInClicks * _mouseWheelClickSize)
 				.ToArray();
 
-			SendSimulatedInput(inputList);
+			Input.SendInput(inputList);
 			return this;
 		}
 
@@ -362,7 +340,7 @@ namespace TestR.Desktop
 				.AddMouseXButtonClick(buttonId)
 				.ToArray();
 
-			SendSimulatedInput(inputList);
+			Input.SendInput(inputList);
 			return this;
 		}
 
@@ -376,7 +354,7 @@ namespace TestR.Desktop
 				.AddMouseXButtonDoubleClick(buttonId)
 				.ToArray();
 
-			SendSimulatedInput(inputList);
+			Input.SendInput(inputList);
 			return this;
 		}
 
@@ -390,7 +368,7 @@ namespace TestR.Desktop
 				.AddMouseXButtonDown(buttonId)
 				.ToArray();
 
-			SendSimulatedInput(inputList);
+			Input.SendInput(inputList);
 			return this;
 		}
 
@@ -404,17 +382,8 @@ namespace TestR.Desktop
 				.AddMouseXButtonUp(buttonId)
 				.ToArray();
 
-			SendSimulatedInput(inputList);
+			Input.SendInput(inputList);
 			return this;
-		}
-
-		/// <summary>
-		/// Sends the list of <see cref="Internal.Inputs.Input" /> messages using the <see cref="InputMessageDispatcher" /> instance.
-		/// </summary>
-		/// <param name="inputList"> The <see cref="System.Array" /> of <see cref="Internal.Inputs.Input" /> messages to send. </param>
-		private void SendSimulatedInput(Internal.Inputs.Input[] inputList)
-		{
-			_messageDispatcher.DispatchInput(inputList);
 		}
 
 		#endregion

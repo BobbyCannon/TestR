@@ -1,7 +1,7 @@
 ﻿namespace TestR.Desktop
 {
     /// <summary>
-    /// The list of VirtualKeyCodes (see: http://msdn.microsoft.com/en-us/library/ms645540(VS.85).aspx)
+    /// The input codes.
     /// </summary>
     public enum KeyboardKey
     {
@@ -26,12 +26,12 @@
         MiddleMouseButton = 0x04,
 
         /// <summary>
-        /// Windows 2000/XP: X1 mouse button - NOT contiguous with LBUTTON and RBUTTON
+        /// X1 mouse button - NOT contiguous with LBUTTON and RBUTTON
         /// </summary>
         XButton1 = 0x05,
 
         /// <summary>
-        /// Windows 2000/XP: X2 mouse button - NOT contiguous with LBUTTON and RBUTTON
+        /// X2 mouse button - NOT contiguous with LBUTTON and RBUTTON
         /// </summary>
         XButton2 = 0x06,
 
@@ -698,92 +698,92 @@
         RightAlt = 0xA5,
 
         /// <summary>
-        /// Windows 2000/XP: Browser Back key
+        /// Browser Back key
         /// </summary>
         BrowserBack = 0xA6,
 
         /// <summary>
-        /// Windows 2000/XP: Browser Forward key
+        /// Browser Forward key
         /// </summary>
         BrowserForward = 0xA7,
 
         /// <summary>
-        /// Windows 2000/XP: Browser Refresh key
+        /// Browser Refresh key
         /// </summary>
         BrowserRefresh = 0xA8,
 
         /// <summary>
-        /// Windows 2000/XP: Browser Stop key
+        /// Browser Stop key
         /// </summary>
         BrowserStop = 0xA9,
 
         /// <summary>
-        /// Windows 2000/XP: Browser Search key
+        /// Browser Search key
         /// </summary>
         BrowserSearch = 0xAA,
 
         /// <summary>
-        /// Windows 2000/XP: Browser Favorites key
+        /// Browser Favorites key
         /// </summary>
         BrowserFavorites = 0xAB,
 
         /// <summary>
-        /// Windows 2000/XP: Browser Start and Home key
+        /// Browser Start and Home key
         /// </summary>
         BrowserHome = 0xAC,
 
         /// <summary>
-        /// Windows 2000/XP: Volume Mute key
+        /// Volume Mute key
         /// </summary>
         VolumeMute = 0xAD,
 
         /// <summary>
-        /// Windows 2000/XP: Volume Down key
+        /// Volume Down key
         /// </summary>
         VolumeDown = 0xAE,
 
         /// <summary>
-        /// Windows 2000/XP: Volume Up key
+        /// Volume Up key
         /// </summary>
         VolumeUp = 0xAF,
 
         /// <summary>
-        /// Windows 2000/XP: Next Track key
+        /// Next Track key
         /// </summary>
         MediaNextTrack = 0xB0,
 
         /// <summary>
-        /// Windows 2000/XP: Previous Track key
+        /// Previous Track key
         /// </summary>
         MediaPrevTrack = 0xB1,
 
         /// <summary>
-        /// Windows 2000/XP: Stop Media key
+        /// Stop Media key
         /// </summary>
         MediaStop = 0xB2,
 
         /// <summary>
-        /// Windows 2000/XP: Play/Pause Media key
+        /// Play/Pause Media key
         /// </summary>
         MediaPlayPause = 0xB3,
 
         /// <summary>
-        /// Windows 2000/XP: Start Mail key
+        /// Start Mail key
         /// </summary>
         LaunchMail = 0xB4,
 
         /// <summary>
-        /// Windows 2000/XP: Select Media key
+        /// Select Media key
         /// </summary>
         LaunchMediaSelect = 0xB5,
 
         /// <summary>
-        /// Windows 2000/XP: Start Application 1 key
+        /// Start Application 1 key
         /// </summary>
         LaunchApp1 = 0xB6,
 
         /// <summary>
-        /// Windows 2000/XP: Start Application 2 key
+        /// Start Application 2 key
         /// </summary>
         LaunchApp2 = 0xB7,
 
@@ -792,37 +792,37 @@
         //
 
         /// <summary>
-        /// Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the ';:' key 
+        /// Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the ';:' key 
         /// </summary>
         Oem1 = 0xBA,
 
         /// <summary>
-        /// Windows 2000/XP: For any country/region, the '+' key
+        /// For any country/region, the '+' key
         /// </summary>
         OemPlus = 0xBB,
 
         /// <summary>
-        /// Windows 2000/XP: For any country/region, the ',' key
+        /// For any country/region, the ',' key
         /// </summary>
         OemComma = 0xBC,
 
         /// <summary>
-        /// Windows 2000/XP: For any country/region, the '-' key
+        /// For any country/region, the '-' key
         /// </summary>
         OemMinus = 0xBD,
 
         /// <summary>
-        /// Windows 2000/XP: For any country/region, the '.' key
+        /// For any country/region, the '.' key
         /// </summary>
         OemPeriod = 0xBE,
 
         /// <summary>
-        /// Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the '/?' key 
+        /// Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '/?' key 
         /// </summary>
         Oem2 = 0xBF,
 
         /// <summary>
-        /// Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the '`~' key 
+        /// Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '`~' key 
         /// </summary>
         Oem3 = 0xC0,
 
@@ -835,22 +835,22 @@
         //
 
         /// <summary>
-        /// Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the '[{' key
+        /// Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '[{' key
         /// </summary>
         Oem4 = 0xDB,
 
         /// <summary>
-        /// Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the '\|' key
+        /// Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '\|' key
         /// </summary>
         Oem5 = 0xDC,
 
         /// <summary>
-        /// Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the ']}' key
+        /// Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the ']}' key
         /// </summary>
         Oem6 = 0xDD,
 
         /// <summary>
-        /// Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the 'single-quote/double-quote' key
+        /// Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the 'single-quote/double-quote' key
         /// </summary>
         Oem7 = 0xDE,
 
@@ -868,7 +868,7 @@
         //
 
         /// <summary>
-        /// Windows 2000/XP: Either the angle bracket key or the backslash key on the RT 102-key keyboard
+        /// Either the angle bracket key or the backslash key on the RT 102-key keyboard
         /// </summary>
         Oem102 = 0xE2,
 
@@ -877,7 +877,7 @@
         //
 
         /// <summary>
-        /// Windows 95/98/Me, Windows NT 4.0, Windows 2000/XP: IME PROCESS key
+        /// Windows 95/98/Me, Windows NT 4.0, IME PROCESS key
         /// </summary>
         ProcessKey = 0xE5,
 
@@ -886,7 +886,7 @@
         //
 
         /// <summary>
-        /// Windows 2000/XP: Used to pass Unicode characters as if they were keystrokes. The PACKET key is the low word of a 32-bit Virtual Key value used for non-keyboard input methods. For more information, see Remark in KEYBDINPUT, SendInput, WM_KEYDOWN, and WM_KEYUP
+        /// Used to pass Unicode characters as if they were keystrokes. The PACKET key is the low word of a 32-bit Virtual Key value used for non-keyboard input methods. For more information, see Remark in KEYBDINPUT, SendInput, WM_KEYDOWN, and WM_KEYUP
         /// </summary>
         Packet = 0xE7,
 

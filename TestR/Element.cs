@@ -170,49 +170,61 @@ namespace TestR
 		public abstract Element RightClick(int x = 0, int y = 0);
 
 		/// <summary>
-		/// Provides a string of details for the element.
-		/// </summary>
-		/// <returns> The string of element details. </returns>
-		public abstract string ToDetailString();
-
-		/// <summary>
-		/// Focus the element then type the text via the keyboard.
+		/// Focus the element then send the text as keyboard input.
 		/// </summary>
 		/// <param name="value"> The value to type. </param>
-		public virtual Element TypeText(string value)
+		public virtual Element SendInput(string value)
 		{
 			Application.BringToFront();
 			Focus();
-			Input.Keyboard.TypeText(value);
+			Input.Keyboard.SendInput(value);
 			return this;
 		}
 
 		/// <summary>
-		/// Focus the element then type the text via the keyboard.
+		/// Focus the element then send the text as keyboard input.
 		/// </summary>
 		/// <param name="value"> The value to type. </param>
 		/// <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
-		public virtual Element TypeText(string value, params KeyboardKey[] keys)
+		public virtual Element SendInput(string value, params KeyboardKey[] keys)
 		{
 			Application.BringToFront();
 			Focus();
-			Input.Keyboard.TypeText(value, TimeSpan.Zero, keys);
+			Input.Keyboard.SendInput(value, TimeSpan.Zero, keys);
 			return this;
 		}
 
 		/// <summary>
-		/// Focus the element then type the text via the keyboard.
+		/// Focus the element then send the text as keyboard input.
 		/// </summary>
 		/// <param name="value"> The value to type. </param>
 		/// <param name="delay"> An optional delay before sending optional keys. </param>
 		/// <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
-		public virtual Element TypeText(string value, TimeSpan delay, params KeyboardKey[] keys)
+		public virtual Element SendInput(string value, TimeSpan delay, params KeyboardKey[] keys)
 		{
 			Application.BringToFront();
 			Focus();
-			Input.Keyboard.TypeText(value, delay, keys);
+			Input.Keyboard.SendInput(value, delay, keys);
 			return this;
 		}
+
+		/// <summary>
+		/// Focus the element then send the text as keyboard input.
+		/// </summary>
+		/// <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
+		public virtual Element SendInput(params KeyboardKey[] keys)
+		{
+			Application.BringToFront();
+			Focus();
+			Input.Keyboard.SendInput(keys);
+			return this;
+		}
+
+		/// <summary>
+		/// Provides a string of details for the element.
+		/// </summary>
+		/// <returns> The string of element details. </returns>
+		public abstract string ToDetailString();
 
 		#endregion
 	}

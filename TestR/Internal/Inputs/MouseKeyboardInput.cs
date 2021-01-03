@@ -10,7 +10,7 @@ namespace TestR.Internal.Inputs
 	/// The combined/overlayed structure that includes Mouse, Keyboard and Hardware Input message data (see: http://msdn.microsoft.com/en-us/library/ms646270(VS.85).aspx)
 	/// </summary>
 	[StructLayout(LayoutKind.Explicit)]
-	internal struct MouseKeyboardInput
+	public struct MouseKeyboardInput
 	{
 		/// <summary>
 		/// The <see cref="MouseInput" /> definition.

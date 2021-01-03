@@ -22,7 +22,7 @@ namespace TestR.Internal.Inputs
 	/// The system applies two tests to the specified relative mouse movement. If the specified distance along either the x or y axis is greater than the first mouse threshold value, and the mouse speed is not zero, the system doubles the distance. If the specified distance along either the x or y axis is greater than the second mouse threshold value, and the mouse speed is equal to two, the system doubles the distance that resulted from applying the first threshold test. It is thus possible for the system to multiply specified relative mouse movement along the x or y axis by up to four times.
 	/// </remarks>
 	[StructLayout(LayoutKind.Sequential)]
-	internal struct MouseInput
+	public struct MouseInput
 	{
 		/// <summary>
 		/// Specifies the absolute position of the mouse, or the amount of motion since the last mouse event was generated, depending on the value of the dwFlags member.

@@ -595,11 +595,11 @@ namespace TestR.Web
 		}
 
 		/// <inheritdoc />
-		public override Element TypeText(string value)
+		public override Element SendInput(string value)
 		{
 			Browser.Focus();
 			Focus();
-			Input.Keyboard.TypeText(value);
+			Input.Keyboard.SendInput(value);
 			return this;
 		}
 

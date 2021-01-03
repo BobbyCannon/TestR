@@ -356,7 +356,7 @@ namespace TestR
 		/// </summary>
 		/// <param name="element"> The element to be removed. </param>
 		/// <param name="includeDescendants"> The flag that determines to search descendants or not. </param>
-		/// <returns> true if item is successfully removed; otherwise, false. This method also returns false if item was not found. </returns>
+		/// <returns> true if item is successfully removed otherwise false. This method also returns false if item was not found. </returns>
 		public bool Remove<T>(T element, bool includeDescendants = true) where T : Element
 		{
 			return Children.Remove(element, includeDescendants);
