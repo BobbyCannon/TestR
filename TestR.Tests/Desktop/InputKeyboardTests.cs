@@ -1,10 +1,9 @@
 #region References
 
 using System;
+using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop;
-using TestR.Internal.Inputs;
-using TestR.Internal.Native;
 
 #endregion
 
@@ -34,6 +33,71 @@ namespace TestR.Tests.Desktop
 			Assert.IsTrue(Input.Keyboard.IsKeyUp(KeyboardKey.A));
 
 			CloseNotepad();
+		}
+
+		[TestMethod]
+		public void NotepadInput()
+		{
+			var pressed = new StringBuilder();
+			var actual = new StringBuilder();
+
+			Input.Keyboard.KeyPressed += (sender, state) =>
+			{
+				pressed.AppendLine(state + ", pressed: " + state.IsPressed);
+
+				if (state.IsPressed)
+				{
+					actual.Append(state);
+				}
+			};
+			Input.Keyboard.StartMonitoring();
+
+			try
+			{
+				var application = Application.AttachOrCreate("c:\\windows\\system32\\notepad.exe");
+				//var application = Application.AttachOrCreate("C:\\Workspaces\\GitHub\\TestR\\TestR.TestWinForms\\bin\\Debug\\TestR.TestWinForms.exe");
+				application.BringToFront();
+				application.Focus();
+				application.FirstOrDefault("textBox1", true, false)?.Focus();
+
+				//var test = "\bf--   !@#$%^&*(){}";
+				var test = "!\"#$%&\'()*+,-./:;<=>?@\\]^_`~		tabtab space";
+				Input.Keyboard.SendInput(test);
+
+				//foreach (var character in test)
+				//{
+				//	var input = new InputTypeWithData
+				//	{
+				//		Type = (uint) InputType.Keyboard,
+				//		Data =
+				//		{
+				//			Keyboard =
+				//				new KeyboardInput
+				//				{
+				//					KeyCode = 0,
+				//					Scan = character,
+				//					Flags = (uint) KeyboardFlag.Unicode,
+				//					Time = 0,
+				//					ExtraInfo = NativeInput.GetMessageExtraInfo()
+				//				}
+				//		}
+				//	};
+
+				//	Input.SendInput(input);
+
+				//	input.Data.Keyboard.Flags |= (uint) KeyboardFlag.KeyUp;
+
+				//	Input.SendInput(input);
+				//}
+
+				pressed.ToString().Dump();
+				actual.ToString().Dump();
+			}
+			finally
+			{
+				Input.Keyboard.StopMonitoring();
+				CloseNotepad();
+			}
 		}
 
 		[TestMethod]
@@ -107,53 +171,10 @@ namespace TestR.Tests.Desktop
 			Input.Keyboard
 				.KeyPress(KeyboardKey.LeftWindows, KeyboardKey.R)
 				.Sleep(250)
-				//.SendInput("notepad")
-				//.Sleep(250)
-				//.KeyPress(KeyboardKey.Return)
+				.SendInput("notepad")
+				.Sleep(250)
+				.KeyPress(KeyboardKey.Return)
 				.Sleep(1000);
-		}
-
-		[TestMethod]
-		public void name()
-		{
-			//StartNotepad();
-			//var test = NativeInput.MapVirtualKey('f', 0);
-			//((KeyboardKey) test).Dump();
-
-			//var notepad = Application.Attach("c:\\windows\\system32\\notepad.exe");
-			var application = Application.AttachOrCreate("C:\\Workspaces\\GitHub\\TestR\\TestR.TestWinForms\\bin\\Debug\\TestR.TestWinForms.exe");
-			application.BringToFront();
-			application.Focus();
-
-			ushort character = (byte) 'f';
-			character.Dump();
-
-			var scanCode = (ushort) NativeInput.MapVirtualKey(character, 0);
-			scanCode.Dump();
-
-			var input = new InputTypeWithData
-			{
-				Type = (uint) InputType.Keyboard,
-				Data =
-				{
-					Keyboard =
-						new KeyboardInput
-						{
-							KeyCode = character,
-							Scan = (ushort) NativeInput.MapVirtualKey(character, 0),
-							Flags = (uint) KeyboardFlag.ScanCode,
-							Time = 0,
-							ExtraInfo = IntPtr.Zero
-						}
-				}
-			};
-
-			
-			Input.SendInput(input);
-			
-			input.Data.Keyboard.Flags |= (uint) KeyboardFlag.KeyUp;
-
-			Input.SendInput(input);
 		}
 
 		#endregion

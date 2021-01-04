@@ -111,7 +111,7 @@ namespace TestR.Web.Elements
 		public override string Text
 		{
 			get => this["value"];
-			set => TypeText(value, true);
+			set => SendInput(value, true);
 		}
 
 		/// <summary>
@@ -138,7 +138,7 @@ namespace TestR.Web.Elements
 		/// <inheritdoc />
 		public override Element SendInput(string value)
 		{
-			return TypeText(value, false);
+			return SendInput(value, false);
 		}
 
 		/// <summary>
@@ -146,7 +146,7 @@ namespace TestR.Web.Elements
 		/// </summary>
 		/// <param name="value"> The value to be typed. </param>
 		/// <param name="reset"> Clear the input before typing the text. </param>
-		public Element TypeText(string value, bool reset)
+		public Element SendInput(string value, bool reset)
 		{
 			Click();
 			Focus();

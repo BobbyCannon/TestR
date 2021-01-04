@@ -46,10 +46,7 @@ namespace TestR.Desktop
 		/// <param name="scrollAmountInClicks"> The amount to scroll in clicks. A positive value indicates that the wheel was rotated to the right; a negative value indicates that the wheel was rotated to the left. </param>
 		public Mouse HorizontalScroll(int scrollAmountInClicks)
 		{
-			var inputList = new InputBuilder()
-				.AddMouseHorizontalWheelScroll(scrollAmountInClicks * _mouseWheelClickSize)
-				.ToArray();
-
+			var inputList = new InputBuilder().AddMouseHorizontalWheelScroll(scrollAmountInClicks * _mouseWheelClickSize);
 			Input.SendInput(inputList);
 			return this;
 		}
@@ -59,10 +56,7 @@ namespace TestR.Desktop
 		/// </summary>
 		public Mouse LeftButtonClick()
 		{
-			var inputList = new InputBuilder()
-				.AddMouseButtonClick(MouseButton.LeftButton)
-				.ToArray();
-
+			var inputList = new InputBuilder().AddMouseButtonClick(MouseButton.LeftButton);
 			Input.SendInput(inputList);
 			return this;
 		}
@@ -86,10 +80,7 @@ namespace TestR.Desktop
 		{
 			MoveTo(x, y);
 
-			var inputList = new InputBuilder()
-				.AddMouseButtonClick(MouseButton.LeftButton)
-				.ToArray();
-
+			var inputList = new InputBuilder().AddMouseButtonClick(MouseButton.LeftButton);
 			Input.SendInput(inputList);
 			return this;
 		}
@@ -99,10 +90,7 @@ namespace TestR.Desktop
 		/// </summary>
 		public Mouse LeftButtonDoubleClick()
 		{
-			var inputList = new InputBuilder()
-				.AddMouseButtonDoubleClick(MouseButton.LeftButton)
-				.ToArray();
-
+			var inputList = new InputBuilder().AddMouseButtonDoubleClick(MouseButton.LeftButton);
 			Input.SendInput(inputList);
 			return this;
 		}
@@ -112,10 +100,7 @@ namespace TestR.Desktop
 		/// </summary>
 		public Mouse LeftButtonDown()
 		{
-			var inputList = new InputBuilder()
-				.AddMouseButtonDown(MouseButton.LeftButton)
-				.ToArray();
-
+			var inputList = new InputBuilder().AddMouseButtonDown(MouseButton.LeftButton);
 			Input.SendInput(inputList);
 			return this;
 		}
@@ -125,10 +110,7 @@ namespace TestR.Desktop
 		/// </summary>
 		public Mouse LeftButtonUp()
 		{
-			var inputList = new InputBuilder()
-				.AddMouseButtonUp(MouseButton.LeftButton)
-				.ToArray();
-
+			var inputList = new InputBuilder().AddMouseButtonUp(MouseButton.LeftButton);
 			Input.SendInput(inputList);
 			return this;
 		}
@@ -138,10 +120,7 @@ namespace TestR.Desktop
 		/// </summary>
 		public Mouse MiddleButtonClick()
 		{
-			var inputList = new InputBuilder()
-				.AddMouseButtonClick(MouseButton.MiddleButton)
-				.ToArray();
-
+			var inputList = new InputBuilder().AddMouseButtonClick(MouseButton.MiddleButton);
 			Input.SendInput(inputList);
 			return this;
 		}
@@ -165,10 +144,7 @@ namespace TestR.Desktop
 		{
 			MoveTo(x, y);
 
-			var inputList = new InputBuilder()
-				.AddMouseButtonClick(MouseButton.MiddleButton)
-				.ToArray();
-
+			var inputList = new InputBuilder().AddMouseButtonClick(MouseButton.MiddleButton);
 			Input.SendInput(inputList);
 			return this;
 		}
@@ -219,10 +195,7 @@ namespace TestR.Desktop
 		/// </summary>
 		public Mouse RightButtonClick()
 		{
-			var inputList = new InputBuilder()
-				.AddMouseButtonClick(MouseButton.RightButton)
-				.ToArray();
-
+			var inputList = new InputBuilder().AddMouseButtonClick(MouseButton.RightButton);
 			Input.SendInput(inputList);
 			return this;
 		}
@@ -246,10 +219,7 @@ namespace TestR.Desktop
 		{
 			MoveTo(x, y);
 
-			var inputList = new InputBuilder()
-				.AddMouseButtonClick(MouseButton.RightButton)
-				.ToArray();
-
+			var inputList = new InputBuilder().AddMouseButtonClick(MouseButton.RightButton);
 			Input.SendInput(inputList);
 			return this;
 		}
@@ -259,10 +229,7 @@ namespace TestR.Desktop
 		/// </summary>
 		public Mouse RightButtonDoubleClick()
 		{
-			var inputList = new InputBuilder()
-				.AddMouseButtonDoubleClick(MouseButton.RightButton)
-				.ToArray();
-
+			var inputList = new InputBuilder().AddMouseButtonDoubleClick(MouseButton.RightButton);
 			Input.SendInput(inputList);
 			return this;
 		}
@@ -272,10 +239,7 @@ namespace TestR.Desktop
 		/// </summary>
 		public Mouse RightButtonDown()
 		{
-			var inputList = new InputBuilder()
-				.AddMouseButtonDown(MouseButton.RightButton)
-				.ToArray();
-
+			var inputList = new InputBuilder().AddMouseButtonDown(MouseButton.RightButton);
 			Input.SendInput(inputList);
 			return this;
 		}
@@ -285,10 +249,7 @@ namespace TestR.Desktop
 		/// </summary>
 		public Mouse RightButtonUp()
 		{
-			var inputList = new InputBuilder()
-				.AddMouseButtonUp(MouseButton.RightButton)
-				.ToArray();
-
+			var inputList = new InputBuilder().AddMouseButtonUp(MouseButton.RightButton);
 			Input.SendInput(inputList);
 			return this;
 		}
@@ -322,10 +283,7 @@ namespace TestR.Desktop
 		/// </param>
 		public Mouse VerticalScroll(int scrollAmountInClicks)
 		{
-			var inputList = new InputBuilder()
-				.AddMouseVerticalWheelScroll(scrollAmountInClicks * _mouseWheelClickSize)
-				.ToArray();
-
+			var inputList = new InputBuilder().AddMouseVerticalWheelScroll(scrollAmountInClicks * _mouseWheelClickSize);
 			Input.SendInput(inputList);
 			return this;
 		}
@@ -336,10 +294,7 @@ namespace TestR.Desktop
 		/// <param name="buttonId"> The button id. </param>
 		public Mouse XButtonClick(int buttonId)
 		{
-			var inputList = new InputBuilder()
-				.AddMouseXButtonClick(buttonId)
-				.ToArray();
-
+			var inputList = new InputBuilder().AddMouseXButtonClick(buttonId);
 			Input.SendInput(inputList);
 			return this;
 		}
@@ -350,10 +305,7 @@ namespace TestR.Desktop
 		/// <param name="buttonId"> The button id. </param>
 		public Mouse XButtonDoubleClick(int buttonId)
 		{
-			var inputList = new InputBuilder()
-				.AddMouseXButtonDoubleClick(buttonId)
-				.ToArray();
-
+			var inputList = new InputBuilder().AddMouseXButtonDoubleClick(buttonId);
 			Input.SendInput(inputList);
 			return this;
 		}
@@ -364,10 +316,7 @@ namespace TestR.Desktop
 		/// <param name="buttonId"> The button id. </param>
 		public Mouse XButtonDown(int buttonId)
 		{
-			var inputList = new InputBuilder()
-				.AddMouseXButtonDown(buttonId)
-				.ToArray();
-
+			var inputList = new InputBuilder().AddMouseXButtonDown(buttonId);
 			Input.SendInput(inputList);
 			return this;
 		}
@@ -378,10 +327,7 @@ namespace TestR.Desktop
 		/// <param name="buttonId"> The button id. </param>
 		public Mouse XButtonUp(int buttonId)
 		{
-			var inputList = new InputBuilder()
-				.AddMouseXButtonUp(buttonId)
-				.ToArray();
-
+			var inputList = new InputBuilder().AddMouseXButtonUp(buttonId);
 			Input.SendInput(inputList);
 			return this;
 		}

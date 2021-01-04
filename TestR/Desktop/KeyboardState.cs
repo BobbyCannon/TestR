@@ -8,6 +8,11 @@
 		#region Properties
 
 		/// <summary>
+		/// The string interpretation of the key.
+		/// </summary>
+		public char Character { get; set; }
+
+		/// <summary>
 		/// Gets a value indicating if either the left or right alt key is pressed.
 		/// </summary>
 		public bool IsAltPressed => IsLeftAltPressed || IsRightAltPressed;
@@ -84,6 +89,7 @@
 		{
 			return new KeyboardState
 			{
+				Character = Character,
 				IsCapsLockOn = IsCapsLockOn,
 				IsLeftAltPressed = IsLeftAltPressed,
 				IsLeftControlPressed = IsLeftControlPressed,
@@ -100,26 +106,7 @@
 		/// <inheritdoc />
 		public override string ToString()
 		{
-			var keyCode = (int) Key;
-
-			if (keyCode >= (int) KeyboardKey.A && keyCode <= (int) KeyboardKey.Z)
-			{
-				return IsCapsLockOn || IsShiftPressed
-					? ((char) keyCode).ToString()
-					: ((char) keyCode).ToString().ToLower();
-			}
-
-			if (keyCode >= (int) KeyboardKey.Number0 && keyCode <= (int) KeyboardKey.Number9)
-			{
-				return ((char) keyCode).ToString();
-			}
-
-			if (keyCode >= (int) KeyboardKey.Numpad0 && keyCode <= (int) KeyboardKey.Numpad9)
-			{
-				return ((char) (keyCode - 0x30)).ToString();
-			}
-
-			return Key.ToString();
+			return Character == (char) 0 ? Keyboard.ToCharacter(Key, this).ToString() : Character.ToString();
 		}
 
 		#endregion

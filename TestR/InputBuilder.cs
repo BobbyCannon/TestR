@@ -36,64 +36,73 @@ namespace TestR
 			_inputList = new List<InputTypeWithData>();
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="InputBuilder" /> class.
+		/// </summary>
+		/// <param name="character"> The character to be added an an input. </param>
+		public InputBuilder(char character) : this()
+		{
+			Add(character);
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="InputBuilder" /> class.
+		/// </summary>
+		/// <param name="characters"> The characters to add. </param>
+		public InputBuilder(IEnumerable<char> characters) : this()
+		{
+			Add(characters);
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="InputBuilder" /> class.
+		/// </summary>
+		/// <param name="text"> The text to add. </param>
+		public InputBuilder(string text) : this()
+		{
+			Add(text);
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="InputBuilder" /> class.
+		/// </summary>
+		/// <param name="strokes"> The stroke(s) to add. </param>
+		public InputBuilder(params KeyStroke[] strokes) : this()
+		{
+			Add(strokes);
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="InputBuilder" /> class.
+		/// </summary>
+		/// <param name="keys"> The keys to press. </param>
+		public InputBuilder(params KeyboardKey[] keys) : this()
+		{
+			AddKeyPress(keys);
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="InputBuilder" /> class.
+		/// </summary>
+		/// <param name="modifier"> The modifier key. </param>
+		/// <param name="keys"> The list of keys to press. </param>
+		public InputBuilder(KeyboardModifier modifier, params KeyboardKey[] keys) : this()
+		{
+			AddKeyPress(modifier, keys);
+		}
+
 		#endregion
 
 		#region Methods
 
 		/// <summary>
-		/// Move the mouse to an absolute position.
+		/// Adds the character to the builder.
 		/// </summary>
-		/// <param name="absoluteX"> </param>
-		/// <param name="absoluteY"> </param>
+		/// <param name="character"> The character to be added an an input. </param>
 		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
-		public InputBuilder AddAbsoluteMouseMovement(int absoluteX, int absoluteY)
+		public InputBuilder Add(char character)
 		{
-			var screen = Screen.FromPoint(absoluteX, absoluteY);
-			var relativeX = absoluteX * 65536 / screen.Size.Width + 1;
-			var relativeY = absoluteY * 65536 / screen.Size.Height + 1;
-
-			var movement = new InputTypeWithData { Type = (uint) InputType.Mouse };
-			movement.Data.Mouse.Flags = (uint) (MouseFlag.Move | MouseFlag.Absolute);
-			movement.Data.Mouse.X = relativeX;
-			movement.Data.Mouse.Y = relativeY;
-
-			_inputList.Add(movement);
-
-			return this;
-		}
-
-		/// <summary>
-		/// Move the mouse to the absolute position on the virtual desktop.
-		/// </summary>
-		/// <param name="absoluteX"> </param>
-		/// <param name="absoluteY"> </param>
-		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
-		public InputBuilder AddAbsoluteMouseMovementOnVirtualDesktop(int absoluteX, int absoluteY)
-		{
-			var screen = Screen.VirtualScreenSize;
-			var relativeX = absoluteX * 65536 / screen.Size.Width + 1;
-			var relativeY = absoluteY * 65536 / screen.Size.Height + 1;
-
-			var movement = new InputTypeWithData { Type = (uint) InputType.Mouse };
-			movement.Data.Mouse.Flags = (uint) (MouseFlag.Move | MouseFlag.Absolute | MouseFlag.VirtualDesk);
-			movement.Data.Mouse.X = relativeX;
-			movement.Data.Mouse.Y = relativeY;
-
-			_inputList.Add(movement);
-
-			return this;
-		}
-
-		/// <summary>
-		/// Adds the character to the list of <see cref="InputTypeWithData" /> messages.
-		/// </summary>
-		/// <param name="character"> The <see cref="System.Char" /> to be added to the list of <see cref="InputTypeWithData" /> messages. </param>
-		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
-		public InputBuilder AddCharacter(char character)
-		{
-			ushort scanCode = character;
-
-			var down = new InputTypeWithData
+			var input = new InputTypeWithData
 			{
 				Type = (uint) InputType.Keyboard,
 				Data =
@@ -101,43 +110,20 @@ namespace TestR
 					Keyboard =
 						new KeyboardInput
 						{
-							KeyCode = character,
-							Scan = (ushort) (NativeInput.MapVirtualKey(character, 0) & 0xFFU),
-							Flags = IsExtendedKey((KeyboardKey) character) ? (uint) KeyboardFlag.ExtendedKey : 0,
+							KeyCode = 0,
+							Scan = character,
+							Flags = (uint) KeyboardFlag.Unicode,
 							Time = 0,
-							ExtraInfo = IntPtr.Zero
+							ExtraInfo = NativeInput.GetMessageExtraInfo()
 						}
 				}
 			};
 
-			var up = new InputTypeWithData
-			{
-				Type = (uint) InputType.Keyboard,
-				Data =
-				{
-					Keyboard =
-						new KeyboardInput
-						{
-							KeyCode = character,
-							Scan = (ushort) (NativeInput.MapVirtualKey(character, 0) & 0xFFU),
-							Flags = (uint) ((IsExtendedKey((KeyboardKey) character) ? KeyboardFlag.ExtendedKey : 0) | KeyboardFlag.KeyUp),
-							Time = 0,
-							ExtraInfo = IntPtr.Zero
-						}
-				}
-			};
+			// Add initial down, then modify and add up.
+			_inputList.Add(input);
+			input.Data.Keyboard.Flags |= (uint) KeyboardFlag.KeyUp;
+			_inputList.Add(input);
 
-			// Handle extended keys:
-			// If the scan code is preceded by a prefix byte that has the value 0xE0 (224),
-			// we need to include the KEYEVENTF_EXTENDEDKEY flag in the Flags property. 
-			if ((scanCode & 0xFF00) == 0xE000)
-			{
-				down.Data.Keyboard.Flags |= (uint) KeyboardFlag.ExtendedKey;
-				up.Data.Keyboard.Flags |= (uint) KeyboardFlag.ExtendedKey;
-			}
-
-			_inputList.Add(down);
-			_inputList.Add(up);
 			return this;
 		}
 
@@ -146,20 +132,35 @@ namespace TestR
 		/// </summary>
 		/// <param name="characters"> The characters to add. </param>
 		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
-		public InputBuilder AddCharacters(IEnumerable<char> characters)
+		public InputBuilder Add(IEnumerable<char> characters)
 		{
-			characters.ForEach(x => AddCharacter(x));
+			characters.ForEach(x => Add(x));
 			return this;
 		}
 
 		/// <summary>
-		/// Adds the characters in the specified <see cref="string" />.
+		/// Adds the characters in the provided <see cref="string" />.
 		/// </summary>
-		/// <param name="characters"> The string of <see cref="char" /> to add. </param>
+		/// <param name="text"> The text to add. </param>
 		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
-		public InputBuilder AddCharacters(string characters)
+		public InputBuilder Add(string text)
 		{
-			return AddCharacters(characters.ToCharArray());
+			return Add(text.ToCharArray());
+		}
+
+		/// <summary>
+		/// Add key stroke to the input builder.
+		/// </summary>
+		/// <param name="strokes"> The stroke(s) to add. </param>
+		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
+		public InputBuilder Add(params KeyStroke[] strokes)
+		{
+			foreach (var stroke in strokes)
+			{
+				AddKeyStroke(stroke);
+			}
+
+			return this;
 		}
 
 		/// <summary>
@@ -342,6 +343,65 @@ namespace TestR
 		}
 
 		/// <summary>
+		/// Moves the mouse relative to its current position or to an absolute position.
+		/// </summary>
+		/// <param name="x"> If relative is true then the relative amount of distance to move else it will be an absolute X position to move to. </param>
+		/// <param name="y"> If relative is true then the relative amount of distance to move else it will be an absolute Y position to move to. </param>
+		/// <param name="relative"> True to move a relative amount or false to move to an absolute position. </param>
+		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
+		public InputBuilder AddMouseMovement(int x, int y, bool relative = true)
+		{
+			if (relative)
+			{
+				// Move relative movement of the mouse cursor
+				var movement = new InputTypeWithData { Type = (uint) InputType.Mouse };
+				movement.Data.Mouse.Flags = (uint) MouseFlag.Move;
+				movement.Data.Mouse.X = x;
+				movement.Data.Mouse.Y = y;
+
+				_inputList.Add(movement);
+			}
+			else
+			{
+				// Move the mouse to an absolute location (x,y)
+				var screen = Screen.FromPoint(x, y);
+				var relativeX = x * 65536 / screen.Size.Width + 1;
+				var relativeY = y * 65536 / screen.Size.Height + 1;
+
+				var movement = new InputTypeWithData { Type = (uint) InputType.Mouse };
+				movement.Data.Mouse.Flags = (uint) (MouseFlag.Move | MouseFlag.Absolute);
+				movement.Data.Mouse.X = relativeX;
+				movement.Data.Mouse.Y = relativeY;
+
+				_inputList.Add(movement);
+			}
+
+			return this;
+		}
+
+		/// <summary>
+		/// Move the mouse to the absolute position on the virtual desktop.
+		/// </summary>
+		/// <param name="absoluteX"> The absolute X position to move to. </param>
+		/// <param name="absoluteY"> The absolute Y position to move to. </param>
+		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
+		public InputBuilder AddMouseMovementOnVirtualDesktop(int absoluteX, int absoluteY)
+		{
+			var screen = Screen.VirtualScreenSize;
+			var relativeX = absoluteX * 65536 / screen.Size.Width + 1;
+			var relativeY = absoluteY * 65536 / screen.Size.Height + 1;
+
+			var movement = new InputTypeWithData { Type = (uint) InputType.Mouse };
+			movement.Data.Mouse.Flags = (uint) (MouseFlag.Move | MouseFlag.Absolute | MouseFlag.VirtualDesk);
+			movement.Data.Mouse.X = relativeX;
+			movement.Data.Mouse.Y = relativeY;
+
+			_inputList.Add(movement);
+
+			return this;
+		}
+
+		/// <summary>
 		/// Scroll the vertical mouse wheel by the specified amount.
 		/// </summary>
 		/// <param name="scrollAmount"> </param>
@@ -408,28 +468,29 @@ namespace TestR
 		}
 
 		/// <summary>
-		/// Moves the mouse relative to its current position.
+		/// Clear the input list.
 		/// </summary>
-		/// <param name="x"> </param>
-		/// <param name="y"> </param>
-		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
-		public InputBuilder AddRelativeMouseMovement(int x, int y)
+		public InputBuilder Clear()
 		{
-			var movement = new InputTypeWithData { Type = (uint) InputType.Mouse };
-			movement.Data.Mouse.Flags = (uint) MouseFlag.Move;
-			movement.Data.Mouse.X = x;
-			movement.Data.Mouse.Y = y;
-
-			_inputList.Add(movement);
-
+			_inputList.Clear();
 			return this;
+		}
+
+		/// <summary>
+		/// Returns the list of <see cref="InputTypeWithData" /> messages as a <see cref="System.Array" /> of <see cref="InputTypeWithData" /> messages.
+		/// </summary>
+		/// <returns> The <see cref="Array" /> of <see cref="InputTypeWithData" /> messages. </returns>
+		internal InputTypeWithData[] ToArray()
+		{
+			return _inputList.ToArray();
 		}
 
 		/// <summary>
 		/// Add key strokes to input builder.
 		/// </summary>
 		/// <param name="stroke"> </param>
-		public void AddStroke(KeyStroke stroke)
+		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
+		private InputBuilder AddKeyStroke(KeyStroke stroke)
 		{
 			var modifierKeys = ConvertModifierToKey(stroke.Modifier).ToList();
 
@@ -458,46 +519,8 @@ namespace TestR
 			{
 				AddKeyUp(key);
 			}
-		}
 
-		/// <summary>
-		/// Add key stroke to the input builder.
-		/// </summary>
-		/// <param name="strokes"> The stroke(s) to add. </param>
-		public void AddStrokes(params KeyStroke[] strokes)
-		{
-			foreach (var stroke in strokes)
-			{
-				AddStroke(stroke);
-			}
-		}
-
-		/// <summary>
-		/// Clear the input list.
-		/// </summary>
-		public void Clear()
-		{
-			_inputList.Clear();
-		}
-
-		/// <summary>
-		/// Reset the input builder with a set of new key strokes.
-		/// </summary>
-		/// <param name="strokes"> </param>
-		public InputBuilder Reset(params KeyStroke[] strokes)
-		{
-			Clear();
-			AddStrokes(strokes);
 			return this;
-		}
-
-		/// <summary>
-		/// Returns the list of <see cref="InputTypeWithData" /> messages as a <see cref="System.Array" /> of <see cref="InputTypeWithData" /> messages.
-		/// </summary>
-		/// <returns> The <see cref="System.Array" /> of <see cref="InputTypeWithData" /> messages. </returns>
-		internal InputTypeWithData[] ToArray()
-		{
-			return _inputList.ToArray();
 		}
 
 		/// <summary>
@@ -601,38 +624,24 @@ namespace TestR
 
 		private static MouseFlag ToMouseButtonDownFlag(MouseButton button)
 		{
-			switch (button)
+			return button switch
 			{
-				case MouseButton.LeftButton:
-					return MouseFlag.LeftDown;
-
-				case MouseButton.MiddleButton:
-					return MouseFlag.MiddleDown;
-
-				case MouseButton.RightButton:
-					return MouseFlag.RightDown;
-
-				default:
-					return MouseFlag.LeftDown;
-			}
+				MouseButton.LeftButton => MouseFlag.LeftDown,
+				MouseButton.MiddleButton => MouseFlag.MiddleDown,
+				MouseButton.RightButton => MouseFlag.RightDown,
+				_ => MouseFlag.LeftDown
+			};
 		}
 
 		private static MouseFlag ToMouseButtonUpFlag(MouseButton button)
 		{
-			switch (button)
+			return button switch
 			{
-				case MouseButton.LeftButton:
-					return MouseFlag.LeftUp;
-
-				case MouseButton.MiddleButton:
-					return MouseFlag.MiddleUp;
-
-				case MouseButton.RightButton:
-					return MouseFlag.RightUp;
-
-				default:
-					return MouseFlag.LeftUp;
-			}
+				MouseButton.LeftButton => MouseFlag.LeftUp,
+				MouseButton.MiddleButton => MouseFlag.MiddleUp,
+				MouseButton.RightButton => MouseFlag.RightUp,
+				_ => MouseFlag.LeftUp
+			};
 		}
 
 		#endregion

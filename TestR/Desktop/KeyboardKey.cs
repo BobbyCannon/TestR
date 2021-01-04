@@ -848,7 +848,7 @@
         /// Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the ']}' key
         /// </summary>
         Oem6 = 0xDD,
-
+        
         /// <summary>
         /// Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the 'single-quote/double-quote' key
         /// </summary>

@@ -190,7 +190,7 @@ namespace TestR
 		{
 			Application.BringToFront();
 			Focus();
-			Input.Keyboard.SendInput(value, TimeSpan.Zero, keys);
+			Input.Keyboard.SendInput(value, keys);
 			return this;
 		}
 
@@ -217,6 +217,18 @@ namespace TestR
 			Application.BringToFront();
 			Focus();
 			Input.Keyboard.SendInput(keys);
+			return this;
+		}
+		
+		/// <summary>
+		/// Focus the element then send the key strokes as input.
+		/// </summary>
+		/// <param name="keyStrokes"> An set of keyboard key strokes to send. </param>
+		public virtual Element SendInput(params KeyStroke[] keyStrokes)
+		{
+			Application.BringToFront();
+			Focus();
+			Input.Keyboard.SendInput(keyStrokes);
 			return this;
 		}
 

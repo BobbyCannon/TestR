@@ -855,8 +855,7 @@
         </member>
         <member name="M:TestR.Desktop.Keyboard.#ctor">
             <summary>
-            Initializes a new instance of the <see cref="T:TestR.Desktop.Keyboard" /> class using an instance of a
-            <see cref="T:TestR.Internal.Inputs.InputMessageDispatcher" /> for dispatching <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages.
+            Initializes a new instance of the <see cref="T:TestR.Desktop.Keyboard" />.
             </summary>
         </member>
         <member name="P:TestR.Desktop.Keyboard.State">
@@ -864,23 +863,25 @@
             The last state of the keyboard when monitoring.
             </summary>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.IsKeyDown(TestR.Desktop.KeyboardKey)">
+        <member name="M:TestR.Desktop.Keyboard.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.IsKeyDown(TestR.Desktop.KeyboardKey[])">
             <summary>
             Determines whether the specified key is up or down.
             </summary>
-            <param name="key"> The <see cref="T:TestR.Desktop.KeyboardKey" /> for the key. </param>
+            <param name="keys"> The <see cref="T:TestR.Desktop.KeyboardKey" /> for the key(s). </param>
             <returns>
             True if the key is down otherwise false.
             </returns>
-            <remarks>
-            See: http://msdn.microsoft.com/en-us/library/ms646301(VS.85).aspx
-            </remarks>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.IsKeyUp(TestR.Desktop.KeyboardKey)">
+        <member name="M:TestR.Desktop.Keyboard.IsKeyUp(TestR.Desktop.KeyboardKey[])">
             <summary>
-            Determines whether the specified key is up or down by calling the GetKeyState function.
+            Determines whether the specified key is up or down.
             </summary>
-            <param name="key"> The <see cref="T:TestR.Desktop.KeyboardKey" /> for the key. </param>
+            <param name="keys"> The <see cref="T:TestR.Desktop.KeyboardKey" /> for the key(s). </param>
             <returns>
             True if the key is up otherwise false.
             </returns>
@@ -912,17 +913,8 @@
             modifierKey and K and C are the keys.
             The flow is Modifier KeyDown, Keys Press in order, Modifier KeyUp.
             </summary>
-            <param name="modifier"> The modifier key </param>
-            <param name="keys"> The list of keys to simulate </param>
-        </member>
-        <member name="M:TestR.Desktop.Keyboard.KeyPress(System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardModifier},TestR.Desktop.KeyboardKey[])">
-            <summary>
-            Simulates a modified keystroke where there are multiple modifiers and multiple keys like CTRL-ALT-K-C where CTRL
-            and ALT are the modifierKeys and K and C are the keys.
-            The flow is Modifiers KeyDown in order, Keys Press in order, Modifiers KeyUp in reverse order.
-            </summary>
-            <param name="modifiers"> The list of modifier keys </param>
-            <param name="keys"> The list of keys to simulate </param>
+            <param name="modifier"> The modifier key. </param>
+            <param name="keys"> The list of keys to press. </param>
         </member>
         <member name="M:TestR.Desktop.Keyboard.KeyUp(TestR.Desktop.KeyboardKey[])">
             <summary>
@@ -930,74 +922,80 @@
             </summary>
             <param name="keys"> The key(s) to lift up. </param>
         </member>
+        <member name="M:TestR.Desktop.Keyboard.SendInput(System.String,TestR.Desktop.KeyboardKey[])">
+            <summary>
+            Sends provided text and set of keys as input.
+            </summary>
+            <param name="text"> The text to be sent. </param>
+            <param name="keys"> The set of keys to be sent. </param>
+            <returns> This <see cref="T:TestR.Desktop.Keyboard" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.SendInput(TestR.Desktop.KeyboardKey[])">
+            <summary>
+            Sends provided set of key as input.
+            </summary>
+            <param name="keys"> The set of keys to be sent. </param>
+            <returns> This <see cref="T:TestR.Desktop.Keyboard" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.SendInput(System.String,System.TimeSpan,TestR.Desktop.KeyboardKey[])">
+            <summary>
+            Sends provided text as input. Can delay with before sending an optional set of keys.
+            </summary>
+            <param name="text"> The text to be sent. </param>
+            <param name="delay"> An optional delay to wait before sending the provided keys. </param>
+            <param name="keys"> An optional set of keys to be sent. </param>
+            <returns> This <see cref="T:TestR.Desktop.Keyboard" /> instance. </returns>
+            <exception cref="T:System.ArgumentException"> The text parameter is too long. </exception>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.SendInput(System.String,System.TimeSpan,TestR.Desktop.KeyStroke[])">
+            <summary>
+            Sends provided text as input. Can delay with before sending an optional set of key strokes.
+            </summary>
+            <param name="text"> The text to be sent. </param>
+            <param name="delay"> An optional delay to wait before sending the provided keys. </param>
+            <param name="keyStrokes"> An optional set of key strokes to be sent. </param>
+            <returns> This <see cref="T:TestR.Desktop.Keyboard" /> instance. </returns>
+            <exception cref="T:System.ArgumentException"> The text parameter is too long. </exception>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.SendInput(TestR.Desktop.KeyStroke[])">
+            <summary>
+            Sends provided key strokes as input.
+            </summary>
+            <param name="keyStrokes"> The set of key strokes to be sent. </param>
+            <returns> This <see cref="T:TestR.Desktop.Keyboard" /> instance. </returns>
+            <exception cref="T:System.ArgumentException"> The text parameter is too long. </exception>
+        </member>
         <member name="M:TestR.Desktop.Keyboard.Sleep(System.Int32)">
             <summary>
             Sleeps the executing thread to create a pause between simulated inputs.
             </summary>
             <param name="timeoutInMilliseconds"> The number of milliseconds to wait. </param>
+            <returns> This <see cref="T:TestR.Desktop.Keyboard" /> instance. </returns>
         </member>
         <member name="M:TestR.Desktop.Keyboard.Sleep(System.TimeSpan)">
             <summary>
             Sleeps the executing thread to create a pause between simulated inputs.
             </summary>
             <param name="timeout"> The time to wait. </param>
+            <returns> This <see cref="T:TestR.Desktop.Keyboard" /> instance. </returns>
         </member>
         <member name="M:TestR.Desktop.Keyboard.StartMonitoring">
             <summary>
             Start monitoring the keyboard input.
             </summary>
+            <returns> This <see cref="T:TestR.Desktop.Keyboard" /> instance. </returns>
         </member>
         <member name="M:TestR.Desktop.Keyboard.StopMonitoring">
             <summary>
             Stop monitoring the keyboard input.
             </summary>
+            <returns> This <see cref="T:TestR.Desktop.Keyboard" /> instance. </returns>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.SendInput(System.String,TestR.Desktop.KeyboardKey[])">
+        <member name="M:TestR.Desktop.Keyboard.Dispose(System.Boolean)">
             <summary>
-            Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted
-            text entry via the keyboard.
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
             </summary>
-            <param name="text"> The text to be simulated. </param>
-            <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
-        </member>
-        <member name="M:TestR.Desktop.Keyboard.SendInput(TestR.Desktop.KeyboardKey[])">
-            <summary>
-            Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted
-            text entry via the keyboard.
-            </summary>
-            <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
-        </member>
-        <member name="M:TestR.Desktop.Keyboard.SendInput(TestR.Desktop.KeyboardModifier,TestR.Desktop.KeyboardKey[])">
-            <summary>
-            Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted
-            text entry via the keyboard.
-            </summary>
-            <param name="modifier"> The modifier key. </param>
-            <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
-        </member>
-        <member name="M:TestR.Desktop.Keyboard.SendInput(System.String,System.TimeSpan,TestR.Desktop.KeyStroke[])">
-            <summary>
-            Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted
-            text entry via the keyboard.
-            </summary>
-            <param name="text"> The text to be simulated. </param>
-            <param name="delay"> An optional delay before sending optional keys. </param>
-            <param name="strokes"> An optional set of keyboard strokes to process typing the provided text. </param>
-        </member>
-        <member name="M:TestR.Desktop.Keyboard.SendInput(System.String,System.TimeSpan,TestR.Desktop.KeyboardKey[])">
-            <summary>
-            Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted
-            text entry via the keyboard.
-            </summary>
-            <param name="text"> The text to be simulated. </param>
-            <param name="delay"> An optional delay before sending optional keys. </param>
-            <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
-        </member>
-        <member name="M:TestR.Desktop.Keyboard.SendInput(System.Char)">
-            <summary>
-            Simulates a single character text entry via the keyboard.
-            </summary>
-            <param name="character"> The unicode character to be simulated. </param>
+            <param name="disposing"> True if disposing and false if otherwise. </param>
         </member>
         <member name="E:TestR.Desktop.Keyboard.KeyPressed">
             <summary>
@@ -1961,6 +1959,11 @@
             Represents the state of the keyboard during Keyboard.StartMonitoring.
             </summary>
         </member>
+        <member name="P:TestR.Desktop.KeyboardState.Character">
+            <summary>
+            The string interpretation of the key.
+            </summary>
+        </member>
         <member name="P:TestR.Desktop.KeyboardState.IsAltPressed">
             <summary>
             Gets a value indicating if either the left or right alt key is pressed.
@@ -2916,6 +2919,12 @@
             </summary>
             <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
         </member>
+        <member name="M:TestR.Element.SendInput(TestR.Desktop.KeyStroke[])">
+            <summary>
+            Focus the element then send the key strokes as input.
+            </summary>
+            <param name="keyStrokes"> An set of keyboard key strokes to send. </param>
+        </member>
         <member name="M:TestR.Element.ToDetailString">
             <summary>
             Provides a string of details for the element.
@@ -3376,12 +3385,6 @@
             </summary>
             <param name="builder"> The builder containing the input. </param>
         </member>
-        <member name="M:TestR.Input.SendInput(TestR.Internal.Inputs.InputTypeWithData[])">
-            <summary>
-            Dispatches the specified provided inputs in their specified order by issuing a single call.
-            </summary>
-            <param name="builder"> The builder containing the input. </param>
-        </member>
         <member name="T:TestR.InputBuilder">
             <summary>
             A helper class for building a list of <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages ready to be sent to the native Windows API.
@@ -3397,41 +3400,69 @@
             Initializes a new instance of the <see cref="T:TestR.InputBuilder" /> class.
             </summary>
         </member>
-        <member name="M:TestR.InputBuilder.AddAbsoluteMouseMovement(System.Int32,System.Int32)">
+        <member name="M:TestR.InputBuilder.#ctor(System.Char)">
             <summary>
-            Move the mouse to an absolute position.
+            Initializes a new instance of the <see cref="T:TestR.InputBuilder" /> class.
             </summary>
-            <param name="absoluteX"> </param>
-            <param name="absoluteY"> </param>
+            <param name="character"> The character to be added an an input. </param>
+        </member>
+        <member name="M:TestR.InputBuilder.#ctor(System.Collections.Generic.IEnumerable{System.Char})">
+            <summary>
+            Initializes a new instance of the <see cref="T:TestR.InputBuilder" /> class.
+            </summary>
+            <param name="characters"> The characters to add. </param>
+        </member>
+        <member name="M:TestR.InputBuilder.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TestR.InputBuilder" /> class.
+            </summary>
+            <param name="text"> The text to add. </param>
+        </member>
+        <member name="M:TestR.InputBuilder.#ctor(TestR.Desktop.KeyStroke[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:TestR.InputBuilder" /> class.
+            </summary>
+            <param name="strokes"> The stroke(s) to add. </param>
+        </member>
+        <member name="M:TestR.InputBuilder.#ctor(TestR.Desktop.KeyboardKey[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:TestR.InputBuilder" /> class.
+            </summary>
+            <param name="keys"> The keys to press. </param>
+        </member>
+        <member name="M:TestR.InputBuilder.#ctor(TestR.Desktop.KeyboardModifier,TestR.Desktop.KeyboardKey[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:TestR.InputBuilder" /> class.
+            </summary>
+            <param name="modifier"> The modifier key. </param>
+            <param name="keys"> The list of keys to press. </param>
+        </member>
+        <member name="M:TestR.InputBuilder.Add(System.Char)">
+            <summary>
+            Adds the character to the builder.
+            </summary>
+            <param name="character"> The character to be added an an input. </param>
             <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
         </member>
-        <member name="M:TestR.InputBuilder.AddAbsoluteMouseMovementOnVirtualDesktop(System.Int32,System.Int32)">
-            <summary>
-            Move the mouse to the absolute position on the virtual desktop.
-            </summary>
-            <param name="absoluteX"> </param>
-            <param name="absoluteY"> </param>
-            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.InputBuilder.AddCharacter(System.Char)">
-            <summary>
-            Adds the character to the list of <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages.
-            </summary>
-            <param name="character"> The <see cref="T:System.Char" /> to be added to the list of <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages. </param>
-            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.InputBuilder.AddCharacters(System.Collections.Generic.IEnumerable{System.Char})">
+        <member name="M:TestR.InputBuilder.Add(System.Collections.Generic.IEnumerable{System.Char})">
             <summary>
             Adds all of the characters in the specified <see cref="T:System.Collections.Generic.IEnumerable`1" /> of <see cref="T:System.Char" />.
             </summary>
             <param name="characters"> The characters to add. </param>
             <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
         </member>
-        <member name="M:TestR.InputBuilder.AddCharacters(System.String)">
+        <member name="M:TestR.InputBuilder.Add(System.String)">
             <summary>
-            Adds the characters in the specified <see cref="T:System.String" />.
+            Adds the characters in the provided <see cref="T:System.String" />.
             </summary>
-            <param name="characters"> The string of <see cref="T:System.Char" /> to add. </param>
+            <param name="text"> The text to add. </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.Add(TestR.Desktop.KeyStroke[])">
+            <summary>
+            Add key stroke to the input builder.
+            </summary>
+            <param name="strokes"> The stroke(s) to add. </param>
             <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
         </member>
         <member name="M:TestR.InputBuilder.AddKeyDown(TestR.Desktop.KeyboardKey[])">
@@ -3508,6 +3539,23 @@
             <param name="scrollAmount"> </param>
             <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
         </member>
+        <member name="M:TestR.InputBuilder.AddMouseMovement(System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Moves the mouse relative to its current position or to an absolute position.
+            </summary>
+            <param name="x"> If relative is true then the relative amount of distance to move else it will be an absolute X position to move to. </param>
+            <param name="y"> If relative is true then the relative amount of distance to move else it will be an absolute Y position to move to. </param>
+            <param name="relative"> True to move a relative amount or false to move to an absolute position. </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.AddMouseMovementOnVirtualDesktop(System.Int32,System.Int32)">
+            <summary>
+            Move the mouse to the absolute position on the virtual desktop.
+            </summary>
+            <param name="absoluteX"> The absolute X position to move to. </param>
+            <param name="absoluteY"> The absolute Y position to move to. </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
+        </member>
         <member name="M:TestR.InputBuilder.AddMouseVerticalWheelScroll(System.Int32)">
             <summary>
             Scroll the vertical mouse wheel by the specified amount.
@@ -3543,42 +3591,23 @@
             <param name="xButtonId"> </param>
             <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
         </member>
-        <member name="M:TestR.InputBuilder.AddRelativeMouseMovement(System.Int32,System.Int32)">
-            <summary>
-            Moves the mouse relative to its current position.
-            </summary>
-            <param name="x"> </param>
-            <param name="y"> </param>
-            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
-        </member>
-        <member name="M:TestR.InputBuilder.AddStroke(TestR.Desktop.KeyStroke)">
-            <summary>
-            Add key strokes to input builder.
-            </summary>
-            <param name="stroke"> </param>
-        </member>
-        <member name="M:TestR.InputBuilder.AddStrokes(TestR.Desktop.KeyStroke[])">
-            <summary>
-            Add key stroke to the input builder.
-            </summary>
-            <param name="strokes"> The stroke(s) to add. </param>
-        </member>
         <member name="M:TestR.InputBuilder.Clear">
             <summary>
             Clear the input list.
             </summary>
-        </member>
-        <member name="M:TestR.InputBuilder.Reset(TestR.Desktop.KeyStroke[])">
-            <summary>
-            Reset the input builder with a set of new key strokes.
-            </summary>
-            <param name="strokes"> </param>
         </member>
         <member name="M:TestR.InputBuilder.ToArray">
             <summary>
             Returns the list of <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages as a <see cref="T:System.Array" /> of <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages.
             </summary>
             <returns> The <see cref="T:System.Array" /> of <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.AddKeyStroke(TestR.Desktop.KeyStroke)">
+            <summary>
+            Add key strokes to input builder.
+            </summary>
+            <param name="stroke"> </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
         </member>
         <member name="M:TestR.InputBuilder.ConvertModifierToKey(System.Collections.Generic.IEnumerable{TestR.Desktop.KeyboardModifier})">
             <summary>
@@ -6721,7 +6750,7 @@
         <member name="M:TestR.Web.Elements.TextArea.SendInput(System.String)">
             <inheritdoc />
         </member>
-        <member name="M:TestR.Web.Elements.TextArea.TypeText(System.String,System.Boolean)">
+        <member name="M:TestR.Web.Elements.TextArea.SendInput(System.String,System.Boolean)">
             <summary>
             Type text into the element.
             </summary>
@@ -6813,7 +6842,7 @@
         <member name="M:TestR.Web.Elements.TextInput.SendInput(System.String)">
             <inheritdoc />
         </member>
-        <member name="M:TestR.Web.Elements.TextInput.TypeText(System.String,System.Boolean)">
+        <member name="M:TestR.Web.Elements.TextInput.SendInput(System.String,System.Boolean)">
             <summary>
             Type text into the element.
             </summary>

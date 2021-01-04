@@ -243,21 +243,6 @@ namespace TestR.Tests.Desktop
 			element.UpdateParents();
 			Assert.AreEqual(checkbox.FullId, element.FullId);
 		}
-		
-		[TestMethod]
-		public void MonitorForKeyPress()
-		{
-			using var application = TestHelper.GetOrStartApplication();
-			var window = application.First<Window>("ParentForm");
-			var text = window.First<Edit>("textBox1");
-
-			var element = DesktopElement.FromPoint(text.Location);
-			Assert.AreEqual("textBox1", element.FullId);
-			text.SendInput("Hello World");
-
-			var matched = Utility.Wait(() => text.Text == "Hello World", 2000, 25);
-			Assert.IsTrue(matched, $"Hello World != {text.Text}");
-		}
 
 		[TestMethod]
 		public void GetWindowById()
@@ -276,6 +261,21 @@ namespace TestR.Tests.Desktop
 		}
 
 		[TestMethod]
+		public void MonitorForKeyPress()
+		{
+			using var application = TestHelper.GetOrStartApplication();
+			var window = application.First<Window>("ParentForm");
+			var text = window.First<Edit>("textBox1");
+
+			var element = DesktopElement.FromPoint(text.Location);
+			Assert.AreEqual("textBox1", element.FullId);
+			text.SendInput("Hello World");
+
+			var matched = Utility.Wait(() => text.Text == "Hello World", 2000, 25);
+			Assert.IsTrue(matched, $"Hello World != {text.Text}");
+		}
+
+		[TestMethod]
 		public void RefreshingApplicationWhileClosingWindowsShouldNotFail()
 		{
 			using var application = TestHelper.StartApplication();
@@ -284,6 +284,18 @@ namespace TestR.Tests.Desktop
 			Assert.IsNotNull(window);
 			Task.Run(() => tempApplication.Refresh());
 			window.Close();
+		}
+
+		[TestMethod]
+		public void SendInputShouldTranslateToText()
+		{
+			using var application = TestHelper.StartApplication();
+			var window = application.First<Window>("TestR Test WinForm");
+			var textBox1 = window.First<Edit>("textBox1");
+			var keyPress = window.First<Edit>("keyPress");
+			textBox1.SendInput("Hello World");
+			var actual = keyPress.Text;
+			Assert.AreEqual("Hello World", actual);
 		}
 
 		#endregion

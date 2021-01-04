@@ -1,5 +1,6 @@
 ﻿#region References
 
+using System;
 using TestR.Desktop;
 using TestR.Internal.Inputs;
 
@@ -53,20 +54,12 @@ namespace TestR
 		/// Dispatches the specified inputs from the provided InputBuilder in their specified order by issuing a single call.
 		/// </summary>
 		/// <param name="builder"> The builder containing the input. </param>
-		public static void SendInput(InputBuilder builder)
+		public static InputBuilder SendInput(InputBuilder builder)
 		{
 			_messageDispatcher.DispatchInput(builder.ToArray());
+			return builder;
 		}
-
-		/// <summary>
-		/// Dispatches the specified provided inputs in their specified order by issuing a single call.
-		/// </summary>
-		/// <param name="builder"> The builder containing the input. </param>
-		public static void SendInput(params InputTypeWithData[] builder)
-		{
-			_messageDispatcher.DispatchInput(builder);
-		}
-
+		
 		#endregion
 	}
 }

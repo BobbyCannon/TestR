@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestR.Desktop;
-using TestR.Internal;
 using TestR.Web;
 using TestR.Web.Browsers;
 using TestR.Web.Elements;
@@ -49,7 +48,7 @@ namespace TestR.Tests.Web
 				browser.NavigateTo(TestSite + "/Angular.html");
 
 				var email = browser.First<TextInput>("email");
-				email.TypeText("user", true);
+				email.SendInput("user", true);
 
 				var expected = "ng-valid-parse ng-untouched ng-scope ng-invalid ng-not-empty ng-dirty ng-invalid-email ng-valid-required".Split(' ');
 				var actual = email.GetAttributeValue("class", true).Split(' ');
@@ -857,11 +856,11 @@ namespace TestR.Tests.Web
 			ForAllBrowsers(browser =>
 			{
 				browser.NavigateTo(TestSite + "/iframe.html");
-				browser.First<TextInput>("id").TypeText("hello", true);
+				browser.First<TextInput>("id").SendInput("hello", true);
 
 				var frame = browser.First("frame");
 				var email = frame.First<TextInput>("email");
-				email.TypeText("world", true);
+				email.SendInput("world", true);
 
 				Assert.AreEqual("world", email.Text);
 				Assert.AreEqual("world", email.GetAttributeValue("value"));
@@ -1177,6 +1176,110 @@ namespace TestR.Tests.Web
 		}
 
 		[TestMethod]
+		public void SendInputAllInputs()
+		{
+			ForAllBrowsers(browser =>
+			{
+				browser.NavigateTo(TestSite + "/inputs.html");
+
+				foreach (var input in browser.Descendants<TextInput>())
+				{
+					if (input.Id == "number")
+					{
+						input.SendInput("100");
+						Assert.AreEqual("100", input.Text);
+					}
+					else
+					{
+						input.SendInput(input.Id);
+						Assert.AreEqual(input.Id, input.Text);
+					}
+				}
+
+				foreach (var input in browser.Descendants<TextArea>())
+				{
+					input.SendInput(input.Id);
+					Assert.AreEqual(input.Id, input.Text);
+				}
+			});
+		}
+
+		[TestMethod]
+		public void SendInputAppendInput()
+		{
+			ForAllBrowsers(browser =>
+			{
+				browser.NavigateTo(TestSite + "/inputs.html");
+				var input = browser.First<TextInput>("text");
+				input.Value = "foo";
+				input.SendInput("bar");
+				Assert.AreEqual("foobar", input.Value);
+			});
+		}
+
+		[TestMethod]
+		public void SendInputPasswordInput()
+		{
+			ForAllBrowsers(browser =>
+			{
+				browser.NavigateTo(TestSite + "/inputs.html");
+				var input = browser.First<TextInput>("password");
+				input.SendInput("password", true);
+				Assert.AreEqual("password", input.Value);
+			});
+		}
+
+		[TestMethod]
+		public void SendInputSelectInput()
+		{
+			ForAllBrowsers(browser =>
+			{
+				browser.NavigateTo(TestSite + "/main.html");
+				var select = browser.First<Select>("select");
+				select.SendInput("O");
+				Assert.AreEqual("One", select.Text);
+				Assert.AreEqual("1", select.Value);
+			});
+		}
+
+		[TestMethod]
+		public void SendInputSetInput()
+		{
+			ForAllBrowsers(browser =>
+			{
+				browser.NavigateTo(TestSite + "/inputs.html");
+				var input = browser.First<TextInput>("text");
+				input.Value = "foo";
+				input.SendInput("bar", true);
+				Assert.AreEqual("bar", input.Value);
+			});
+		}
+
+		[TestMethod]
+		public void SendInputUsingKeyboard()
+		{
+			ForAllBrowsers(browser =>
+			{
+				browser.NavigateTo(TestSite + "/inputs.html");
+				var input = browser.First("text");
+				input.SendInput("bar");
+				Assert.AreEqual("bar", ((TextInput) input).Value);
+			});
+		}
+
+		[TestMethod]
+		public void SendInputWithNewLine()
+		{
+			ForAllBrowsers(browser =>
+			{
+				browser.NavigateTo(TestSite + "/inputs.html");
+				var input = browser.First<TextArea>("textarea");
+				input.SendInput("first\r\nsecond");
+				Assert.AreEqual("first\nsecond", input.Text);
+			});
+		}
+
+		[TestMethod]
 		public void SetButtonText()
 		{
 			ForAllBrowsers(browser =>
@@ -1476,110 +1579,6 @@ namespace TestR.Tests.Web
 
 				var element = browser.First<Header>("h5");
 				Assert.AreEqual(element.Text, "Header Five");
-			});
-		}
-
-		[TestMethod]
-		public void TypeTextAllInputs()
-		{
-			ForAllBrowsers(browser =>
-			{
-				browser.NavigateTo(TestSite + "/inputs.html");
-
-				foreach (var input in browser.Descendants<TextInput>())
-				{
-					if (input.Id == "number")
-					{
-						input.SendInput("100");
-						Assert.AreEqual("100", input.Text);
-					}
-					else
-					{
-						input.SendInput(input.Id);
-						Assert.AreEqual(input.Id, input.Text);
-					}
-				}
-
-				foreach (var input in browser.Descendants<TextArea>())
-				{
-					input.SendInput(input.Id);
-					Assert.AreEqual(input.Id, input.Text);
-				}
-			});
-		}
-
-		[TestMethod]
-		public void TypeTextAppendInput()
-		{
-			ForAllBrowsers(browser =>
-			{
-				browser.NavigateTo(TestSite + "/inputs.html");
-				var input = browser.First<TextInput>("text");
-				input.Value = "foo";
-				input.SendInput("bar");
-				Assert.AreEqual("foobar", input.Value);
-			});
-		}
-
-		[TestMethod]
-		public void TypeTextPasswordInput()
-		{
-			ForAllBrowsers(browser =>
-			{
-				browser.NavigateTo(TestSite + "/inputs.html");
-				var input = browser.First<TextInput>("password");
-				input.TypeText("password", true);
-				Assert.AreEqual("password", input.Value);
-			});
-		}
-
-		[TestMethod]
-		public void TypeTextSelectInput()
-		{
-			ForAllBrowsers(browser =>
-			{
-				browser.NavigateTo(TestSite + "/main.html");
-				var select = browser.First<Select>("select");
-				select.SendInput("O");
-				Assert.AreEqual("One", select.Text);
-				Assert.AreEqual("1", select.Value);
-			});
-		}
-
-		[TestMethod]
-		public void TypeTextSetInput()
-		{
-			ForAllBrowsers(browser =>
-			{
-				browser.NavigateTo(TestSite + "/inputs.html");
-				var input = browser.First<TextInput>("text");
-				input.Value = "foo";
-				input.TypeText("bar", true);
-				Assert.AreEqual("bar", input.Value);
-			});
-		}
-
-		[TestMethod]
-		public void TypeTextUsingKeyboard()
-		{
-			ForAllBrowsers(browser =>
-			{
-				browser.NavigateTo(TestSite + "/inputs.html");
-				var input = browser.First("text");
-				input.SendInput("bar");
-				Assert.AreEqual("bar", ((TextInput) input).Value);
-			});
-		}
-
-		[TestMethod]
-		public void TypeTextWithNewLine()
-		{
-			ForAllBrowsers(browser =>
-			{
-				browser.NavigateTo(TestSite + "/inputs.html");
-				var input = browser.First<TextArea>("textarea");
-				input.SendInput("first\r\nsecond");
-				Assert.AreEqual("first\nsecond", input.Text);
 			});
 		}
 
