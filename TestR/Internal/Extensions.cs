@@ -7,7 +7,6 @@ using Interop.UIAutomationClient;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using TestR.Web;
 using ExpandCollapseState = TestR.Desktop.Pattern.ExpandCollapseState;
 using ToggleState = TestR.Desktop.Pattern.ToggleState;
 
@@ -18,16 +17,6 @@ namespace TestR.Internal
 	internal static class Extensions
 	{
 		#region Methods
-
-		/// <summary>
-		/// Converts the string to an integer.
-		/// </summary>
-		/// <param name="item"> The item to convert to an integer. </param>
-		/// <returns> The JSON data of the object. </returns>
-		public static int ToInt(this string item)
-		{
-			return int.TryParse(item, out var response) ? response : 0;
-		}
 
 		/// <summary>
 		/// Deserialize JSON data into a JToken class.
@@ -74,53 +63,36 @@ namespace TestR.Internal
 		}
 
 		/// <summary>
-		/// Converts a browser type enum into an array of only individual browser types.
+		/// Converts the string to an integer.
 		/// </summary>
-		/// <param name="browserType"> The browser type to convert. </param>
-		/// <returns> The individual browser type values in the provided type. </returns>
-		public static BrowserType[] GetTypeArray(this BrowserType browserType)
+		/// <param name="item"> The item to convert to an integer. </param>
+		/// <returns> The JSON data of the object. </returns>
+		public static int ToInt(this string item)
 		{
-			var types = new[] { BrowserType.Chrome, BrowserType.Edge, BrowserType.Firefox };
-			return types.Where(type => (browserType & type) == type).ToArray();
+			return int.TryParse(item, out var response) ? response : 0;
 		}
 
 		internal static ToggleState Convert(this Interop.UIAutomationClient.ToggleState state)
 		{
-			switch (state)
+			return state switch
 			{
-				case Interop.UIAutomationClient.ToggleState.ToggleState_Off:
-					return ToggleState.Off;
-
-				case Interop.UIAutomationClient.ToggleState.ToggleState_On:
-					return ToggleState.On;
-
-				case Interop.UIAutomationClient.ToggleState.ToggleState_Indeterminate:
-					return ToggleState.Indeterminate;
-
-				default:
-					throw new ArgumentOutOfRangeException(nameof(state), state, null);
-			}
+				Interop.UIAutomationClient.ToggleState.ToggleState_Off => ToggleState.Off,
+				Interop.UIAutomationClient.ToggleState.ToggleState_On => ToggleState.On,
+				Interop.UIAutomationClient.ToggleState.ToggleState_Indeterminate => ToggleState.Indeterminate,
+				_ => throw new ArgumentOutOfRangeException(nameof(state), state, null)
+			};
 		}
 
 		internal static ExpandCollapseState Convert(this Interop.UIAutomationClient.ExpandCollapseState state)
 		{
-			switch (state)
+			return state switch
 			{
-				case Interop.UIAutomationClient.ExpandCollapseState.ExpandCollapseState_Collapsed:
-					return ExpandCollapseState.Collapsed;
-
-				case Interop.UIAutomationClient.ExpandCollapseState.ExpandCollapseState_Expanded:
-					return ExpandCollapseState.Expanded;
-
-				case Interop.UIAutomationClient.ExpandCollapseState.ExpandCollapseState_PartiallyExpanded:
-					return ExpandCollapseState.PartiallyExpanded;
-
-				case Interop.UIAutomationClient.ExpandCollapseState.ExpandCollapseState_LeafNode:
-					return ExpandCollapseState.LeafNode;
-
-				default:
-					throw new ArgumentOutOfRangeException(nameof(state), state, null);
-			}
+				Interop.UIAutomationClient.ExpandCollapseState.ExpandCollapseState_Collapsed => ExpandCollapseState.Collapsed,
+				Interop.UIAutomationClient.ExpandCollapseState.ExpandCollapseState_Expanded => ExpandCollapseState.Expanded,
+				Interop.UIAutomationClient.ExpandCollapseState.ExpandCollapseState_PartiallyExpanded => ExpandCollapseState.PartiallyExpanded,
+				Interop.UIAutomationClient.ExpandCollapseState.ExpandCollapseState_LeafNode => ExpandCollapseState.LeafNode,
+				_ => throw new ArgumentOutOfRangeException(nameof(state), state, null)
+			};
 		}
 
 		internal static IUIAutomationElement GetCurrentParent(this IUIAutomationElement element)

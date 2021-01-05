@@ -159,7 +159,18 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
-		/// Sends provided text and set of keys as input.
+		/// Sends provided text and an optional set of keys as input.
+		/// </summary>
+		/// <param name="text"> The text to be sent. </param>
+		/// <returns> This <see cref="Keyboard" /> instance. </returns>
+		public Keyboard SendInput(string text)
+		{
+			Input.SendInput(new InputBuilder(text));
+			return this;
+		}
+		
+		/// <summary>
+		/// Sends provided text and an optional set of keys as input.
 		/// </summary>
 		/// <param name="text"> The text to be sent. </param>
 		/// <param name="keys"> The set of keys to be sent. </param>
@@ -167,23 +178,6 @@ namespace TestR.Desktop
 		public Keyboard SendInput(string text, params KeyboardKey[] keys)
 		{
 			return SendInput(text, TimeSpan.Zero, keys);
-		}
-
-		/// <summary>
-		/// Sends provided set of key as input.
-		/// </summary>
-		/// <param name="keys"> The set of keys to be sent. </param>
-		/// <returns> This <see cref="Keyboard" /> instance. </returns>
-		public Keyboard SendInput(params KeyboardKey[] keys)
-		{
-			if (keys.Length <= 0)
-			{
-				return this;
-			}
-
-			Input.SendInput(new InputBuilder(keys));
-
-			return this;
 		}
 
 		/// <summary>
@@ -217,6 +211,18 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
+		/// Sends provided text and optional set of key strokes as input.
+		/// </summary>
+		/// <param name="text"> The text to be sent. </param>
+		/// <param name="keyStrokes"> An optional set of key strokes to be sent. </param>
+		/// <returns> This <see cref="Keyboard" /> instance. </returns>
+		/// <exception cref="ArgumentException"> The text parameter is too long. </exception>
+		public Keyboard SendInput(string text, params KeyStroke[] keyStrokes)
+		{
+			return SendInput(text, TimeSpan.Zero, keyStrokes);
+		}
+
+		/// <summary>
 		/// Sends provided text as input. Can delay with before sending an optional set of key strokes.
 		/// </summary>
 		/// <param name="text"> The text to be sent. </param>
@@ -242,6 +248,41 @@ namespace TestR.Desktop
 			{
 				Input.SendInput(inputList.Clear().Add(keyStrokes));
 			}
+
+			return this;
+		}
+
+		/// <summary>
+		/// Sends provided set of key as input.
+		/// </summary>
+		/// <param name="keys"> The set of keys to be sent. </param>
+		/// <returns> This <see cref="Keyboard" /> instance. </returns>
+		public Keyboard SendInput(params KeyboardKey[] keys)
+		{
+			if (keys.Length <= 0)
+			{
+				return this;
+			}
+
+			Input.SendInput(new InputBuilder(keys));
+
+			return this;
+		}
+
+		/// <summary>
+		/// Sends provided set of keys as input with a modifier (ctrl, shift, etc).
+		/// </summary>
+		/// <param name="modifiers"> The modifier key(s). </param>
+		/// <param name="keys"> The set of keys to be sent. </param>
+		/// <returns> This <see cref="Keyboard" /> instance. </returns>
+		public Keyboard SendInput(KeyboardModifier modifiers, params KeyboardKey[] keys)
+		{
+			if (keys.Length <= 0)
+			{
+				return this;
+			}
+
+			Input.SendInput(new InputBuilder(modifiers, keys));
 
 			return this;
 		}

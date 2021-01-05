@@ -3,6 +3,7 @@
 using System;
 using System.Drawing;
 using System.Text;
+using System.Threading;
 using TestR.Desktop;
 using TestR.Internal;
 
@@ -170,48 +171,65 @@ namespace TestR
 		public abstract Element RightClick(int x = 0, int y = 0);
 
 		/// <summary>
-		/// Focus the element then send the text as keyboard input.
+		/// Focus the element then sends provided text and an optional set of keys as input.
 		/// </summary>
-		/// <param name="value"> The value to type. </param>
-		public virtual Element SendInput(string value)
+		/// <param name="text"> The value to type. </param>
+		public virtual Element SendInput(string text)
 		{
 			Application.BringToFront();
 			Focus();
-			Input.Keyboard.SendInput(value);
+			Input.Keyboard.SendInput(text);
 			return this;
 		}
 
 		/// <summary>
-		/// Focus the element then send the text as keyboard input.
+		/// Focus the element then sends provided text and an optional set of keys as input.
 		/// </summary>
-		/// <param name="value"> The value to type. </param>
+		/// <param name="text"> The value to type. </param>
 		/// <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
-		public virtual Element SendInput(string value, params KeyboardKey[] keys)
+		public virtual Element SendInput(string text, params KeyboardKey[] keys)
 		{
 			Application.BringToFront();
 			Focus();
-			Input.Keyboard.SendInput(value, keys);
+			Input.Keyboard.SendInput(text, keys);
 			return this;
 		}
 
 		/// <summary>
-		/// Focus the element then send the text as keyboard input.
+		/// Focus the element then sends provided text as input. Can delay with before sending an optional set of key strokes.
 		/// </summary>
-		/// <param name="value"> The value to type. </param>
+		/// <param name="text"> The value to type. </param>
 		/// <param name="delay"> An optional delay before sending optional keys. </param>
 		/// <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
-		public virtual Element SendInput(string value, TimeSpan delay, params KeyboardKey[] keys)
+		public virtual Element SendInput(string text, TimeSpan delay, params KeyboardKey[] keys)
 		{
 			Application.BringToFront();
 			Focus();
-			Input.Keyboard.SendInput(value, delay, keys);
+			Input.Keyboard.SendInput(text, delay, keys);
 			return this;
 		}
 
 		/// <summary>
-		/// Focus the element then send the text as keyboard input.
+		/// Focus the element then sends provided text as input. Can delay with before sending an optional set of key strokes.
 		/// </summary>
-		/// <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
+		/// <param name="text"> The text to be sent. </param>
+		/// <param name="delay"> An optional delay to wait before sending the provided keys. </param>
+		/// <param name="keyStrokes"> An optional set of key strokes to be sent. </param>
+		/// <returns> This <see cref="Element" /> instance. </returns>
+		/// <exception cref="ArgumentException"> The text parameter is too long. </exception>
+		public virtual Element SendInput(string text, TimeSpan delay, params KeyStroke[] keyStrokes)
+		{
+			Application.BringToFront();
+			Focus();
+			Input.Keyboard.SendInput(text, delay, keyStrokes);
+			return this;
+		}
+
+		/// <summary>
+		/// Focus the element then sends provided set of key as input.
+		/// </summary>
+		/// <param name="keys"> The set of keys to be sent. </param>
+		/// <returns> This <see cref="Element" /> instance. </returns>
 		public virtual Element SendInput(params KeyboardKey[] keys)
 		{
 			Application.BringToFront();
@@ -219,7 +237,21 @@ namespace TestR
 			Input.Keyboard.SendInput(keys);
 			return this;
 		}
-		
+
+		/// <summary>
+		/// Sends provided set of keys as input with a modifier (ctrl, shift, etc).
+		/// </summary>
+		/// <param name="modifiers"> The modifier key(s). </param>
+		/// <param name="keys"> The set of keys to be sent. </param>
+		/// <returns> This <see cref="Element" /> instance. </returns>
+		public virtual Element SendInput(KeyboardModifier modifiers, params KeyboardKey[] keys)
+		{
+			Application.BringToFront();
+			Focus();
+			Input.Keyboard.SendInput(modifiers, keys);
+			return this;
+		}
+
 		/// <summary>
 		/// Focus the element then send the key strokes as input.
 		/// </summary>
@@ -229,6 +261,17 @@ namespace TestR
 			Application.BringToFront();
 			Focus();
 			Input.Keyboard.SendInput(keyStrokes);
+			return this;
+		}
+
+		/// <summary>
+		/// Sleeps the executing thread to create a pause between simulated inputs.
+		/// </summary>
+		/// <param name="timeout"> The time to wait. </param>
+		/// <returns> This <see cref="Element" /> instance. </returns>
+		public virtual Element Sleep(TimeSpan timeout)
+		{
+			Thread.Sleep(timeout);
 			return this;
 		}
 

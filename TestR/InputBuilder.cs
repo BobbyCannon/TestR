@@ -84,11 +84,11 @@ namespace TestR
 		/// <summary>
 		/// Initializes a new instance of the <see cref="InputBuilder" /> class.
 		/// </summary>
-		/// <param name="modifier"> The modifier key. </param>
+		/// <param name="modifiers"> The modifier key(s). </param>
 		/// <param name="keys"> The list of keys to press. </param>
-		public InputBuilder(KeyboardModifier modifier, params KeyboardKey[] keys) : this()
+		public InputBuilder(KeyboardModifier modifiers, params KeyboardKey[] keys) : this()
 		{
-			AddKeyPress(modifier, keys);
+			AddKeyPress(modifiers, keys);
 		}
 
 		#endregion

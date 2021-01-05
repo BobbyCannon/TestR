@@ -19,6 +19,16 @@ namespace TestR
 		#region Methods
 
 		/// <summary>
+		/// Returns the number of browsers for this type.
+		/// </summary>
+		/// <param name="type"> The browser type that contains the configuration. </param>
+		/// <returns> The number of browsers configured in the type. </returns>
+		public static int Count(this BrowserType type)
+		{
+			return type.GetTypeArray().Length;
+		}
+
+		/// <summary>
 		/// Run a test against each browser. BrowserType property will determine which browsers to run the test against.
 		/// </summary>
 		/// <param name="browserType"> The browser types to run the action against. </param>
@@ -91,6 +101,17 @@ namespace TestR
 					throw new Exception($"Test failed using {browser.BrowserType}.", ex);
 				}
 			}, browserType);
+		}
+
+		/// <summary>
+		/// Converts a browser type enum into an array of only individual browser types.
+		/// </summary>
+		/// <param name="browserType"> The browser type to convert. </param>
+		/// <returns> The individual browser type values in the provided type. </returns>
+		public static BrowserType[] GetTypeArray(this BrowserType browserType)
+		{
+			var types = new[] { BrowserType.Chrome, BrowserType.Edge, BrowserType.Firefox };
+			return types.Where(type => (browserType & type) == type).ToArray();
 		}
 
 		private static Size CalculateBrowserSize(bool useSecondaryMonitor, BrowserType[] browserTypes, BrowserResizeType resizeType, out int leftOffset, out int topOffset)

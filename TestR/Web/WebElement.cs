@@ -8,10 +8,9 @@ using System.Text;
 using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TestR.Desktop;
 using TestR.Web.Elements;
-using Directory = TestR.Web.Elements.Directory;
-using Font = TestR.Web.Elements.Font;
-using Image = TestR.Web.Elements.Image;
+using Keyboard = TestR.Web.Elements.Keyboard;
 using Object = TestR.Web.Elements.Object;
 
 #endregion
@@ -508,6 +507,69 @@ namespace TestR.Web
 			return this;
 		}
 
+		/// <inheritdoc />
+		public override Element SendInput(string text)
+		{
+			Browser.Focus();
+			Focus();
+			Input.Keyboard.SendInput(text);
+			return this;
+		}
+
+		/// <inheritdoc />
+		public override Element SendInput(string text, params KeyboardKey[] keys)
+		{
+			Browser.Focus();
+			Focus();
+			Input.Keyboard.SendInput(text, keys);
+			return this;
+		}
+
+		/// <inheritdoc />
+		public override Element SendInput(string text, TimeSpan delay, params KeyboardKey[] keys)
+		{
+			Browser.Focus();
+			Focus();
+			Input.Keyboard.SendInput(text, delay, keys);
+			return this;
+		}
+
+		/// <inheritdoc />
+		public override Element SendInput(string text, TimeSpan delay, params KeyStroke[] keyStrokes)
+		{
+			Browser.Focus();
+			Focus();
+			Input.Keyboard.SendInput(text, delay, keyStrokes);
+			return this;
+		}
+
+		/// <inheritdoc />
+		public override Element SendInput(params KeyboardKey[] keys)
+		{
+			Browser.Focus();
+			Focus();
+			Input.Keyboard.SendInput(keys);
+			return this;
+		}
+
+		/// <inheritdoc />
+		public override Element SendInput(KeyboardModifier modifiers, params KeyboardKey[] keys)
+		{
+			Browser.Focus();
+			Focus();
+			Input.Keyboard.SendInput(modifiers, keys);
+			return this;
+		}
+
+		/// <inheritdoc />
+		public override Element SendInput(params KeyStroke[] keyStrokes)
+		{
+			Browser.Focus();
+			Focus();
+			Input.Keyboard.SendInput(keyStrokes);
+			return this;
+		}
+
 		/// <summary>
 		/// Sets an attribute value by the provided name.
 		/// </summary>
@@ -592,15 +654,6 @@ namespace TestR.Web
 		public override string ToString()
 		{
 			return $"{GetType().Name} : {Id} : {Name}";
-		}
-
-		/// <inheritdoc />
-		public override Element SendInput(string value)
-		{
-			Browser.Focus();
-			Focus();
-			Input.Keyboard.SendInput(value);
-			return this;
 		}
 
 		/// <inheritdoc />
@@ -866,7 +919,7 @@ namespace TestR.Web
 					return new Insert(token, browser, parent);
 
 				case "kbd":
-					return new Elements.Keyboard(token, browser, parent);
+					return new Keyboard(token, browser, parent);
 
 				case "keygen":
 					return new KeyGenerator(token, browser, parent);

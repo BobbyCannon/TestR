@@ -922,18 +922,18 @@
             </summary>
             <param name="keys"> The key(s) to lift up. </param>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.SendInput(System.String,TestR.Desktop.KeyboardKey[])">
+        <member name="M:TestR.Desktop.Keyboard.SendInput(System.String)">
             <summary>
-            Sends provided text and set of keys as input.
+            Sends provided text and an optional set of keys as input.
             </summary>
             <param name="text"> The text to be sent. </param>
-            <param name="keys"> The set of keys to be sent. </param>
             <returns> This <see cref="T:TestR.Desktop.Keyboard" /> instance. </returns>
         </member>
-        <member name="M:TestR.Desktop.Keyboard.SendInput(TestR.Desktop.KeyboardKey[])">
+        <member name="M:TestR.Desktop.Keyboard.SendInput(System.String,TestR.Desktop.KeyboardKey[])">
             <summary>
-            Sends provided set of key as input.
+            Sends provided text and an optional set of keys as input.
             </summary>
+            <param name="text"> The text to be sent. </param>
             <param name="keys"> The set of keys to be sent. </param>
             <returns> This <see cref="T:TestR.Desktop.Keyboard" /> instance. </returns>
         </member>
@@ -947,6 +947,15 @@
             <returns> This <see cref="T:TestR.Desktop.Keyboard" /> instance. </returns>
             <exception cref="T:System.ArgumentException"> The text parameter is too long. </exception>
         </member>
+        <member name="M:TestR.Desktop.Keyboard.SendInput(System.String,TestR.Desktop.KeyStroke[])">
+            <summary>
+            Sends provided text and optional set of key strokes as input.
+            </summary>
+            <param name="text"> The text to be sent. </param>
+            <param name="keyStrokes"> An optional set of key strokes to be sent. </param>
+            <returns> This <see cref="T:TestR.Desktop.Keyboard" /> instance. </returns>
+            <exception cref="T:System.ArgumentException"> The text parameter is too long. </exception>
+        </member>
         <member name="M:TestR.Desktop.Keyboard.SendInput(System.String,System.TimeSpan,TestR.Desktop.KeyStroke[])">
             <summary>
             Sends provided text as input. Can delay with before sending an optional set of key strokes.
@@ -956,6 +965,21 @@
             <param name="keyStrokes"> An optional set of key strokes to be sent. </param>
             <returns> This <see cref="T:TestR.Desktop.Keyboard" /> instance. </returns>
             <exception cref="T:System.ArgumentException"> The text parameter is too long. </exception>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.SendInput(TestR.Desktop.KeyboardKey[])">
+            <summary>
+            Sends provided set of key as input.
+            </summary>
+            <param name="keys"> The set of keys to be sent. </param>
+            <returns> This <see cref="T:TestR.Desktop.Keyboard" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.SendInput(TestR.Desktop.KeyboardModifier,TestR.Desktop.KeyboardKey[])">
+            <summary>
+            Sends provided set of keys as input with a modifier (ctrl, shift, etc).
+            </summary>
+            <param name="modifiers"> The modifier key(s). </param>
+            <param name="keys"> The set of keys to be sent. </param>
+            <returns> This <see cref="T:TestR.Desktop.Keyboard" /> instance. </returns>
         </member>
         <member name="M:TestR.Desktop.Keyboard.SendInput(TestR.Desktop.KeyStroke[])">
             <summary>
@@ -2894,36 +2918,62 @@
         </member>
         <member name="M:TestR.Element.SendInput(System.String)">
             <summary>
-            Focus the element then send the text as keyboard input.
+            Focus the element then sends provided text and an optional set of keys as input.
             </summary>
-            <param name="value"> The value to type. </param>
+            <param name="text"> The value to type. </param>
         </member>
         <member name="M:TestR.Element.SendInput(System.String,TestR.Desktop.KeyboardKey[])">
             <summary>
-            Focus the element then send the text as keyboard input.
+            Focus the element then sends provided text and an optional set of keys as input.
             </summary>
-            <param name="value"> The value to type. </param>
+            <param name="text"> The value to type. </param>
             <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
         </member>
         <member name="M:TestR.Element.SendInput(System.String,System.TimeSpan,TestR.Desktop.KeyboardKey[])">
             <summary>
-            Focus the element then send the text as keyboard input.
+            Focus the element then sends provided text as input. Can delay with before sending an optional set of key strokes.
             </summary>
-            <param name="value"> The value to type. </param>
+            <param name="text"> The value to type. </param>
             <param name="delay"> An optional delay before sending optional keys. </param>
             <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
         </member>
+        <member name="M:TestR.Element.SendInput(System.String,System.TimeSpan,TestR.Desktop.KeyStroke[])">
+            <summary>
+            Focus the element then sends provided text as input. Can delay with before sending an optional set of key strokes.
+            </summary>
+            <param name="text"> The text to be sent. </param>
+            <param name="delay"> An optional delay to wait before sending the provided keys. </param>
+            <param name="keyStrokes"> An optional set of key strokes to be sent. </param>
+            <returns> This <see cref="T:TestR.Element" /> instance. </returns>
+            <exception cref="T:System.ArgumentException"> The text parameter is too long. </exception>
+        </member>
         <member name="M:TestR.Element.SendInput(TestR.Desktop.KeyboardKey[])">
             <summary>
-            Focus the element then send the text as keyboard input.
+            Focus the element then sends provided set of key as input.
             </summary>
-            <param name="keys"> An optional set of keyboard keys to press after typing the provided text. </param>
+            <param name="keys"> The set of keys to be sent. </param>
+            <returns> This <see cref="T:TestR.Element" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Element.SendInput(TestR.Desktop.KeyboardModifier,TestR.Desktop.KeyboardKey[])">
+            <summary>
+            Sends provided set of keys as input with a modifier (ctrl, shift, etc).
+            </summary>
+            <param name="modifiers"> The modifier key(s). </param>
+            <param name="keys"> The set of keys to be sent. </param>
+            <returns> This <see cref="T:TestR.Element" /> instance. </returns>
         </member>
         <member name="M:TestR.Element.SendInput(TestR.Desktop.KeyStroke[])">
             <summary>
             Focus the element then send the key strokes as input.
             </summary>
             <param name="keyStrokes"> An set of keyboard key strokes to send. </param>
+        </member>
+        <member name="M:TestR.Element.Sleep(System.TimeSpan)">
+            <summary>
+            Sleeps the executing thread to create a pause between simulated inputs.
+            </summary>
+            <param name="timeout"> The time to wait. </param>
+            <returns> This <see cref="T:TestR.Element" /> instance. </returns>
         </member>
         <member name="M:TestR.Element.ToDetailString">
             <summary>
@@ -3334,6 +3384,13 @@
             Container for all extension methods.
             </summary>
         </member>
+        <member name="M:TestR.Extensions.Count(TestR.Web.BrowserType)">
+            <summary>
+            Returns the number of browsers for this type.
+            </summary>
+            <param name="type"> The browser type that contains the configuration. </param>
+            <returns> The number of browsers configured in the type. </returns>
+        </member>
         <member name="M:TestR.Extensions.ForAllBrowsers(TestR.Web.BrowserType,System.Action{TestR.Web.Browser},System.Boolean,System.Boolean,TestR.Web.BrowserResizeType,System.Int32)">
             <summary>
             Run a test against each browser. BrowserType property will determine which browsers to run the test against.
@@ -3358,6 +3415,13 @@
             <param name="resizeType"> The resize type if browser resizing is enabled. </param>
             <seealso cref="T:TestR.Web.BrowserType" />
             <seealso cref="T:TestR.Web.BrowserResizeType" />
+        </member>
+        <member name="M:TestR.Extensions.GetTypeArray(TestR.Web.BrowserType)">
+            <summary>
+            Converts a browser type enum into an array of only individual browser types.
+            </summary>
+            <param name="browserType"> The browser type to convert. </param>
+            <returns> The individual browser type values in the provided type. </returns>
         </member>
         <member name="T:TestR.Input">
             <summary>
@@ -3434,7 +3498,7 @@
             <summary>
             Initializes a new instance of the <see cref="T:TestR.InputBuilder" /> class.
             </summary>
-            <param name="modifier"> The modifier key. </param>
+            <param name="modifiers"> The modifier key(s). </param>
             <param name="keys"> The list of keys to press. </param>
         </member>
         <member name="M:TestR.InputBuilder.Add(System.Char)">
@@ -3634,13 +3698,6 @@
             See http://msdn.microsoft.com/en-us/library/ms646267(v=vs.85).aspx Section "Extended-Key Flag"
             </remarks>
         </member>
-        <member name="M:TestR.Internal.Extensions.ToInt(System.String)">
-            <summary>
-            Converts the string to an integer.
-            </summary>
-            <param name="item"> The item to convert to an integer. </param>
-            <returns> The JSON data of the object. </returns>
-        </member>
         <member name="M:TestR.Internal.Extensions.AsJToken(System.String)">
             <summary>
             Deserialize JSON data into a JToken class.
@@ -3669,12 +3726,12 @@
             <param name="source"> The source string value. </param>
             <returns> The string formatted to be place inside inner string. </returns>
         </member>
-        <member name="M:TestR.Internal.Extensions.GetTypeArray(TestR.Web.BrowserType)">
+        <member name="M:TestR.Internal.Extensions.ToInt(System.String)">
             <summary>
-            Converts a browser type enum into an array of only individual browser types.
+            Converts the string to an integer.
             </summary>
-            <param name="browserType"> The browser type to convert. </param>
-            <returns> The individual browser type values in the provided type. </returns>
+            <param name="item"> The item to convert to an integer. </param>
+            <returns> The JSON data of the object. </returns>
         </member>
         <member name="T:TestR.Internal.Inputs.HardwareInput">
             <summary>
@@ -7261,6 +7318,27 @@
             Scroll the element into view.
             </summary>
         </member>
+        <member name="M:TestR.Web.WebElement.SendInput(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:TestR.Web.WebElement.SendInput(System.String,TestR.Desktop.KeyboardKey[])">
+            <inheritdoc />
+        </member>
+        <member name="M:TestR.Web.WebElement.SendInput(System.String,System.TimeSpan,TestR.Desktop.KeyboardKey[])">
+            <inheritdoc />
+        </member>
+        <member name="M:TestR.Web.WebElement.SendInput(System.String,System.TimeSpan,TestR.Desktop.KeyStroke[])">
+            <inheritdoc />
+        </member>
+        <member name="M:TestR.Web.WebElement.SendInput(TestR.Desktop.KeyboardKey[])">
+            <inheritdoc />
+        </member>
+        <member name="M:TestR.Web.WebElement.SendInput(TestR.Desktop.KeyboardModifier,TestR.Desktop.KeyboardKey[])">
+            <inheritdoc />
+        </member>
+        <member name="M:TestR.Web.WebElement.SendInput(TestR.Desktop.KeyStroke[])">
+            <inheritdoc />
+        </member>
         <member name="M:TestR.Web.WebElement.SetAttributeValue(System.String,System.String)">
             <summary>
             Sets an attribute value by the provided name.
@@ -7287,9 +7365,6 @@
             <returns> The string of element details. </returns>
         </member>
         <member name="M:TestR.Web.WebElement.ToString">
-            <inheritdoc />
-        </member>
-        <member name="M:TestR.Web.WebElement.SendInput(System.String)">
             <inheritdoc />
         </member>
         <member name="M:TestR.Web.WebElement.WaitForComplete(System.Int32)">

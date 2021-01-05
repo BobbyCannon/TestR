@@ -365,11 +365,9 @@ namespace TestR.Web
 			var types = type.GetTypeArray();
 			var tasks = types.Select(x => Task.Run(() =>
 				{
-					using (var browser = AttachOrCreate(x).First())
-					{
-						browser.Application.Timeout = timeout;
-						action(browser);
-					}
+					using var browser = AttachOrCreate(x).First();
+					browser.Application.Timeout = timeout;
+					action(browser);
 				})
 			).ToArray();
 
