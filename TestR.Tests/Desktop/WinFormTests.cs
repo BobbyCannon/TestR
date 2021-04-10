@@ -1,5 +1,6 @@
 ﻿#region References
 
+using System;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
@@ -296,6 +297,29 @@ namespace TestR.Tests.Desktop
 			textBox1.SendInput("Hello World");
 			var actual = keyPress.Text;
 			Assert.AreEqual("Hello World", actual);
+		}
+
+		[TestMethod]
+		public void SendInputFastAsPossible()
+		{
+			Input.Keyboard.DefaultInputDelay = TimeSpan.FromMilliseconds(30);
+
+			using var application = TestHelper.StartApplication();
+			var window = application.First<Window>("TestR Test WinForm");
+			var t1 = (Edit) window.First<Edit>("textBox1").SendInput("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+			Assert.AreEqual("ABCDEFGHIJKLMNOPQRSTUVWXYZ", t1.Text);
+
+			var t2 = (Edit) window.First<Edit>("textBox2").SendInput("abcdefghijklmnopqrstuvwxyz");
+			Assert.AreEqual("abcdefghijklmnopqrstuvwxyz", t2.Text);
+			
+			var t3 = (Edit) window.First<Edit>("textBox3").SendInput("12345678901234567890123456");
+			Assert.AreEqual("12345678901234567890123456", t3.Text);
+
+			var t4 = (Edit) window.First<Edit>("textBox4").SendInput("09876543210987654321098765");
+			Assert.AreEqual("09876543210987654321098765", t4.Text);
+
+			var t5 = (Edit) window.First<Edit>("textBox5").SendInput("ABC123ABC123ABC123ABC123AB");
+			Assert.AreEqual("ABC123ABC123ABC123ABC123AB", t5.Text);
 		}
 
 		#endregion

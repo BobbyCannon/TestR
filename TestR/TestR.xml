@@ -863,6 +863,12 @@
             The last state of the keyboard when monitoring.
             </summary>
         </member>
+        <member name="P:TestR.Desktop.Keyboard.DefaultInputDelay">
+            <summary>
+            Default input delay if the SendInput delay is TimeSpan.Zero.
+            If this default input delay is also TimeSpan.Zero then no delay will occur.
+            </summary>
+        </member>
         <member name="M:TestR.Desktop.Keyboard.Dispose">
             <summary>
             Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -927,6 +933,14 @@
             Sends provided text and an optional set of keys as input.
             </summary>
             <param name="text"> The text to be sent. </param>
+            <returns> This <see cref="T:TestR.Desktop.Keyboard" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.SendInput(System.String,System.TimeSpan)">
+            <summary>
+            Sends provided text and an optional set of keys as input.
+            </summary>
+            <param name="text"> The text to be sent. </param>
+            <param name="delay"> An optional delay after sending input. </param>
             <returns> This <see cref="T:TestR.Desktop.Keyboard" /> instance. </returns>
         </member>
         <member name="M:TestR.Desktop.Keyboard.SendInput(System.String,TestR.Desktop.KeyboardKey[])">
@@ -2922,6 +2936,20 @@
             </summary>
             <param name="text"> The value to type. </param>
         </member>
+        <member name="M:TestR.Element.SendInput(System.String,System.Int32)">
+            <summary>
+            Focus the element then sends provided text and an optional set of keys as input.
+            </summary>
+            <param name="text"> The value to type. </param>
+            <param name="delay"> An optional delay after sending input. </param>
+        </member>
+        <member name="M:TestR.Element.SendInput(System.String,System.TimeSpan)">
+            <summary>
+            Focus the element then sends provided text and an optional set of keys as input.
+            </summary>
+            <param name="text"> The value to type. </param>
+            <param name="delay"> An optional delay after sending input. </param>
+        </member>
         <member name="M:TestR.Element.SendInput(System.String,TestR.Desktop.KeyboardKey[])">
             <summary>
             Focus the element then sends provided text and an optional set of keys as input.
@@ -3448,6 +3476,13 @@
             Dispatches the specified inputs from the provided InputBuilder in their specified order by issuing a single call.
             </summary>
             <param name="builder"> The builder containing the input. </param>
+        </member>
+        <member name="M:TestR.Input.SendInput(TestR.InputBuilder,System.TimeSpan)">
+            <summary>
+            Dispatches the specified inputs from the provided InputBuilder in their specified order by issuing a single call.
+            </summary>
+            <param name="builder"> The builder containing the input. </param>
+            <param name="delay"> An optional delay after sending input. </param>
         </member>
         <member name="T:TestR.InputBuilder">
             <summary>

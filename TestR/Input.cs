@@ -1,6 +1,7 @@
 ﻿#region References
 
 using System;
+using System.Threading;
 using TestR.Desktop;
 using TestR.Internal.Inputs;
 
@@ -56,7 +57,27 @@ namespace TestR
 		/// <param name="builder"> The builder containing the input. </param>
 		public static InputBuilder SendInput(InputBuilder builder)
 		{
+			return SendInput(builder, TimeSpan.Zero);
+		}
+
+		/// <summary>
+		/// Dispatches the specified inputs from the provided InputBuilder in their specified order by issuing a single call.
+		/// </summary>
+		/// <param name="builder"> The builder containing the input. </param>
+		/// <param name="delay"> An optional delay after sending input. </param>
+		public static InputBuilder SendInput(InputBuilder builder, TimeSpan delay)
+		{
 			_messageDispatcher.DispatchInput(builder.ToArray());
+
+			if (delay == TimeSpan.Zero && Keyboard.DefaultInputDelay != TimeSpan.Zero)
+			{
+				Thread.Sleep(Keyboard.DefaultInputDelay);
+			}
+			else if (delay > TimeSpan.Zero)
+			{
+				Thread.Sleep(delay);
+			}
+
 			return builder;
 		}
 		

@@ -21,7 +21,7 @@ if (Test-Path $SitePath -PathType Container) {
 	Remove-Item $SitePath -Recurse -Force
 }
 
-New-Item $SitePath -ItemType Directory | Out-Null
+New-Item $SitePath -ItemType Directory -ErrorAction Ignore | Out-Null
 Copy-Item "$scriptPath\TestR.TestSite\*" $SitePath -Recurse -Force
 
 $bindings = @()

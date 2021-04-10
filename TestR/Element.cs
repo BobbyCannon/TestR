@@ -176,9 +176,29 @@ namespace TestR
 		/// <param name="text"> The value to type. </param>
 		public virtual Element SendInput(string text)
 		{
+			return SendInput(text, TimeSpan.Zero);
+		}
+		
+		/// <summary>
+		/// Focus the element then sends provided text and an optional set of keys as input.
+		/// </summary>
+		/// <param name="text"> The value to type. </param>
+		/// <param name="delay"> An optional delay after sending input. </param>
+		public virtual Element SendInput(string text, int delay )
+		{
+			return SendInput(text, TimeSpan.FromMilliseconds(delay));
+		}
+
+		/// <summary>
+		/// Focus the element then sends provided text and an optional set of keys as input.
+		/// </summary>
+		/// <param name="text"> The value to type. </param>
+		/// <param name="delay"> An optional delay after sending input. </param>
+		public virtual Element SendInput(string text, TimeSpan delay)
+		{
 			Application.BringToFront();
 			Focus();
-			Input.Keyboard.SendInput(text);
+			Input.Keyboard.SendInput(text, delay);
 			return this;
 		}
 

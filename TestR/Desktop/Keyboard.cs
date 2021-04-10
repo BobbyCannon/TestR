@@ -30,6 +30,7 @@ namespace TestR.Desktop
 		public Keyboard()
 		{
 			State = new KeyboardState();
+			DefaultInputDelay = TimeSpan.Zero;
 		}
 
 		#endregion
@@ -40,6 +41,12 @@ namespace TestR.Desktop
 		/// The last state of the keyboard when monitoring.
 		/// </summary>
 		public KeyboardState State { get; }
+
+		/// <summary>
+		/// Default input delay if the SendInput delay is TimeSpan.Zero.
+		/// If this default input delay is also TimeSpan.Zero then no delay will occur.
+		/// </summary>
+		public TimeSpan DefaultInputDelay { get; set; }
 
 		#endregion
 
@@ -165,7 +172,19 @@ namespace TestR.Desktop
 		/// <returns> This <see cref="Keyboard" /> instance. </returns>
 		public Keyboard SendInput(string text)
 		{
-			Input.SendInput(new InputBuilder(text));
+			Input.SendInput(new InputBuilder(text), TimeSpan.Zero);
+			return this;
+		}
+
+		/// <summary>
+		/// Sends provided text and an optional set of keys as input.
+		/// </summary>
+		/// <param name="text"> The text to be sent. </param>
+		/// <param name="delay"> An optional delay after sending input. </param>
+		/// <returns> This <see cref="Keyboard" /> instance. </returns>
+		public Keyboard SendInput(string text, TimeSpan delay)
+		{
+			Input.SendInput(new InputBuilder(text), delay);
 			return this;
 		}
 		
@@ -195,14 +214,9 @@ namespace TestR.Desktop
 				throw new ArgumentException($"The text parameter is too long. It must be less than {uint.MaxValue / 2} characters.", nameof(text));
 			}
 
-			var inputList = Input.SendInput(new InputBuilder(text));
+			var inputList = Input.SendInput(new InputBuilder(text), delay);
 
-			if (delay > TimeSpan.Zero)
-			{
-				Thread.Sleep(delay);
-			}
-
-			if (keys.Length > 0)
+			if (keys != null && keys.Length > 0)
 			{
 				Input.SendInput(inputList.Clear().AddKeyPress(keys));
 			}
@@ -237,12 +251,7 @@ namespace TestR.Desktop
 				throw new ArgumentException($"The text parameter is too long. It must be less than {uint.MaxValue / 2} characters.", nameof(text));
 			}
 
-			var inputList = Input.SendInput(new InputBuilder(text));
-
-			if (delay > TimeSpan.Zero)
-			{
-				Thread.Sleep(delay);
-			}
+			var inputList = Input.SendInput(new InputBuilder(text), delay);
 
 			if (keyStrokes.Length > 0)
 			{
