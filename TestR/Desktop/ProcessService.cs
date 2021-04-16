@@ -92,6 +92,25 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
+		/// Gets a list of all running processes
+		/// </summary>
+		/// <returns> The current process list. </returns>
+		public static IEnumerable<SafeProcess> GetAllProcesses()
+		{
+			using var searcher = new ManagementObjectDisposer();
+
+			foreach (var item in searcher.Search(_query))
+			{
+				if (!ProcessItem(item, out var safeProcess, x => true))
+				{
+					continue;
+				}
+
+				yield return safeProcess;
+			}
+		}
+
+		/// <summary>
 		/// Gets a list of safe processes by executable path.
 		/// </summary>
 		/// <param name="executablePathOrName"> The executable file path or name of the processes to load. </param>

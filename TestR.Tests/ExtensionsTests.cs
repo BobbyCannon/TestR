@@ -1,6 +1,9 @@
 ﻿#region References
 
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TestR.Desktop;
+using TestR.Desktop.Elements;
 using TestR.Web;
 
 #endregion
@@ -24,7 +27,7 @@ namespace TestR.Tests
 			Assert.AreEqual(1, BrowserType.Edge.Count());
 			Assert.AreEqual(1, BrowserType.Firefox.Count());
 		}
-		
+
 		#endregion
 	}
 }

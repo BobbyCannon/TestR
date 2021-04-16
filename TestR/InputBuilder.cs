@@ -30,35 +30,21 @@ namespace TestR
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="InputBuilder" /> class.
-		/// </summary>
-		public InputBuilder()
+		///  </summary>
+		/// <param name="textInputAsKeyPresses"> Defaults the keyboard SendInput to send text as key presses if true. </param>
+		public InputBuilder(bool textInputAsKeyPresses = true)
 		{
 			_inputList = new List<InputTypeWithData>();
-		}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="InputBuilder" /> class.
-		/// </summary>
-		/// <param name="character"> The character to be added an an input. </param>
-		public InputBuilder(char character) : this()
-		{
-			Add(character);
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="InputBuilder" /> class.
-		/// </summary>
-		/// <param name="characters"> The characters to add. </param>
-		public InputBuilder(IEnumerable<char> characters) : this()
-		{
-			Add(characters);
+			TextInputAsKeyPresses = textInputAsKeyPresses;
 		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="InputBuilder" /> class.
 		/// </summary>
 		/// <param name="text"> The text to add. </param>
-		public InputBuilder(string text) : this()
+		/// <param name="textInputAsKeyPresses">  Defaults the keyboard SendInput to send text as key presses if true. </param>
+		public InputBuilder(string text, bool textInputAsKeyPresses) : this(textInputAsKeyPresses)
 		{
 			Add(text);
 		}
@@ -93,6 +79,16 @@ namespace TestR
 
 		#endregion
 
+		#region Properties
+
+		/// <summary>
+		/// Defaults the keyboard SendInput to send text as key presses if true.
+		/// Otherwise the send input will send the text as a text input not as key presses.
+		/// </summary>
+		public bool TextInputAsKeyPresses { get; set; }
+
+		#endregion
+
 		#region Methods
 
 		/// <summary>
@@ -102,6 +98,12 @@ namespace TestR
 		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
 		public InputBuilder Add(char character)
 		{
+			if (TextInputAsKeyPresses)
+			{
+				AddKeyPress(KeyboardState.FromCharacter(character));
+				return this;
+			}
+
 			var input = new InputTypeWithData
 			{
 				Type = (uint) InputType.Keyboard,
@@ -118,6 +120,14 @@ namespace TestR
 						}
 				}
 			};
+
+			// Handle extended keys:
+			// If the scan code is preceded by a prefix byte that has the value 0xE0 (224),
+			// we need to include the extended key flag in the Flags property. 
+			if ((character & 0xFF00) == 0xE000)
+			{
+				input.Data.Keyboard.Flags |= (uint) KeyboardFlag.ExtendedKey;
+			}
 
 			// Add initial down, then modify and add up.
 			_inputList.Add(input);
@@ -192,6 +202,22 @@ namespace TestR
 
 				_inputList.Add(down);
 			});
+			return this;
+		}
+
+		/// <summary>
+		/// Adds a key press to the list of <see cref="InputTypeWithData" /> messages which is equivalent to a key down followed by a key up.
+		/// </summary>
+		/// <param name="states"> The keyboard states to convert to key press down. </param>
+		/// <returns> This <see cref="InputBuilder" /> instance. </returns>
+		public InputBuilder AddKeyPress(params KeyboardState[] states)
+		{
+			foreach (var state in states)
+			{
+				var modifier = state.GetKeyboardModifier();
+				AddKeyPress(modifier, state.Key);
+			}
+
 			return this;
 		}
 

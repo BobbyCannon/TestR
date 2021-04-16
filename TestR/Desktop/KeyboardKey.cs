@@ -158,7 +158,7 @@
         ModeChange = 0x1F,
 
         /// <summary>
-        /// Space Bar
+        /// Space Bar ' '
         /// </summary>
         Space = 0x20,
 
@@ -499,7 +499,7 @@
         Multiply = 0x6A,
 
         /// <summary>
-        /// Add key
+        /// Add key '+'
         /// </summary>
         Add = 0x6B,
 
@@ -509,17 +509,17 @@
         Separator = 0x6C,
 
         /// <summary>
-        /// Subtract key
+        /// Subtract key '-'
         /// </summary>
         Subtract = 0x6D,
 
         /// <summary>
-        /// Decimal key
+        /// Decimal key '.'
         /// </summary>
         Decimal = 0x6E,
 
         /// <summary>
-        /// Divide key
+        /// Divide key '/'
         /// </summary>
         Divide = 0x6F,
 
@@ -792,37 +792,40 @@
         //
 
         /// <summary>
-        /// Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the ';:' key 
+        /// Used for miscellaneous characters; it can vary by keyboard.
+        /// For the US standard keyboard, the ';:' key 
         /// </summary>
         Oem1 = 0xBA,
 
         /// <summary>
-        /// For any country/region, the '+' key
+        /// For any country/region, the '=+' key
         /// </summary>
         OemPlus = 0xBB,
 
         /// <summary>
-        /// For any country/region, the ',' key
+        /// For any country/region, the ',&lt;' key
         /// </summary>
         OemComma = 0xBC,
 
         /// <summary>
-        /// For any country/region, the '-' key
+        /// For any country/region, the '-_' key
         /// </summary>
         OemMinus = 0xBD,
 
         /// <summary>
-        /// For any country/region, the '.' key
+        /// For any country/region, the '.>' key
         /// </summary>
         OemPeriod = 0xBE,
 
         /// <summary>
-        /// Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '/?' key 
+        /// Used for miscellaneous characters; it can vary by keyboard.
+        /// For the US standard keyboard, the '/?' key 
         /// </summary>
         Oem2 = 0xBF,
 
         /// <summary>
-        /// Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '`~' key 
+        /// Used for miscellaneous characters; it can vary by keyboard.
+        /// For the US standard keyboard, the '`~' key 
         /// </summary>
         Oem3 = 0xC0,
 
@@ -835,22 +838,26 @@
         //
 
         /// <summary>
-        /// Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '[{' key
+        /// Used for miscellaneous characters; it can vary by keyboard.
+        /// For the US standard keyboard, the '[{' key
         /// </summary>
         Oem4 = 0xDB,
 
         /// <summary>
-        /// Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '\|' key
+        /// Used for miscellaneous characters; it can vary by keyboard.
+        /// For the US standard keyboard, the '\|' key
         /// </summary>
         Oem5 = 0xDC,
 
         /// <summary>
-        /// Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the ']}' key
+        /// Used for miscellaneous characters; it can vary by keyboard.
+        /// For the US standard keyboard, the ']}' key
         /// </summary>
         Oem6 = 0xDD,
         
         /// <summary>
-        /// Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the 'single-quote/double-quote' key
+        /// Used for miscellaneous characters; it can vary by keyboard.
+        /// For the US standard keyboard, the 'single-quote/double-quote' key
         /// </summary>
         Oem7 = 0xDE,
 

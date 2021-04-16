@@ -36,6 +36,13 @@ namespace TestR.TestWinForms
 				return;
 			}
 
+			if (checkBoxKeyPressDetails.Checked)
+			{
+				keyPress.Text = state.ToDetailedString();
+				keyPress.Text += Environment.NewLine;
+				return;
+			}
+
 			keyPress.Text += state;
 		}
 

@@ -12,9 +12,9 @@
 		<Company>Bobby Cannon</Company>
 		<RepositoryUrl>https://github.com/BobbyCannon/TestR</RepositoryUrl>
 		<PackageTags>TestR Test UnitTest IntegrationTest Automation Testing Web Edge FireFox Chrome Chromium</PackageTags>
-		<AssemblyVersion>3.0.6.0</AssemblyVersion>
-		<FileVersion>3.0.6.0</FileVersion>
-		<Version>3.0.6</Version>
+		<AssemblyVersion>3.0.7.0</AssemblyVersion>
+		<FileVersion>3.0.7.0</FileVersion>
+		<Version>3.0.7</Version>
 	</PropertyGroup>
 	<PropertyGroup>
 		<PackageIconUrl>https://raw.githubusercontent.com/BobbyCannon/TestR/master/TestR.png</PackageIconUrl>

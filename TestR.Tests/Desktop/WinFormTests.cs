@@ -3,6 +3,7 @@
 using System;
 using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -103,8 +104,8 @@ namespace TestR.Tests.Desktop
 			window.Refresh();
 
 			var checkboxes = window.Descendants<CheckBox>();
-			// 4 outside list, 5 inside list
-			Assert.AreEqual(9, checkboxes.Count());
+			// 4 outside list, 5 inside list, 1 for input details
+			Assert.AreEqual(10, checkboxes.Count());
 		}
 
 		[TestMethod]
@@ -294,9 +295,10 @@ namespace TestR.Tests.Desktop
 			var window = application.First<Window>("TestR Test WinForm");
 			var textBox1 = window.First<Edit>("textBox1");
 			var keyPress = window.First<Edit>("keyPress");
-			textBox1.SendInput("Hello World");
+			var expected = Keyboard.GetAllPrintableCharacters();
+			textBox1.SendInput(expected);
 			var actual = keyPress.Text;
-			Assert.AreEqual("Hello World", actual);
+			TestHelper.AreEqual(expected, actual);
 		}
 
 		[TestMethod]

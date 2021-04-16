@@ -858,21 +858,33 @@
             Initializes a new instance of the <see cref="T:TestR.Desktop.Keyboard" />.
             </summary>
         </member>
-        <member name="P:TestR.Desktop.Keyboard.State">
-            <summary>
-            The last state of the keyboard when monitoring.
-            </summary>
-        </member>
         <member name="P:TestR.Desktop.Keyboard.DefaultInputDelay">
             <summary>
             Default input delay if the SendInput delay is TimeSpan.Zero.
             If this default input delay is also TimeSpan.Zero then no delay will occur.
             </summary>
         </member>
+        <member name="P:TestR.Desktop.Keyboard.State">
+            <summary>
+            The last state of the keyboard when monitoring.
+            </summary>
+        </member>
+        <member name="P:TestR.Desktop.Keyboard.TextInputAsKeyPresses">
+            <summary>
+            Defaults the keyboard SendInput to send text as key presses if true.
+            Otherwise the send input will send the text as "
+            </summary>
+        </member>
         <member name="M:TestR.Desktop.Keyboard.Dispose">
             <summary>
             Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
             </summary>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.GetAllPrintableCharacters">
+            <summary>
+            Returns a string with all printable characters.
+            </summary>
+            <returns> All printable characters in order by KeyboardKey. </returns>
         </member>
         <member name="M:TestR.Desktop.Keyboard.IsKeyDown(TestR.Desktop.KeyboardKey[])">
             <summary>
@@ -1028,6 +1040,14 @@
             Stop monitoring the keyboard input.
             </summary>
             <returns> This <see cref="T:TestR.Desktop.Keyboard" /> instance. </returns>
+        </member>
+        <member name="M:TestR.Desktop.Keyboard.ToCharacter(TestR.Desktop.KeyboardKey,TestR.Desktop.KeyboardState)">
+            <summary>
+            Convert a keyboard key to a character
+            </summary>
+            <param name="key"> The keyboard key </param>
+            <param name="state"> </param>
+            <returns> </returns>
         </member>
         <member name="M:TestR.Desktop.Keyboard.Dispose(System.Boolean)">
             <summary>
@@ -1209,7 +1229,7 @@
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Space">
             <summary>
-            Space Bar
+            Space Bar ' '
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Prior">
@@ -1544,7 +1564,7 @@
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Add">
             <summary>
-            Add key
+            Add key '+'
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Separator">
@@ -1554,17 +1574,17 @@
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Subtract">
             <summary>
-            Subtract key
+            Subtract key '-'
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Decimal">
             <summary>
-            Decimal key
+            Decimal key '.'
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Divide">
             <summary>
-            Divide key
+            Divide key '/'
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.F1">
@@ -1819,57 +1839,64 @@
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Oem1">
             <summary>
-            Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the ';:' key 
+            Used for miscellaneous characters; it can vary by keyboard.
+            For the US standard keyboard, the ';:' key 
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.OemPlus">
             <summary>
-            For any country/region, the '+' key
+            For any country/region, the '=+' key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.OemComma">
             <summary>
-            For any country/region, the ',' key
+            For any country/region, the ',&lt;' key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.OemMinus">
             <summary>
-            For any country/region, the '-' key
+            For any country/region, the '-_' key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.OemPeriod">
             <summary>
-            For any country/region, the '.' key
+            For any country/region, the '.>' key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Oem2">
             <summary>
-            Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '/?' key 
+            Used for miscellaneous characters; it can vary by keyboard.
+            For the US standard keyboard, the '/?' key 
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Oem3">
             <summary>
-            Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '`~' key 
+            Used for miscellaneous characters; it can vary by keyboard.
+            For the US standard keyboard, the '`~' key 
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Oem4">
             <summary>
-            Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '[{' key
+            Used for miscellaneous characters; it can vary by keyboard.
+            For the US standard keyboard, the '[{' key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Oem5">
             <summary>
-            Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '\|' key
+            Used for miscellaneous characters; it can vary by keyboard.
+            For the US standard keyboard, the '\|' key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Oem6">
             <summary>
-            Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the ']}' key
+            Used for miscellaneous characters; it can vary by keyboard.
+            For the US standard keyboard, the ']}' key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Oem7">
             <summary>
-            Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the 'single-quote/double-quote' key
+            Used for miscellaneous characters; it can vary by keyboard.
+            For the US standard keyboard, the 'single-quote/double-quote' key
             </summary>
         </member>
         <member name="F:TestR.Desktop.KeyboardKey.Oem8">
@@ -2072,6 +2099,38 @@
             Clone the keyboard state.
             </summary>
             <returns> The copy of the keyboard state. </returns>
+        </member>
+        <member name="M:TestR.Desktop.KeyboardState.CompareTo(TestR.Desktop.KeyboardState)">
+            <inheritdoc />
+        </member>
+        <member name="M:TestR.Desktop.KeyboardState.CompareTo(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:TestR.Desktop.KeyboardState.Equals(TestR.Desktop.KeyboardState)">
+            <inheritdoc />
+        </member>
+        <member name="M:TestR.Desktop.KeyboardState.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:TestR.Desktop.KeyboardState.FromCharacter(System.Nullable{System.Char})">
+            <summary>
+            Instantiates a keyboard state from a character value.
+            </summary>
+        </member>
+        <member name="M:TestR.Desktop.KeyboardState.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="M:TestR.Desktop.KeyboardState.GetKeyboardModifier">
+            <summary>
+            Gets the keyboard modifier for this state.
+            </summary>
+            <returns> The keyboard modifier. </returns>
+        </member>
+        <member name="M:TestR.Desktop.KeyboardState.ToDetailedString">
+            <summary>
+            To a details string for this keyboard state.
+            </summary>
+            <returns> </returns>
         </member>
         <member name="M:TestR.Desktop.KeyboardState.ToString">
             <inheritdoc />
@@ -2582,6 +2641,12 @@
             <param name="executablePathOrName"> The executable file path or name of the process to load. </param>
             <param name="packageFamilyName"> The application package family name. </param>
             <returns> The instance that represents the application. </returns>
+        </member>
+        <member name="M:TestR.Desktop.ProcessService.GetAllProcesses">
+            <summary>
+            Gets a list of all running processes
+            </summary>
+            <returns> The current process list. </returns>
         </member>
         <member name="M:TestR.Desktop.ProcessService.Where(System.String,System.String)">
             <summary>
@@ -3494,28 +3559,18 @@
             The public list of <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages being built by this instance.
             </summary>
         </member>
-        <member name="M:TestR.InputBuilder.#ctor">
+        <member name="M:TestR.InputBuilder.#ctor(System.Boolean)">
             <summary>
             Initializes a new instance of the <see cref="T:TestR.InputBuilder" /> class.
-            </summary>
+             </summary>
+            <param name="textInputAsKeyPresses"> Defaults the keyboard SendInput to send text as key presses if true. </param>
         </member>
-        <member name="M:TestR.InputBuilder.#ctor(System.Char)">
-            <summary>
-            Initializes a new instance of the <see cref="T:TestR.InputBuilder" /> class.
-            </summary>
-            <param name="character"> The character to be added an an input. </param>
-        </member>
-        <member name="M:TestR.InputBuilder.#ctor(System.Collections.Generic.IEnumerable{System.Char})">
-            <summary>
-            Initializes a new instance of the <see cref="T:TestR.InputBuilder" /> class.
-            </summary>
-            <param name="characters"> The characters to add. </param>
-        </member>
-        <member name="M:TestR.InputBuilder.#ctor(System.String)">
+        <member name="M:TestR.InputBuilder.#ctor(System.String,System.Boolean)">
             <summary>
             Initializes a new instance of the <see cref="T:TestR.InputBuilder" /> class.
             </summary>
             <param name="text"> The text to add. </param>
+            <param name="textInputAsKeyPresses">  Defaults the keyboard SendInput to send text as key presses if true. </param>
         </member>
         <member name="M:TestR.InputBuilder.#ctor(TestR.Desktop.KeyStroke[])">
             <summary>
@@ -3535,6 +3590,12 @@
             </summary>
             <param name="modifiers"> The modifier key(s). </param>
             <param name="keys"> The list of keys to press. </param>
+        </member>
+        <member name="P:TestR.InputBuilder.TextInputAsKeyPresses">
+            <summary>
+            Defaults the keyboard SendInput to send text as key presses if true.
+            Otherwise the send input will send the text as a text input not as key presses.
+            </summary>
         </member>
         <member name="M:TestR.InputBuilder.Add(System.Char)">
             <summary>
@@ -3569,6 +3630,13 @@
             Adds a key down to the list of <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages.
             </summary>
             <param name="keys"> The keys to press down. </param>
+            <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
+        </member>
+        <member name="M:TestR.InputBuilder.AddKeyPress(TestR.Desktop.KeyboardState[])">
+            <summary>
+            Adds a key press to the list of <see cref="T:TestR.Internal.Inputs.InputTypeWithData" /> messages which is equivalent to a key down followed by a key up.
+            </summary>
+            <param name="states"> The keyboard states to convert to key press down. </param>
             <returns> This <see cref="T:TestR.InputBuilder" /> instance. </returns>
         </member>
         <member name="M:TestR.InputBuilder.AddKeyPress(TestR.Desktop.KeyboardKey[])">

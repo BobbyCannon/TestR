@@ -50,11 +50,13 @@ namespace TestR.Tests.Desktop
 					actual.Append(state);
 				}
 			};
+
 			Input.Keyboard.StartMonitoring();
 
 			try
 			{
-				var application = Application.AttachOrCreate("c:\\windows\\system32\\notepad.exe");
+				using var application = Application.AttachOrCreate("c:\\windows\\system32\\notepad.exe");
+
 				//var application = Application.AttachOrCreate("C:\\Workspaces\\GitHub\\TestR\\TestR.TestWinForms\\bin\\Debug\\TestR.TestWinForms.exe");
 				application.BringToFront();
 				application.Focus();
@@ -63,32 +65,6 @@ namespace TestR.Tests.Desktop
 				//var test = "\bf--   !@#$%^&*(){}";
 				var test = "!\"#$%&\'()*+,-./:;<=>?@\\]^_`~		tabtab space";
 				Input.Keyboard.SendInput(test);
-
-				//foreach (var character in test)
-				//{
-				//	var input = new InputTypeWithData
-				//	{
-				//		Type = (uint) InputType.Keyboard,
-				//		Data =
-				//		{
-				//			Keyboard =
-				//				new KeyboardInput
-				//				{
-				//					KeyCode = 0,
-				//					Scan = character,
-				//					Flags = (uint) KeyboardFlag.Unicode,
-				//					Time = 0,
-				//					ExtraInfo = NativeInput.GetMessageExtraInfo()
-				//				}
-				//		}
-				//	};
-
-				//	Input.SendInput(input);
-
-				//	input.Data.Keyboard.Flags |= (uint) KeyboardFlag.KeyUp;
-
-				//	Input.SendInput(input);
-				//}
 
 				pressed.ToString().Dump();
 				actual.ToString().Dump();

@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using TestR.Internal.Native;
 
@@ -31,6 +32,7 @@ namespace TestR.Desktop
 		{
 			State = new KeyboardState();
 			DefaultInputDelay = TimeSpan.Zero;
+			TextInputAsKeyPresses = true;
 		}
 
 		#endregion
@@ -38,15 +40,21 @@ namespace TestR.Desktop
 		#region Properties
 
 		/// <summary>
+		/// Default input delay if the SendInput delay is TimeSpan.Zero.
+		/// If this default input delay is also TimeSpan.Zero then no delay will occur.
+		/// </summary>
+		public TimeSpan DefaultInputDelay { get; set; }
+
+		/// <summary>
 		/// The last state of the keyboard when monitoring.
 		/// </summary>
 		public KeyboardState State { get; }
 
 		/// <summary>
-		/// Default input delay if the SendInput delay is TimeSpan.Zero.
-		/// If this default input delay is also TimeSpan.Zero then no delay will occur.
+		/// Defaults the keyboard SendInput to send text as key presses if true.
+		/// Otherwise the send input will send the text as "
 		/// </summary>
-		public TimeSpan DefaultInputDelay { get; set; }
+		public bool TextInputAsKeyPresses { get; set; }
 
 		#endregion
 
@@ -59,6 +67,36 @@ namespace TestR.Desktop
 		{
 			Dispose(true);
 			GC.SuppressFinalize(this);
+		}
+
+		/// <summary>
+		/// Returns a string with all printable characters.
+		/// </summary>
+		/// <returns> All printable characters in order by KeyboardKey. </returns>
+		public static string GetAllPrintableCharacters()
+		{
+			var printableCharacters = new StringBuilder();
+
+			foreach (var key in Enum.GetValues(typeof(KeyboardKey)).Cast<KeyboardKey>())
+			{
+				var state = new KeyboardState { Key = key };
+				var value = state.ToString();
+				if (value != null)
+				{
+					printableCharacters.Append(value);
+				}
+
+				state.Character = null;
+				state.IsLeftShiftPressed = true;
+				value = state.ToString();
+
+				if (value != null)
+				{
+					printableCharacters.Append(value);
+				}
+			}
+
+			return printableCharacters.ToString();
 		}
 
 		/// <summary>
@@ -172,7 +210,7 @@ namespace TestR.Desktop
 		/// <returns> This <see cref="Keyboard" /> instance. </returns>
 		public Keyboard SendInput(string text)
 		{
-			Input.SendInput(new InputBuilder(text), TimeSpan.Zero);
+			Input.SendInput(new InputBuilder(text, TextInputAsKeyPresses), TimeSpan.Zero);
 			return this;
 		}
 
@@ -184,10 +222,10 @@ namespace TestR.Desktop
 		/// <returns> This <see cref="Keyboard" /> instance. </returns>
 		public Keyboard SendInput(string text, TimeSpan delay)
 		{
-			Input.SendInput(new InputBuilder(text), delay);
+			Input.SendInput(new InputBuilder(text, TextInputAsKeyPresses), delay);
 			return this;
 		}
-		
+
 		/// <summary>
 		/// Sends provided text and an optional set of keys as input.
 		/// </summary>
@@ -214,7 +252,7 @@ namespace TestR.Desktop
 				throw new ArgumentException($"The text parameter is too long. It must be less than {uint.MaxValue / 2} characters.", nameof(text));
 			}
 
-			var inputList = Input.SendInput(new InputBuilder(text), delay);
+			var inputList = Input.SendInput(new InputBuilder(text, TextInputAsKeyPresses), delay);
 
 			if (keys != null && keys.Length > 0)
 			{
@@ -251,7 +289,7 @@ namespace TestR.Desktop
 				throw new ArgumentException($"The text parameter is too long. It must be less than {uint.MaxValue / 2} characters.", nameof(text));
 			}
 
-			var inputList = Input.SendInput(new InputBuilder(text), delay);
+			var inputList = Input.SendInput(new InputBuilder(text, TextInputAsKeyPresses), delay);
 
 			if (keyStrokes.Length > 0)
 			{
@@ -368,6 +406,72 @@ namespace TestR.Desktop
 		}
 
 		/// <summary>
+		/// Convert a keyboard key to a character
+		/// </summary>
+		/// <param name="key"> The keyboard key </param>
+		/// <param name="state"> </param>
+		/// <returns> </returns>
+		public static char? ToCharacter(KeyboardKey key, KeyboardState state)
+		{
+			var altKey = state.IsCapsLockOn || state.IsShiftPressed;
+
+			if (key >= KeyboardKey.A && key <= KeyboardKey.Z)
+			{
+				return altKey ? (char) key : ((char) key).ToString().ToLower()[0];
+			}
+
+			if (key >= KeyboardKey.Number0 && key <= KeyboardKey.Number9)
+			{
+				if (state.IsShiftPressed)
+				{
+					return key switch
+					{
+						KeyboardKey.Number1 => '!',
+						KeyboardKey.Number2 => '@',
+						KeyboardKey.Number3 => '#',
+						KeyboardKey.Number4 => '$',
+						KeyboardKey.Number5 => '%',
+						KeyboardKey.Number6 => '^',
+						KeyboardKey.Number7 => '&',
+						KeyboardKey.Number8 => '*',
+						KeyboardKey.Number9 => '(',
+						KeyboardKey.Number0 => ')',
+						_ => (char) key
+					};
+				}
+
+				return (char) key;
+			}
+
+			if (key >= KeyboardKey.Numpad0 && key <= KeyboardKey.Numpad9)
+			{
+				return (char) (key - 0x30);
+			}
+
+			return key switch
+			{
+				KeyboardKey.Add => '+',
+				KeyboardKey.Decimal => '.',
+				KeyboardKey.Divide => '/',
+				KeyboardKey.Subtract => '-',
+				KeyboardKey.Space => ' ',
+				KeyboardKey.Tab => '\t',
+				KeyboardKey.Oem1 => state.IsShiftPressed ? ':' : ';',
+				KeyboardKey.Oem2 => state.IsShiftPressed ? '?' : '/',
+				KeyboardKey.Oem3 => state.IsShiftPressed ? '~' : '`',
+				KeyboardKey.Oem4 => state.IsShiftPressed ? '{' : '[',
+				KeyboardKey.Oem5 => state.IsShiftPressed ? '|' : '\\',
+				KeyboardKey.Oem6 => state.IsShiftPressed ? '}' : ']',
+				KeyboardKey.Oem7 => state.IsShiftPressed ? '"' : '\'',
+				KeyboardKey.OemComma => state.IsShiftPressed ? '<' : ',',
+				KeyboardKey.OemMinus => state.IsShiftPressed ? '_' : '-',
+				KeyboardKey.OemPeriod => state.IsShiftPressed ? '>' : '.',
+				KeyboardKey.OemPlus => state.IsShiftPressed ? '+' : '=',
+				_ => null
+			};
+		}
+
+		/// <summary>
 		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
 		/// </summary>
 		/// <param name="disposing"> True if disposing and false if otherwise. </param>
@@ -379,41 +483,6 @@ namespace TestR.Desktop
 			}
 
 			StopMonitoring();
-		}
-
-		internal static char ToCharacter(KeyboardKey key, KeyboardState state)
-		{
-			var altKey = state.IsCapsLockOn || state.IsShiftPressed;
-
-			if (key >= KeyboardKey.A && key <= KeyboardKey.Z)
-			{
-				return altKey ? (char) key : ((char) key).ToString().ToLower()[0];
-			}
-
-			if (key >= KeyboardKey.Number0 && key <= KeyboardKey.Number9)
-			{
-				return (char) key;
-			}
-
-			if (key >= KeyboardKey.Numpad0 && key <= KeyboardKey.Numpad9)
-			{
-				return (char) (key - 0x30);
-			}
-
-			return key switch
-			{
-				KeyboardKey.Oem1 => altKey ? ':' : ';',
-				KeyboardKey.Oem2 => altKey ? '?' : '/',
-				KeyboardKey.Oem3 => altKey ? '~' : '`',
-				KeyboardKey.Oem4 => altKey ? '{' : '[',
-				KeyboardKey.Oem5 => altKey ? '|' : '\\',
-				KeyboardKey.Oem6 => altKey ? '}' : ']',
-				KeyboardKey.Oem7 => altKey ? '"' : '\'',
-				KeyboardKey.Oem8 => (char) 0,
-				KeyboardKey.OemPeriod => altKey ? '>' : '.',
-				KeyboardKey.OemPlus => altKey ? '+' : '=',
-				_ => (char) 0
-			};
 		}
 
 		private int KeyboardHookCallback(int code, int wParam, ref NativeInput.KeyboardHookStruct lParam)
@@ -477,8 +546,8 @@ namespace TestR.Desktop
 
 				if (key == KeyboardKey.Packet)
 				{
-					character = (char) lParam.scanCode;
-					key = (KeyboardKey) (NativeInput.VkKeyScan(character) & 0xFF);
+					var scanCode = (char) lParam.scanCode;
+					key = (KeyboardKey) (NativeInput.VkKeyScan(scanCode) & 0xFF);
 				}
 
 				State.Character = character;

@@ -23,12 +23,16 @@ namespace TestR.Tests
 			var path = Path.GetDirectoryName(assembly.Location);
 			var info = new DirectoryInfo(path ?? "/");
 
-			ApplicationPathForWinForms = info.FullName.Replace("TestR.Tests", "TestR.TestWinForms").Replace("netcoreapp3.1", "") + "TestR.TestWinForms.exe";
-			ApplicationPathForWinFormX86 = info.FullName.Replace("TestR.Tests", "TestR.TestWinForms").Replace("netcoreapp3.1", "") + "TestR.TestWinForms-x86.exe";
+			ApplicationPathForWinForms = info.FullName.Replace("TestR.Tests", "TestR.TestWinForms").Replace("net5.0-windows", "") + "TestR.TestWinForms.exe";
+			ApplicationPathForWinFormX86 = info.FullName.Replace("TestR.Tests", "TestR.TestWinForms").Replace("net5.0-windows", "") + "TestR.TestWinForms-x86.exe";
 
-			// C:\Workspaces\GitHub\TestR\TestR.Tests\bin\Debug\netcoreapp3.1
-			// C:\Workspaces\GitHub\TestR\TestR.TestUwp\bin\Debug\AppX\TestR.TestUwp.exe
-			ApplicationPathForUwp = info.FullName.Replace("TestR.Tests", "TestR.TestUwp").Replace("Debug\\netcoreapp3.1", "x86\\Debug\\AppX") + "\\TestR.TestUwp.exe";
+			// Need to convert
+			// - from C:\Workspaces\GitHub\TestR\TestR.TestUwp\bin\Debug\net5.0-windows
+			// - to   C:\Workspaces\GitHub\TestR\TestR.TestUwp\bin\x86\Debug\AppX\TestR.TestUwp.exe
+			ApplicationPathForUwp = info.FullName
+					.Replace("TestR.Tests", "TestR.TestUwp")
+					.Replace("Debug\\net5.0-windows", "x86\\Debug\\AppX")
+				+ "\\TestR.TestUwp.exe";
 
 			//Application.CloseAll(ApplicationPathForWinForms);
 			//Application.CloseAll(ApplicationPathForWinFormX86);

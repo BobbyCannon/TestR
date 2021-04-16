@@ -35,6 +35,18 @@ namespace TestR.Tests.Desktop
 			}
 		}
 
+		[TestMethod]
+		public void ListAllProcesses()
+		{
+			var processes = ProcessService.GetAllProcesses();
+			foreach (var process in processes)
+			{
+				var test = process.FileName + ": " + process.FilePath;
+				test.Dump();
+				process.Dispose();
+			}
+		}
+
 		#endregion
 	}
 }

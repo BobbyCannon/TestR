@@ -70,6 +70,7 @@
 			this.textBox5 = new System.Windows.Forms.TextBox();
 			this.textBox6 = new System.Windows.Forms.TextBox();
 			this.label4 = new System.Windows.Forms.Label();
+			this.checkBoxKeyPressDetails = new System.Windows.Forms.CheckBox();
 			this.MenuStrip.SuspendLayout();
 			this.StatusStrip.SuspendLayout();
 			this.SuspendLayout();
@@ -451,11 +452,22 @@
 			this.label4.TabIndex = 33;
 			this.label4.Text = "Key Press History";
 			// 
+			// checkBoxKeyPressDetails
+			// 
+			this.checkBoxKeyPressDetails.AutoSize = true;
+			this.checkBoxKeyPressDetails.Location = new System.Drawing.Point(107, 294);
+			this.checkBoxKeyPressDetails.Name = "checkBoxKeyPressDetails";
+			this.checkBoxKeyPressDetails.Size = new System.Drawing.Size(58, 17);
+			this.checkBoxKeyPressDetails.TabIndex = 34;
+			this.checkBoxKeyPressDetails.Text = "Details";
+			this.checkBoxKeyPressDetails.UseVisualStyleBackColor = true;
+			// 
 			// FormMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(639, 557);
+			this.Controls.Add(this.checkBoxKeyPressDetails);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.textBox6);
 			this.Controls.Add(this.textBox5);
@@ -544,6 +556,7 @@
 		private System.Windows.Forms.TextBox textBox5;
 		private System.Windows.Forms.TextBox textBox6;
 		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.CheckBox checkBoxKeyPressDetails;
 	}
 }
 
